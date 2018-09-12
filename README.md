@@ -4,15 +4,15 @@
 
 ## Semester I
 
-[Gevorderde algoritmen]()
+[Gevorderde algoritmen](https://github.com/Lentosy/Master-Informatica/tree/master/Gevorderde%20algoritmen)
 
-[Besturingssystemen III]()
+[Besturingssystemen III](https://github.com/Lentosy/Master-Informatica/tree/master/Besturingssystemen%20III)
 
-[Beveiliging van netwerken en computers]()
+[Beveiliging van netwerken en computers](https://github.com/Lentosy/Master-Informatica/tree/master/Beveiliging%20van%20netwerken%20en%20computers)
 
-[Systeemontwerp]()
+[Systeemontwerp](https://github.com/Lentosy/Master-Informatica/tree/master/Systeemontwerp)
 
-[Gedistribueerde toepassingen]()
+[Gedistribueerde toepassingen](https://github.com/Lentosy/Master-Informatica/tree/master/Gedistribueerde%20toepassingen)
 
-[Computergrafiek]()
+[Computergrafiek](https://github.com/Lentosy/Master-Informatica/tree/master/Computergrafiek)
 
