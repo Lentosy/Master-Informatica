@@ -1,0 +1,97 @@
+% article 	For articles in scientific journals, presentations, short reports, program documentation, invitations, ...
+% IEEEtran 	For articles with the IEEE Transactions format.
+% proc 		A class for proceedings based on the article class.
+% report 	For longer reports containing several chapters, small books, thesis, ...
+% book 		For real books.
+% slides 	For slides. The class uses big sans serif letters.
+% memoir 	For changing sensibly the output of the document. It is based on the book class, but you can create any kind of % % document with it [1]
+% letter 	For writing letters.
+% beamer 	For writing presentations (see LaTeX/Presentations). 
+
+\documentclass{report}
+
+\usepackage[dutch]{babel}
+\usepackage{color}
+\usepackage[utf8]{inputenc}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+
+
+
+\title{\textbf{Besturingssystemen III}}
+\author{\textbf{Bert De Saffel}}
+\date{}
+
+\begin{document}
+	\maketitle
+	\tableofcontents
+	\part{Examenvragen}
+	\chapter{Modelvragen theorie: reeks A}
+	Het examen wordt {\color{red} volledig schriftelijk} beantwoord. Indien de student dit wenst, wordt het antwoord onmiddellijk na indienen geëvalueerd, en eventueel gevolgd door enkele vragen ter verduidelijking of aanvulling.
+	\section{Structuur van Active Directory gegevens}
+	\begin{enumerate}
+		\item Bespreek de \textit{diverse namen} die alle Active Directory objecten \textit{identificeren}. { \color{red} (\textsection 2.2.1) }
+		
+		\item Wat zijn \textit{SPN objecten} ? Bespreek de \textit{aanvullende naamgeving} voor deze objecten. {\color{red} (\textsection 2.2.2)}
+		
+		\item Enkele veel gebruikte klassen (hiermee worden \textit{attributeschema} en \textit{classschema} objecten niet bedoeld) vertonen nog meer identificerende attributen voor hun instanties. Bespreek deze klassen en attributen.
+		
+		\item In welke \textit{partities} is de Active Directory informatie verdeeld ? Geef de betekenis van elke partitie, hun onderlinge relatie (zowel fysiek als met betrekking tot hun naamgeving), en de replicatiekarakteristieken ervan. {\color{red} (laatste helft \textsection 2.2.3)}
+	\end{enumerate}
+
+	\section{attributeSchema objecten {\color{red} (\textsection 2.2.4 en \textsection 2.2.5)}}
+	\begin{enumerate}
+		\item Bespreek het \textit{doel} en de \textit{werking} van attributeSchema objecten. Hoe kunnen deze objecten het best \textit{geraadpleegd} en \textit{gewijzigd} worden ?
+		
+		\item Bespreek de \textit{diverse naamgevingen}, specifiek voor attributeSchema objecten.
+		
+		\item Bespreek de belangrijkste \textit{kenmerken} van attributeSchema objecten, en op welke waarden die ingesteld kunnen worden.
+		
+		\item Welke andere types objecten bevat het \textit{Active Directory schema}, en wat is hun bedoeling ? {\color{red} (o.a. \textsection 2.2.7)}
+		
+		\item Via welke attributen kun je de \textit{klasse} van een willekeurig Active Directory object achterhalen ? Hoe moet je op zoek gaan naar alle objecten van een bepaalde klasse ? Illustreer aan de hand van relevante voorbeelden. {\color{red} (laatste paragraaf \textsection 2.2.6)}
+	\end{enumerate}
+
+	\section{classSchema objecten {\color{red} (\textsection 2.2.4 en \textsection 2.2.6)}}
+	\begin{enumerate}
+		\item Bespreek het \textit{doel} en de \textit{werking} van classSchema objecten.
+		
+		\item Hoe benadert Active Directory het mechaniscme van \textit{overerving} ?
+		
+		\item Bespreek de diverse \textit{naamgevingen}, specifiek voor classSchema objecten.
+		
+		\item Bespreek de belangrijkste \textit{kenmerken} van classSchema objecten, en op welke waarden die ingesteld kunnen worden.
+		
+		\item Welke andere types objecten bevat het \textit{Active Directory schema}, en wat is hun bedoeling ? {\color{red} (o.a. \textsection 2.2.7)}
+		
+		\item Hoe en met welke middelen kan het Active Directory schema uitgebreid worden ? Waarom moet je en hoe kan je hierbij \textit{voorzichtig} te werk gaan ? {\color{red} (o.a. \textsection 2.2.8, ldifde fractie \textsection 2.2.3)}
+	\end{enumerate}
+ 	\section{Active Directory domeinstructuren {\color{red}(§2.4.4, laatste paragraaf §2.4.5 en §2.4.6)}}
+ 	\begin{enumerate}
+ 		\item Wat is de bedoeling van \textit{vertrouwensrelaties} ?
+ 		
+ 		\item Bespreek de verschillende \textit{soorten} vertrouwensrelaties.
+ 		
+ 		\item Op welke diverse manieren kunnen vertrouwensrelaties \textit{gecreëerd} en \textit{gecontroleerd} worden ? Bespreek ook de \textit{optionele configuratiemogelijkheden}.
+ 		
+ 		\item Welke verschillen zijn er in praktijk tussen \textit{NT 4.0} en \textit{Windows Server} domeinstructuren ? Bespreek onder andere telkens de noodzaak om meerdere domeinen in te voeren. Bespreek de alternatieve mogelijkheden bij de \textit{conversie van een NT 4.0 domeinstructuur} naar een Windows Server omgeving.
+ 	\end{enumerate}
+ 
+ 	\section{Active Directory server rollen {\color{red}(§2.4.7, §2.3 en fractie §2.4.2)}}
+ 		Welke vragen moet men zich stellen na de initiële installatie van een Windows Server toestel, in verband met \textit{bijzondere functies} die de server kan vervullen met betrekking tot Active Directory ? Formuleer bij het beantwoorden van deze vragen telkens (voor zover relevant): 
+ 		\begin{enumerate}
+ 			\item Hoe bepaald wordt \textit{welke servers} een dergelijke specifieke functie vervullen ? \textit{Hoeveel} zijn er nodig (in termen van: \textit{minimaal/exact/maximaal} \#, \textit{in functie van} ...), en waarom ?
+ 		
+ 			\item \textit{Eigenschappen} zoals bedoeling, noodzaak, kriticiteit, inhoud, synchronisatie, voor welke Windows versie(s) van toepassing, ... ?
+ 		
+ 			\item De \textit{eventuele relatie} tussen de diverse functies. Vermeld bijvoorbeeld welke functies al dan niet door dezelfde server \textit{kunnen} vervuld worden, of misschien wel juist wel door dezelfde server \textit{moeten} vervuld worden.
+ 		
+ 			\item Hoe kan achterhaald worden welk(e) toestel(len) de bijzondere functie vervult, en op welke diverse manieren men de \textit{toewijzing} ervan kan instellen, wijzigen en/of ongedaan maken ?
+ 		\end{enumerate}
+
+ 		
+
+
+	\chapter{Modelvragen theorie: reeks B}
+\end{document}
+
+
