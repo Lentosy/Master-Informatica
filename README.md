@@ -16,3 +16,10 @@
 
 [Computergrafiek](https://github.com/Lentosy/Master-Informatica/tree/master/Computergrafiek)
 
+## Semester II
+
+[Kunstmatige intelligentie](https://github.com/Lentosy/Master-Informatica/tree/master/Kunstmatige%20intelligentie)
+
+[Computervisie](https://github.com/Lentosy/Master-Informatica/tree/master/Computervisie)
+
+[Compilers](https://github.com/Lentosy/Master-Informatica/tree/master/Compilers)
