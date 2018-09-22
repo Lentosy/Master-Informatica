@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE servers SYSTEM "servers.dtd">
+<servers>
+    <server>
+        <url>http://www.mijnfoto.be</url>
+        <foto bron="IMG001">Mijn huis</foto>
+        <foto bron="IMG002">Kinderen</foto>
+        <foto bron="IMG003">Poezen</foto>
+        <foto bron="IMG004">Tuin</foto>
+        <foto bron="IMG005">Vakantie in Praag</foto>
+        <foto bron="IMG006">Scoutskamp</foto>
+        <foto bron="IMG007">Sneeuwpret</foto>
+    </server>
+    <server>
+        <url>http://www.bedreigdedieren.org</url>
+        <foto bron="IMG001">Bengaalse tijger</foto>
+        <foto bron="IMG002">Panda</foto>
+        <foto bron="IMG003">Koala</foto>
+        <foto bron="IMG004">Wolf</foto>
+    </server>
+</servers>

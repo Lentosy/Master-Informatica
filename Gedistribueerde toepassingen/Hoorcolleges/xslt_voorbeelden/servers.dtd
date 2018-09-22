@@ -1,0 +1,6 @@
+<!ELEMENT servers (server*)>
+<!ELEMENT server (url,foto*)>
+<!ELEMENT url (#PCDATA)>
+<!ELEMENT foto (#PCDATA)>
+<!ATTLIST foto bron NMTOKEN #REQUIRED>
+

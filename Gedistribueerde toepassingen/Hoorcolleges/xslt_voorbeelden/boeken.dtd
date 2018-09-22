@@ -1,0 +1,9 @@
+<!ELEMENT books (book*)>
+<!ELEMENT book (isbn, title, author+)>
+<!ELEMENT isbn (#PCDATA)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT author (name, initial?, firstname+)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT initial (#PCDATA)>
+<!ELEMENT firstname (#PCDATA)>
+

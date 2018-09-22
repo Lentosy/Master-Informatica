@@ -7,6 +7,146 @@
 \begin{document}
 	\maketitle{Computergrafiek}
 	\tableofcontents
+	
+	
+	\part{Examenvragen}
+	\chapter{Modelvragen eerste theorievraag}
+	Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
+	
+	\section{Rastering}
+	\begin{enumerate}
+		\item Bespreek de verschillende algoritmen voor de \textit{rastering van rechte lijnen}, zonder in detail in te gaan op \textit{multi-step} varianten. Vermeld telkens hun voor- en nadelen. \accentuate{(§1.2 \& §1.2.1)}
+		
+		\item Hoe kunnen de methodes aangepast worden om \textbf{dikke} lijnen voor te stellen ? \accentuate{(§1.5)}
+	\end{enumerate}
+
+	\section{Het algoritme van Bresenham}
+	\begin{enumerate}
+		\item aBespreek het doel van dit algoritme en geef de volledige uitwerking van het selectieproces. \accentuate{(§1.3)}
+		
+		\item Hoe kan deze methode aangepast worden om \textbf{dikke} cirkels voor te stellen ? \accentuate{ (§1.5)}
+	\end{enumerate}
+
+	\section{Rastering van veelhoeken en antialiasing}
+	\begin{enumerate}
+		\item Hoe moeten algoritmen voor het rasteren van rechte lijnen gewijzigd worden indien men ze wil toepassen op het \textit{opvullen van veelhoeken} ? \accentuate{(§1.4)}
+		
+		\item Geef het doel van \textit{antialiasing}, het algemeen principe ervan, en drie algoritmen voor de praktische uitwerking (met voorbeelden). \accentuate{(§1.6)}
+	\end{enumerate}
+
+	\section{Transformaties}
+	\begin{enumerate}
+	\item Welke families transformaties worden in de computer-grafiek gebruikt, en waarom ?
+	
+	\item Geef en bespreek de matrixrepresentaties van de verschillende types transformaties en hun samenstellingen. \accentuate{(§2.1 behalve §2.1.4)}
+	\end{enumerate}
+
+	\section{Projecties en clipping}
+
+	\begin{enumerate}
+	\item Welke soort projectie wordt in de computergrafiek gebruikt, en waarom ?
+	
+	\item Leid de algemene matrixvorm van deze projectie af. \accentuate{(§2.2)}
+	
+	\item Wat is de bedoeling van clipping ? Bespreek clippen in twee en in drie dimensies. \accentuate{(§2.3 zonder deelparagrafen)}
+	\end{enumerate}
+
+	\section{Het algoritme van Cyrus-Beck}
+	\begin{enumerate}
+		\item Geef het doel, de toepasbaarheid, en de beperkingen van het algoritme, en de volledige uitwerking van het principe. Pas het algoritme stap-voor-stap toe op volgende viewport \textit{(figuur wordt gegeven)} en een lijnstuk met eindpunten ... .  \accentuate{(§2.3.2)}
+		
+		\item Hoe clipt men meer ingewikkelde krommen en figuren ?
+	\end{enumerate}
+
+	\section{Clipping}
+	\begin{enumerate}
+		\item Het algoritme van \textit{Cohen-Sutherland}: geef het doel, de toepasbaarheid, en de beperkingen van het algoritme, en de volledige uitwerking van het principe. Pas het algoritme toe op relevante voorbeelden. Geef eveneens een variant van de techniek. \accentuate{(§2.3.1)}
+		
+		\item Het algoritme van \textit{Sutherland-Hodgman}: geef het doel, de toepasbaarheid, en de beperkingen van het algoritme, en de volledige uitwerking van het principe. Pas het algoritme stap-voor-stap toe op volgend voorbeeld: (figuur wordt gegeven) . \accentuate{(§2.3.3)}
+	\end{enumerate}
+
+	\chapter{Modelvragen tweede theorievraag}
+	Deze vraag wordt gequoteerd op 2/4 van de totaalpunten.
+	
+	\section{NURBS constructie van cirkels \accentuate{(\textsection 3.4.8, slides en lesnota's)}}
+	\begin{enumerate}
+		\item aMet welke \textit{open-uniforme NURBS} van orde drie (graad twee) kun je een \textit{halve cirkel} (met centrum in de oorsprong en straal 1) tekenen , zonder (reële) knooppunten met meervoudige multipliciteit te moeten gebruiken ? Geef de preciese locatie van de \textit{controlepunten} (op een figuur), hun gewichten, en de corresponderende \textit{knopenvector}. Uit hoeveel segmenten bestaat deze NURBS ?
+		
+		\item Toon aan dat deze constructie inderdaad exact een halve cirkel oplevert.
+		
+		\item Construeer van deze NURBS de \textit{uniforme} representatie. Vermeld de conversiestappen om tot dit resultaat te bekomen. Waarom is de constructie van de uniforme representatie belangrijk ?
+	\end{enumerate}
+
+	\section{NURBS constructie van cirkels en lijnsegmenten \accentuate{(§3.4.8 en slides)} }
+	\begin{enumerate}
+		\item Met welke \textit{NURBS} kun je exact een recht \textit{lijnsegment} door twee punten tekenen ? Geef de preciese locatie van de \textit{controlepunten} (op een figuur), hun gewichten, en de corresponderende \textit{knopenvector}.
+		
+		\item Met welke \textit{NURBS} bestaande uit één enkel segment kun je een \textit{halve cirkel} (met centrum in de oorsprong en straal 1) tekenen ? Geef de preciese locatie van de \textit{controlepunten} (op een figuur), hun gewichten, en de corresponderende knopenvector\textit{}. Wat is de graad van deze NURBS ?
+		
+		\item Toon aan dat deze constructie inderdaad exact een halve cirkel oplevert.
+		
+		\item Met welke \textit{NURBS} bestaande uit één enkel segment kun je exact een \textit{volledige cirkel} (met centrum in de oorsprong en straal 1) tekenen ? Geef de preciese locatie van de \textit{controlepunten} (op een figuur), hun gewichten, en de corresponderende \textit{knopenvector}. Wat is de graad van deze NURBS ?
+	\end{enumerate}
+
+	\section{Reflectiemodellen \accentuate{(§5.2, behalve §5.2.1.2 en §5.2.1.3) }}
+	\begin{enumerate}
+		\item Waarom zijn reflectiemodellen noodzakelijk ?
+		
+		\item Omschrijf het lokale reflectiemodel (Phong-model). Geef ondermeer de
+		 berekenings-voorschriften, de betekenis van de parameters, en de nadelen.
+		 
+		\item Geef en omschrijf (in het bijzonder de nadelen) van de drie mogelijke benaderingen voor de berekening van de \textit{lichtintensiteit van zichtbare punten}, indien men het object beschrijft aan de hand van een verzameling \textit{vlakke veelhoeken}.
+		
+	\end{enumerate}
+
+	\section{1D Wavelet transformaties}
+	\begin{enumerate}
+		\item Bespreek met behulp van \textit{Multi-Resolutie-Analyse} de algemene concepten van wavelet transformaties. \accentuate{(§3.5.2)}
+		
+		\item Vertaal deze algemene concepten in het bijzonder geval van de \textit{Haar-wavelet} transformatie. \accentuate{(§3.5.1 \& §3.5.2)}
+
+		
+		\item Bespreek de noodzaak van \textit{spline-wavelets} (1D). Wat is het verband tussen de \textit{Haar-wavelet} transformatie en de \textit{spline-wavelet} transformatie ? Geef een overzicht van de relatieve voor- en nadelen. 
+		
+		\item Beschrijf van lage orde 1D \textit{open-uniforme} spline-wavelet transformaties de vorm van achtereenvolgens de \textit{schaalfuncties}, de \textit{wavelets} en de \textit{synthese filters}.
+	\end{enumerate}
+
+	\section{2D Wavelet transformaties \accentuate{(§4.5.1)}}
+	\begin{enumerate}
+		\item Bespreek de alternatieve methodes om 2D \textit{schaalfuncties en wavelets} te construeren.
+		
+		\item Beschrijf, aan de hand van \textit{contourplotjes}, en voor elk van deze alternatieve methodes, de resulterende \textit{2D Haar-schaalfuncties en Haar-wavelets} van het laagste en het op één na laagste niveau.
+	\end{enumerate}
+
+	\section{Toepassingen van wavelet transformaties }
+	\begin{enumerate}
+		\item Geef de meest relevante toepassingen in de computergrafiek van 1D \textit{Haar-wavelet} en 1D \textit{spline-wavelet} transformaties. \accentuate{(§3.5.4)}
+		
+		\item 	Geef de meest relevante toepassingen in de computergrafiek van 2D \textit{Haar-wavelet} en 1D \textit{spline-wavelet} transformaties. \accentuate{(§4.5.2)}
+	\end{enumerate}
+	
+	\chapter{Informatie derde vraag}
+	Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over één of enkele van volgende onderwerpen:
+	\begin{itemize}
+		\item \accentuate{(1-3)} de Casteljau constructie (van een punt met specifieke parameterwaarde) van een Bézier kromme
+		\item \accentuate{(1)} verhoging van de graad van Bézier splines (in één enkele stap); voorafgaand moet het verband tussen de \textit{oude} en de \textit{nieuwe} controlepunten opgesteld worden (vermenigvuldiging met een specifieke matrix, cfr. theorieles)
+		\item \accentuate{(2)} verhoging van de graad van Bézier splines (\textit{stapsgewijs}: één graad verhogen per stap)
+		\item \accentuate{(3,4)} segmentering (subdivisie) van Bézier krommen (eventueel meerdere segmenten in één enkele stap)
+		\item \accentuate{(9-10,14-16)} constructie van de \textit{kromtecirkel} in een punt van een Bézier kromme
+		\item \accentuate{(5-7,9-11)} constructie van de \textit{Bézier representatie} van een (polynomiale) NURBS
+		\item \accentuate{(6-10)} constructie van controlepunten na toevoeging van één of meerdere \textit{reële} knopen in de knopenvector van een (polynomiale) NURBS (zonder over te gaan op de Bézier representatie)
+		\item \accentuate{(10)} constructie van controlepunten na toevoeging van één of meerdere \textit{virtuele} knopen in de knopenvector van een (polynomiale) NURBS (zonder over te gaan op de Bézier representatie)
+		\item \accentuate{(11)} berekening en constructie van de controlepunten van de \textit{open-uniforme} representatie van een (polynomiale) NURBS met een \textit{uniforme} knopenvector
+		\item \accentuate{(12,19)} berekening en constructie van de controlepunten van de \textit{uniforme} representatie van een polynomiale of rationale NURBS met een \textit{open-uniforme} knopenvector
+		\item \accentuate{(12)} de Boor constructie (van een punt met specifieke parameterwaarde) van een (polynomiale) NURBS
+		\item \accentuate{(13)} constructie van de \textit{hodograaf} van een Bézier kromme of spline
+		\item \accentuate{(13-16)} vaststellen van de continuïteit in de knooppunten van Bézier splines (\textit{stelling van Stärk})
+		\item \accentuate{(17)} constructie van de controlepunten van de \textit{uniforme} Lagrange representatie van een Lagrange geïnterpoleerde kromme met \textit{niet-uniforme} knopenvector; schematisch aantonen hoe de berekening van de Bézier representatie van deze kromme zou kunnen uitgevoerd worden (ondermeer opstellen van de \textit{inverse} van de Bézier basismatrix).
+		\item \accentuate{(18,19)} constructie van een  \textit{benadering door lijnstukken} van een uniforme NURBS door toepassing van het algoritme van Lane \& Riesenfeld
+		\item \accentuate{(20)} constructie van een \textit{triangulair schema} met behulp van het veralgemeend algoritme van Neville (voor een specifieke configuratie van inputgegevens), en berekening hieruit van de \textit{gewichtsfuncties} en de \textit{matrixrepresentatie}
+		
+	\end{itemize}
+	
 \end{document}
 
 
