@@ -11,14 +11,16 @@
 
 	\part{Theorie}
 	\chapter{WMI concepten}
-	\section{Herhaling SNMP}
+	\section{Herhaling SNMP en inleiding WMI}
 	SNMP had de mogelijkheid om informatie bij te houden van devices die typisch op een netwerk aangesloten zijn zoals printers, routers, workstations en servers. Er was echter nood aan een systeem dat ook informatie van het hele operating systeem kon bevragen.
 	Dit systeem noemt \textit{Wbem}, een uniform systeem voor het bevragen van besturingssystemen zoals windows, HP en solaris. Een Windows specifieke versie hiervan is het \textit{Windows Management Instrumentation} (WMI).
-	\begin{figure}
-		\includegraphics{basisarchitectuur_WMI}
+	\begin{figure}[h]
+		\centering
+		\includegraphics[width=0.5\textwidth]{basisarchitectuur_WMI}
 		\caption{Basisarchitectuur WMI}
 		\label{fig:basisarchitectuur_WMI}
 	\end{figure}
+
 	Uit figuur \ref{fig:basisarchitectuur_WMI} kunnen vijf componenten afgeleid worden:
 	\begin{itemize}
 		\item \textit{WMI Consumer}
@@ -36,12 +38,12 @@
 	\begin{itemize}
 		\item \_\_DERIVATION : Dit bevat een tabel met de hiërarchie van de overerving waarbij het eerste element de onmiddelijke superklasse is en het laatste element de root van de hiërarchie.
 		\item \_\_DYNASTY : Dit bevat de root van de hiërarchie van overerving. Deze informatie is dus dezelfde als het laatste element in het \_\_DERIVATION attribuut.
-		\item \_\_PROPERTY_COUNT : Dit veld bevat een nummer met het aantal niet-systeemaanroepen
+		\item \_\_PROPERTY\_COUNT : Dit veld bevat een nummer met het aantal niet-systeemaanroepen
 		\item \_\_PATH : Dit veld bevat het absolute pad van de klasse.
 	\end{itemize}
 	Van elke klasse kan zijn instanties opgevraagd worden door op het icoontje rechts van het save-icoontje te klikken. Er wordt een twee dimensionale tabel weergegeven met per instantie een rij en per attribuut een kolom.
 	Voor elke instantie moet het systeemattribuut \_\_RELPATH aangevuld worden met de sleutel van het object. Dit is een string dat bestaat uit meerdere key-value paren dat toegevoegd wordt aan de default waarde van \_\_RELPATH.
-	Bij Singletons echter zijn unieke identificaties niet nodig en wordt \_\_RELPATH aangevuld met een \@ symbool. Een voorbeeld van een abstracte klasse en een singleton is respectievelijk \texttt{CIM_MonitorResolution} en \texttt{Win_LocalTime}. 
+	Bij Singletons echter zijn unieke identificaties niet nodig en wordt \_\_RELPATH aangevuld met een \@ symbool. Een voorbeeld van een abstracte klasse en een singleton is respectievelijk \texttt{CIM\_MonitorResolution} en \texttt{Win\_LocalTime}. 
 	\subsection{Qualifiers}
 	Een qualifier is een key-value koppel waarbij extra eigenschappen kunnen toegevoegd worden. Er bestaan vier soorten qualifiers:
 	\begin{enumerate}
