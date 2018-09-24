@@ -8,6 +8,65 @@
 	\maketitle{Besturingssystemen III}
 
 	\tableofcontents
+
+	\part{Theorie}
+	\chapter{WMI concepten}
+	\section{Herhaling SNMP}
+	SNMP had de mogelijkheid om informatie bij te houden van devices die typisch op een netwerk aangesloten zijn zoals printers, routers, workstations en servers. Er was echter nood aan een systeem dat ook informatie van het hele operating systeem kon bevragen.
+	Dit systeem noemt \textit{Wbem}, een uniform systeem voor het bevragen van besturingssystemen zoals windows, HP en solaris. Een Windows specifieke versie hiervan is het \textit{Windows Management Instrumentation} (WMI).
+	\begin{figure}
+		\includegraphics{basisarchitectuur_WMI}
+		\caption{Basisarchitectuur WMI}
+		\label{fig:basisarchitectuur_WMI}
+	\end{figure}
+	Uit figuur \ref{fig:basisarchitectuur_WMI} kunnen vijf componenten afgeleid worden:
+	\begin{itemize}
+		\item \textit{WMI Consumer}
+		\item \textit{CIM Object Manager}
+		\item \textit{CIM Repository}. Dit is een object geörienteerd model waarbij software als hardware componenten als objecten voorgesteld worden. 
+		\item \textit{Provider}
+		\item \textit{Managed System}
+	\end{itemize}
+	\section{CIM Repository}
+	De CIM Repository kan men inspecteren met een WMI-browser. Voorbeelden hiervan zijn \textit{WMI CIM Studio} en \textit{Powershell WMI Browser}. In deze samenvatting wordt gebruik gemaakt van WMI CIM Studio
+	De inlogprocedure vraagt een namespace die standaard ingevuld staat op \texttt{root:\\CIMV2}. Deze namespace omvat ook de meeste WMI Objecten. Wat deze namespace niet heeft zijn klassen om office documenten zoals excel of word te manipuleren.
+	Indien ingelogd, verschijnt er een scherm met twee panelen. Het linkerpaneel bevat alle klassen gesorteerd op hiërarchische volgorde op basis van overerving. De icoontjes naast elke klasse wordt gegenereerd op basis attributen van die klasse.
+	Het rechterpaneel heeft standaard de \textit{Properties} tab open. Dit tabblad bevat alle attributen van de geselecteerde klasse. Attributen voorafgegaan door 2 underscores zijn systeemattributen en bestaan voor elke klasse.
+	Voorbeelden van zulke systeemattributen:
+	\begin{itemize}
+		\item \_\_DERIVATION : Dit bevat een tabel met de hiërarchie van de overerving waarbij het eerste element de onmiddelijke superklasse is en het laatste element de root van de hiërarchie.
+		\item \_\_DYNASTY : Dit bevat de root van de hiërarchie van overerving. Deze informatie is dus dezelfde als het laatste element in het \_\_DERIVATION attribuut.
+		\item \_\_PROPERTY_COUNT : Dit veld bevat een nummer met het aantal niet-systeemaanroepen
+		\item \_\_PATH : Dit veld bevat het absolute pad van de klasse.
+	\end{itemize}
+	Van elke klasse kan zijn instanties opgevraagd worden door op het icoontje rechts van het save-icoontje te klikken. Er wordt een twee dimensionale tabel weergegeven met per instantie een rij en per attribuut een kolom.
+	Voor elke instantie moet het systeemattribuut \_\_RELPATH aangevuld worden met de sleutel van het object. Dit is een string dat bestaat uit meerdere key-value paren dat toegevoegd wordt aan de default waarde van \_\_RELPATH.
+	Bij Singletons echter zijn unieke identificaties niet nodig en wordt \_\_RELPATH aangevuld met een \@ symbool. Een voorbeeld van een abstracte klasse en een singleton is respectievelijk \texttt{CIM_MonitorResolution} en \texttt{Win_LocalTime}. 
+	\subsection{Qualifiers}
+	Een qualifier is een key-value koppel waarbij extra eigenschappen kunnen toegevoegd worden. Er bestaan vier soorten qualifiers:
+	\begin{enumerate}
+		\item klasse-qualifiers. Geeft extra informatie over de klasse. 
+		\item attribuut-qualifiers. Geeft extra informatie over de attributen van een klasse
+		\item methode-qualifiers. Geeft extra informatie over de methoden van een klasse
+		\item methodeparameter-qualifiers. Geeft extra informatie over de parameters van de methoden van een klasse.
+	\end{enumerate}
+	\subsubsection{Klasse-qualifiers}
+	Deze worden in WMI CIM Studio \textit{Object qualifiers} genoemd:
+	\begin{itemize}
+		\item De \textit{Description} qualifier geeft tekst terug met informatie over de klasse.
+		\item De \textit{Abstract}, \textit{Dynamic} en \textit{Singleton} qualifiers geven aan, indien hun waarde op \textit{true} staat, dat een klasse abstract, dynamisch of een singleton is.
+		\item De \textit{Provider} qualifier helpt de WMI service te bepalen welke provider moet aangesproken worden om een bepaalde klasse aan te spreken
+	\end{itemize}
+	\subsubsection{Attribuut-qualifiers}
+	De attribuut-qualifiers worden in WMI CIM Studio \textit{Property qualifiers} genoemd:
+	\begin{itemize}
+		\item De \textit{Description} qualifier geef analoog zoals de klasse-qualifiers tekst terug met informatie over het attribuut.
+		\item De \textit{CIMType} qualifier geeft het type van het attribuut weer, zoals string, boolean, datetime, signed of unsigned int (8, 16, 32 of 64 bits) of referenties naar absolute objectpaden.
+		\item De \textit{Write} qualifier geeft aan, indien deze op \textit{true} staat, dat de het attribuut rechtstreeks wijzigbaar is, zonder hiervoor methodes te moeten aanspreken. 
+		\item De \textit{Keys} qualifier geeft aan dat het attribuut deel uitmaakt van de sleutel van het object en bijgevolg ook vermeld moet worden in het objectpad van een instantie.
+		\item ValueMap geeft in een ééndimensionale tabel het domein weer van het attribuut: een expliciete opsomming van de toegelaten waarden.
+			  Values geeft een meer informatieve interpretatie van de toegelaten waarden. Indien ook de ValueMap qualifier aanwezig is, kunnen ValueMap en Values best beschouwd worden als respectievelijk de keys en de values van een Perl hash. Indien een ValueMap ontbreekt, dan impliceert Values een ValueMap met oplopende gehele getallen, startend vanaf 0. Values kan dan geïnterpreteerd worden als een Perl array.
+	\end{itemize}
 	\part{Examenvragen}
 	\chapter{Modelvragen theorie: reeks A}
 	Het examen wordt \accentuate{volledig schriftelijk} beantwoord. Indien de student dit wenst, wordt het antwoord onmiddellijk na indienen geëvalueerd, en eventueel gevolgd door enkele vragen ter verduidelijking of aanvulling.
