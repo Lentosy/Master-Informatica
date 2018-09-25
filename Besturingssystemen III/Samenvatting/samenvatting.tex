@@ -13,7 +13,7 @@
 	\chapter{WMI concepten}
 	\section{Herhaling SNMP en inleiding WMI}
 	SNMP had de mogelijkheid om informatie bij te houden van devices die typisch op een netwerk aangesloten zijn zoals printers, routers, workstations en servers. Er was echter nood aan een systeem dat ook informatie van het hele operating systeem kon bevragen.
-	Dit systeem noemt \textit{Wbem}, een uniform systeem voor het bevragen van besturingssystemen zoals windows, HP en solaris. Een Windows specifieke versie hiervan is het \textit{Windows Management Instrumentation} (WMI).
+	Dit systeem noemt \textit{Wbem}, een uniform systeem voor het bevragen van besturingssystemen zoals windows, HP en solaris. Een Windows specifieke versie hiervan is het \textit{Windows Management Instrumentation} (WMI). Uit figuur \ref{fig:basisarchitectuur_WMI} kunnen vijf componenten afgeleid worden:
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=0.5\textwidth]{basisarchitectuur_WMI}
@@ -21,13 +21,18 @@
 		\label{fig:basisarchitectuur_WMI}
 	\end{figure}
 
-	Uit figuur \ref{fig:basisarchitectuur_WMI} kunnen vijf componenten afgeleid worden:
+
 	\begin{itemize}
-		\item \textit{WMI Consumer}
-		\item \textit{CIM Object Manager}
-		\item \textit{CIM Repository}. Dit is een object geörienteerd model waarbij software als hardware componenten als objecten voorgesteld worden. 
-		\item \textit{Provider}
-		\item \textit{Managed System}
+		\item \textit{WMI Consumer} : Dit zijn gebruikersapplicaties die gebruik maken van de CIMOM (= de WMI Service) om diverse informatie op te vragen. Deze kunnen in diverse programmeertalen geprogrammeerd worden (in dit vak wordt Perl gebruikt).
+		\item \textit{CIM Object Manager} : Wordt ook de WMI Service genoemd en heeft drie functionaliteiten: 
+		\begin{enumerate}
+			\item Interactie met de WMI Consumer op een \textbf{uniforme} manier.
+			\item De WMI Service is verantwoordelijk voor alle communicatie met de pr oviders. De WMI Consumer hoeft niets te weten over de verzameling Providers. De WMI Service gebruikt de CIM Repository om de juiste Provider te raadplegen.
+			\item De CIM Repository is enkel toegankelijk voor de WMI Service
+		\end{enumerate}
+		\item \textit{CIM Repository}. Dit is een databank zowel waarbij software als hardware componenten als objecten voorgesteld worden.  Deze object georiënteerde methode zorgt ervoor dat deze componenten via methoden kunnen aangesproken worden. Voor elke klasse wordt ook bijgehouden door welke provider deze klasse gerealiseerd wordt.
+		\item \textit{Provider} : Een provider is verantwoordelijk voor een aantal WMI-klassen
+		\item \textit{Managed System} : Dit zijn hardware componenten die aangesloten zijn aan een werkstation.
 	\end{itemize}
 	\section{CIM Repository}
 	De CIM Repository kan men inspecteren met een WMI-browser. Voorbeelden hiervan zijn \textit{WMI CIM Studio} en \textit{Powershell WMI Browser}. In deze samenvatting wordt gebruik gemaakt van WMI CIM Studio
