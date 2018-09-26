@@ -1,6 +1,7 @@
 \documentclass{report}
 
 \usepackage{ugentstyle}
+\usepackage{amsmath}
 
 
 
@@ -8,6 +9,128 @@
 	\maketitle{Computergrafiek}
 	\tableofcontents
 	
+	\part{Theorie}
+	\chapter{Inleiding}
+	De inhoud van het vak computergrafiek behandelt het realistisch voorstellen van 3D objecten op een 2D uitvoerbeeld zoals een scherm of een blad papier (via een printer). Er zijn vier fasen in dit proces:
+	\begin{itemize}
+		\item \textbf{CAGD en NURBS}: Het beschrijven van een willekeurige kromme met zo weinig mogelijk parameters. De studie naar dit soort wiskundige stelsels wordt Computer Aided Geometric Design genoemd.
+		\item \textbf{Rendering}: Het realistisch voorstellen van deze beschrijven van objecten, onafhankelijk van de plaats en kijkrichting van een virtuele waarnemer.
+		\item \textbf{Perspectieve projectie}: Het transformeren en projecteren van de 3D structuur naar 2D opstelling.
+		\item \textbf{Rastering}: Het selecteren van de juiste pixels die het best overeenkomen met deze 2D opstelling. 
+	\end{itemize}
+
+	\chapter{Rastering van rechte lijnen}
+	Rastering is het proces om de juiste pixels te selecteren die het best overeenkomen met een bepaalde voorstelling. Dit proces wordt uitgevoerd door de uitvoercontroller van een grafische kaart. Een aandachtspunt van zo een grafische kaart is dat het moeilijk met floating point getallen kan werken, dus zullen algoritmen die enkel met gehele getallen werken de voorkeur krijgen. Volgende secties bespreken enkele algoritmen om een rechte lijn van 1 pixel dik voor te stellen. Uiteraard is voor elk algoritme vereist dat een begin en eindpunt bekend is.
+	\section{Midpoint Subdivision}
+	Dit is een recursieve methode die het midden van het fictieve lijnstuk neemt en de pixel selecteert die er het dichtste bij ligt. Daarna wordt deze procedure opnieuw uitgevoerd voor de twee helften van dit lijnstuk.
+	
+	\subsubsection{Voordelen}
+	\begin{itemize}
+		\item Eenvoudig te implementeren
+	\end{itemize}
+	\subsubsection{Nadelen}
+	\begin{itemize}
+		\item Naarmate de hoek van de rechte 45 graden wordt, zal de selectie onregelmatig en dunner worden aangezien er voor dezelfde x-waarde meerdere y-waarden, en voor dezelfde y-waarde meerdere x-waarden mogelijk zijn.
+		\item Dit algoritme werkt volledig met reële getallen.
+	\end{itemize}
+
+	\section{Single-step DDA}
+	DDA staat voor Digital Differential Analyzer. Dit soort algoritmen poogt het aantal reële getallen tot een minimum te beperken.
+	\subsection{Assymetrische DDA}
+	Dit algoritme loopt het lijnstuk af met een stapgrootte van 1 pixel. Na elke step wordt de pixel die het dichtst bij het lijnstuk ligt, geselecteerd.
+	\subsubsection{Voordelen}
+	\begin{itemize}
+		\item Vereist minder stappen dan de symmetrische variant.
+		\item Het produceert een regelmatig patroon.
+	\end{itemize}
+	\subsubsection{Nadelen}
+	\begin{itemize}
+		\item Lijnen worden te dun getekend indien de hoek van de rechte 45 graden nadert.
+		\item Dit algoritme gebruikt nog altijd floating point bewerkingen.
+	\end{itemize}
+
+	\subsection{Symmetrische DDA}
+	Dit algoritme loopt ook het lijnstuk af zoals assymetrische DDA, maar de stapgrootte is veel kleiner. Het produceert exact hetzelfde resultaat als Midpoint Subdivision.
+	\subsubsection{Voordelen}
+	\begin{itemize}
+		\item Wanneer de hoek 45 graden nadert, zal het ten opzichte van de assymetrische variant, een vollere lijn, maar met een minder regelmatig patroon selecteren.
+	\end{itemize}
+	\subsubsection{Nadelen}
+	\begin{itemize}
+		\item Sommige pixels worden meerdere keren geselecteerd aangezien de stapgrootte kleiner is als een pixel.
+		\item Dit algoritme gebruikt nog altijd floating point bewerkingen.
+	\end{itemize}
+
+	\subsection{Kwadrant DDA}
+	Dit algoritme verhoogt ook de incrementen met 1 pixel, maar enkel in de x \textbf{of} y richting, nooit in beide richtingen tegelijk. Indien de vorige pixel boven de ideale lijn zit, zal x met 1 verhoogd worden. Als de vorige pixel onder de ideale lijn zit, zal y met 1 verhoogd worden. Het algoritme maakt gebruik van een discriminant $\Delta$, die best ingesteld wordt op $\{(x_2 - x_1) - (y_2 - y_1)\}/2$. Op basis van $\Delta$ wordt er beslist of er naar rechts of boven geselecteerd moet worden. Indien $\Delta$ positief is, bevindt de pixel benadering zich te veel in de y-richting en wordt de nieuwe pixel in de x-richting getekend, en kan $\Delta$ verminderd worden met $(y_2 - y_1)$. Analoog, als $\Delta$ negatief is wordt de lijn verder getekend in de y-richting, en $\Delta$ verhoogd met $(x_2 - x_1)$.
+	\subsubsection{Voordelen}
+	\begin{itemize}
+		\item Dit algoritme vermijdt floating point getallen door de afstand van een pixel tot het lijnstuk te vermenigvuldigen met een factor. \todo{welke factor}
+	\end{itemize}
+
+	\subsubsection{Nadelen}
+	\begin{itemize}
+		\item Naarmate de hoek 45 graden nadert wordt de lijn \textbf{te dik} getekend aangezien de helft van de beslissingen naar boven selecteert, en de andere helft naar rechts.
+		\item Een foute initialisatie van $\Delta$ kan ervoor zorgen dat pixels onterecht opschuiven.
+	\end{itemize}
+
+	\subsection{Octant DDA}
+	Dit algoritme verfijnt kwadrant DDA door overlappingen te vermijden. Dit wordt gerealiseerd door ook diagonele selecties toe te staan. Dit algoritme produceert nagenoeg hetzelfde resultaat als assymetrische DDA.
+	\subsubsection{Voordelen}
+	\begin{itemize}
+		\item Maakt geen gebruik van reële getallen.
+	\end{itemize}
+		\subsubsection{Nadelen}
+	\begin{itemize}
+		\item Naarmate de hoek 45 graden nadert wordt de lijn \textbf{te dun} getekend.
+	\end{itemize}
+	
+	\section{Multistep DDA}
+	\texttt{Moet niet gekend zijn}	
+	\newline	
+	
+	\setlength{\parindent}{0cm} Dit algoritme probeert de snelheid van vorige algoritmen te optimaliseren, en heeft geen bijdrage tot het bijsturen van de output, ten opzichte van kwadrant DDA. Bij elke iteratie worden nu meerdere pixels geselecteerd in plaats van slechts één pixel. Een voorbeeld van zo een algoritme is double-step DDA. Dit algoritme bepaalt in één stap twee opeenvolgende pixels waardoor er keuze bestaat tussen vier patronen. In werkelijkheid levert dit algoritme een verhoogde prestatie van ongeveer 10\% en zorgt er dan ook voor dat single-step methoden zelden gebruikt worden.
+	
+	
+	\chapter{Rastering van cirkels}
+	Het algoritme dat gebruikt wordt om cirkels te rasteren wordt doorgaans het \textit{algoritme van Bresenham} genoemd. Dit algoritme is in staat om een volledige cirkel met straal R te rasteren op basis van enkel de cirkelsector met beginpunt (0, R) en eindpunt ($\frac{R}{\sqrt{2}}$, $\frac{R}{\sqrt{2}}$), wat overeenkomt met $1/8$ van de totale oppervlakte van de cirkel. De andere sectoren kunnen inmiddels via symmetrie bekomen worden.
+	
+	
+	In elke iteratie wordt de x-waarde van de pixel verhoogd met 1. De verandering van de y-waarde is verbonden aan een voorwaarde die afhangt van een discriminant $\Delta_i$. Deze wordt gedefinieerd als het verschil van de kwadraten van de afstanden van $y_{i-1} (S_i)$ en $y_{i-1} - 1 (T_i)$ tot de cirkel.
+	
+
+	\begin{equation*}
+	\begin{split}
+			\Delta_i & = \bigg[(x_{i - 1} + 1)^2 + y_{i - 1}^2 - R^2\bigg] - \bigg[R^2 -(x_{i - 1} + 1)^2 - (y_{i - 1} - 1)^2\bigg] \\
+					   & = 2(x_{i - 1} + 1)^2 + y_{i - 1}^2 + (y_{i - 1} - 1)^2 - 2R^2
+	\end{split}
+	\end{equation*}
+	Indien $\Delta_i > 0$, dan wordt $T_i$ geselecteerd, anders $S_i$. De discriminant bij een volgende iteratie $\Delta_{i + 4}$ kan uit $\Delta_i$ berekend worden:
+	
+	\begin{equation*}
+	\begin{split}
+		\Delta_{i + 1} & = 2(x_{i - 1} + 2)^2 + y_{i}^2 + (y_{i - 1} - 1)^2 - 2R^2 \\
+					   & = \Delta_i + 4x_{i - 1} + 6 + y_i^2 - y_{i - 2}^2 + (y_i - 1)^2 - (y_{i-1} - 1)^2 \\
+					   & = \begin{split}
+					   \Delta_i + 4x_{i - 1} + 6              & \hbox{ als } \Delta_i \leq 0 \\
+					   \Delta_i + 4(x_{i - 1} - y_{y - 1}) + 10 & \hbox{ als } \Delta_i > 0
+					   \end{split}
+	\end{split}
+	\end{equation*}
+	De initieële waarde van $\Delta_1$ kan bekomen worden door $x_{i - 1} = 0$ en $y_{i - 1}$ = R te substitueren:
+	$\Delta_1 = 3 - 2R$. Dit algoritme maakt enkel gehele getallen.
+	
+	
+	\chapter{Opvullen van veelhoeken}
+	Het opvullen van een veelhoek gebeurd via een scanlijn, die zowel horizontaal als verticaal kan zijn. Voor elke x of y-waarde wordt er een lijn getrokken door de veelhoek en gaat men op zoek naar de intersecties, wat altijd een even aantal zal zijn. Alle intersecties met een even index worden opgevuld tot de volgende intersectie met een oneven index. Zonder aanpassingen zullen echter ook pixels geselecteerd worden die buiten de veelhoek liggen. Het algoritme moet aangepast worden zodat enkel inwendige pixels als intersectiepunten kunnen gekozen worden, ook al ligt een uitwendig pixel dichter bij de randlijn.
+	
+	\chapter{Voorstellen van dikke lijnen}
+	Het verdikken van lijnstukken kan de gebreken van sommige DDA algoritmes maskeren. Er bestaan drie methodes om lijnen te verdikken:
+	\begin{enumerate}
+		\item \textbf{Replicatie}: Tijdens de selectie van de pixel worden ook nog pixels boven en onder deze pixel geselecteerd, afhankelijk van de op voorhand gespecificeerde dikte.
+		\item \textbf{Centreren}: Tijdens de selectie van de pixel wordt er rond deze pixel een vast aantal pixels geselecteerd (bv in de vorm van een vierkant). Dit heeft als nadeel dat pixels opnieuw kunnen geselecteerd worden, ook al zijn ze eerder geselecteerd.
+		\item \textbf{Opvulling}: Deze methode past het DDA algoritme tweemaal toe, waarbij het resultaat van deze twee uitvoeringen verschoven zijn. De pixels tussen deze twee objecten kunnen dan geselecteerd worden. Deze methode vraagt nog meer rekenwerk.
+	\end{enumerate}
 	
 	\part{Examenvragen}
 	\chapter{Modelvragen eerste theorievraag}
@@ -22,7 +145,7 @@
 
 	\section{Het algoritme van Bresenham}
 	\begin{enumerate}
-		\item aBespreek het doel van dit algoritme en geef de volledige uitwerking van het selectieproces. \accentuate{(§1.3)}
+		\item Bespreek het doel van dit algoritme en geef de volledige uitwerking van het selectieproces. \accentuate{(§1.3)}
 		
 		\item Hoe kan deze methode aangepast worden om \textbf{dikke} cirkels voor te stellen ? \accentuate{ (§1.5)}
 	\end{enumerate}
