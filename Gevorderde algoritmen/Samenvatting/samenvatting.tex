@@ -1,10 +1,237 @@
 \documentclass{report}
 
 \usepackage{ugentstyle}
+\usepackage{tikz}
+\usetikzlibrary{arrows}
+\usepackage{forest}
 
-
+\tikzset{%
+	/forest,
+	forest node/.style={circle, inner sep=0pt, text centered},
+	arn w/.append style={text=white, font=\sffamily\bfseries, draw=black, fill=black, text width=1.5em},
+	arn r/.append style={text=red, draw=red, text width=1.5em, very thick},
+	arn n/.append style={text=black, draw=black, fill=white, text width=1.5em}
+	arn v/.append style={text=black, draw=black, fill=white, text width=1.5em}
+}
 
 \begin{document}
 	\maketitle{Gevorderde algoritmen}
 	\tableofcontents
+	\part{Theorie}
+	\chapter{Inleiding}
+	Het vak gevorderde algoritmen behandelt vier luiken:
+	\begin{enumerate}
+		\item \textbf{Gegevensstructuren}. Dit onderdeel behandelt meer efficiënte zoekbomen zoals Rood-zwarte bomen, Splay trees, B-trees en meerdimensionale gegevensstructuren zoals Quadtrees en k-d trees. Er wordt ook bekeken hoe zeer grote datastructuren (die niet vollledig in het geheugen passen) behandelt worden.
+		
+		\item \textbf{Grafen}. Een uitbreiding op de grafentheorie. Onderwerpen zoals stroomnetwerken, \todo{aanvullen wanneer stof gezien is}
+		
+		\item \textbf{Strings}. Dit hoofdstuk gaat dieper in op stringfuncties. Een aantal onderwerpen zijn efficiënte zoekmethoden, de theorie achter reguliere expressies en hun grammatica en het samenvatten van teksten.
+		
+		\item \textbf{Complexe problemen}. Dit onderdeel behandelt de NP-problemen. Wat zijn ze? Hoe kunnen we NP-problemen transformeren naar een eenvoudiger probleem? Hoe kan men benaderde oplossingen gebruiken?  
+	\end{enumerate}
+	\chapter{Efficiënte zoekbomen}
+	\section{Herhaling binaire zoekbomen}
+	Een binaire boom is een belangrijke boomstructuur waarin drie operaties belangrijk zijn: \textit{zoeken, toevoegen en verwijderen}. Deze drie operaties worden kort herhaald op volgende binaire boom:
+	
+	\begin{forest}
+		for tree={%
+			font=\sffamily,
+			forest node,
+			edge path={
+				\noexpand\path[color=black, -stealth', \forestoption{edge}]
+				(!u.parent anchor) -- (.child anchor)\forestoption{edge label};
+			},
+			l sep+=.25cm,
+			s sep+=.25cm,
+		}
+		[L, arn n
+			[A, arn n]
+			[T, arn n
+				[P, arn n
+					[O, arn n
+						[M, arn n]
+					]
+				]
+				[Y, arn n]
+			]
+		]
+	\end{forest}
+	\begin{itemize}
+		\item Zoeken naar een knoop komt overeen met binair zoeken. Stel dat we knoop P zoeken dan weten we dat dit groter is dan L dus gaan we naar rechts, en kleiner is dan T dus gaan we naar links.
+		
+		\item Toevoegen van een knoop komt overeen met zoeken naar die knoop, en dan die knoop op die positie toe te voegen. Stel dat we een knoop Q willen toevoegen, dan zal het binair zoeken leiden dat deze knoop in het rechterkind van P moet komen.
+		
+			\begin{forest}
+			for tree={%
+				font=\sffamily,
+				forest node,
+				edge path={
+					\noexpand\path[color=black, -stealth', \forestoption{edge}]
+					(!u.parent anchor) -- (.child anchor)\forestoption{edge label};
+				},
+				l sep+=.25cm,
+				s sep+=.25cm,
+			}
+			[L, arn n
+			[A, arn n]
+			[T, arn n
+			[P, arn n
+			[O, arn n
+			[M, arn n]
+			][Q, arn r]
+			]
+			[Y, arn n]
+			]
+			]
+		\end{forest}
+	
+		\item Verwijderen van een knoop onderscheidt drie gevallen: 
+			\begin{enumerate}
+				\item \textit{De knoop heeft geen kinderen}: dan kan de knoop eenvoudig verwijderd worden. Indien knoop Q verwijderdt wordt krijgen we terug de originele boom.
+				
+				\item \textit{De knoop heeft één kind}: In dit geval moet de ouder die naar de te verwijderen knoop wijst, nu wijzen naar het enige kind van de te verwijderen knoop. Indien we knoop P verwijderen, moet het linkerkind van knoop T nu wijzen naar knoop O.
+				
+				\begin{forest}
+					for tree={%
+						font=\sffamily,
+						forest node,
+						edge path={
+							\noexpand\path[color=black, -stealth', \forestoption{edge}]
+							(!u.parent anchor) -- (.child anchor)\forestoption{edge label};
+						},
+						l sep+=.25cm,
+						s sep+=.25cm,
+					}
+					[L, arn n
+						[A, arn n]
+						[T, arn n
+							[O, arn n
+							[M, arn n]]
+							[Y, arn n]			
+						]
+					]	
+				\end{forest}
+			
+				\item \textit{De knoop heeft twee kinderen}: In dit geval 
+			\end{enumerate}
+	\end{itemize}
+
+	Een binaire boom is niet altijd efficiënt. Indien de sleutels ingelezen worden in volgorde, zal de binaire boom een gelinkte lijst voorstellen, waardoor de operaties $O(n)$ worden i.p.v. $O(\lg n)$.
+	Dit probleem werd opgelost door bomen die zichzelf zo evenwichtig mogelijk trachten te houden. Er zijn drie soorten van deze bomen:
+	\begin{enumerate}
+		\item \textbf{Rood-zwarte bomen}. Dit soort bomen tracht elke operatie steeds efficiënt te maken door ervoor te zorgen dat de structuur van de boom nagenoeg perfect blijft. Dit is de meest robuste methode.
+		\item \textbf{Splay trees}. Deze soort wordt de vorm van de boom meermaals aangepast, zodat de structuur van de boom nooit slecht is. Bij deze bomen is het gemiddelde geval steeds efficiënt (geamortiseerd), maar een individuele operatie kan soms slecht uitvallen.
+		\item \textbf{Randomized search trees} (treap). Deze boomstructuur zorgt ervoor dat de boom zo willekeurig mogelijk blijft, ongeacht de volgorde van toevoegen of verwijderen. Dit zorgt ervoor dat de verwachtingswaarde van elke operatie $O(\lg n)$ is.
+	\end{enumerate}
+	\section{Rood-zwarte bomen}
+	Stel dat we een complete binaire boom hebben waarvan we de rode knoop willen verwijderen: 
+	
+	\begin{forest}
+		for tree={%
+			font=\sffamily,
+			forest node,
+			edge path={
+				\noexpand\path[color=black, -stealth', \forestoption{edge}]
+				(!u.parent anchor) -- (.child anchor)\forestoption{edge label};
+			},
+			l sep+=.25cm,
+			s sep+=.25cm,
+		}
+		[, arn n
+			[, arn n
+				[, arn r
+					[, arn n
+						[, arn n]
+						[, arn n]
+					]
+					[, arn n
+						[, arn n]
+						[, arn n]
+					]
+				]
+				[, arn n
+					[, arn n
+						[, arn n]
+						[, arn n]
+					]
+					[, arn n
+						[, arn n]
+						[, arn n]
+					]
+				]
+			]
+			[, arn n
+				[, arn n
+					[, arn n
+						[, arn n]
+						[, arn n]
+					]
+					[, arn n
+						[, arn n]
+						[, arn n]
+					]
+				]
+				[, arn n
+					[, arn n
+						[, arn n]
+						[, arn n]
+					]
+					[, arn n
+						[, arn n]
+						[, arn n]
+					]
+				]
+			]
+		]
+	\end{forest}
+	\todo{doesnt make sense}
+	
+	
+	Formeel kan een rood-zwarte zoekboom als volg gedefinieerd worden:
+	\begin{itemize}
+		\item Het is een binaire zoekboom.
+		\item De knopen zijn rood of zwart (deze extra informatie kan bijgehouden worden met slechts één bit, aangezien er slechts twee kleuren zijn).
+		\item Een rode knoop heeft \textit{nooit} een rood kind.
+		\item Elke virtuele knoop is zwart.
+		\item De zwarte hoogte $z$ van een knoop $k$ is hetzelfde voor elk pad naar een virtuele knoop startend vanaf $k$, met $k$ niet meegerekend. De zwarte hoogte is het aantal zwarte knopen op dit pad.
+	\end{itemize}
+	Door deze voorwaarden is het gegarandeerd dat de kleinste deelboom minstens half zo diep is als de grootste deelboom. Bekijk volgende geldige rood-zwarte zoekboom:
+	
+	\begin{forest} 
+		[, arn w, circle
+			[, arn w, circle
+				[, arn r, circle
+					[, circle, draw, fill=black]
+					[, circle, draw, fill=black]
+				]
+				[, circle, draw, fill=black]
+			]
+			[, arn r, circle
+				[, arn w, circle
+					[, arn r, circle
+						[, circle, draw, fill=black]
+						[, circle, draw, fill=black]
+					]
+					[, arn r, circle
+						[, circle, draw, fill=black]
+						[, circle, draw, fill=black]
+					]
+				]
+				[, arn w, circle
+					[, arn r, circle
+						[, circle, draw, fill=black]
+						[, circle, draw, fill=black]
+					]
+					[, arn r, circle
+						[, circle, draw, fill=black]
+						[, circle, draw, fill=black]
+					]
+				]
+			]
+		]
+	\end{forest}
+
+	De zwarte hoogte van de wortel is 2, want voor elk pad naar een virtuele knoop is het aantal zwarte knopen 2. Een deelboom met wortel $w$ en zwarte hoogte $z$ zal minstens $2^z - 1$ inwendige knopen bevatten.
+	
+	
 \end{document}
