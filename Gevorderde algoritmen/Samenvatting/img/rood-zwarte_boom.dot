@@ -1,0 +1,59 @@
+digraph{
+node[shape=circle]
+1[label=""][style=filled][fillcolor=black][fontcolor=white]
+
+2[label=""][style=filled][fillcolor=black][fontcolor=white]
+4[label=""][style=filled][fillcolor=red][fontcolor=white]
+vr2_1[shape=point]
+vr4_1[shape=point]
+vr4_2[shape=point]
+3[label=""][style=filled][fillcolor=red][fontcolor=white]
+
+
+
+5[label=""][style=filled][fillcolor=black][fontcolor=white]
+6[label=""][style=filled][fillcolor=black][fontcolor=white]
+
+7[label=""][style=filled][fillcolor=red][fontcolor=white]
+8[label=""][style=filled][fillcolor=red][fontcolor=white]
+9[label=""][style=filled][fillcolor=red][fontcolor=white]
+10[label=""][style=filled][fillcolor=red][fontcolor=white]
+
+vr7_1[shape=point]
+vr7_2[shape=point]
+vr8_1[shape=point]
+vr8_2[shape=point]
+vr9_1[shape=point]
+vr9_2[shape=point]
+vr10_1[shape=point]
+vr10_2[shape=point]
+
+
+1 -> 2
+1 -> 3
+
+2 -> 4
+2 -> vr2_1
+4 -> vr4_1
+4 -> vr4_2
+
+3 -> 5
+3 -> 6
+
+5 -> 7
+5 -> 8
+6 -> 9
+6 -> 10
+
+7 -> vr7_1
+7 -> vr7_2
+
+8 -> vr8_1
+8 -> vr8_2
+
+9 -> vr9_1
+9 -> vr9_2
+
+10 -> vr10_1
+10 -> vr10_2
+}
