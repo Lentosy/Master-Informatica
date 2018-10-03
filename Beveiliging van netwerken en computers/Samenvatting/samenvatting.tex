@@ -1,10 +1,316 @@
 \documentclass{report}
 
 \usepackage{ugentstyle}
-
-
+\usepackage{listings}
 
 \begin{document}
 	\maketitle{Beveiliging van netwerken en computers}
 	\tableofcontents
+	
+	\part{Theorie}
+	\chapter{Inleiding}
+	Het woord \textit{security} kan verschillende betekenissen hebben, het is dan ook een zeer breed onderwerp. Concepten van security zijn onder andere: \textit{Authenticatie, autorisatie, encryptie, bitcoins, social engineering, malware, sociale media, ...}. Zelfs bij een goed beveiligd systeem zijn er nog altijd risicofactoren :
+	\begin{itemize}
+		\item de informatie kan nog altijd niet-digitaal gewisseld worden.
+		\item de gebruikers zijn niet goed opgeleid.
+	\end{itemize}
+	Beveiliging is belangrijk aangezien dat informatie 
+	\begin{itemize}
+		\item waarde kan hebben
+		\item gestolen of beschadigd worden
+		\item vervalst kan worden.
+	\end{itemize}
+	\chapter{Basisconcepten}
+	\section{Security Model}
+	Een security model is een diagram waarop verschillende beveilingscomponenten met elkaar interageren.
+	\section{Security Goals}
+	Beveiling heeft een aantal doelen. Deze doelen kunnen zelden allemaal op hetzelfde moment gerealiseerd worden en vaak moet er een deel opgeofferd worden om de overige doelen te behalen.
+	\begin{itemize}
+		\item \textbf{Confidentialiteit.} De informatie mag enkel door de zender en ontvanger van een bericht gelezen worden. Dit wordt gerealiseerd door encryptie toe te passen, waarbij enkel de zender en ontvanger dit kunnen decrypteren aan de hand van een sleutel. Bij de basisvorm van confidentialiteit weet een aanvaller nog steeds dat er een bericht is verstuurd en wie de zender/ontvanger is. Een uitbreiding is verkeersconfidentialiteit dat tracht de zender en ontvanger onbekend te maken.
+		\item \textbf{Authenticatie.} Dit is het proces dat nagaat of een persoon zegt wie hij is. Er zijn drie verschillende methoden.
+		\begin{enumerate}
+			\item \textit{Entiteit authenticatie.} Dit is het bewijzen aan de hand van bepaalde informatie zoals een e-mailadres of een uniek ID nummer.
+			\item \textit{Attribute authenticatie.} Dit is een extra vorm van authenticatie die vaak toegepast wordt nadat entiteit authenticatie voltooid is. Dit soort authenticatie specialiseert de authenticatie op basis van een rol of functie.
+			\item \textit{Data-origin authenticatie.} Het bewijzen dat de informatie van de juiste bron komt. 
+		\end{enumerate}
+	    Een slecht authenticatiesysteem kan in staat zijn dat personen zich kunnen voordoen als anderen. Het eisen van een digitale handteking die enkel door de echte persoon kan getekend worden is een oplossing.
+		\item \textbf{Autorisatie.} Dit is het proces waarbij extra privileges toegekend worden aan reeds geauthenticeerde entiteiten op basis van een rol of functie.
+		\item \textbf{Data integriteit.} Er moet een garantie zijn dat de verzonden en ontvangen data dezelfde is. Een oplossing is om een sequentienummer bij te houden in combinatie met een digitale handtekening. Dit sequentienummer moet voldoen aan bepaalde veiligheidsmaatregelen. Het sequentienummer dient om meervoudige versies van hetzelfde bericht te omzeilen.
+		
+		\item \textbf{Niet-verlorenbaarheid.} Het niet kunnen ontkennen dat een bepaal bericht verzonden of ontvangen werd. 
+		
+		\item \textbf{Beschikbaarheid.} De informatie moet beschikbaar zijn wanneer deze opgevraagd wordt. Aanvallen zoals een DDoS kan de beschikbaarheid verhinderen.
+	\end{itemize}
+
+	\section{Security Threats}
+	Er zijn passieve aanvallen zoals eavesdropping en verkeeranalyse. Voorbeelden van actieve aanvallen zijn berichtwizigingen, hijacking en een DDoS. Er wordt onderscheid gemaakt tussen drie mogelijke aanvallen:
+	\begin{enumerate}
+		\item \textbf{Brute-force.} Deze manier van werken is niet realistisch.
+		\item \textbf{Cryptoanalyse.} Het analyseren van een systeem om informatie of sleutels te bemachtigen.
+		\item \textbf{Side-channel.} Gebruik maken van fysieke eigenschappen om informatie of sleutels te bemachtigen.
+	\end{enumerate}
+	\section{Security Mechanismen}
+	\subsection{Encryptie}
+	Het encrypteren van informatie is niets meer dan het vertalen van deze informatie met behulp van een algoritme (de sleutel). Informatie dat \textbf{symmetrisch} geëncrypteerd wordt gebruikt dezelfde sleutel voor het encrypteren als decrypteren. Een voorbeeld van zo een algoritme is de Caesar Cipher waarbij $E_n(x)$ de encryptie en $D_n(x)$ de decryptie voorstelt.
+	$$E_n(x) = (x + n)\; mod\; 26 \qquad D_n(x) = (x - n)\; mod\; 26$$
+	Probeer volgend stukje tekst te decrypteren met $n = 2$:
+	\texttt{GCUA VQ DTGCM}. Het is dan ook duidelijk dat deze cipher niet echt veilig is aangezien er maar 26 mogelijkheden zijn. Die mogelijkheden afgaan is vrij realistisch met de hand te doen. Zelfs indien $n$ niet gegeven was bij bovenstaand voorbeeld waren twee iteraties voldoende om de gedecrypteerde tekst te achterhalen. 
+	
+	Een andere vorm is \textbf{assymetrisch} encrypteren. Dit princiepe maakt gebruik van een \textit{private} en een \textit{public} sleutel. De private sleutel van een gebruiker G is enkel gekend door G zelf. G zal, indien hij een bericht verstuurd, deze sleutel gebruiken om dit bericht te encrypteren. Ontvangt hij echter een bericht, zal hij deze sleutel gebruiken om dit bericht te decrypteren. De publieke sleutel voor G is gekend door alle andere gebruikers. Andere gebruikers gebruiken deze publieke sleutel om berichten te encrypteren zodat G deze kan decrypteren met zijn private sleutel.
+
+	\part{Labo}
+	\chapter{Routing + DNS}
+	De bedoeling van dit labo is een netwerkconfiguratie op te stellen en een DNS-server op te zetten die je in latere labo's nog zal gebruiken. Zorg er dus voor dat je de configuratie waar mogelijk persistent maakt, en eventueel de nodige commando's in scripts opneemt zodat je tijdens volgende labo's de opstelling snel kan herstellen.  Vooraleer aan de instellingen van de (fysieke) labotoestellen iets te veranderen maak je een volledige backup van de \textbackslash etc directory (tar -cvjf \textbackslash root \textbackslash backup\_etc.tar.bz2 \textbackslash etc).
+	Editeer geen enkel configuratiebestand zonder er eerst een kopie van te maken!
+	
+	Voor dit labo werken we met groepjes van twee studenten. Iedere groep zal zich ontfermen over één DNS-domein dat vier hosts omvat (twee fysieke toestellen en twee virtuele machines). Ieder fysiek toestel zal dus als host fungeren voor één virtuele machine. Figuur \ref{fig:opstelling} geeft een algemeen overzicht van de opstelling voor één groep.
+	\begin{figure}
+		\includegraphics[width=\textwidth]{opstelling}
+		\caption{Opstelling}
+		\label{fig:opstelling}
+	\end{figure}
+	Voor de uitwerking van dit labo wordt de groep op figuur \ref{fig:groep} gebruikt.
+	\begin{figure}
+		\includegraphics[width=\textwidth]{groep}
+		\caption{Een groep}
+		\label{fig:groep}
+	\end{figure}
+\section{Routing}
+ Voor elke groep bestaat de opstelling uit vier verschillende hosts:
+\begin{itemize}
+	\item \textbf{gateway}: deze verbindt het interne netwerk van jouw groep met het HoGent netwerk via onze gateway 192.168.16.8. Dit toestel is via een crosskabel (lan1) verbonden met de tweede fysieke machine (client1).
+	\item \textbf{client1}: deze is via een crosskabel (lan1) verbonden met de gateway. Merk op dat dit toestel niet rechtstreeks verbonden is met het HoGent netwerk!
+	\item \textbf{client2}: dit is een virtuele machine die draait op de gateway. Deze virtuele machine is via een virtuele bridge verbonden met het interne netwerk (lan1) van de gateway.
+	\item \textbf{client3}: dit is een virtuele machine die draait op client1. Deze virtuele machine is via een virtuele bridge verbonden met het interne netwerk (lan1) van client1.
+	
+\end{itemize}
+\subsection{Configuratie IP-adressen}
+Voor de netwerkconfiguratie maak je overal gebruik van statische IP-adressen (ook voor lan0 op de gateway). Om te testen kan je eerst gebruikmaken van het \textit{ip} commando, maar uiteindelijk is het eenvoudigst om een configuratiebestand te voorzien per interface. De configuratiebestanden vind je bij Fedora terug in de folder \texttt{/etc/sysconfig/network-scripts/}. 
+\begin{itemize}
+	\item \textbf{Gateway}: \begin{itemize}
+								\item \texttt{ifcfg-lan0}:
+									  		\begin{lstlisting}
+DEVICE=lan0
+BOOTPROTO=none
+ONBOOT=yes
+NETMASK=255.255.255.0
+IPADDR=192.168.16.168
+GATEWAY=192.168.16.8
+											\end{lstlisting}
+								\item \texttt{ifcfg-lan1}:
+\begin{lstlisting}
+DEVICE=lan0
+BOOTPROTO=none
+ONBOOT=yes
+NETMASK=255.255.255.0
+IPADDR=192.168.70.254
+\end{lstlisting}											
+							\end{itemize}
+	\item \textbf{Client1}: 
+	\begin{itemize}
+		\item \texttt{ifcfg-lan1}:
+		\begin{lstlisting}
+DEVICE=lan1
+BOOTPROTO=none
+ONBOOT=yes
+NETMASK=255.255.255.0
+IPADDR=192.168.70.1
+GATEWAY=192.168.70.254
+		\end{lstlisting}										
+	\end{itemize}
+
+	\item \textbf{Client2}: 
+\begin{itemize}
+	\item \texttt{ifcfg-enp0s3}:
+	\begin{lstlisting}
+DEVICE=enp0s3
+BOOTPROTO=none
+ONBOOT=yes
+NETMASK=255.255.255.0
+IPADDR=192.168.70.2
+GATEWAY=192.168.70.254
+	\end{lstlisting}										
+\end{itemize}
+
+	\item \textbf{Client3}: 
+\begin{itemize}
+	\item \texttt{ifcfg-enp0s3}:
+	\begin{lstlisting}
+DEVICE=enp0s3
+BOOTPROTO=none
+ONBOOT=yes
+NETMASK=255.255.255.0
+IPADDR=192.168.70.3
+GATEWAY=192.168.70.1
+	\end{lstlisting}										
+\end{itemize}
+
+\end{itemize}
+
+\subsection{OSPF}
+
+Op de gateway gebruik je OSPF om de route naar jouw subnet te multicasten. Als router-software maak je gebruik van quagga en twee zelfgemaakte configuratiebestanden zebra.conf en ospfd.conf die je in de directory \texttt{/etc/quagga} plaatst. Aangezien iedere gateway rechtstreeks verbonden is met het 192.168.16.0/24 netwerk laten we dit overeenstemmen met area 0. Het is dus niet nodig om bijkomende areas in het leven te roepen!
+Ken aan je interfaces geen IP-adressen toe via quagga maar doe dit dus op de traditionele manier met het commando ip of via ifcfg-files.
+Vergeet niet om routing actief te zetten op de nodige hosts.
+Om te testen of je configuratie werkt, moet je zowel de zebra daemon als de ospfd daemon starten. 
+
+\begin{itemize}
+	\item \textbf{zebra.conf}:
+		\begin{lstlisting}
+hostname ivory
+password pass
+enable password pass
+!
+log stdout
+!
+interface lan0
+!
+interface lan1
+!
+		\end{lstlisting}
+	\item \textbf{ospfd.conf}:
+		\begin{lstlisting}
+hostname ivory
+password pass
+enable password pass
+!
+log stdout
+!
+interface lan0
+!
+interface lan1
+!
+router ospf
+	redistribute connected
+	network 192.168.1.0/24 area 0.0.0.0
+!
+\end{lstlisting}
+
+\end{itemize}
+Voeg \texttt{net.ipv4.ip\_forward = 1} toe aan het bestand \texttt{/etc/sysctl.conf}. 
+Voer nu het commando \texttt{systemctl status/restart/enable zebra/ospfd} uit. \textit{Restart} zal de daemon herstarten en \textit{enable} geeft aan dat de daemon bij de bootprocedure moet opgestart worden. Met \textit{status} kan nagegaan worden of dat de configuratie correct verlopen is.
+\section{DNS}
+Binnen de opstelling configureer je ook twee DNS-servers die verantwoordelijk zijn voor het subdomein van de groep (groep20.iii.hogent.be). \textbf{client1} doet dienst als primaire (master) DNS-server, de \textbf{gateway} als secundaire (slave) DNS-server. Binnen je domein voorzie je zowel een forward als een reverse DNS lookup zone. Alle aanvragen die niet voor jouw domein bedoeld zijn stuur je via een \textbf{forwarder} door naar 192.168.16.8. 
+\subsection{Configuratie named}
+ Wij hebben reeds voor jou een DNS-root-server geconfigureerd. Bijgevolg kunnen alle DNS-aanvragen die geen betrekking hebben op jouw domein doorgestuurd worden naar 192.168.16.8. Dit is ook de default-gateway van de router en moet als dusdanig worden ingesteld. Jouw DNS-server voorziet in de naamgeving voor de vier hosts in het domein. Om voldoende redundantie te hebben, configureer je op de gateway een secundaire nameserver.
+
+Voor DNS maken we gebruik van de BIND/named service die reeds op de fysieke toestellen geïnstalleerd is. De configuratie moet je zelf nog aanpassen of aanmaken. Maak hiervoor gebruik van volgende directories en bestanden:
+
+\begin{itemize}
+	\item \texttt{/etc/named.conf}: algemene configuratie BIND/named.
+	\item \texttt{/var/named/}: zonebestanden voor jouw domein
+\end{itemize}
+
+
+Om te testen of het configuratiebestand en de zonebestanden correct zijn, kan je respectievelijk gebruikmaken van de \texttt{named-checkconf} en \texttt{named-checkzone} commando's. Eenmaal de configuratie correct is, kan je de named service (her)starten via het systemctl commando.
+Voor de virtuele machines gebruik je als hostname de naam van je toestel, gevolgd door 'VM'. De virtuele machine op computer Kronecker zal bv. de naam KroneckerVM hebben.
+Voorzie zowel een forward als een reverse DNS lookup zone die de vier hosts bevat en test grondig uit! Aangezien veel services die we tijdens de labo's gebruiken steunen op reverse DNS, is het belangrijk dat deze correct geconfigureerd is. 
+\begin{itemize}
+	\item \textbf{/etc/named.conf}: 
+	\begin{itemize}
+		\item client1:
+			\begin{lstlisting}
+options {
+	directory	"/var/named";
+	dump-file	"/var/named/data/cache_dump.db";
+	statistics-file	"/var/named/data/named_stats.txt";
+	memstatistics-file "var/named/data/named_mem_stats.txt";
+	allow-query	{ any; };
+	recursion yes,
+	empty-zones-enable no;
+	forwarders { 192.168.16.8; };
+};
+
+logging {
+	channel default_debug {
+		syslog daemon;
+		severity dynamic;
+	}
+};
+
+zone "groep20.iii.hogent.be" IN {
+	type master;
+	file "groep20.iii.hogent.be";
+	allow-transfer { 192.168.70.254; };
+};
+
+zone "70.168.192.in-addr.arpa" {
+	type master;
+	file "70.168.192.in-addr.arpa";
+	allow-transfer { 192.168.70.254; };	
+};
+
+			\end{lstlisting}
+		\item gateway: 
+		\begin{lstlisting}
+options {
+	directory	"/var/named";
+	dump-file	"/var/named/data/cache_dump.db";
+	statistics-file	"/var/named/data/named_stats.txt";
+	memstatistics-file "var/named/data/named_mem_stats.txt";
+	allow-query	{ any; };
+	recursion yes,
+	empty-zones-enable no;
+	forwarders { 192.168.16.8; };
+};
+
+logging {
+	channel default_debug {
+		syslog daemon;
+		severity dynamic;
+	}
+};
+
+zone "groep20.iii.hogent.be" IN {
+	type slave;
+	file "groep20.iii.hogent.be";
+	masters { 192.168.70.254; };
+};
+
+zone "70.168.192.in-addr.arpa" {
+	type slave;
+	file "70.168.192.in-addr.arpa";
+	masters { 192.168.70.254; };
+};
+		\end{lstlisting}
+	\end{itemize}
+	\item \textbf{/var/named/groep20.iii.hogent.be}
+	\begin{lstlisting}
+$TTL 60
+@ IN SOA groep20.iii.hogent.be. bert.desaffel.ugent.be (1 60 1H 60 3H)
+  IN NS	 hilbert
+hilbert 	IN	A	192.168.70.1
+hilbertVM 	IN	A	192.168.70.3
+ivory 		IN	A	192.168.70.254
+ivoryVM	 	IN	A	192.168.70.4
+	\end{lstlisting}
+	\item \textbf{/var/named/70.168.192.in-addr.arpa}
+	\begin{lstlisting}
+$TTL 60
+@   IN SOA groep20.iii.hogent.be. bert.desaffel.ugent.be (1 60 1H 60 3H)
+    IN NS hilbert.groep20.iii.hogent.be.	
+1   IN PTR hilbert.groep20.iii.hogent.be.
+2   IN PTR ivoryVM.groep20.iii.hogent.be.
+3   IN PTR hilbertVM.groep20.iii.hogent.be.
+254 IN PTR ivory.groep20.iii.hogent.be.
+	\end{lstlisting}	
+\end{itemize}
+
+\subsection{Clientconfiguratie}
+Alle hosts moeten gebruikmaken van de eigen DNS-servers, hiervoor pas je \texttt{/etc/resolv.conf} aan. Voeg aan dit bestand ook een optie toe om de verschillende DNS-aanvragen over beide nameservers te verdelen.
+Zorg er voor dat DHCP uitgeschakeld is (BOOTPROTO=none in de ifcfg-files) voor elke netwerkinterface van de host! Indien dit niet het geval is, zal de dhcp-client bij elke herstart de inhoud van het /etc/resolv.conf bestand overschrijven.
+
+Bovendien stel je ook op elk van de 4 clients de juiste hostname in, maak hierbij gebruik van de Fully Qualified Domain Name (FQDN). Om de hostname in te stellen kan je gebruikmaken van onderstaande commando's. 
+\begin{lstlisting}
+hostnamectl set-hostname --static <name>.groep20.iii.hogent.be
+hostnamectl set-hostname --transient <name>.groep20.iii.hogent.be
+hostnamectl set-hostname --pretty <name>.groep20.iii.hogent.be
+\end{lstlisting}
+\section{Uittesten}
+ Vooraleer de opstelling af te breken test je deze grondig uit! Eventueel kan je ook alle machines eens herstarten, om na te gaan of de configuratie volledig persistent is.
+	
+	Uiteindelijk moet je vanaf elke host alle toestellen binnen het eigen netwerk kunnen bereiken. Dit kan je eenvoudig testen via het ping commando. Bovendien moet je vanaf elke host ook onze gateway (192.168.16.8) kunnen bereiken, alsook alle toestellen van de andere groepen binnen het lokaal. Een ping pakket sturen naar buiten (bv. ping google.be) heeft weinig zin, aangezien de firewall van de HoGent alle ICMP-pakketten blokkeert.
+	
+	Om je DNS-server te testen kan je gebruikmaken van het dig commando. Test je DNS-servers kritisch uit, en probeer ook of je het domein van je buren kan bereiken. 
+
 \end{document}

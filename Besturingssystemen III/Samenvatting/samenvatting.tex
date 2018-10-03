@@ -2,7 +2,7 @@
 
 \usepackage{ugentstyle}
 
-
+\usepackage{listings}
 
 \begin{document}
 	\maketitle{Besturingssystemen III}
@@ -49,7 +49,7 @@
 	Van elke klasse kan zijn instanties opgevraagd worden door op het icoontje rechts van het save-icoontje te klikken. Er wordt een twee dimensionale tabel weergegeven met per instantie een rij en per attribuut een kolom.
 	Voor elke instantie moet het systeemattribuut \_\_RELPATH aangevuld worden met de sleutel van het object. Dit is een string dat bestaat uit meerdere key-value paren dat toegevoegd wordt aan de default waarde van \_\_RELPATH.
 	Bij Singletons echter zijn unieke identificaties niet nodig en wordt \_\_RELPATH aangevuld met een \@ symbool. Een voorbeeld van een abstracte klasse en een singleton is respectievelijk \texttt{CIM\_MonitorResolution} en \texttt{Win\_LocalTime}. 
-	\subsection{Qualifiers}
+	\section{Qualifiers}
 	Een qualifier is een key-value koppel waarbij extra eigenschappen kunnen toegevoegd worden. Er bestaan vier soorten qualifiers:
 	\begin{enumerate}
 		\item klasse-qualifiers. Geeft extra informatie over de klasse. 
@@ -74,6 +74,53 @@
 		\item ValueMap geeft in een ééndimensionale tabel het domein weer van het attribuut: een expliciete opsomming van de toegelaten waarden.
 			  Values geeft een meer informatieve interpretatie van de toegelaten waarden. Indien ook de ValueMap qualifier aanwezig is, kunnen ValueMap en Values best beschouwd worden als respectievelijk de keys en de values van een Perl hash. Indien een ValueMap ontbreekt, dan impliceert Values een ValueMap met oplopende gehele getallen, startend vanaf 0. Values kan dan geïnterpreteerd worden als een Perl array.
 	\end{itemize}
+	\subsubsection{Methode-qualifiers}
+	\begin{itemize}
+		\item De \textbf{Description} qualifier geeft uitleg over de methode.
+		\item De \textbf{CIMType} qualifier specifieert het return type.
+		\item De \textbf{ValueMap} en \textbf{Values} worden vaak gebruikt bij een integer returnwaarde om deze waarde te vertalen naar iets zinvols.
+		\item De \textbf{Privileges} qualifier specifieert een lijst van privileges die nodig zijn om de methode op te roepen. Indien deze qualifier niet aanwezig is kan eender wie de methode uit voeren.
+	\end{itemize}
+	De bijzonderste methode is de \textit{Create} methode. Dit is een statische methode die onafhankelijk is van een specifieke instantie. 
+	
+	Een voorbeeld van een klasse met enkel statische methoden is \textbf{StdRegProv}. Deze klasse bevat methoden die het register kan aanpassen. 
+	
+	\subsubsection{Methodeparameter-qualifiers}
+		\begin{itemize}
+			\item De Description, CIMType, Values en ValueMap qualifiers hebben een analoge functie als de corresponderende attribuut- en methodequalifiers, nu toegepast op een individuele parameter van een methode.
+			\item \textbf{In/Out} geeft aan dat deze parameter een invoer- (resp. uitvoer-) parameter is. Een parameter kan ook invoer/uitvoer parameter zijn.
+			\item De \textbf{Optional} qualifier, indien ingevuld op true, geeft aan dat deze parameter optioneel is. Voor elke optionele qualifier is er wel een default waarde.
+			\item \textbf{ID} geeft de volgorde aan (startend met de waarde 0) waarin de parameters als argumenten bij de methodeaanroep moeten opgegeven worden.
+		\end{itemize}
+	
+	\section{Associatorklassen}
+	Stel dat je informatie wenst over de ethernet adapter. De klasse \textbf{Win32\_NetworkAdapter} klasse kan allesinds de ethernet adapter filteren, maar er ontbreekt informatie zoals het IP adress. Die informatie bevindt zich in een andere klasse, \textbf{Win32\_NetworkAdapterConfiguration}. In beide klasse zijn er echter geen verwijzingen naar de andere klasse. Voor zowel 1:1, 1:n en m:n relaties gebruikt WMI associatorklassen. Dit zijn klassen met meestal 2 attributen die een klasse met een andere klasse associeert. Eén van de instanties van de associatorklasse \textbf{Win32\_NetworkAdapterSetting} zal in het eerste attribuut \textit{element} een verwijzingen hebben naar de ethernet adapter in Win32\_NetworkAdapter en zal in het tweede attribuut \textit{setting} een verwijzing hebben naar de ethernet adapter in Win32\_Network-AdapterConfiguration zodat deze informatie gecombineerd kan worden.
+	
+	\section{WMI Query Language}
+	WMI Consumers kunnen gebruik maken van \textbf{WQL}, een querytaal gebaseerd op SQL waarbij enkel de \texttt{SELECT}, \texttt{FROM} en \texttt{WHERE} clausule beschikbaar zijn. Clausules zoals \texttt{GROUP BY}, \texttt{HAVING} en \texttt{JOIN} zijn \textit{niet} mogelijk in WQL. Het opvragen van alle ethernetadapters wordt bereikt met volgend stukje WQL code:
+	\begin{lstlisting}
+select * 
+from win32_networkadapter
+where netconnectionid = 'Ethernet'
+	\end{lstlisting}
+	Attributen die gebruikt worden zijn niet hoofdlettergevoelig. Query's kunnen uitgetest worden in het programma \textbf{wbemtest.exe}. Bij het opstarten moet er eerst geconnecteerd worden naar een namespace dat standaard ingevuld is op \textit{root\textbackslash cimv2}. Indien op de knop \textit{Query} geklikt wordt zal er een venster verschijnen waarin WQL queries kunnen uitgevoerd worden. Het is ook mogelijk om de instanties op te vragen die gelinkt zijn aan het doelobject via associatorklassen.
+	
+	
+	\begin{lstlisting}
+associators of {win32_directory.name="C://..."}
+where resultclass=win32_directory
+resultrole=partcomponent
+	\end{lstlisting}
+	Verschillende predicaten in de \textit{where} clausule worden niet verbonden met het AND keywoord zoals men verwacht, deze wordt namelijk impliciet ingevuld.
+	\section{Notification queries}
+	Een WMI Consumer kan zich aanmelden aan de WMI Service indien deze een interesse heeft voor een bepaalde gebeurtenis. De provider weet welke consumers geïnteresseerd en zal dan ook de consumers inlichten wanneer de voorwaarden voldaan zijn. Een consumer hoeft hier zelf geen processortijd aan te spenderen. Bij het uittesten van notification queries staat de optie \textit{asynchronous} best aan, anders is de uitvoeringstijd langer. Een voorbeeld van een notification query:
+	\begin{lstlisting}
+select * 
+from win32_processtrace
+where processname = "calc.exe"
+	\end{lstlisting}
+	Deze query zal de consumer inlichten wanneer een windows rekenmachine opgestart of afgesloten wordt.
+	
 	\part{Examenvragen}
 	\chapter{Modelvragen theorie: reeks A}
 	Het examen wordt \accentuate{volledig schriftelijk} beantwoord. Indien de student dit wenst, wordt het antwoord onmiddellijk na indienen geëvalueerd, en eventueel gevolgd door enkele vragen ter verduidelijking of aanvulling.

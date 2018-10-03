@@ -1,0 +1,36 @@
+digraph{
+a -> b
+b -> c
+c -> d
+d -> e
+e -> f
+
+a1[label="a"]
+b1[label="b"]
+c1[label="c"]
+d1[label="d"]
+e1[label="e"]
+f1[label="f"]
+a1 -> b1
+b1 -> c1
+c1 -> f1
+f1 -> e1
+e1 -> d1
+
+
+a2[label="a"]
+b2[label="b"]
+c2[label="c"]
+d2[label="d"]
+e2[label="e"]
+f2[label="f"]
+a2 -> f2
+f2 -> c2
+c2 -> b2
+c2 -> e2
+e2 -> d2
+
+
+
+
+}

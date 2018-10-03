@@ -1,0 +1,19 @@
+digraph {
+"L"
+"A"
+"T"
+"P"
+"O"
+"M"
+"Y"
+"Q"[style=filled][fillcolor=orange][fontcolor=white];
+"L"->"A"
+"L"->"T"
+"T"->"P"
+"P"->"O"
+"P"->"Q"
+"O"->"M"
+"T"->"Y"
+}
+
+
