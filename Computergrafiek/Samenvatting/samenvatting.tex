@@ -10,7 +10,8 @@
 	\tableofcontents
 	
 	\part{Theorie}
-	\chapter{Inleiding}
+	\chapter{Rastering}
+	\section{Inleiding}
 	De inhoud van het vak computergrafiek behandelt het realistisch voorstellen van 3D objecten op een 2D uitvoerbeeld zoals een scherm of een blad papier (via een printer). Er zijn vier fasen in dit proces:
 	\begin{itemize}
 		\item \textbf{CAGD en NURBS}: Het beschrijven van een willekeurige kromme met zo weinig mogelijk parameters. De studie naar dit soort wiskundige stelsels wordt Computer Aided Geometric Design genoemd.
@@ -19,9 +20,9 @@
 		\item \textbf{Rastering}: Het selecteren van de juiste pixels die het best overeenkomen met deze 2D opstelling. 
 	\end{itemize}
 
-	\chapter{Rastering van rechte lijnen}
+	\section{Rastering van rechte lijnen}
 	Rastering is het proces om de juiste pixels te selecteren die het best overeenkomen met een bepaalde voorstelling. Dit proces wordt uitgevoerd door de uitvoercontroller van een grafische kaart. Een aandachtspunt van zo een grafische kaart is dat het moeilijk met floating point getallen kan werken, dus zullen algoritmen die enkel met gehele getallen werken de voorkeur krijgen. Volgende secties bespreken enkele algoritmen om een rechte lijn van 1 pixel dik voor te stellen. Uiteraard is voor elk algoritme vereist dat een begin en eindpunt bekend is.
-	\section{Midpoint Subdivision}
+	\subsection{Midpoint Subdivision}
 	Dit is een recursieve methode die het midden van het fictieve lijnstuk neemt en de pixel selecteert die er het dichtste bij ligt. Daarna wordt deze procedure opnieuw uitgevoerd voor de twee helften van dit lijnstuk.
 	
 	\subsubsection{Voordelen}
@@ -33,10 +34,9 @@
 		\item Naarmate de hoek van de rechte 45 graden wordt, zal de selectie onregelmatig en dunner worden aangezien er voor dezelfde x-waarde meerdere y-waarden, en voor dezelfde y-waarde meerdere x-waarden mogelijk zijn.
 		\item Dit algoritme werkt volledig met reële getallen.
 	\end{itemize}
-
-	\section{Single-step DDA}
-	DDA staat voor Digital Differential Analyzer. Dit soort algoritmen poogt het aantal reële getallen tot een minimum te beperken.
+	
 	\subsection{Assymetrische DDA}
+	DDA staat voor Digital Differential Analyzer. Dit soort algoritmen poogt het aantal reële getallen tot een minimum te beperken.
 	Dit algoritme loopt het lijnstuk af met een stapgrootte van 1 pixel. Na elke step wordt de pixel die het dichtst bij het lijnstuk ligt, geselecteerd.
 	\subsubsection{Voordelen}
 	\begin{itemize}
@@ -85,14 +85,14 @@
 		\item Naarmate de hoek 45 graden nadert wordt de lijn \textbf{te dun} getekend.
 	\end{itemize}
 	
-	\section{Multistep DDA}
+	\subsection{Multistep DDA}
 	\texttt{Moet niet gekend zijn}	
 	\newline	
 	
 	\setlength{\parindent}{0cm} Dit algoritme probeert de snelheid van vorige algoritmen te optimaliseren, en heeft geen bijdrage tot het bijsturen van de output, ten opzichte van kwadrant DDA. Bij elke iteratie worden nu meerdere pixels geselecteerd in plaats van slechts één pixel. Een voorbeeld van zo een algoritme is double-step DDA. Dit algoritme bepaalt in één stap twee opeenvolgende pixels waardoor er keuze bestaat tussen vier patronen. In werkelijkheid levert dit algoritme een verhoogde prestatie van ongeveer 10\% en zorgt er dan ook voor dat single-step methoden zelden gebruikt worden.
 	
 	
-	\chapter{Rastering van cirkels}
+	\section{Rastering van cirkels}
 	Het algoritme dat gebruikt wordt om cirkels te rasteren wordt doorgaans het \textit{algoritme van Bresenham} genoemd. Dit algoritme is in staat om een volledige cirkel met straal R te rasteren op basis van enkel de cirkelsector met beginpunt (0, R) en eindpunt ($\frac{R}{\sqrt{2}}$, $\frac{R}{\sqrt{2}}$), wat overeenkomt met $1/8$ van de totale oppervlakte van de cirkel. De andere sectoren kunnen inmiddels via symmetrie bekomen worden.
 	
 	
@@ -121,17 +121,88 @@
 	$\Delta_1 = 3 - 2R$. Dit algoritme maakt enkel gehele getallen.
 	
 	
-	\chapter{Opvullen van veelhoeken}
+	\section{Opvullen van veelhoeken}
 	Het opvullen van een veelhoek gebeurd via een scanlijn, die zowel horizontaal als verticaal kan zijn. Voor elke x of y-waarde wordt er een lijn getrokken door de veelhoek en gaat men op zoek naar de intersecties, wat altijd een even aantal zal zijn. Alle intersecties met een even index worden opgevuld tot de volgende intersectie met een oneven index. Zonder aanpassingen zullen echter ook pixels geselecteerd worden die buiten de veelhoek liggen. Het algoritme moet aangepast worden zodat enkel inwendige pixels als intersectiepunten kunnen gekozen worden, ook al ligt een uitwendig pixel dichter bij de randlijn.
 	
-	\chapter{Voorstellen van dikke lijnen}
+	\section{Voorstellen van dikke lijnen}
 	Het verdikken van lijnstukken kan de gebreken van sommige DDA algoritmes maskeren. Er bestaan drie methodes om lijnen te verdikken:
 	\begin{enumerate}
 		\item \textbf{Replicatie}: Tijdens de selectie van de pixel worden ook nog pixels boven en onder deze pixel geselecteerd, afhankelijk van de op voorhand gespecificeerde dikte.
 		\item \textbf{Centreren}: Tijdens de selectie van de pixel wordt er rond deze pixel een vast aantal pixels geselecteerd (bv in de vorm van een vierkant). Dit heeft als nadeel dat pixels opnieuw kunnen geselecteerd worden, ook al zijn ze eerder geselecteerd.
 		\item \textbf{Opvulling}: Deze methode past het DDA algoritme tweemaal toe, waarbij het resultaat van deze twee uitvoeringen verschoven zijn. De pixels tussen deze twee objecten kunnen dan geselecteerd worden. Deze methode vraagt nog meer rekenwerk.
 	\end{enumerate}
-	
+
+	\section{Antialiasing}
+	Aliasing is het gevolg van het feit dat pixels slechts een discreet aantal posities kan innemen, waardoor er kartelingen ontstaan. Antialiasing is het proces om deze kartelingen tegen te gaan. 
+	Het antialiasingproces kan volgens twee categorieën gebeuren:
+	\begin{enumerate}
+		\item \textit{Rastering en antialising gebeurd in twee fasen.} De eerste fase maakt gebruik van een DDA algoritme zoals die reeds besproken zijn. De tweede fase zal pas antialiasing toepassen. Hiervoor zijn er twee manieren:
+		\begin{enumerate}
+			\item \textbf{Supersampling.} Deze methode gebruikt de vaststelling dat aliasing vermindert indien de resolutie opgedreven zou kunnen worden. Hierdoor wordt de rastering dan ook uitgevoerd in het geheugen van de computer, wat fijner is dan wat de hardware ter beschikking heeft. Elke pixel van een scherm kan bijvoorbeeld overeenkomen met 4, 9, 16 of 25 pixels. De intensiteit van een pixel hangt af van het aantal geheugenpixels dat geselecteerd worden tijdens het rasteringsproces. Deze methode is efficiënt bij het weergeven van opgevulde veelhoeken, maar bij dunne lijnen kan er niet altijd een verbeterend effect zijn.  
+			\item \textbf{Postfiltering.} Hier wordt het rasteringsproces normaal uitgevoerd. De antialiasingfase maakt gebruik van een rechthoek rond de huidige geselecteerde pixel. De intensiteit van deze pixel hangt af van de geselecteerde pixels die in deze rechthoek liggen. Hoe groter de rechthoek (3x3, 5x5, ...) hoe groter het effect van antialiasing.
+		\end{enumerate}
+		\item \textit{Gelijktijdige rastering en antialising.} De rastering en antialiasing gebeurd in éénzelfde stap. Eén van de algoritmen is het \textit{Pitteway-Watkinson algoritme}. \todo{k}
+	\end{enumerate}
+	\chapter{Transformaties en projecties}
+	De computergrafiek maakt gebruik van twee families transformaties: \textit{affiene transformaties} en \textit{perspectieve projecties}. Affiene transformaties zoals rotaties, spiegelingen en translaties zijn belangrijk omdat ze collineariteit en parallellisme bewaren. Een projectie is een bijzondere vorm van een transformatie die toelaat om driedimensionale beelden voor te stellen op tweedimensionale apparaten.
+	\section{Affiene 3D Transformaties}
+	\subsection{Rotaties}
+	Er bestaan drie elementaire rotaties. Een punt met coördinaten (x, y, z) kan geroteerd worden over de drie assen. De afbeelding van deze rotatie krijgt de coördinaten (x', y', z'). Afhankelijk van de gebruikte rotatieas wordt een andere matrix gebruikt om de originele kolomvector te vermenigvuldigen.
+	\begin{itemize}
+		\item \textbf{Rotatie rond de x-as.}
+			\[
+				\begin{pmatrix}
+					x' \\
+					y' \\
+					z'
+				\end{pmatrix}
+				=
+				\begin{pmatrix}
+					x \\
+					y \\
+					z
+				\end{pmatrix}
+				\cdot
+				\begin{pmatrix}
+					1 & 0 & 0 \\
+					0 & \cos \theta & - \sin \theta \\
+					0 & \sin \theta &   \cos \theta  
+				\end{pmatrix}
+			\]
+		\item \textbf{Rotatie rond de y-as.}
+		\item \textbf{Rotatie rond de z-as.}
+	\end{itemize}
+	Elke willekeurige rotatie waarbij de rotatieas door de oorsprong loopt, kan beschreven worden door 5 opeenvolgende elementaire rotatiematrices. Veronderstel een rotatieas $u$ over een hoek $\beta$. Dit kan bekomen worden door eerst de $u$-as te laten samenvallen met de $x$-as, gebruik makend van twee rotaties $R_{y,\theta}$ en $R_{z, -\phi}$. Daarna wordt een rotatie uitgevoerd rond de $x$-as over een hoek $\beta$, $R_{x,\beta}$. De laatste twee rotaties dienen om de eerste twee rotaties ongedaan te maken.
+	$$R_{u, \beta} = R_{y, \theta} \cdot R_{z, \phi} \cdot R_{x, \beta} \cdot R_{z, -\phi} \cdot R_{y,\theta}$$
+	Om na te gaan of een willekeurige matrix ook een rotatiematrix is moet het matrixproduct van de matrix met zijn getransponeerde \textbf{1} opleveren.
+	\subsection{Schaaloperaties en spiegelingen}
+	Een schaaloperatie kan eenvoudig gedefinieerd worden als :
+
+	$$
+		\begin{pmatrix}
+			x' \\
+			y' \\
+			z'
+		\end{pmatrix}
+		= 
+		\begin{pmatrix}
+			x \\
+			y \\
+			z
+		\end{pmatrix}
+		\cdot
+		\begin{pmatrix}
+			s_x & 0 & 0 \\
+			0 & s_y & 0 \\
+			0 & 0  & s_z
+		\end{pmatrix}
+	$$
+
+	Via deze schaalmatrix kunnen ook spiegelingen gedaan worden. Indien één van de schaalfactoren $s_x$, $s_y$ of $s_z$ -1 is, en de andere twee op +1, is er een spiegeling in een coördinatenvlak. Een spiegeling rond een rechte kan bekomen worden door 2 schaalfactoren op -1 te zetten en de overblijvende op +1. Een spiegeling rond de oorsprong kan bekomen worden door alle schaalfactoren op -1 te zetten.
+	Elke rotatie kan ook beschouwd worden als een samenstelling van twee spiegelingen.
+
+	\subsection{Translaties}
+
 	\part{Examenvragen}
 	\chapter{Modelvragen eerste theorievraag}
 	Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
