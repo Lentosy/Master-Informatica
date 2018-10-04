@@ -148,19 +148,27 @@
 			\item \textit{De broer b van p is rood}. 
 		   	\begin{figure}[h]
 				\centering
-				\includegraphics[width=5cm,height=5cm,keepaspectratio]{rode_broer}
+				\includegraphics[width=5cm,height=5cm,keepaspectratio]{bottom_up_toevoegen/rode_broer}
 				\caption{Rode broer.}
 				\label{fig:rode_broer}
 			\end{figure}
 			In dit geval kan \textit{g} rood gemaakt worden. De knopen \textit{p} en \textit{b} kunnen op hun beurt dan zwart gemaakt worden. Indien \textit{g} een zwarte ouder heeft is de toevoegoperatie gelukt. Is de kleur van de ouder van \textit{g} rood, dan wordt het probleem opgeschoven waarbij \textit{g} nu de rol neemt van \textit{c}.
 			\item \textit{De broer b van p is zwart}. In dit geval wordt er nog een onderscheidt gemaakt tussen de positie van \textit{c}.
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=5cm,height=5cm,keepaspectratio]{bottom_up_toevoegen/zwarte_broer}
+				\caption{Zwarte broer.}
+				\label{fig:zwarte_broer}
+			\end{figure}
 			\begin{enumerate}
+				
 				\item \textit{Knoop c is een linkerkind van p}. Roteer \textit{p} en \textit{g} naar rechts, maak \textit{p} zwart en \textit{g} rood. Het probleem is opgelost.
 				\item \textit{Knoop c is een rechterkind van p} Roteer \textit{p} en \textit{c} naar links, zodat vorige situatie bekomen wordt.
 				
 			\end{enumerate}
 		\end{enumerate}
 		\item \textbf{Verwijderen.}
+		
 	\end{itemize}
 	
 	\subsection{Top-down rood-zwarte bomen}
@@ -185,6 +193,10 @@
 		\label{fig:splay_tree_beter}
 	\end{figure}
 
+	\subsection{Bottom-up splay trees}
+	
+	\subsection{Top-down splay trees}
+
 	\subsection{Performantie van splay trees}
 	Omdat de vorm van de boom voortdurend verandert, wordt in het bewijs gebruik gemaakt van een potentiaalfunctie $\Phi$. Elke vorm van de boom krijgt een getal dat het potentiaal voorstelt. Een goede operatie zal het potentiaal verhogen terwijl een slechte operatie deze zal laten dalen. Stel $a_i$ de geamortiseerde tijd van een operatie, $t_i$ de werkelijke tijd van de operatie, $\Phi_i$ het potentiaal na de operatie en $\Phi_{i - 1}$ het potentiaal voor de operatie. $a_i$ kan beschreven worden als: 
 	$$a_i = t_i + \Phi_i - \Phi_{i - 1}$$ Een reeks van operaties is de som van alle $a_i$:
@@ -194,9 +206,13 @@
 							   & =  \sum_{i = 1}^{m} (t_i + \Phi_m - \Phi_0)
 	\end{split}
 	\end{equation*}
-	Hierbij is $\Phi_0$ de beginpotentiaal. De potentiaalfunctie moet zo gekozen worden zodat het eindpotentiaal niet kleiner is als het beginpotentiaal. Doorgaans wordt de potentiaalfunctie 
+	hierbij is $\Phi_0$ de beginpotentiaal. De potentiaalfunctie moet zo gekozen worden zodat het eindpotentiaal niet kleiner is als het beginpotentiaal. Doorgaans wordt de potentiaalfunctie 
 	$$\Phi = \sum_{i = 1}^m \lg s_i$$
-	genomen. Hier is $s_i$ het aantal knopen in de deelboom waar knoop $i$ wortel van is. $\lg s_i$ wordt dan de rang van knoop $i$ genoemd.
+	genomen. Hier is $s_i$ het aantal knopen in de deelboom waar knoop $i$ wortel van is. $\lg s_i$ wordt dan de rang van knoop $i$ genoemd, of $r_i$. Om de geamortiseerde tijd te bewijzen wordt een knoop \textit{c} beschouwd met als rang $r_c$ in de originele boom, die op een bottom-up manier wordt toegevoegd. De analyse is analoog voor een top-down methode.
+	
+	
+	
+	Indien \textit{c} de wortel is, dan moet er niet afgedaald worden en is de werkelijke tijd O(1), wat niets verandert aan het potentiaal.
 	
 
 	
