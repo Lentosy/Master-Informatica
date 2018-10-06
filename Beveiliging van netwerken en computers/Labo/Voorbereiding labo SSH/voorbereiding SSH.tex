@@ -1,0 +1,131 @@
+\documentclass{report}
+
+% de wijzigingen van ugentstyle voor titelblad ongedaan maken
+\let\oldmaketitle\maketitle
+\usepackage{ugentstyle}
+\renewcommand{\maketitle}{\oldmaketitle}
+\usepackage{listings}
+
+\begin{document}
+	\title{Voorbereiding Labo SSH}
+	\author{Bert De Saffel}
+	\maketitle
+	\tableofcontents
+	
+	\chapter{Inleiding}
+	SSH (Secure Shell) laat toe om te authenticeren op een ander toestel dan waarop je fysiek aanwezig bent. SSH vervangt de taak van vaak voorkomende protocols of programmas zoals \textit{FTP}(File Transfer Protocol), \textit{telnet}, \textit{RSH}(Remote Shell) en \textit{RCP}(Remote Copy).
+	Het gebruik van SSH biedt twee \textbf{voordelen}: Het voorkomt pakket sniffing door gebruik te maken van encryptie en het biedt authenticatie aan om hijacking van een sessie te voorkomen. Tabel \ref{table:binaries} toont de binaries die op de meeste linux systemen aanwezig zijn, met de belangrijkste aangeduid in het vet. De programmas \textbf{ssh2}, \textbf{sshd2}, ... (dus de 2 toevoegen) bestaan ook, maar deze zijn echter van een volgende release. Het is nog niet duidelijk welke versie op het labo zal gebruikt worden, maar we gaan ervan uit dat deze versie 1 is. Deze binaries zijn verkrijgbaar via het \textit{SSH Secure Shell Server} pakket.
+	\begin{table}[h]
+		\begin{tabular}{l | l | l}
+			\textbf{Binary} & \textbf{Vervangt} & \textbf{Description} \\
+			\hline
+			\textbf{ssh} & telnet, rsh & Secure shell client (remote login program) \\
+			\textbf{sshd} & telnetd, rshd & Secure shell daemon \\
+			\textbf{scp} & rcp & Secury copy client \\
+			sftp & ftp & Secure ftp client \\
+			\textbf{ssh-keygen} & - & Authentication key pair generation \\
+			ssh-agent & - & Authentication agent \\
+			ssh-add & - & Toevoegen van identiteiten voor een authentication agent \\
+			ssh-chrootmgr & - & Opzetten van chroot-ready omgevingen voor gebruikers. \\
+			ssh-pubkeymgr & - & Opzetten van public key authenticatie
+		\end{tabular}
+	\caption{Binaries van het SSH Secure Shell Server pakket.} 
+	\label{table:binaries}
+	\end{table}
+	
+	\chapter{Configuratie}
+	Dit hoofdstuk bespreekt de verschillende configuratiemogelijkheden die SSH aanbiedt.
+	\section{Server Configuratie}
+	Het programma \textbf{sshd} wordt uitgevoerd op een server. Deze zoekt zijn configuratie in het bestand \textbf{etc/ssh/sshd\_config}. Elke regel in het bestand begint met een sleutel gevolgd door een spatie en dan de waarde voor die optie. Een lijst van de belangrijkste opties zijn: 
+	\begin{itemize}
+		\item \textbf{PublicKeyAuthentication}: Geeft aan of dat public key authentication gebruikt wordt of niet (yes, no).
+		\item \textbf{HostbasedAuthentication}: Geeft aan of dat Host based authentication gebruikt wordt of niet (yes, no).
+		\item \textbf{Port}: Instellen van de poort waarop geluisterd moet worden.
+		\item \textbf{UseDNS}: Is enkel nuttig indien clients reverse DNS kunnen toepassen.
+		\item \textbf{Protocol}: Geeft aan welke versie van SSH gebruikt moet worden (1 of 2).
+		\item \textbf{AuthorizedKeysFile}: Specificeert het bestand waarin de publieke sleutels staan. Default is dit \textbf{\$HOME/.ssh/authorized\_keys}.
+	\end{itemize}
+	
+	\section{Client Configuratie}
+	\label{sec:client_config}
+	De programmas die gebruikt worden op een clienttoestel zijn \textbf{ssh}, \textbf{sftp} en \textbf{scp}. De client configuratie kan enerzijds op \textbf{userniveau} gebeuren in het bestand \textbf{\$HOME\$/.ssh/config} of op \textbf{systeemniveau} in het bestand \textbf{/etc/ssh/ssh\_config}. Volgende twee lijnen tonen het gebruik van ssh en scp.
+	\begin{lstlisting}
+ssh gebruiker@hilbert # connectie naar hilbert als 'gebruiker'
+scp file gebruiker@hilbert:/home/user # kopie van het bestand 'file' naar
+                                      # user directory van 'gebruiker'	
+	\end{lstlisting}
+	Een lijst van de belangrijkste opties zijn:
+	\begin{itemize}
+		\item \textbf{HostName}: De default hostname instellen
+		\item \textbf{User}: De default user instellen
+		\item \textbf{PubkeyAuthentication} Geeft aan dat public key authentication gebruikt wordt of niet (yes, no).
+		\item \textbf{LocalForward}: Deze optie heeft twee parameters, LPORT en RHOST:RPORT. Deze optie zal LPORT mappen op RHOST:RPORT.
+		\item \textbf{RemoteForward}: Deze optie heeft twee parameters, RPORT en LHOST:LPORT.
+	\end{itemize}
+	
+	\section{Public Key Authentication}
+	Public key authentication is de meest aangewezen methode om informatie te versturen. Deze configuratie moet gebeuren voor elke gebruiker op een toestel.
+	\begin{enumerate}
+		\item De eerste stap is het aanpassen van zowel het \textbf{sshd\_config} bestand op de server als het \textbf{ssh\_config} bestand op de client.
+		\begin{itemize}
+			\item \textbf{sshd\_config.} Hier moet de lijn \textbf{PublicKeyAuthentication  yes} aanwezig zijn. 
+			\item \textbf{ssh\_config.} Hier moet de lijn \textbf{PubkeyAuthentication  yes} aanwezig zijn.
+		\end{itemize}
+		In beide gevallen zijn dit ook de default waarden.
+		\item Bij een ingelogde gebruiker moet er een sleutelpaar gegenereerd worden met \texttt{ssh-keygen $-$t rsa $-$f \$HOME/.ssh/id\_rsa}. bij het uitvoeren van dit commando zal er gevraagd worden om een \textbf{passphrase} te geven. laat deze passphrase leeg indien de testfase nog bezig is.
+	
+		\item De inhoud van het bestand dat gegenereerd wordt (\textbf{id\_rsa.pub}) moet toegevoegd worden in het bestand dat gespecificeert staat bij de optie \textbf{AuthorizedKeysFile} in \textbf{sshd\_config}. 
+		
+		\item Er kan nu ingelogd worden met \texttt{ssh \textit{servernaam}}. Hier wordt er gevraagd naar de \textbf{passphrase}. Om te vermijden dat deze passphrase telkens opnieuw moet ingegeven worden, kan gebruik gemaakt worden van volgende twee lijnen:
+		\begin{lstlisting}
+eval 'ssh-agent'
+ssh-add ~/.ssh/id_isa 
+		\end{lstlisting}
+		Zolang de terminal actief is waarin deze twee lijnen werden uitgevoerd, moet de passphrase niet opnieuw ingegeven worden.
+	\end{enumerate}
+
+	\section{Host-based Authentication}
+	Host-based authentication is nuttig wanneer er scripts moeten uitgevoerd worden op een remote toestel. Deze soort authenticatie vereist configuratie op zowel het servertoestel als het clienttoestel. 
+	\begin{itemize}
+		\item \textbf{Server.}
+			\begin{enumerate}
+				\item Eerst moet het bestand \textbf{sshd\_config} aangepast worden met volgende lijnen:
+				\begin{lstlisting}
+HostbasedAuthentication yes
+IgnoreRhosts            no
+IgnoreUserKnownHosts    no  # optioneel
+				\end{lstlisting}
+				De daemon moet herstart worden om deze nieuwe configuratieregels in te lezen. Gebruik hiervoor \texttt{service sshd restart}.
+				
+				\item De client zijn public key moet gekopieerd worden naar de SSH server in \textbf{ /etc/ssh/ssh\_known\_hosts} op systeemniveau of \textbf{\$HOME/.ssh/known\_hosts} op userniveau. Deze public keys kunnen gevonden worden in \textbf{/etc/ssh/ssh\_host\_rsa\_key.pub} op het clienttoestel.
+				\item De FQDN (Fully Qualified Domain Name) van een client moet in \textbf{\$HOME/.shosts} komen. De permissies van dit bestand moet zo ingesteld zijn dat enkel de user eigenaar is en mag niet schrijfbaar zijn voor groepen/anderen.
+			\end{enumerate}
+		\item \textbf{Client.}
+			\begin{enumerate}
+				\item De inhoud van het bestand \textbf{ssh\_config} moet \textbf{HostbasedAuthentication yes} bevatten.
+				
+				\item Er moet een RSA key pair zijn. Indien deze bestaan zijn ze te vinden in 
+				\begin{lstlisting}
+/etc/ssh/ssh_host_rsa_key
+/etc/ssh/ssh_host_rsa_key.pub
+				\end{lstlisting}
+				Indien deze nog niet bestaan, gebruik dan
+				\begin{lstlisting}
+ssh-keygen -t rsa -f /etc/ssh/ssh_host_rsa_key -N ""
+				\end{lstlisting}
+				om deze te genereren.
+			\end{enumerate}
+	\end{itemize}
+
+	\section{TCP forwarding}
+	SSH can TCP verkeer forwarden via een SSH verbinding om zo applicaties te beveiligen. Om forwarding toe te passen moet er eerst ingelogd worden op een SSH server (zie sectie \ref{sec:client_config})
+	\subsection{Local Forwarding}
+	Local Forwarding geeft aan dat een bepaalde poort op het lokale toestel geforward moet worden naar een bepaalde host en poort op een remote toesteL. Het meest eenvoudige commando ziet er zo uit:
+	\begin{lstlisting}
+ssh -L sourcePort:forwardToHost:onPort connectToHost
+	\end{lstlisting}
+	Dit betekent letterlijk: \textit{Connecteer met ssh naar connectToHost, en forward alle connecties op het lokaale sourcePort naar onPort van het toestel forwardToHost}. De parameters connectToHost en forwardToHost kunnen dezelfde zijn.	
+	
+	\subsection{Remote Forwarding}
+	Dit doet het omgekeerde als Local Forwarding. Een poort van een remote host zal geforward worden naar het client toestel. Hier moet de optie -L vervangen worden door -R. De parameters blijven dezelfde.
+\end{document}
