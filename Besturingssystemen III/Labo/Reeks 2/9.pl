@@ -7,8 +7,8 @@ $excel->{DisplayAlerts} = 0;
 my $bestand_punten1 = $fso->getAbsolutePathName("punten.xls");
 my $bestand_punten2 = $fso->getAbsolutePathName("punten2.xls");
 
-#my $punten_perl_alfabetisch = lees_bestand2();# geeft een array referentie terug met de punten van perl gesorteerd op de naam van de student
-#voeg_toe_in_bestand1($punten_perl_alfabetisch);
+my $punten_perl_alfabetisch = lees_bestand2();# geeft een array referentie terug met de punten van perl gesorteerd op de naam van de student
+voeg_toe_in_bestand1($punten_perl_alfabetisch);
 
 voeg_advalvas_toe();
 
@@ -23,10 +23,11 @@ sub voeg_advalvas_toe {
 	}
 
 	
+	# hash dat per graad de studenten bijhoudt. Aangezien de originele data al gesorteerd is, zal de data ook gesorteerd zijn per graad
 	my %puntenverdeling = ('A' => [], # alle studenten met punten >= 12
-						   'B' => [], # alle studenten met punten >= 10
-						   'C' => [], # alle studenten met punten >=  7
-						   'D' => []  # alle studenten met punten >=  0
+						   'B' => [], # alle studenten met punten < 12 en punten >= 10
+						   'C' => [], # alle studenten met punten < 10 en punten >=  7
+						   'D' => []  # alle studenten met punten < 7 en punten >=  0
 						   );
 	my $sheet_architectuur = $book_punten1->{Worksheets}->Item("architectuur");
 	my $data = $sheet_architectuur->{UsedRange}->{Value};
@@ -55,12 +56,12 @@ sub voeg_advalvas_toe {
 		for(1 .. 5){ # 5 kolommen. Ik schuif op met 1 zodat de kolom A niet ingevuld wordt, ik doe dit zodat je ook links de rand hebt
 			#bepalen hoeveel rijen er voor kolom $_ nodig zijn
 			my $aantal_rijen = int((($nog_in_te_vullen - $vorige_ingevuld) / (5 - ($_ - 1))) + 0.9999);
-			$sheet_advalvas->Cells($basisrij, 4)->{Value} = $blok;
-			$sheet_advalvas->Cells($basisrij, 4)->{Font}->{Bold} = 1;
+			$sheet_advalvas->Cells($basisrij, 4)->{Value} = $blok; # de eerste rij van een blok waarvan de middelste kolom ingevuld is met de blokletter.
+			$sheet_advalvas->Cells($basisrij, 4)->{Font}->{Bold} = 1; # nog vet zetten ook
 
 
 			for(my $i = 1; $i <= $aantal_rijen; $i++){
-				$sheet_advalvas->Cells($basisrij + $i, $_ + 1)->{Value} = @studenten[$i];
+				$sheet_advalvas->Cells($basisrij + $i, $_ + 1)->{Value} = @studenten[$i - 1 + $vorige_ingevuld];
 			}
 
 			$vorige_ingevuld += $aantal_rijen;

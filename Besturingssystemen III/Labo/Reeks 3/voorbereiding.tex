@@ -1,0 +1,68 @@
+\documentclass{report}
+\usepackage[utf8]{inputenc}
+\usepackage{graphics}
+\usepackage[a4paper, total={6in, 8in}]{geometry} % A4 formaat, 6 inches breedte, 8 inches hoogte
+
+\graphicspath{{./img/}}
+
+
+\begin{document}
+	\begin{enumerate}
+		\item n.v.t. (uitleg over CIM Studio).
+		\item 2 Manieren om superklasse af te leiden:
+			\begin{enumerate}
+				\item Via de array in het \_\_DERIVATION attribuut.
+				\item ?
+			\end{enumerate}
+			Attributen die niet worden overgeërfd kan men herkennen via het \includegraphics{attribuuticoon} icoontje. Om snel te tellen hoeveel nieuwe attributen er zijn kan het attribuut \_\_PROPERTY\_COUNT van de bovenliggende superklasse (gevonden in het attribuut \_\_SUPERCLASS, in dit geval CIM\_PCVideoController) afgetrokken worden van het attribuut \_\_PROPERTY\_COUNT in de huidige klasse. Toegepast op de klasse Win32\_VideoController geeft volgende gelijkheid: $59 - 41 = 18$. Er zijn dus 18 nieuwe attributen.
+			
+			Het Sleutelattribuut van Win32\_VideoController is \textbf{DeviceID}. Dit attribuut werd reeds toegevoegd in de klasse CIM\_LogicalDevice.
+			
+			\item ?
+			\item In MSDN library: 
+			\begin{itemize}
+				\item[] Win32 and COM Development
+				\item[$\rightarrow$] Administration and Management
+				\item[$\rightarrow$] Windows Management Instrumentation
+				\item[$\rightarrow$] WMI Reference
+				\item[$\rightarrow$] WMI Classes
+				\item[$\rightarrow$] WMI Registry Classes
+			\end{itemize}
+			De klasse die het register beheert is \textbf{StdRegProv} en bevindt zich in de \textbf{root\textbackslash default} en \textbf{root\textbackslash cimv2} namespace. Er is slechts één enkele instantie van deze klasse en de klasse bevat enkel statische methoden.
+			\item 
+				\begin{enumerate}
+					\item \textbf{Win32\_Volume}: Het sleutelattribuut is \textbf{DeviceID}, ondersteunt \textbf{11} methoden en heeft \textbf{9} objectinstanties. De klassenhiërarchie is: 
+					\begin{itemize}
+						\item[] CIM\_ManagedSystemElement 
+						\item[$\rightarrow$] CIM\_LogicalElement
+						\item[$\rightarrow$] CIM\_LogicalDevice
+						\item[$\rightarrow$] CIM\_StorageExtent
+						\item[$\rightarrow$] CIM\_StorageVolume
+						\item[$\rightarrow$] Win32\_Volume.
+					\end{itemize}
+					
+	
+					
+					\item \textbf{Win32\_NetworkAdapter}: Het sleutelattribuut is \textbf{DeviceID}, ondersteunt \textbf{4} methoden en heeft \textbf{13} objectinstanties. De klassenhiërarchie is:
+					\begin{itemize}
+						\item[] CIM\_ManagedSystemElement 
+						\item[$\rightarrow$] CIM\_LogicalElement
+						\item[$\rightarrow$] CIM\_LogicalDevice
+						\item[$\rightarrow$] CIM\_NetworkAdapter
+						\item[$\rightarrow$] Win32\_NetworkAdapter
+
+					\end{itemize} 
+					
+					\item \textbf{Win32\_NetworkAdapterConfiguration}: Het sleutelattribuut is \textbf{Index}, ondersteunt \textbf{41} methoden en heeft \textbf{13} objectinstanties. De klassenhiërarchie is:
+					\begin{itemize}
+						\item[] CIM\_Setting
+						\item[$\rightarrow$] Win32\_NetworkAdapterConfiguration
+					\end{itemize} 
+				
+					\item Zelfde uitleg als (c).
+					
+					\item ?
+				\end{enumerate}
+
+	\end{enumerate}
+\end{document}
