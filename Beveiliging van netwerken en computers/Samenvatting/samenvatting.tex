@@ -141,7 +141,7 @@ BOOTPROTO=none
 ONBOOT=yes
 NETMASK=255.255.255.0
 IPADDR=192.168.70.3
-GATEWAY=192.168.70.1
+GATEWAY=192.168.70.254
 	\end{lstlisting}										
 \end{itemize}
 
@@ -160,7 +160,6 @@ Om te testen of je configuratie werkt, moet je zowel de zebra daemon als de ospf
 hostname ivory
 password pass
 enable password pass
-!
 log stdout
 !
 interface lan0
@@ -173,7 +172,6 @@ interface lan1
 hostname ivory
 password pass
 enable password pass
-!
 log stdout
 !
 interface lan0
@@ -182,7 +180,7 @@ interface lan1
 !
 router ospf
 	redistribute connected
-	network 192.168.1.0/24 area 0.0.0.0
+	network 192.168.16.0/24 area 0.0.0.0
 !
 \end{lstlisting}
 
@@ -287,11 +285,11 @@ ivoryVM	 	IN	A	192.168.70.4
 	\item \textbf{/var/named/70.168.192.in-addr.arpa}
 	\begin{lstlisting}
 $TTL 60
-@   IN SOA groep20.iii.hogent.be. bert.desaffel.ugent.be (1 60 1H 60 3H)
+@   IN SOA 70.168.192 bert.desaffel.ugent.be (1 60 1H 60 3H)
     IN NS hilbert.groep20.iii.hogent.be.	
 1   IN PTR hilbert.groep20.iii.hogent.be.
-2   IN PTR ivoryVM.groep20.iii.hogent.be.
 3   IN PTR hilbertVM.groep20.iii.hogent.be.
+2   IN PTR ivoryVM.groep20.iii.hogent.be.
 254 IN PTR ivory.groep20.iii.hogent.be.
 	\end{lstlisting}	
 \end{itemize}
@@ -306,6 +304,13 @@ hostnamectl set-hostname --static <name>.groep20.iii.hogent.be
 hostnamectl set-hostname --transient <name>.groep20.iii.hogent.be
 hostnamectl set-hostname --pretty <name>.groep20.iii.hogent.be
 \end{lstlisting}
+Op alle vier de toestellen in \texttt{/etc/resolv.conf}:
+\begin{lstlisting}
+domain groep20.iii.hogent.be
+nameserver 192.168.70.1
+nameserver 192.168.70.254
+options rotate
+\end{lstlisting}
 \section{Uittesten}
  Vooraleer de opstelling af te breken test je deze grondig uit! Eventueel kan je ook alle machines eens herstarten, om na te gaan of de configuratie volledig persistent is.
 	
@@ -313,4 +318,61 @@ hostnamectl set-hostname --pretty <name>.groep20.iii.hogent.be
 	
 	Om je DNS-server te testen kan je gebruikmaken van het dig commando. Test je DNS-servers kritisch uit, en probeer ook of je het domein van je buren kan bereiken. 
 
+\chapter{SSH}
+ Voor dit deel maak je gebruik van de virtuele machines die je in het vorige labo hebt aangemaakt. Maak vooraf een zip van de virtuele harde schijf die je na afloop van het labo terugplaatst. Wijzig in geen geval de configuratiebestanden van de fysieke toestellen.
+
+Het aanpassen van de configuratie en het herstarten van de server doe je als root-gebruiker.
+Het configureren en uitvoeren van de de client-commando's doe je meestal als een gewone gebruiker (tiwi1, ...), soms als root indien nodig. Maak daarom bij het begin van dit labo 3 extra gebruikers aan op je virtuele machine: tiwi1, tiwi2 en tiwi3 (zelfde wachtwoord als root). 
+\begin{lstlisting}
+(in de command shell)
+adduser tiwi1
+passwd tiwi1 
+root
+adduser tiwi2
+passwd tiwi2
+root
+adduser tiwi3
+passwd tiwi3
+root
+\end{lstlisting}
+Om in te loggen met een gebruiker: \texttt{su - tiwi1}
+\section{Host Based Authentication}
+ SSH laat toe om host-based authentication te doen, zodat een specifieke gebruiker op een specifieke host kan inloggen zonder wachtwoord. Om Host-Based Authenticatie te gebruiken moet je zowel de \textbf{/etc/ssh/sshd\_config} (server) als de \textbf{/etc/ssh/ssh\_config} (client) moeten aanpassen, en zal je eveneens de nodige informatie moeten toevoegen aan \textbf{~/.ssh/known\_hosts} en \textbf{~/.shosts}.
+
+Zorg er voor dat je toegang kunt krijgen/geven voor een gebruiker op een andere machine via Host-Based Authentication.
+Test dit uitgebreid uit! Dit effect kan ook verkregen worden door een globale serverinstelling en niet door gebruik te maken van een .shosts-file voor de gebruiker. Configureer dit en test uit voor zowel root als voor een gewone gebruiker. 
+\begin{itemize}
+	\item \textit{Vm van hilbert (client)}
+		\begin{itemize}
+
+			\item Volgende lijn aanpassen in \textbf{ssh\_config}:
+			\begin{lstlisting}
+HostBasedAuthentication yes
+EnableSSHKeysign yes
+			\end{lstlisting}
+			\item Genereer een sleutelpaar met 
+			$$\texttt{ssh-keygen -t rsa -f /etc/ssh/ssh\_host\_rsa\_key -N '' ''}$$
+		\end{itemize}
+	\item \textit{VM van ivory (server)}
+		  \begin{itemize}
+		  	\item Volgende lijnen aanpassen in \textbf{sshd\_config}:
+		  		\begin{lstlisting}
+HostBasedAuthentication yes
+IgnoreRhosts no
+IgnoreUserKnownHosts no
+RHostsRSAAuthentication yes
+		  		\end{lstlisting}
+		  	\item Genereer een \textbf{known\_hosts} bestand door 
+		  		$$\texttt{ssh root@hilbert.groep20.iii.hogent.be}$$
+		  		in te geven. Er zal een waarschuwing komen dat hij een entry zal toevoegen. Het is belangrijk dat de sshclient dit bestand zelf genereerd zodat de rechten onmiddelijk goed zijn. Na het genereren moet de publieke sleutel van de client toegevoegd worden aan dit bestand. Gebruik hiervoor volgend commando:
+		  		$$\texttt{ssh-keyscan -t rsa hilbert.groep20.iii.hogent.be >> .ssh/known\_hosts}$$
+		  		
+		  	\item De Fully Qualified Domain Name (FQDN) van de client moet toegevoegd worden in het \textbf{.shosts} bestand. Dit kan eenvoudig door 
+		  	$$\texttt{echo hilbert.groep20.iii.hogent.be >> ~/.shosts}$$
+		  	uit te voeren. De rechten van dit  bestand worden best aangepast zodat enkel de eigenaar schrijfrechten heeft. 
+		  	$$\texttt{chmod og-w ~/.shosts}$$
+		  \end{itemize}
+
+\end{itemize}
 \end{document}
+
