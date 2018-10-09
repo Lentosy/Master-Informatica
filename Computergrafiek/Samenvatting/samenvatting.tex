@@ -240,7 +240,67 @@
 	Elke rotatie kan ook beschouwd worden als een samenstelling van twee spiegelingen.
 
 	\subsection{Translaties}
-
+	Een translatie kan eenvoudig beschreven worden als:
+	$$
+		\begin{pmatrix}
+			x' \\
+			y' \\
+			z'
+		\end{pmatrix}
+		=
+		\begin{pmatrix}
+			x \\
+			y \\ 
+			z
+		\end{pmatrix}
+		+
+		\begin{pmatrix}
+			 x_0 \\
+			 y_0 \\
+			 z_0
+		\end{pmatrix}
+	$$
+	Het probleem is echter dat deze eenvoudige voorstelling nadelig wordt indien gecombineerd moet worden met andere affiene transformaties. De translatie kan, zoals de rotatie en de schaaloperatie, ook geschreven worden als een matrixvermenigvuldiging.
+	$$
+\begin{pmatrix}
+x' \\
+y' \\
+z'
+1
+\end{pmatrix}
+=
+\begin{pmatrix}
+x \\
+y \\ 
+z
+1
+\end{pmatrix}
+\cdot
+\begin{pmatrix}
+1 & 0 & 0 & x_0 \\
+0 & 1 & 0 & y_0 \\
+0 & 0 & 1 & z_0 \\
+0 & 0 & 0 & 1
+\end{pmatrix}
+$$
+De vorm (x, y, z , 1) is een \textbf{homogene coördinaat} voorstelling van een willekeurig 3D punt. Om de samenstelling van translaties met affiene transformaties te vereenvoudigen, moeten ook de rekenregels voor rotaties en schalloperaties in homogene vorm gebracht worden. 
+$$
+R_{u, \beta} \rightarrow
+\begin{pmatrix}
+r_{11} & r_{12} & r_{13} & 0 \\ 
+r_{21} & r_{22} & r_{23} & 0 \\ 
+r_{31} & r_{32} & r_{33} & 0 \\ 
+0 & 0  & 0 & 1 \\ 
+\end{pmatrix}
+\quad \hbox{en} \quad 
+S_{0, xyz} \rightarrow
+\begin{pmatrix}
+s_x & 0 & 0 & 0 \\
+0 & s_y & 0 & 0 \\
+0 & 0 & s_z & 0 \\
+0 & 0  & 0 & 1 \\ 
+\end{pmatrix}
+$$
 	\part{Examenvragen}
 	\chapter{Modelvragen eerste theorievraag}
 	Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
