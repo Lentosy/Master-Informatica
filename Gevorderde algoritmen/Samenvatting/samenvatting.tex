@@ -215,7 +215,34 @@
 	Indien \textit{c} de wortel is, dan moet er niet afgedaald worden en is de werkelijke tijd O(1), wat niets verandert aan het potentiaal.
 	
 
+	\chapter{Toepassingen van dynamisch programmeren}
+	\section{Optimale binaire zoekbomen}
+	Stel dat de gegevens die in een binaire zoekboom moeten komen reeds in volgorde staan en dat de waarschijnlijk dat een knoop gezocht zal worden ook bekend is. Volgende symbolen kunnen gedefinieerd worden:
+	\begin{itemize}
+		\item De gerangschikte sleutels $s_1, s_2, ..., s_n$.
+		\item De waarschijnlijkheid $p_i$ dat een sleutel $s_i$ gezocht zal worden.
+		\item De n + 1 bladeren $b_1, b_2, ... b_n$.
+		\item De waarschijnlijkheid $q_i$ waarmee alle afwezige sleutels voorgesteld door blad $b_i$ kunnen gezocht worden.
+	\end{itemize}
+	Hieruit volgt logisch:
+	$$\sum_{i = 1}^n p_i + \sum_{i = 0}^{n} q_i = 1$$
+	De zoektijd van een knoop is gelijk aan het aantal knopen op de zoekweg (de diepte plus één). De verwachtingswaarde van de zoektijd kan dan voorgesteld worden als:
 	
+	$$\sum_{i = 1}^n (diepte(s_i) + 1)p_i + \sum_{i = 0}^{n} (diepte(b_i) + 1)q_i = 1$$
 	
+	Een optimale binaire zoekboom moet deze uitdrukking minimaliseren. Een oplossing waarbij de diepte van de volledige boom zo klein mogelijk behouden wordt, is niet optimaal (\textbf{zonder bewijs}). Alle mogelijke bomen onderzoeken is natuurlijk ook slecht, aangezien hun aantal gelijk is aan $C_n$, een Catalan-getal. Een probleem kan opgelost worden met dynamisch programmeren indien de deelstructuur optimaal is, en de deelproblemen onafhankelijk maar overlappend zijn.
+	\begin{itemize}
+		\item \textit{Kan een zoekboom optimaal zijn?} Ja, want alle deelbomen kunnen ook optimaal zijn. Indien een deelboom suboptimaal is, kan deze altijd vervangen worden door een optimale deelboom. Een optimale oplossing bestaat uit de optimale oplossingen voor de deelproblemen.
+		
+		\item \textit{Zijn die deelproblemen onafhankelijk?} Ja, want deelbomen hebben geen gemeenschappelijke knopen.
+		
+		\item \textit{Zijn die deelproblemen overlappend?} 
+	\end{itemize}
+	\section{Langste gemeenschappelijke deelsequentie}
 	
+
+
+
+
+
 \end{document}
