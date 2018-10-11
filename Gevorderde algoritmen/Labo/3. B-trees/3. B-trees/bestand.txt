@@ -1,0 +1,8 @@
+OEFENINGEN: B-trees
+OEFENINGEN bij ALGORITMEN en GEGEVENSSTRUCTUREN
+
+B-trees maken essentieel gebruik van een opslagmedium. Hiervoor gebruik je de Schijfklasse uit het bestand schijf.h. Een schijf kan knopen opslaan, verwijderen en teruggeven. Een schrijfoperatie die een nieuwe knoop wegschrijft geeft een blokindex terug. Deze heb je nodig om achteraf de knoop terug te vinden. Verschillende B-trees met dezelfde blokgrootte kunnen gebruik maken van dezelfde schijf. Vandaar dat je de Schijf moet opgeven bij de constructor van een B-tree, en dat dit een schijf moet zijn die de bijbehorende Bknopen kan bevatten. Let erop dat alle informatie op de schijf moet bewaard worden. Nadat een operatie (toevoegen, ...) is uitgevoerd moeten alle knopen op de schijf staan. Je moet ook veronderstellen dat een knoop groot is: naast de wortel mag je nooit meer dan drie knopen in het `geheugen' (dus: buiten de schijf) hebben. Deze moeten in statisch aangemaakte variabelen binnen de functie zitten, zodat ze verdwijnen als de functie is uitgevoerd.
+
+Een Bknoop daarentegen kent geen Schijf. Alle schrijf- en leesoperaties worden dus verzorgd in de klasse B-tree. Een hoofding voor B-trees staat hier. De code is echter niet getest, en behoeft allicht enige aanvulling.
+
+Opdracht: gebruik een B-tree om alle woorden van de bijbel, King James' version op te slaan, en te tellen hoeveel maal ze voorkomen. Schrijf daarna op het scherm uit welke 20 woorden het meest voorkomen, samen met het aantal keer dat ze erin staan, en dit in dalende volgorde van frequentie.
