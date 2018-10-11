@@ -17,13 +17,13 @@ void tekenBoom(RZWboom<Sleutel>& boom, bool open_bestand) {
 	std::vector<string> bestandsnamen = { bestand_binair, bestand_234 };
 	for (string b : bestandsnamen) {
 		string filename_png = b.substr(0, b.length() - 3) + "png";
-		string command_png = "dot -Tpng " + b + " -o " + filename_png;
-		if (open_bestand) {
-			command_png += " && " + filename_png;
-		}
-		system(command_png.c_str());
+		string command_dot = "dot -Tpng " + b + " -o " + filename_png;
+		system(command_dot.c_str());
 	}
 
+	if (open_bestand) {
+		system((bestandsnamen[0].substr(0, bestandsnamen[0].length() - 3 ) + "png").c_str());
+	}
 	huidigeBoom++;
 }
 
@@ -37,16 +37,19 @@ int main() {
 	const std::vector<int> zwarteSleutels2 = { 10, 3, 2, 6, 12, 18, 11, 13, 16, 20 };
 
 	RZWboom<int> boom(sleutels1, zwarteSleutels1);
+	/*for (int i = 0; i < 3; i++) {
+		boom.voegtoe(sleutels2[i]);
+	}*/
 	try {
 		if (boom.repOK()) {
-		//	boom.voegtoe(7);
+			std::cout << "Representatie OK\n";
+			//boom.voegtoe(-3);
+			boom.voegtoe(6);
 			tekenBoom(boom, true);
 		}
 	} catch (const char * ex) {
 		std::cout << ex;
 	}
 
-	int x;
-	std::cin >> x;
 	return 0;
 }

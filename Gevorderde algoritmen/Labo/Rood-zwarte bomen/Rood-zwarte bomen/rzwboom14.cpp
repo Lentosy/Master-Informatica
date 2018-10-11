@@ -6,7 +6,7 @@ RZWboom<Sleutel>::RZWboom(unique_ptr<RZWknoop<Sleutel>>&& a)
 
 template <class Sleutel>
 RZWboom<Sleutel>::RZWboom(const std::vector<Sleutel>& sleutels,
-						  const std::vector<Sleutel>& zwarteSleutels) {
+	const std::vector<Sleutel>& zwarteSleutels) {
 	RZWboom<Sleutel>* plaats;
 	RZWknoop<Sleutel>* ouder;
 	// toevoegen van de sleutels, ongeacht hun kleur
@@ -32,9 +32,11 @@ void RZWboom<Sleutel>::voegtoe(const Sleutel& sleutel) {
 	RZWboom<Sleutel>* plaats;
 	RZWknoop<Sleutel>* ouder;
 	zoek(sleutel, ouder, plaats);
-	(*plaats) = std::make_unique<RZWknoop<Sleutel>>(sleutel);
-	plaats->get()->ouder = ouder;
-	plaats->herstelboom();
+	if (!*plaats) { // kijken of knoop al niet bestaat
+		(*plaats) = std::make_unique<RZWknoop<Sleutel>>(sleutel);
+		plaats->get()->ouder = ouder;
+		plaats->herstelboom();
+	}
 }
 
 template <class Sleutel>
@@ -44,8 +46,17 @@ void RZWboom<Sleutel>::herstelboom() {
 	// p = ouder
 	// b = broer van p
 	// c = kind van p
+
+
 	RZWknoop<Sleutel>* p = this->get()->ouder;
+	if (!p) { // de huidige knoop is de wortel
+		this->zetKleur(RZWkleur::zwart);
+		return;
+	}
 	RZWknoop<Sleutel>* g = p->ouder;
+	if (!g) { // de huidige knoop is een kind van de wortel, herkleuring is niet nodig.
+		return;
+	}
 
 	// instellen belangrijke switches
 	bool p_is_zwart = p->kleur == RZWkleur::zwart;
@@ -53,11 +64,9 @@ void RZWboom<Sleutel>::herstelboom() {
 	RZWknoop<Sleutel>* b = g->geefKind(!p_is_linkerkind_van_g).get();
 	bool b_is_zwart = g->geefKind(!p_is_linkerkind_van_g)->kleur == RZWkleur::zwart;
 	bool c_ligt_aan_binnenkant;
-	if (p_is_linkerkind_van_g) {
-		c_ligt_aan_binnenkant = this->get()->sleutel > p->sleutel;
-	} else {
-		c_ligt_aan_binnenkant = this->get()->sleutel < p->sleutel;
-	}
+
+	c_ligt_aan_binnenkant = p_is_linkerkind_van_g ?	this->get()->sleutel > p->sleutel
+											      : this->get()->sleutel < p->sleutel;
 
 	if (!p_is_zwart) {  // indien p zwart is kunnen we zonder problem een rode
 						// knoop toevoegen, is dit echter niet het geval moeten we
@@ -67,8 +76,9 @@ void RZWboom<Sleutel>::herstelboom() {
 			p->kleur = RZWkleur::zwart;
 			b->kleur = RZWkleur::zwart;
 			g->geefBoomVanKnoop()->herstelboom();
-		} else {  // b is zwart
-			//hier maakt de positie van p uit
+		}
+		else {  // b is zwart
+		 //hier maakt de positie van p uit
 			if (p_is_linkerkind_van_g) { // p is het linkerkind van g
 				if (c_ligt_aan_binnenkant) { // c ligt aan de binnenkant
 					p->geefBoomVanKnoop()->roteer(true);
@@ -80,7 +90,8 @@ void RZWboom<Sleutel>::herstelboom() {
 					g->kleur = RZWkleur::rood;
 					p->kleur = RZWkleur::zwart;
 				}
-			} else { // p is het rechterkind van g
+			}
+			else { // p is het rechterkind van g
 				if (c_ligt_aan_binnenkant) { // c ligt aan de binnenkant
 					p->geefBoomVanKnoop()->roteer(false);
 					c_ligt_aan_binnenkant = false;
@@ -101,11 +112,13 @@ RZWboom<Sleutel>* RZWknoop<Sleutel>::geefBoomVanKnoop() {
 	if (this->ouder) {
 		if (this == ouder->links.get()) {
 			return &ouder->links;
-		} else {
+		}
+		else {
 			return &ouder->rechts;
 		}
-	} else {
-		return nullptr; // in dit geval is 'this' de wortel van de boom.
+	}
+	else {
+		return nullptr; // foutief
 	}
 }
 
@@ -115,7 +128,8 @@ int RZWboom<Sleutel>::geefZwarteDiepte() const {
 		if ((*this)->links.geefZwarteDiepte() !=
 			(*this)->rechts.geefZwarteDiepte()) {
 			return -1;
-		} else {
+		}
+		else {
 			if ((*this)->kleur == RZWkleur::rood)
 				return std::max((*this)->links.geefZwarteDiepte(),
 				(*this)->rechts.geefZwarteDiepte());
@@ -123,7 +137,8 @@ int RZWboom<Sleutel>::geefZwarteDiepte() const {
 				return 1 + std::max((*this)->links.geefZwarteDiepte(),
 				(*this)->rechts.geefZwarteDiepte());
 		}
-	} else {
+	}
+	else {
 		return 0;
 	}
 }
@@ -209,17 +224,19 @@ void RZWboom<Sleutel>::tekenAls234Boom(const char* bestandsnaam) const {
 }
 template <class Sleutel>
 string RZWboom<Sleutel>::tekenrec234(ostream& uit, int& nullteller,
-									 int& knoop34teller) const {
+	int& knoop34teller) const {
 	ostringstream wortelstring;
 	if (!*this) {
 		wortelstring << "null" << ++nullteller;
 		uit << wortelstring.str() << " [shape=point];\n";
-	} else {
+	}
+	else {
 		wortelstring << '"' << (*this)->sleutel << '"';
 		uit << wortelstring.str() << "[label=\"" << (*this)->sleutel << "\"][style=filled]";
 		if (this->geefKleur() == rood) {
 			uit << "[fillcolor=red][fontcolor=black]";
-		} else {
+		}
+		else {
 			uit << "[fillcolor=black][fontcolor=white]";
 		}
 
@@ -229,11 +246,14 @@ string RZWboom<Sleutel>::tekenrec234(ostream& uit, int& nullteller,
 		if (!(*this)->links && !(*this)->rechts) {
 			uit << wortelstring.str() << " -> " << linkskind << "\n";
 			uit << wortelstring.str() << " -> " << rechtskind << "\n";
-		} else if (!(*this)->rechts) {
+		}
+		else if (!(*this)->rechts) {
 			uit << wortelstring.str() << " -> " << rechtskind << "\n";
-		} else if (!(*this)->links) {
+		}
+		else if (!(*this)->links) {
 			uit << wortelstring.str() << " -> " << linkskind << "\n";
-		} else {
+		}
+		else {
 			if ((*this)->links.geefKleur() == rood ||
 				(*this)->rechts.geefKleur() == rood) {
 				uit << "subgraph cluster_" << ++knoop34teller
@@ -280,14 +300,16 @@ string RZWboom<Sleutel>::tekenrecBinair(ostream& uit, int& nullteller) const {
 	if (!*this) {
 		wortelstring << "null" << ++nullteller;
 		uit << wortelstring.str() << " [shape=point];\n";
-	} else {
+	}
+	else {
 		wortelstring << '"' << (*this)->sleutel << '"';
 		uit << wortelstring.str() << "[label=\"" << (*this)->sleutel
 			<< "\"][style=filled]";
 
 		if (this->geefKleur() == rood) {
 			uit << "[fillcolor=red][fontcolor=black]";
-		} else {
+		}
+		else {
 			uit << "[fillcolor=black][fontcolor=white]";
 		}
 
@@ -346,7 +368,7 @@ int RZWboom<Sleutel>::geefDiepte() const {
 
 template <class Sleutel>
 void RZWboom<Sleutel>::zoek(const Sleutel& sleutel, RZWknoop<Sleutel>*& ouder,
-							RZWboom<Sleutel>*& plaats) {
+	RZWboom<Sleutel>*& plaats) {
 	plaats = this;
 	ouder = 0;
 	while (*plaats && (*plaats)->sleutel != sleutel) {

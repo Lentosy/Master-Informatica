@@ -34,9 +34,8 @@ class RZWboom : public unique_ptr<RZWknoop<Sleutel>> {
 	//....
 public:
 	using unique_ptr<RZWknoop<Sleutel>>::unique_ptr;
-	RZWboom() {};
 	RZWboom(unique_ptr<RZWknoop<Sleutel>>&& a);
-	RZWboom(const std::vector<Sleutel>& sleutels, const std::vector<Sleutel>& zwarteSleutels); ;
+	RZWboom(const std::vector<Sleutel>& sleutels, const std::vector<Sleutel>& zwarteSleutels);
 
 	void inorder(std::function<void(const RZWknoop<Sleutel>&)> bezoek) const;
 	//schrijf als tekst
@@ -53,7 +52,7 @@ public:
 
 	//noot: volgende functie mag alleen opgeroepen worden bij hoofdboom, niet bij deelboom!
 	void voegtoe(const Sleutel& sleutel);
-
+protected:
 	//zoekfunctie zoekt sleutel en geeft de boom in waaronder de sleutel zit (eventueel een lege boom als de sleutel
 	//ontbreekt) en de pointer naar de ouder (als die bestaat, anders nulpointer).
 	//noot: alhoewel de functie niets verandert aan de boom is ze geen const functie,
@@ -85,7 +84,4 @@ public:
 
 	RZWboom<Sleutel>* geefBoomVanKnoop();
 };
-
-
-
 #endif
