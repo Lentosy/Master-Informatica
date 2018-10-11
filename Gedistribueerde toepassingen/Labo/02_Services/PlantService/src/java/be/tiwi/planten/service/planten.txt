@@ -1,0 +1,25 @@
+Vuurpijl;geel;9.50;vuurpijl.jpg
+Daglelie 'Stella de Oro';geel;5.95;daglelie.jpg
+Kokardebloem 'Kobold';geel;10.99;kokardebloem.jpg
+Dubbelbloemige Primula mix;geel;10.50;primula.jpg
+Kleine maagdenpalm;blauw;9.75;maagdenpalm.jpg
+Iris aucheri;blauw;7.95;iris.jpg
+Lavendel 'Munstead' en 'Loddon Pink';blauw;18.95;lavendel.jpg
+Riddersporen;blauw;7.95;ridderspoor.jpg
+Campanula 'Emerald';blauw;9.95;campanula.gif
+Aquilegia vulgaris var stellata 'Black Barlow';blauw;8.50;akelei.jpg
+Lenteroos 'Apricot Beauty';oranje;9.75;lenteroos.jpg
+Zijdeplant;oranje;8.95;zijdeplant.jpg
+Maskerbloem 'Orange Glow';oranje;8.95;maskerbloem.jpg
+Lampionplant;oranje;5.75;lampionplant.jpg
+Iris pallida 'Variegata';paars;11.75;irisPaars.jpg
+Flox 'Laura';paars;4.95;flox.jpg
+Bonte graslelie;paars;9.95;graslelie.jpg
+Rode zonnehoed;paars;7.75;zonnehoed.jpg
+Flox 'Lilac Time';paars;4.95;floxPaars.jpg
+Kievitsbloem;paars;6.75;kievitsbloem.jpg
+Fuchsia Riccartonii;paars;11.75;fuchsia.jpg
+Elfenbloem;rood;10.95;elfenbloem.jpg
+Papaver Turkenlouis;rood;8.95;papaver.jpg
+Purperrode klaver;rood;7.95;klaver.jpg
+Griekse malva;rood;9.75;malva.jpg

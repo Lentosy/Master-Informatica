@@ -187,5 +187,105 @@
 		
 		\item \textbf{Numerieke functies} zoals \textit{ceiling(...)}, \textit{floor(...)}, \textit{number(...)}, \textit{round(...}).
 	\end{itemize}
-	
+
+\chapter{Webservices}
+Een gedistribueerd systeem zal over verschillende servers API's beschikbaar hebben. Tabel \ref{table:mono_vs_distributed} geeft de voornaamste verschillen tussen een monolitische architectuur en een gedistribueerde architectuur.
+\begin{table}[h]
+	\begin{tabular}{l | l | l}
+		& Monolitisch & Gedistribueerd \\
+		\hline
+		Communicatie & Tussen processen, gedeeld geheugen & Over een netwerk \\
+		Globale toestand & Mogelijk & Niet mogelijk \\
+		Globale tijd & Mogelijk via lokaal besturingssysteem & Niet mogelijk \\
+		Fouten & Eenvoudig te ontdekken & Gedeeltelijk falen moeilijk te ontdekken \\
+		Locatie & Alle componenten op één machine & Variabel \\
+		Beveiliging & Taak van het besturingssysteem & Inherent kwetsbaar door networkcommunicatie.
+	\end{tabular}
+	\label{table:mono_vs_distributed}
+\end{table}
+Er zijn twee belangrijke componenten bij gedistribueerde systemen, \textbf{EDI  (Electronic Data Interchange)} en \textbf{RPC (Remote Procedure Call)}.
+ 
+\section{Componenten}
+\subsection{EDI}
+Dit soort toepassingen digitaliseren het papierwerk dat vaak plaatsvindt in eender welke organisatie. Dit werkt in drie stappen:
+\begin{enumerate}
+	\item Verzamel de informatie die verzonden moet worden. Deze data komt vaak uit interne bronnen, die een willekeurige structuur kunnnen hebben?
+	\item Zet deze informatie om naar het EDI formaat door gebruik te maken van vertaler die de interne informatie kan omzetten naar het EDI formaat.
+	\item Verstuur deze informatie naar de bestemmeling. Een zender en ontvanger zijn direct aangesloten met elkaar via software.
+\end{enumerate}
+
+\subsection{RPC}
+RPC is het aanroepen van een procedure (functie, methode, ...) op een ander toestel dan waarop een programma fysiek uitgevoerd wordt. Dit proces bevat volgende stappen:
+\begin{enumerate}
+	\item De client maakt een RPC aan en verstuurt deze naar een server die deze call can behandelen.
+	\item De server verwerkt de procedure en stuurt het resultaat terug naar de client.
+	\item De client kan gebruik maken van dit resultaat op lokaal niveau.
+\end{enumerate}
+\section{Gedistribueerde objectsystemen}
+Gedistribueerde systemen maken gebruik van EDI en RPC om een systeem te implementeren. Er worden enkele besproken zoals \textbf{RMI (Remote Method Invocation)}, \textbf{DCOM (Distributed Component Object Model)} en \textbf{CORBA (Common Object Request Broker Architecture)}
+\subsection{RMI}
+Deze technologie is ontwikkelt door Oracle en bestaat typisch uit een \textbf{Server} en \textbf{Client} applicatie. Een server zal methoden beschikbaar stellen en zal wachten tot dat een client deze methode uitvoert (invocation). RMI is het mechanisme dat de verbinding en informatieuitwisseling tussen een client en een server behandelt. Een gedistribueerd systeem gebasseerd op RMI kan de volgende 3 zaken uitvoeren.
+\begin{enumerate}
+	\item \textit{Lokalisatie van remote objecten.} Remote objecten moeten opgeslagen worden in een zogenaamde \textbf{RMI registery}.
+	\item \textit{Communicatie met remote objecten.} Het aanroepen van methoden van een remote object wordt volledig door RMI behandelt. Dit heeft als gevolg dat een programmeur niet eens moet weten dat hij met een remote object bezig is.
+	\item \textit{Klassedefinities laden van remote objecten.} Aangezien dat RMI objecten kan terugsturen/versturen, voorziet RMI de mogelijkheid om klassedefinities van deze objecten op te halen.
+\end{enumerate}
+\subsection{DCOM}
+DCOM is een uitbreiding op COM om communicatie tussen verschillende toestellen, hetzij op een LAN, hetzij op een WAN of zelfs op het internet aan te spreken. DCOM behandelt het low-level gedeelte van de netwerkcommunicatie, zodat een programmeur hier zich niet meer mee bezig hoeft te houden.  
+\subsection{CORBA}
+CORBA is zoals de anderen, ook een manier om communicatie te hebben tussen verschillende systemen. CORBA baseert zich op 4 punten:
+\begin{enumerate}
+	\item Applicatieobjecten die specifiek zijn voor de applicatie. Een CORBA object is een encapsulatie van zulke objecten.
+	\item Een \textbf{ORB (Object Request Broker)} dat de requests van verschillende services behandelt. 
+	\item Een verzameling van services die waarschijnlijk gebruikt zullen worden door veel applicaties. 
+	\item Een verzameling van componenten die bovenop deze services gebouwd zijn.
+\end{enumerate} 
+
+
+\section{MOM}
+\textbf{MOM (Message Oriented Middleware)} is een software systeem dat instaat voor het aanmaken, versturen, ontvangen en lezen van berichten op zowel synchrone of aysnchrone manier. Een client applicatie moet dus enkel deze middleware aanspreken om berichten op te halen of te versturen.
+
+\section{SOA}
+\textbf{SOA (Service Oriented Architecture)} is een architectuurstijl dat gebruik maakt van services die onafhankelijk zijn van andere services. Een service kan individueel aangepast worden zonder dat andere services hiervan last hebben. Deze architectuurstijl kent een aantal uitdagingen:
+\begin{itemize}
+	\item Gelijktijdige toegang tot bronnen
+	\item Wat indien een deel van de opdracht mislukt?
+	\item Wat als één partner incompatibel wordt?
+	\item Geen gedeeld geheugen voor requester en provider
+	\item Traagheid en onbetrouwbaarheid gebruike transport
+\end{itemize}
+Er blijkt ook een gelijkheid te zijn met SOA en microservices. Het verschil tussen microservices en SOA is 
+\todo{saai}
+
+\section{Webservices in Java}
+Voor webservices te implementeren in java maken we gebruik van SOAP. Een SOAP aanvraag ziet er als volgt uit :
+\begin{lstlisting}
+<?xml version="1.0" encouding="UTF-8"?>
+<S:Envelope 
+  xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+  <S:Header/>
+  <S:Body>
+    <ns2:geefBoek xmlns:ns2="http://web.boeken.iii.be/">
+      <isbn>isbn2</isbn>
+    </ns2:geefBoek>
+  </S:Body>
+</S:Envelope>
+\end{lstlisting}
+
+Een eenvoudige webserivce dat een boek opvraagd met een bepaald isbn ziet er dan zo uit:
+\begin{lstlisting}
+@WebService(serviceName = "Catalogus")
+public class Catalogus {
+  @WebMethod(operationName = "geefBoek")
+  public Boek geefBoek(@WebParam(name = "isbn") String isbn){
+    try {
+      BoekenLijst boeken = new BoekenLijstImpl();
+      return boeken.geefBoek(isbn);
+    } catch(Exception e) {
+      return null;
+    }
+  }
+}
+\end{lstlisting}
+\section{Webservices in C\#}
 \end{document}

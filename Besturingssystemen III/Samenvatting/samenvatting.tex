@@ -60,17 +60,17 @@
 	\subsubsection{Klasse-qualifiers}
 	Deze worden in WMI CIM Studio \textit{Object qualifiers} genoemd:
 	\begin{itemize}
-		\item De \textit{Description} qualifier geeft tekst terug met informatie over de klasse.
-		\item De \textit{Abstract}, \textit{Dynamic} en \textit{Singleton} qualifiers geven aan, indien hun waarde op \textit{true} staat, dat een klasse abstract, dynamisch of een singleton is.
-		\item De \textit{Provider} qualifier helpt de WMI service te bepalen welke provider moet aangesproken worden om een bepaalde klasse aan te spreken
+		\item De \textbf{Description} qualifier geeft tekst terug met informatie over de klasse.
+		\item De \textbf{Abstract}, \textbf{Dynamic} en \textbf{Singleton} qualifiers geven aan, indien hun waarde op \textit{true} staat, dat een klasse abstract, dynamisch of een singleton is.
+		\item De \textbf{Provider} qualifier helpt de WMI service te bepalen welke provider moet aangesproken worden om een bepaalde klasse aan te spreken
 	\end{itemize}
 	\subsubsection{Attribuut-qualifiers}
 	De attribuut-qualifiers worden in WMI CIM Studio \textit{Property qualifiers} genoemd:
 	\begin{itemize}
-		\item De \textit{Description} qualifier geef analoog zoals de klasse-qualifiers tekst terug met informatie over het attribuut.
-		\item De \textit{CIMType} qualifier geeft het type van het attribuut weer, zoals string, boolean, datetime, signed of unsigned int (8, 16, 32 of 64 bits) of referenties naar absolute objectpaden.
-		\item De \textit{Write} qualifier geeft aan, indien deze op \textit{true} staat, dat de het attribuut rechtstreeks wijzigbaar is, zonder hiervoor methodes te moeten aanspreken. 
-		\item De \textit{Keys} qualifier geeft aan dat het attribuut deel uitmaakt van de sleutel van het object en bijgevolg ook vermeld moet worden in het objectpad van een instantie.
+		\item De \textbf{Description} qualifier geef analoog zoals de klasse-qualifiers tekst terug met informatie over het attribuut.
+		\item De \textbf{CIMType} qualifier geeft het type van het attribuut weer, zoals string, boolean, datetime, signed of unsigned int (8, 16, 32 of 64 bits) of referenties naar absolute objectpaden.
+		\item De \textbf{Write} qualifier geeft aan, indien deze op \textit{true} staat, dat de het attribuut rechtstreeks wijzigbaar is, zonder hiervoor methodes te moeten aanspreken. 
+		\item De \textbf{Keys} qualifier geeft aan dat het attribuut deel uitmaakt van de sleutel van het object en bijgevolg ook vermeld moet worden in het objectpad van een instantie.
 		\item ValueMap geeft in een ééndimensionale tabel het domein weer van het attribuut: een expliciete opsomming van de toegelaten waarden.
 			  Values geeft een meer informatieve interpretatie van de toegelaten waarden. Indien ook de ValueMap qualifier aanwezig is, kunnen ValueMap en Values best beschouwd worden als respectievelijk de keys en de values van een Perl hash. Indien een ValueMap ontbreekt, dan impliceert Values een ValueMap met oplopende gehele getallen, startend vanaf 0. Values kan dan geïnterpreteerd worden als een Perl array.
 	\end{itemize}
@@ -113,18 +113,116 @@ resultrole=partcomponent
 	\end{lstlisting}
 	Verschillende predicaten in de \textit{where} clausule worden niet verbonden met het AND keywoord zoals men verwacht, deze wordt namelijk impliciet ingevuld.
 	\section{Notification queries}
-	Een WMI Consumer kan zich aanmelden aan de WMI Service indien deze een interesse heeft voor een bepaalde gebeurtenis. De provider weet welke consumers geïnteresseerd en zal dan ook de consumers inlichten wanneer de voorwaarden voldaan zijn. Een consumer hoeft hier zelf geen processortijd aan te spenderen. Bij het uittesten van notification queries staat de optie \textit{asynchronous} best aan, anders is de uitvoeringstijd langer. Een voorbeeld van een notification query:
+	Een WMI Consumer kan zich aanmelden aan de WMI Service indien deze een interesse heeft voor een bepaalde gebeurtenis. De provider weet welke consumers geïnteresseerd en zal dan ook de consumers inlichten wanneer de voorwaarden voldaan zijn. Een consumer hoeft hier zelf geen processortijd aan te spenderen. Bij het uittesten van notification queries staat de optie \textit{asynchronous} best in \textit{Wbemtest} aan, anders is de uitvoeringstijd langer. Een voorbeeld van een notification query:
 	\begin{lstlisting}
 select * 
 from win32_processtrace
 where processname = "calc.exe"
 	\end{lstlisting}
-	Deze query zal de consumer inlichten wanneer een windows rekenmachine opgestart of afgesloten wordt.
+	Deze query zal de consumer inlichten wanneer een windows rekenmachine opgestart of afgesloten wordt met een \textbf{Win32\_ProcessTrace} object. In een notification query kan ook geaggregeerd worden. Deze komt zo goed als overeen als de SQL group by clausule, behalve dat er nog een extra sleutelwoord komt: \texttt{WITHIN}. Een \texttt{WITHIN} extensie specifieert het interval in seconden wanneer er geaggregeerd moet worden. Er is verder ook nog een \texttt{HAVING} clausule, die exact dezelfde functie heeft als bij SQL. Volgend voorbeeld zal om de 5 seconden enkel geaggregeerde informatie tonen indien meer dan 5 processen van het type \textit{calc.exe} of \textit{notepad.exe} aangemaakt of gesloten worden. Eerst wordt er geaggregeerd op de processnaam, daarna wordt er nog onderscheidt gemaakt tussen het type klasse. Dit is ofwel \textbf{Win32\_ProcessStartTrace} of \textbf{Win32\_ProcessStopTrace}.
+	\begin{lstlisting}
+select * 
+from win32_processtrace
+where (processname = "calc.exe"
+    or processname = "notepad.exe)
+group within 5 by processname, __CLASS
+having numberofevents >= 5
+	\end{lstlisting}
+	
+	De geaggregeerde informatie komt in een object \_\_AggregateEvent. Zo een object heeft slechts twee attributen:
+	\begin{enumerate}
+		\item \textit{NumberOfEvents}: Dit geeft aan hoeveel events er zijn afgevuurd binnen het interval van de within extensie.
+		\item \textit{Representative}: Dit attribuut verwijst naar één van deze gebeurtenissen. Informatie over de andere events gaan verloren.
+	\end{enumerate}
+
+	Een spijtige zaak is dat notification queries maar voor een beperkt aantal providers mogelijk is. Indien eventobjecten voor een bepaald object niet bestaan moet men beroep doen op het \textbf{snapshotmechanisme}. In de query komt er een \texttt{WITHIN} extensie, die functioneel verschillend is van de \texttt{WITHIN} extensie van de group by. Deze nieuwe \texttt{WITHIN} extensie zal een interval in seconden aangeven waarop een nieuwe snapshot moet gemaakt worden. Verder is er nog de \texttt{ISA} operator. Deze operator laat toe om een variabele met een klasse te vergelijken.
+	
+	Volgend voorbeeld illustreert dezelfde query, zonder de group by clausule en met behulp van de \textbf{\_\_InstanceOperationEvent} klasse, om events te genereren bij het aanmaken of vernietigen van processen met de naam calc.exe en notepad.exe.
+	\begin{lstlisting}
+select *
+from __instanceoperationevent 
+within 2
+where (__CLASS = "__instancecreationevent"
+    or __CLASS = "__instancedeletionevent")
+and targetinstance isa 'win_32_process'
+and (targetinstance.name = "calc.exe" 
+  or targetinstance.name = "notepad.exe")
+
+	\end{lstlisting}
+	
+	Een belangrijke klasse is de \textbf{\_\_TimerEvent} klasse. Deze eventklasse wordt gegenereerd door de klasse \textbf{\_\_TimerInstruction}, die twee implementaties kent: \textbf{\_\_AbsoluteTimerInstruction} en \textbf{\_\_IntervalTimerInstruction}. Dit zijn ook direct twee van de weinige klassen waarvan je zelf instanties mag van maken. De klasse \textbf{\_\_AbsoluteTimerInstruction} is niet zo interessant aangezien die maar één enkele event zal afvuren op een specifiek tijdstip. De \textbf{\_\_IntervalTimerInstruction} klasse daarentegen, zal een event afvuren telkens het interval bereikt wordt. De klasse bevat twee belangrijke attributen: \textit{TimerID}, een unieke identificatie van de timer en \textit{IntervalBetweenEvents}, het interval in milliseconden tussen opeenvolgende events. Vanaf dat een instantie van een \textbf{\_\_IntervalTimerInstruction} gemaakt wordt, kan via volgende notification query dit event onderschept worden
+	\begin{lstlisting}
+select *
+from __timerevent
+where timerid=...
+	\end{lstlisting}
+	waarbij ... vervangen wordt door het gewenste \textit{TimerID}. In het slechtste geval kan dit ook dienen als pollingsmechanisme, als snapshots ook niet werken.
+	
+	\section{Consumerprogrammas}
+	Windows voorziet een aantal consumerprogrammas. Twee interessante zijn \textbf{SMTPEventConsumer} en \textbf{CommandLineEventConsumer}.
+	\subsection{SMTPEventConsumer}
+	Zoals de naam het doet vermoeden, zal deze consumer een mail sturen bij het afvuren van een specifiek event. Ten eerste moet er een instantie gemaakt worden van de klasse \textbf{\_\_EVENTFILTER}. Belangrijke attributen zijn: \textit{QueryLanguage}, dat best ingesteld wordt op WQL, \textit{query}, een WQL query en \textit{name}, een unieke identificatie. Nu kan een instantie gemaakt worden vand e klasse \textbf{SMTPEventConsumer}. Deze klasse heeft de volgende belangrijke attributen:
+	\begin{itemize}
+		\item \textit{Name}: een unieke identificatie.
+		\item \textit{ToLine}: het e-mailadres van de ontvanger.
+		\item \textit{FromLine}: het e-mailadres van de vertegenwoordiger van de mail.
+		\item \textit{Subject}: het onderwerp van de mail.
+		\item \textit{Message}: het bericht van de mail.
+		\item \textit{SMTPServer}: een smtpserver, bv die van Google.
+	\end{itemize}
+
+	Deze twee klassen moeten nog aan elkaar gelinkt worden. Dit wordt gerealiseerd met behulp van de associatorklasse \textbf{\_\_FilterToConsumerBinding}. Het attribuut \textit{Filter} moet het \_\_PATH attribuut bevatten van de gewenste filterinstantie. Het attribuut \textit{Consumer} moet het \_\_PATH attribuut bevatten van de gewenste consumerinstantie.
+	
+	Stel dat toegepast moet worden met volgende query:
+	\begin{lstlisting}
+select * 
+from win32_processtrace
+where (processname = "calc.exe"
+or processname = "notepad.exe)
+group within 5 by processname, __CLASS
+having numberofevents >= 5
+	\end{lstlisting}
+	Het \textit{query} attribuut van de \textbf{\_\_EventFilter} klasse moet ingevuld worden met deze query. 
+	De attributen van \textbf{SMTPEventConsumer} kunnen als volgt ingevuld worden:
+	\begin{lstlisting}
+Name=mail1
+ToLine=bert.desaffel@gmail.com
+FromLine=bert.desaffel@gmail.com
+Subject=%Representative.__CLASS% %NumberOfEvents%
+Message=%Representative.Name%
+SMTPServer=smtp.ugent.be
+	\end{lstlisting}
+	
+	\subsection{CommandLineEventConsumer}
+	Deze consumer zal een command line commando uitvoeren na het afvuren van een specifiek event. De configuratie gebeurd op dezelfde manier als bij een \textbf{SMTPEventConsumer} instantie. Volgend voorbeeld gebruikt een \textbf{\_\_EVENTFILTER} instantie waarbij de query als volgt ingesteld is:
+	\begin{lstlisting}
+select *
+from win32_processstarttrace
+where processname = 'calc.exe'
+	\end{lstlisting}
+	De \textbf{CommandLineEventConsumer} wordt als volg geïnstantieert. Dit zal het proces dat net opgestart wordt, terug killen.
+	\begin{lstlisting}
+Name=command1
+CommandLineTemplate=taskkill /f /pid %ProcessID%
+	\end{lstlisting}
+	\chapter{Active Directory}
+	Het ultieme doel van \textbf{Active Directory (AD)} is beveiliging. Gebruikers die inloggen wensen dat ze dit maar één keer moeten doen en dat ze al hun rechten op dit moment verkrijgen. AD maakt gebruik van het \textbf{domeinmodel}, waarbij aanvragen gericht zijn aan een domeincontroller. Dit heeft als voordeel dat op elk toestel dat met deze domeincontrollers zijn verbonden, ook ingelogd kan worden en dat configuratieinstellingen behouden worden. AD implementeert het \textbf{Lightweight Directory Access Protocol (LDAP)} mechanisme. Informatie van AD staan in object-georiënteerde vorm in het bestand \textit{ntds.dit}. Deze objecten hebben echter geen methodes, enkel attributen. Het voordeel van een object-geörienteerde structuur is dat AD heel uitbreidbaar is met nieuwe klassen of attributen.
+	
+	Gegevens die AD onder andere verzamelen zijn:
+	\begin{itemize}
+		\item gebruikersobjecten.
+		\item gegevens over servers en werkposten.
+		\item gegevens over toepassingen (browsers, printers, dns).
+	\end{itemize}
+
+	Een ander concept is \textbf{Group Policies}. Dit is een mechanisme die centraal definieerd welke privileges een gebruiker krijgt indien hij inlogt op een toestel. Dit mechanisme wordt echter vaak niet goed benut. In deze cursus wordt hier niet verder op ingegaan.
+	
 	
 	\part{Examenvragen}
 	\chapter{Modelvragen theorie: reeks A}
 	Het examen wordt \accentuate{volledig schriftelijk} beantwoord. Indien de student dit wenst, wordt het antwoord onmiddellijk na indienen geëvalueerd, en eventueel gevolgd door enkele vragen ter verduidelijking of aanvulling.
 	
+
 	\section{Structuur van Active Directory gegevens}
 	\begin{enumerate}
 		\item Bespreek de \textit{diverse namen} die alle Active Directory objecten \textit{identificeren}. \accentuate{\textsection 2.2.1}

@@ -1,0 +1,5 @@
+select *
+from CIM_LogicalDisk
+
+select *
+from Win32_OperatingSystem
