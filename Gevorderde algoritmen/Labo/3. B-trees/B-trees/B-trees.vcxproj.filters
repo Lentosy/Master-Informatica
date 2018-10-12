@@ -23,11 +23,11 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
+    <ClCompile Include="btree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="btree.cpp">
-      <Filter>Resource Files</Filter>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

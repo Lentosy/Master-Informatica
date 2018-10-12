@@ -20,7 +20,7 @@ const Bknoop<T, D, m>& Bknoop<T, D, m>::operator=(const Bknoop<T, D, m>& b) {
 }
 
 template<class T, class D, unsigned int m>
-int Btree<T, D, m>::zoek(const T& sleutel, Bknoop<T,D,m>& knoop) const {
+int Btree<T, D, m>::zoek(const T& sleutel, Bknoop<T, D, m>& knoop) const {
 
 	knoop = &wortel;
 	int i = 0;
@@ -36,6 +36,6 @@ int Btree<T, D, m>::zoek(const T& sleutel, Bknoop<T,D,m>& knoop) const {
 
 
 
-	
+
 
 }

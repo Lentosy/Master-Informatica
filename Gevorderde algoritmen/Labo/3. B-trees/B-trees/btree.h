@@ -16,11 +16,11 @@ template<class T, class D, unsigned int m>
 class Bknoop {
 	friend class Btree<T, D, m>;
 public:
-	Bknoop<T, D, m>() { 
+	Bknoop<T, D, m>() {
 		4 / (-4 + crashtest++);  // indien crashtest = 4, programma zal crashen, dit moet aangezien maar 3 knopen in geheugen moeten zitten
 		std::cout << "Huidige crashtest: " << crashtest << "\n";
 	};
-	const Knoop& operator=(const Bknoop<T, D, m>& b);
+	const Bknoop<T, D, m>& operator=(const Bknoop<T, D, m>& b);
 	T sleutel[m];
 	D data[m];
 	blokindex index[m + 1];
