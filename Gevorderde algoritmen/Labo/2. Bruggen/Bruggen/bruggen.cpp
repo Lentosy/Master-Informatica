@@ -1,24 +1,17 @@
 #include "bruggen.h"
+#include <stack>
+#include <iostream>
+#include <fstream>
+#include <sstream>
 
 // uitprinten van 1 verbinding.
 std::ostream& operator<<(std::ostream& out, const Verbinding& v) {
 	out << v.arenaIndex << " - > "
-		<< v.winkelIndex << " ("
+		<< v.winkelIndex << " (opbrengst: "
 		<< v.opbrengst << ")\n";
 	return out;
 }
 
-void Bruggen::printStructuur(std::ostream& out) const {
-	std::vector<Verbinding>::const_iterator it = verbindingen.begin();
-	while (it != verbindingen.end()) {
-		out << *it++;
-	}
-}
-/*
-std::ostringstream fout;
-fout << "Ongeldige ouderpointer bij knoop " << kind->sleutel << "\n";
-fout << " wijst niet naar " << knoop.sleutel << "\n";
-throw fout.str();*/
 Bruggen::Bruggen(const char * bestandsnaam) {
 	std::ifstream bestand(bestandsnaam);
 	if (!bestand.is_open()) {
@@ -37,30 +30,38 @@ Bruggen::Bruggen(const char * bestandsnaam) {
 		arenaIndex++;
 	}
 	bestand.close();
-	zoekVerbindingen();
+	zoekOptimaleVerbindingen();
+}
+
+
+void Bruggen::printStructuur(std::ostream& out) const {
+	std::vector<Verbinding>::const_iterator it = verbindingen.begin();
+	while (it != verbindingen.end()) {
+		out << *it++;
+	}
 }
 
 void Bruggen::printOplossing(std::ostream& out) const {
 	int totaleWinst = 0;
-	std::cout << "De bruggen die gelegd moeten worden voor een optimale winst zijn: \n";
-	for (int i = 0; i < aangeslotenVerbindingen.size(); i++) {
+	out << "De bruggen die gelegd moeten worden voor een optimale winst zijn: \n";
+	for (size_t i = 0; i < aangeslotenVerbindingen.size(); i++) {
 		totaleWinst += aangeslotenVerbindingen[i].opbrengst;
-		std::cout << aangeslotenVerbindingen[i];
+		out << aangeslotenVerbindingen[i];
 	}
 	out << "De totale opbrengst is : " << totaleWinst << " euro\n";
 }
 
-void Bruggen::zoekVerbindingen() {
+void Bruggen::zoekOptimaleVerbindingen() {
 	if (!verbindingen.empty()) {
 		std::vector<int> vorige(verbindingen.size(), -1);
 		std::vector<int> huidigeBesteBedragen(verbindingen.size(), 0);
 		int hoogsteBedrag = 0;
 		int hoogsteBedragIndex = 0;
 
-		for (int i = 0; i < verbindingen.size(); i++) {
+		for (size_t i = 0; i < verbindingen.size(); i++) {
 			int huidigeHoogsteBedrag = verbindingen[i].opbrengst;
 
-			for (int j = 0; j < i; j++) {
+			for (size_t j = 0; j < i; j++) {
 				if (verbindingen[j].winkelIndex < verbindingen[i].winkelIndex &&
 					verbindingen[i].opbrengst + huidigeBesteBedragen[j] >= huidigeHoogsteBedrag) {
 

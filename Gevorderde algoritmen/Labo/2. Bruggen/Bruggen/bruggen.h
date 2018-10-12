@@ -2,10 +2,7 @@
 #define __BRUGGEN_H
 
 #include <vector>
-#include <stack>
-#include <iostream>
-#include <fstream>
-#include <sstream>
+
 // klasse dat één verbinding voorstelt
 class Verbinding {
 public:
@@ -29,11 +26,17 @@ public:
 	Bruggen(const char * bestandsnaam);
 	void printOplossing(std::ostream& out) const;
 private:
+	// De deelverzameling van bruggen die de beste oplossing zal bevatten
 	std::vector<Verbinding> aangeslotenVerbindingen;
+
+	//de bruggen in het geheugen
 	std::vector<Verbinding> verbindingen;
 
-	void printStructuur(std::ostream& out) const; // functie voor controle
-	void zoekVerbindingen();
+	//hulpfunctie dat de datastructuur uitprint
+	void printStructuur(std::ostream& out) const;
+
+	//zoekt de optimale verbindingen
+	void zoekOptimaleVerbindingen();
 };
 
 #endif

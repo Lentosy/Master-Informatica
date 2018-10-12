@@ -1,24 +1,21 @@
-#include "bruggen.cpp"
-
+#include "bruggen.h"
+#include <iostream>
+#include <fstream>
+#include <sstream>
 int main(int argc, char * argv[]) {
-	
-	/*if (!argv[1]) {
-		std::cerr << "Geen argument opgegeven\n";
-		exit(1);
-	}*/
-	
-	std::string bestand = "versnickt.dat";
 
+	if (argc < 3) {
+		std::cerr << "geef het databestand en het outputbestand op.\n";
+		exit(1);
+	}
+	std::ofstream output(argv[2]);
 	try {
-		Bruggen b(bestand.c_str());
-		b.printOplossing(std::cout);
+		Bruggen b(argv[1]);
+		b.printOplossing(output);
 	} catch (std::string ex) {
 		std::cout << ex;
 	}
 
-
-	int x;
-	std::cin >> x;
 	return 0;
 }
 
