@@ -1,4 +1,5 @@
 #include "bruggen.h"
+
 #include <stack>
 #include <iostream>
 #include <fstream>
@@ -8,10 +9,22 @@
 std::ostream& operator<<(std::ostream& out, const Verbinding& v) {
 	out << v.arenaIndex << " - > "
 		<< v.winkelIndex << " (opbrengst: "
+		<< v.winkelIndex << " ("
 		<< v.opbrengst << ")\n";
 	return out;
 }
 
+void Bruggen::printStructuur(std::ostream& out) const {
+	std::vector<Verbinding>::const_iterator it = verbindingen.begin();
+	while (it != verbindingen.end()) {
+		out << *it++;
+	}
+}
+/*
+std::ostringstream fout;
+fout << "Ongeldige ouderpointer bij knoop " << kind->sleutel << "\n";
+fout << " wijst niet naar " << knoop.sleutel << "\n";
+throw fout.str();*/
 Bruggen::Bruggen(const char * bestandsnaam) {
 	std::ifstream bestand(bestandsnaam);
 	if (!bestand.is_open()) {
@@ -34,12 +47,6 @@ Bruggen::Bruggen(const char * bestandsnaam) {
 }
 
 
-void Bruggen::printStructuur(std::ostream& out) const {
-	std::vector<Verbinding>::const_iterator it = verbindingen.begin();
-	while (it != verbindingen.end()) {
-		out << *it++;
-	}
-}
 
 void Bruggen::printOplossing(std::ostream& out) const {
 	int totaleWinst = 0;
@@ -47,7 +54,7 @@ void Bruggen::printOplossing(std::ostream& out) const {
 	for (size_t i = 0; i < aangeslotenVerbindingen.size(); i++) {
 		totaleWinst += aangeslotenVerbindingen[i].opbrengst;
 		out << aangeslotenVerbindingen[i];
-	}
+
 	out << "De totale opbrengst is : " << totaleWinst << " euro\n";
 }
 
