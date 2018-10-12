@@ -9,7 +9,6 @@
 std::ostream& operator<<(std::ostream& out, const Verbinding& v) {
 	out << v.arenaIndex << " - > "
 		<< v.winkelIndex << " (opbrengst: "
-		<< v.winkelIndex << " ("
 		<< v.opbrengst << ")\n";
 	return out;
 }
@@ -46,17 +45,17 @@ Bruggen::Bruggen(const char * bestandsnaam) {
 	zoekOptimaleVerbindingen();
 }
 
-
-
-void Bruggen::printOplossing(std::ostream& out) const {
+void Bruggen::printOplossing(std::ostream & out) const {
 	int totaleWinst = 0;
 	out << "De bruggen die gelegd moeten worden voor een optimale winst zijn: \n";
-	for (size_t i = 0; i < aangeslotenVerbindingen.size(); i++) {
+	for (int i = aangeslotenVerbindingen.size() - 1; i >= 0; i--) {
 		totaleWinst += aangeslotenVerbindingen[i].opbrengst;
 		out << aangeslotenVerbindingen[i];
-
+	}
+	
 	out << "De totale opbrengst is : " << totaleWinst << " euro\n";
 }
+
 
 void Bruggen::zoekOptimaleVerbindingen() {
 	if (!verbindingen.empty()) {
