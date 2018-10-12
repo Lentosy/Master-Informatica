@@ -1,41 +1,36 @@
-
-
 #include "btree.h"
+#include "bknoop.h"
+#include <fstream>
+#include <sstream>
+
+template<class T, class D, unsigned int m>
+std::pair<blokindex, int>* Btree<T, D, m>::zoek(const T & sleutel) const {
+	std::pair<blokindex, int> plaats;
+	Bknoop<T, D, m> huidigeKnoop = wortel;
+	blokindex vorigeBlokindex = wortelindex;
+	while (!huidigeKnoop.isblad) { // de huidige knoop is nog geen blad, eerst zoeken in deze knoop ofdat sleutel bestaat
+		int index = huidigeKnoop.geefIndexVanSleutel(sleutel);
+		if (index != m) {
+			plaats = std::make_pair(vorigeBlokindex, index);
+			return &plaats;
+		}
+		if (index == 0) { // nodig voor berekening vorigeBlokIndex, aangezien we daar index + 1 doen
+			index--;
+		}
+		vorigeBlokindex = huidigeKnoop.index[index + 1];
+		schijf.lees(huidigeKnoop, vorigeBlokindex);
+	}
+	int index = huidigeKnoop.geefIndexVanSleutel(sleutel);
+	plaats = std::make_pair(vorigeBlokindex, index);
+	return &plaats;
+};
 
 
 template<class T, class D, unsigned int m>
-const Bknoop<T, D, m>& Bknoop<T, D, m>::operator=(const Bknoop<T, D, m>& b) {
-	k = b.k;
-	isblad = b.isblad;
-	for (unsigned int i = 0; i < k; i++) {
-		sleutel[i] = b.sleutel[i];
-		data[i] = b.data[i];
-	}
-	if (!isblad) {
-		for (unsigned int i = 0; i <= k; i++) {
-			index[i] = b.index[i];
-		}
-	}
-	return *this;
+void Btree<T, D, m>::voegToe(const T& sleutel) {
+	std::pair<blokindex, int>* plaats = zoek(sleutel);
+	Bknoop<T, D, m> knoop;
+	schijf.lees(knoop, plaats->first);
+	
 }
 
-template<class T, class D, unsigned int m>
-int Btree<T, D, m>::zoek(const T& sleutel, Bknoop<T, D, m>& knoop) const {
-
-	knoop = &wortel;
-	int i = 0;
-	while (...) {
-		while (sleutel >= plaats->wortel.sleutel[i] && i < m) {
-			if (sleutel == plaats->wortel.sleutel[i]) {
-				return i;
-			}
-			i++;
-		}
-		schijf.lees(knoop, wortel.index[i + 1]);
-	}
-
-
-
-
-
-}
