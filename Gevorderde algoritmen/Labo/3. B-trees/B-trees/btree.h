@@ -20,10 +20,11 @@ public:
 	};
 
 
+	// Deze functie return een pair struct met:
+	// first -> de blokindex waar de sleutel zou moeten zitten
+	// second -> de index in die knoop waar de sleutel moet zitten
+	std::pair<blokindex, int>* zoek(const T& s) const;
 
-	// heeft als returnwaarde de data indien de sleutel gevonden werd.
-	std::pair<blokindex, int>* zoek(const T& sleutel) const;
-	void voegToe(const T& sleutel);
 
 private:
 	Schijf<Knoop>& schijf;

@@ -17,12 +17,38 @@ const Bknoop<T, D, m>& Bknoop<T, D, m>::operator=(const Bknoop<T, D, m>& b) {
 	return *this;
 };
 
+template<class T, class D, unsigned int m>
+bool Bknoop<T, D, m>::bevatSleutel(const T & s) const {
+	int i = 0;
+	while (i < k && s != sleutel[i]) {
+		i++
+	};
+	return i == k ? false : true;
+}
 
 template<class T, class D, unsigned int m>
 int Bknoop<T, D, m>::geefIndexVanSleutel(const T & s) const {
 	int i = 0;
-	while (i < k && sleutel[i] != s) {
+	while (i < k && s != sleutel[i]) {
 		i++;
 	}
 	return i;
+}
+
+template<class T, class D, unsigned int m>
+blokindex Bknoop<T, D, m>::geefBlokindexVoorSleutel(const T & s) const {
+	if (s < sleutel[0]) {
+		return index[0];
+	}
+	int i = 0;
+	while (i < k && s > sleutels[i]) {
+		i++
+	};
+	return index[i];
+
+
+
+
+
+
 }

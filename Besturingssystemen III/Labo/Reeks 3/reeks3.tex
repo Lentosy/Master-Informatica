@@ -1,12 +1,10 @@
 \documentclass{report}
-\usepackage[utf8]{inputenc}
-\usepackage{graphics}
-\usepackage[a4paper, total={6in, 8in}]{geometry} % A4 formaat, 6 inches breedte, 8 inches hoogte
+\usepackage{ugentstyle}
 
-\graphicspath{{./img/}}
 
 
 \begin{document}
+	\maketitle{Besturingssystemen III: Reeks 3}
 	\begin{enumerate}
 		\item n.v.t. (uitleg over CIM Studio).
 		\item 2 Manieren om superklasse af te leiden:
@@ -64,6 +62,39 @@
 					\item ?
 				\end{enumerate}
 		\item De waarde VariableValue van de instantie met Name = PATH bevat alle directories waarin executables moeten gezocht worden. Dit kan dus aangepast worden.
-
+		
+		\item 
+		\begin{itemize}
+			\item \textbf{Win32\_WMISetting=@}
+			\item \textbf{Win32\_OperatingSystem=@}
+			\item \textbf{Win32\_ComputerSystem} is geen singletonklasse.
+			\item \textbf{Win32\_LogicalDevice} is geen singletonklasse.
+			\item \textbf{Win32\_LocalTime} is geen singletonklasse.
+			\item \textbf{Win32\_CurrentTime=@}
+		\end{itemize}
+	
+		\item /
+		
+		\item 
+			\begin{itemize}
+				\item \textbf{Access.} 4 = Write Once.
+				\item \textbf{Availability.} 4 = Power Save - Unknown.
+				\item \textbf{BlockSize.} Heeft geen mapping.
+				\item \textbf{DriveType.} 4 = Network Drive.
+				\item \textbf{StatusInfo.} 4 = Disabled.
+			\end{itemize}
+		
+		\item 
+			\begin{itemize}
+				\item 	\textbf{BackupEventLog} = SeSecurityPrivilege, SeBackupPrivilege
+				\item 	\textbf{ChangeSecurityPermissions} = /
+				\item 	\textbf{ClearEventLog} = SeSecurityPrivilege, SeBackupPrivilege
+				\item 	\textbf{GetEffectivePermission} = SeSecurityPrivilege
+			\end{itemize}
+		\item De methode \textbf{GetDescriptor} heeft 3 invoerparameters, 1 invoer/uitvoer parameter en 1 uitvoerparameter.
+		\item \begin{itemize}
+			\item \textbf{Verplicht:} Path, Name, Type
+			\item \textbf{Optioneel:} MaximumAllowed, Description, Password, Access
+		\end{itemize}
 	\end{enumerate}
 \end{document}

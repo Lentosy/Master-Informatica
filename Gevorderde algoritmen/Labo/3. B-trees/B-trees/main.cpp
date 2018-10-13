@@ -12,14 +12,4 @@ int main(void) {
 	Schijf<Bknoop<std::string, int, GROOTTE>> schijf;
 	Btree<std::string, int, GROOTTE> boom(schijf);
 
-
-
-
-	try {
-		
-	} catch (const char * ex) {
-		std::cout << ex;
-	}
-
-	return 0;
 }

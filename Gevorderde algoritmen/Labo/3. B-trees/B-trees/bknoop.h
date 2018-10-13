@@ -24,11 +24,10 @@ public:
 	blokindex index[m + 1];  // dit zijn verwijzingen naar de kinderen van de knoop
 	unsigned int k;			 // het aantal huidige sleutels
 	bool isblad;			 // indien true, we bevinden ons op het laagste nivea
-
-	bool bevatSleutel(const T& s) const; // geeft de index terug van de sleutel indien deze bestaat, anders -1
-	int geefIndexVanSleutel(const T& s) const; // preconditie: de sleutel bestaat in de knooop
-	int geefIndexVanKindVoorSleutel(const T& s) const;
 private:
+	bool bevatSleutel(const T& s) const;
+	int geefIndexVanSleutel(const T& s) const;
+	blokindex geefBlokindexVoorSleutel(const T& s) const;
 	static int crashtest;
 };
 
