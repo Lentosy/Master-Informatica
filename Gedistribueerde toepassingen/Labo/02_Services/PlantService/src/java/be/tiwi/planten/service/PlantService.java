@@ -8,7 +8,7 @@ import javax.jws.WebParam;
 import javax.jws.WebService;
 
 
-@WebService(serviceName = "Catalogus")
+@WebService(serviceName = "Planten")
 public class PlantService {  
     
     PlantBeheer pb = PlantBeheerInstance.GetInstance();

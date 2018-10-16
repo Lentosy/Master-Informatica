@@ -12,4 +12,16 @@ int main(void) {
 	Schijf<Bknoop<std::string, int, GROOTTE>> schijf;
 	Btree<std::string, int, GROOTTE> boom(schijf);
 
+	int freq = boom.zoek("woord");
+	std::cout << freq;
+	
+	if (freq) {
+		boom.voegToe("woord", freq++);
+	} else {
+		boom.voegToe("woord", 1);
+	}
+
+	freq = boom.zoek("woord");
+	std::cout << freq;
+	
 }

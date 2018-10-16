@@ -26,8 +26,11 @@ public:
 	bool isblad;			 // indien true, we bevinden ons op het laagste nivea
 private:
 	bool bevatSleutel(const T& s) const;
-	int geefIndexVanSleutel(const T& s) const;
+	int geefIndexVoorSleutel(const T& s) const;
+	D geefDataVoorSleutel(const T& s) const;
 	blokindex geefBlokindexVoorSleutel(const T& s) const;
+	void setDataVoorSleutel(const T& s, const D& d); 
+	void voegToe(const T& s, const D& d);
 	static int crashtest;
 };
 

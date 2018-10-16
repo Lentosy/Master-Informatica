@@ -23,7 +23,8 @@ public:
 	// Deze functie return een pair struct met:
 	// first -> de blokindex waar de sleutel zou moeten zitten
 	// second -> de index in die knoop waar de sleutel moet zitten
-	std::pair<blokindex, int>* zoek(const T& s) const;
+	D zoek(const T& s) const;
+	void voegToe(const T& s, const D& d);
 
 
 private:

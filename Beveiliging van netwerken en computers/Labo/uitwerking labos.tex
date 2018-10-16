@@ -336,8 +336,9 @@ RHostsRSAAuthentication yes
  	Eerst \texttt{yum install httpd} uitvoeren op de gateway-VM. Eens dit klaar is moet er een nieuw configuratiebestand \texttt{vhost.conf} (willekeurige naam) aangemaakt worden in de \texttt{etc/httpd/conf.d/} directory. De inhoud van dit bestand wordt:
  	\begin{lstlisting}
  <VirtualHost 192.168.70.2>
- 	<Directory var/www/html/default>
- 		TODO
+ 	DocumentRoot /var/www/html/default
+ 	ServerName groep20.iii.hogent.be
+ 	<Directory "/var/www/html/default">
  		Order allow,deny
  		allow from all
  	</Directory>
@@ -364,12 +365,12 @@ ivoryVM	    IN	A   192.168.70.4
  	Het is enkel vereist om het betand \texttt{vhost.conf} uit te breiden met volgende (gelijkaardige) syntax.
  	 	\begin{lstlisting}
  <VirtualHost 192.168.70.2>
- 	<Directory var/www/html/test>
- 	TODO
- 	Order allow,deny
- 	allow from all
- 	</Directory>
- </VirtualHost>
+	DocumentRoot /var/www/html/test
+	ServerName test.groep20.iii.hogent.be
+	<Directory "/var/www/html/test">
+	Order allow,deny
+	allow from all
+</Directory>
  	\end{lstlisting}
  	De httpd daemon moet wel herstart worden met \texttt{service httpd restart}.
  	
@@ -378,9 +379,8 @@ ivoryVM	    IN	A   192.168.70.4
  	\hrulefill
  	
  	Op de gateway-VM:
- 	
- 	$$\texttt{openssl req -x509 -nodes -days 365 -keyout key.pem -out req.pm}$$
- 	\todo{wachten op XANDRO!!!.!.!.}
+ 	$$\texttt{openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout key.out -out test.out}$$
+	Er zullen een aantal prompts tevoorschijnkomen. Het enige belangrijke is de \texttt{Common Name} prompt die de volgende waarde \texttt{test.groep20.iii.hogent.be} krijgt.
 
  	
  	
@@ -388,6 +388,12 @@ ivoryVM	    IN	A   192.168.70.4
  	\textbf{ \item In de praktijk maak je meestal geen gebruik van self-signed certificaten, maar ga je certificaten aanvragen via een Certificate Authority (CA). Voor dit labo hebben wij een CA opgezet die bereikbaar is via https://godfather.iii.hogent.be/CertSrv.
  	
  	Installeer het root certificaat van deze server in firefox.}
+ 
+ 	\hrulefill
+ 	
+ 	Op de gateway-VM:
+ 	$$\texttt{openssl req -new -newkey rsa:2048 -nodes -keyout default.key -out default.csr}$$ 
+ 	Het bestand \texttt{default.csr} moet gegeven worden aan de CA, die een certificaat zal teruggeven.
  	
  	\textbf{ \item Genereer op jouw toestel een Certificate Signing Request (CSR) voor groepXX.iii.hogent.be, en vraag het certificaat aan bij de CA. Een correct aangevraagd certificaat wordt door onze CA automatisch uitgegeven.
  	
