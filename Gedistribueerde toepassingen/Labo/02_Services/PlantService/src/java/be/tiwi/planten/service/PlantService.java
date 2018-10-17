@@ -3,12 +3,14 @@ package be.tiwi.planten.service;
 import be.tiwi.planten.Plant;
 import be.tiwi.planten.PlantBeheer;
 import java.util.List;
+import javax.jws.HandlerChain;
 import javax.jws.WebMethod;
 import javax.jws.WebParam;
 import javax.jws.WebService;
 
 
 @WebService(serviceName = "Planten")
+@HandlerChain(file="handler-chain.xml")
 public class PlantService {  
     
     PlantBeheer pb = PlantBeheerInstance.GetInstance();
