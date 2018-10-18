@@ -1,9 +1,6 @@
 #include "btree.h"
 #include "bknoop.h"
 #include <fstream>
-#include <sstream>
-#include <stack>
-
 
 
 template<class T, class D, unsigned int m>
@@ -15,24 +12,20 @@ D Btree<T, D, m>::zoek(const T& s) const {
 		if (huidigeKnoop.bevatSleutel(s)) {
 			return huidigeKnoop.geefDataVoorSleutel(s);
 		}
-
-
 		huidigeIndex = huidigeKnoop.geefIndexVoorSleutel(s);
 		schijf.lees(huidigeKnoop, huidigeIndex);
 	}
-
 	if (huidigeKnoop.bevatSleutel(s)) {
 		return huidigeKnoop.geefDataVoorSleutel(s);
 	}
-
-	return D();
+	return D(); // wat returnen indien niet gevonden?
 
 }
 
 template<class T, class D, unsigned int m>
 void Btree<T, D, m>::voegToe(const T& s, const D& d) {
 	// Zoek het blad waarin het element moet komen. Er zijn dan 2 gevallen:
-	// 1) Indien k < m in het blad, dan is er nog plaats in het blad en kan het element toegevoegd worden.
+	// 1) Indien k < m(GROOTTE) in het blad, dan is er nog plaats in het blad en kan het element toegevoegd worden.
 	// 2) Anders is het blad vol, dit blad moet nu in twee delen gesplitst worden zodat:
 	//		a) Een mediaan moet gekozen worden
 	//		b) Alle waarden kleiner dan deze mediaan komen in het linkerdeel en alle waarden groter dan de mediaan komen in het rechterdeel
@@ -41,34 +34,16 @@ void Btree<T, D, m>::voegToe(const T& s, const D& d) {
 	Bknoop<T, D, m> huidigeKnoop = wortel;
 	blokindex huidigeIndex = wortelindex;
 
-	std::stack<blokindex> blokindices;
-
 	while (!huidigeKnoop.isblad) {
-		blokindices.push(huidigeIndex);
-		if (huidigeKnoop.bevatSleutel(s)) {
-			huidigeKnoop.setDataVoorSleutel(s, d);
-			if (huidigeIndex == wortelindex) {
-				wortel = huidigeKnoop;
-			}
-			schijf.herschrijf(huidigeKnoop, huidigeIndex);
-			return;
-		}
 
-		huidigeIndex = huidigeKnoop.geefBlokindexVoorSleutel(s);
-		schijf.lees(huidigeKnoop, huidigeIndex);
 	}
+
 
 	// op dit moment zitten we in een blad
-
-	if (huidigeKnoop.bevatSleutel(s)) {
-		huidigeKnoop.setDataVoorSleutel(s, d);
-		if (huidigeIndex == wortelindex) {
-			wortel = huidigeKnoop;
-		}
-		schijf.herschrijf(huidigeKnoop, huidigeIndex);
-		return;
-	}
+		//beste geval, er is nog plaats in de knoop, sleutel gewoon toevoegen, eventueel sleutels terug in volgorde zetten
 
 	huidigeKnoop.voegToe(s, d);
+	schijf.herschrijf(huidigeKnoop, huidigeIndex);
+
 
 }
