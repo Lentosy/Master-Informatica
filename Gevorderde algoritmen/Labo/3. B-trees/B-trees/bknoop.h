@@ -23,13 +23,13 @@ public:
 	D data[m];				 // bij die sleutels hoort uiteraard data
 	blokindex index[m + 1];  // dit zijn verwijzingen naar de kinderen van de knoop
 	unsigned int k;			 // het aantal huidige sleutels
-	bool isblad;			 // indien true, we bevinden ons op het laagste nivea
+	bool isblad;			 // indien true, we bevinden ons op het laagste niveau
 private:
 	bool bevatSleutel(const T& s) const;
 	int geefIndexVoorSleutel(const T& s) const;
 	D geefDataVoorSleutel(const T& s) const;
 	blokindex geefBlokindexVoorSleutel(const T& s) const;
-	void setDataVoorSleutel(const T& s, const D& d); 
+	void setDataVoorSleutel(const T& s, const D& d);
 	void voegToe(const T& s, const D& d);
 	static int crashtest;
 };
