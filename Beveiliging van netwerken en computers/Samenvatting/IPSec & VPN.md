@@ -1,8 +1,7 @@
 # IPSec
-
 ![ipsec_model](img/ipsec_model.png)
 
-## Netwerklaagbeveiliging Problemen
+## Netwerklaagbeveiliging
 ### Mogelijke bedreigingen
 * Pakketten meermaals versturen (replay packets)
 * IP-adres wijzigen (source spoofing)
@@ -14,7 +13,7 @@ IPSec is een netwerklaagprotocol dat:
 * veilige IP verbindingen maakt.
 * applicatieonafhankelijk is.
 
-## Toepassingen
+##Toepassingen
 ### LAN-to-LAN
 Deze methode zal verspreide netwerken (op geografisch verschillende locaties) veilig verbinden zodat het één lokaal netwerk lijkt. 
 
@@ -24,4 +23,9 @@ Hier zet de client zelf een IPSec verbinding op, alsof het lijkt dat hij deel ui
 ## Voordelen/nadelen
 ### Voordelen
 * Applicatieonafhankelijk. Het biedt dus ook beveiliging voor applicaties die zelf geen beveiliging voorzien.
-* 
+* Beveiligingsmechanismen moeten maar gelden op beperkt aantal systemen (firewall of router). Het interne verkeer wordt hierdoor niet beïnvloedt.
+* Eindgebruikers moeten zich hier niets van aantrekken.
+### Nadelen
+* Er is geen beveiliging nadat het bericht de gateway heeft gepasseerd.
+* Systeemresources zijn nodig om cryptographische functies te berekenen.
+* De implementatie is vrij complex en het gebeurt vaak dat verschillende versies incompatibel zijn met elkaar.
