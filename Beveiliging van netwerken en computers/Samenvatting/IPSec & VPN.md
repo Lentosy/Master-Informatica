@@ -71,6 +71,7 @@ in **tunnel** mode biedt het wel **traffic flow confidentiality**. Een aanvaller
 
 # VPN
 ![vpn_model](img/vpn_model.png)
+
 VPN is een beveiligde tunnel van site tot site.
 
 Voorbeelden:
