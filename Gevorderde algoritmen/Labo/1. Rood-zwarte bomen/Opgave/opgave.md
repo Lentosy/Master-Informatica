@@ -14,7 +14,7 @@ Slechter kan niet bij een rood-zwarte boom, en elke bewerking zal de situatie ve
 
 Implementatie.
 
-Als je dit alles implementeert moet je een rood-zwarteboomklasse hebben. Je zou denken dat je eenvoudig kan overerven van een gewone binaire boom, maar dat blijkt niet erg goed te lukken. Omdat elke knoop een kleur heeft moet er dan in elke knoop een attribuut bijkomen. Die interactie tussen boom en knoop leidt tot problemen, zodat er niet veel meer overblijft dan de lelijke weg: je kopieert gewoon de code van een zoekboom en verandert overal Zoekboom door RZWBoom. Dat is niet flexibel --als je verbeteringen aanbrengt aan de Zoekboomcode wordt die niet meegenomen naar de RZWBoom, maar het werkt wel. Je krijgt van ons het bestand rzwboom14.h met relevante code voor een binaire boom, zoals een repOK-functie voor een binaire boom en een rotatiefunctie.
+Als je dit alles implementeert moet je een rood-zwarteboomklasse hebben. Je zou denken dat je eenvoudig kan overerven van een gewone binaire boom, maar dat blijkt niet erg goed te lukken. Omdat elke knoop een kleur heeft moet er dan in elke knoop een attribuut bijkomen. Die interactie tussen boom en knoop leidt tot problemen, zodat er niet veel meer overblijft dan de lelijke weg: je kopieert gewoon de code van een zoekboom en verandert overal Zoekboom door RZWBoom. Dat is niet flexibel --als je verbeteringen aanbrengt aan de Zoekboomcode wordt die niet meegenomen naar de RZWBoom, maar het werkt wel. Je krijgt van ons het bestand [rzwboom14.h](rzwboom14.h) met relevante code voor een binaire boom, zoals een repOK-functie voor een binaire boom en een rotatiefunctie.
 
 Ook voor deze nieuwe klasse ga je eerst een repOK()-functie schrijven. Zoals gebruikelijk bij overerving (al is deze hier puur formeel) is de repOK()-functie van de bovenklasse een deel van die voor de onderklasse.
 
@@ -24,7 +24,7 @@ Programmeertip: elke knoop is de wortel van een (deel)boom. Het is handig als je
 Testen
 Als je code schrijft moet je die ook testen. Dat is meer dan alleen maar nagaan of je code compileert en niet crasht op één klein voorbeeldje. Vaak is het zo dat je meer testcode hebt dan code die getest moet worden. Dat lijkt veel werk met weinig opbrengst, maar dat is het niet: alleen zo kan je zeker zijn dat je code werkt zoals het hoort.
 
-Kleine boompjes kan je inspecteren met een uitschrijfoperatie. Die is voorzien in de code. Wie liever een tekening heeft kan gebruik maken van het dot-pakket (op labo-computers download je best de zip-versie). Een scriptje om .dot-bestanden om te zetten naar een afbeelding vind je in genereer-dot.sh (je kan de dot-code ook online een grafiek laten genereren via http://webgraphviz.com/).
+Kleine boompjes kan je inspecteren met een uitschrijfoperatie. Die is voorzien in de code. Wie liever een tekening heeft kan gebruik maken van het [dot-pakket](http://graphviz.org/) (op labo-computers download je best de zip-versie). Een scriptje om .dot-bestanden om te zetten naar een afbeelding vind je in [genereer-dot.sh](genereer-dot.sh) (je kan de dot-code ook online een grafiek laten genereren via http://webgraphviz.com/).
 
 234-boom (de bijbehorende lidfuncties heten tekenAlsBinaireBoom(...) en tekenAls234boom(...).
 
