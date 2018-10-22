@@ -42,3 +42,15 @@ Hier zet de client zelf een IPSec verbinding op, alsof het lijkt dat hij deel ui
 ## Ipsec protocollen
 Ipsec maakt gebruik van twee protocollen: **Authentication Header (AH)** en **Encapsulationg Security Payload (ESP)**
 ##### Authentication Header
+
+![authentication header](img/authentication_header.PNG)
+
+* Biedt **authenticatie** en **dataintegriteit**.
+* Voorkomt IP spoofing en replay mechanismen.
+
+Werking:
+1. De IP header en data payload worden gehasht met een **one-way hashfunctie**.
+1. De returnwaarde van deze hashfunctie wordt gebruikt om een nieuwe **authentication header** te maken, die toegevoegd wordt aan het originele pakket.
+1. Het pakket wordt doorgestuurd naar de IPSec router van de begunstigde.
+1. Deze router zal de IP header en data opnieuw hashen, en vergelijkt deze met de **authentication header**. Indien deze verschillend zijn, wil dit zeggen dat het pakket is aangepast.
+
