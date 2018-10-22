@@ -41,27 +41,44 @@ Equivalent met een gewone binaire boom en is dus <a href="https://www.codecogs.c
 
 # SPLAY TREES
 Een normale binaire zoekboom, waarbij elke operatie gevolgd wordt door een splay-operatie. De splay-operatie zal de laatste knoop die toegevoegd/gezocht werd naar de wortel roteren.
-### Zoeken
-Zoeken gebeurt zoals bij een normale binaire zoekboom, gevolgd door een splayoperaties totdat de gezochte knoop de wortel is.
-### Toevoegen
-Toevoegen gebeurt zoals bij een normale binaire zoekboom. De nieuwe knoop wordt door splayoperaties tot wortel gemaakt.
-### Verwijderen
-Verwijderen gebeurt zoals bij een normale binaire zoekboom. De ouder van de verwijderde knoop wordt via splayoperaties tot wortel gemaakt.
+
+**Zoeken** gebeurt zoals bij een normale binaire zoekboom, gevolgd door splayoperaties totdat de gezochte knoop de wortel is.
+
+**Toevoegen** gebeurt zoals bij een normale binaire zoekboom. De nieuwe knoop wordt door splayoperaties tot wortel gemaakt.
+
+**Verwijderen** gebeurt zoals bij een normale binaire zoekboom. De ouder van de verwijderde knoop wordt via splayoperaties tot wortel gemaakt.
 
 De splayoperaties hangt af of dat de splay-tree bottom-up of top-down beschouwd wordt.
 
 ## Bottom-up
+In dit geval wordt de splay-operatie uitgevoerd van onder naar boven.
 * Indien de ouder **p** van knoop **c** de wortel van de boom is, moet enkel nog de knopen geroteerd worden zodat **c** de wortel wordt. 
 * Indien knoop **c** nog een grootouder **g** heeft, zijn er twee gevallen te onderscheiden.
   * Knoop **c** is een inwendig kind van **p**. Er wordt een rotatie uitgevoerd zodat **c** de ouder van **p** wordt en daarna wordt een rotatie uitgevoerd zodat **c** de plaats inneemt van **g**. De kinderen van **c** zijn nu **p** en **g**.
   * Knoop **c** is een uitwendig kind van **p**. Er worden nu twee rotaties uitgevoerd in dezelfde richting, beginnend vanaf **g** die geroteerd wordt naar links of rechts, en daarna **p** die dezelfde rotatierichting neemt.
-
-
-
+  
 ## Top-down
+In dit geval verricht de splay-operatie zich tijdens de afdaling.
+???
 
 ## Performantie
 
+
+<a href="https://www.codecogs.com/eqnedit.php?latex=\sum_{i&space;=&space;1}^{m}a_i&space;=&space;\sum_{i&space;=&space;1}^{m}&space;(t_i&space;&plus;&space;\Phi_i&space;-&space;\Phi_{i&space;-&space;1})" target="_blank"><img src="https://latex.codecogs.com/gif.latex?\sum_{i&space;=&space;1}^{m}a_i&space;=&space;\sum_{i&space;=&space;1}^{m}&space;(t_i&space;&plus;&space;\Phi_i&space;-&space;\Phi_{i&space;-&space;1})" title="\sum_{i = 1}^{m}a_i = \sum_{i = 1}^{m} (t_i + \Phi_i - \Phi_{i - 1})" /></a>
+
+TODO
+
 # RANDOMIZED SEARCH TREES
+* Maakt gebruik van een random generator om de toevoegvolgorde te neutraliseren. 
+* De meest eenvoudigste boom is een **treap** (tree + heap).
+* Elke knoop krijgt naast zijn sleutel ook een prioriteit waarvan de prioriteit aan de heapvoorwaarde voldoen (sleutel van een ouder moet groter zijn dan de twee kinderen).
+
+**Zoeken** houdt geen rekening met prioriteiten en verloopt zoals bij een normale binaire zoekboom.
+
+**Toevoegen** gebeurt in eerste instantie zoals bij een normale binaire zoekboom. Pas nadien wordt met de prioriteit rekening gehouden en wordt de nieuwe knoop eventueel naar boven geroteerd.
+
+**Verwijderen** geeft eerst aan de te verwijderen knoop de laagste prioriteit, zodat deze naar beneden geroteerd wordt. Uiteindelijk wordt de knoop een blad en kan deze gemakkelijk verwijderd worden.
+
+
 
 # SKIP LISTS
