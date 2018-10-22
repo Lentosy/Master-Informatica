@@ -34,7 +34,7 @@ Hier zet de client zelf een IPSec verbinding op, alsof het lijkt dat hij deel ui
 ## Ipsec modi
 ##### Layer 2 tunnel mode (default)
 * Bescherming van interne routinggegevens door heel het pakket te encrypteren en een nieuwe IP header eraan toe te voegen. 
-* Geschikt tvoor **network-to-network** (tussen 2 verschillende routers op verschillende locaties), **host-to-network** (remote user access) en **host-to-host** communicatie (private chat).
+* Geschikt voor **network-to-network** (tussen 2 verschillende routers op verschillende locaties), **host-to-network** (remote user access) en **host-to-host** communicatie (private chat).
 ##### Transport mode
 * Enkel de payload wordt geëncrypteerd, de IP header blijft ongewijzigd.
 * Geschikt voor **end-to-end** communicatie tussen toestellen met publieke IP adressen.
