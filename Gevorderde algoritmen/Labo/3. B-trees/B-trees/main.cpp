@@ -16,7 +16,7 @@ int main(void) {
 	Schijf<Bknoop<std::string, int, GROOTTE>> schijf;
 	Btree<std::string, int, GROOTTE> boom(schijf);
 	std::ifstream input("bestand.txt");
-	int aantalwoorden = 7; // hoeveel woorden van het bestand dat we willen inlezen, voor te testen
+	int aantalwoorden = GROOTTE; // hoeveel woorden van het bestand dat we willen inlezen, voor te testen
 	int woordcount = 0;
 
 	std::string woord;
@@ -25,15 +25,13 @@ int main(void) {
 
 		if (std::regex_match(woord, std::regex("(.*)[,.?!]"))) { // weghalen leestekes
 			woord = woord.substr(0, woord.size() - 1);
-			std::transform(woord.begin(), woord.end(), woord.begin(), ::tolower);
 		}
 
+		std::transform(woord.begin(), woord.end(), woord.begin(), ::tolower);
+
 		int freq = boom.zoek(woord);
-		if (freq) { // sleutel bestaat al
-			boom.voegToe(woord, freq++);
-		} else {
-			boom.voegToe(woord, 1);
-		}
+		freq ? boom.voegToe(woord, ++freq) : 
+			   boom.voegToe(woord, 1);
 		woordcount++;
 	}
 	input.close();

@@ -58,33 +58,24 @@ void Bknoop<T, D, m>::setDataVoorSleutel(const T & s, const D & d) {
 	data[index] = d;
 };
 
+
+// de voegtoe van knoop kan enkel toevoegen indien zijn knoop nog niet vol zit
+// als dit wel het geval is, moet de boom zelf verder onderhandelen, de knoop kan hier niets aan doen
 template<class T, class D, unsigned int m>
 void Bknoop<T, D, m>::voegToe(const T & s, const D & d) {
 	if (k < m) { // er is nog plaats in de sleutel, gewoon de sleutel op de juiste index zetten
-		int i = 0;
-		while (i < k && s > sleutel[i]) {
-			i++;
-		}
-		//eerst al de overige sleutels nog opschuiven, indien nodig
-		int j = k;
-		while (j > i) {
-			sleutel[j] = sleutel[j - 1];
-			data[j] = data[j - 1];
-			j--;
+		int i = k;
+		while (i > 0 && s < sleutel[i]) {
+			sleutel[i + 1] = sleutel[i];
+			data[i + 1] = data[i];
+			index[i + 1] = index[i];
+			i--;
 		}
 
 		sleutel[i] = s;
 		data[i] = d;
+	
 
 		k++;
-	} else { // boom opsplitsen
-			//		a) Een mediaan moet gekozen worden
-			//		b) Alle waarden kleiner dan deze mediaan komen in het linkerdeel en alle waarden groter dan de mediaan komen in het rechterdeel
-			//		c) De mediaan wordt toegevoegd in de ouderknoop van dit blad, en het proces KAN zich herhalen,
-			//			indien dit de wortel bereikt, moet een nieuwe wortel aangemaakt worden met als gevolg dat de boom een niveau extra krijgt
-		int mediaan = sleutel[m / 2];
-
-
-
-	}
+	} 
 };

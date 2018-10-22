@@ -324,6 +324,31 @@ RHostsRSAAuthentication yes
 
 \end{itemize}
 
+\section{Public Host Keys}
+??
+\section{Toegangscontrole}
+??
+\section{Public Key Authentication}
+??
+\section{Port Forwarding}
+SSH kan ook gebruikt worden om aan port forwarding te doen. Log in op de gateway-computer van jouw opstelling en zorg dat alle aanvragen op poort 8888 doorgestuurd worden naar poort 22 van een welbepaalde client-computer van een ander privaat netwerk.
+
+$$\texttt{ssh -L 8888:192.168.70.3:22 root@192.168.70.1}$$
+
+\textbf{In welke praktische situatie is deze configuratie nuttig? Is dit local of remote port forwarding?} Een connectie maken die een firewal kan omzeilen.
+
+
+Veronderstel nu dat de computers binnen jouw privaat netwerk van buitenuit niet bereikbaar zijn! Hoe kan je er voor zorgen dat de SSH-poort (poort 22) van je interne client beschikbaar wordt op poort 8888 van de gateway-computer? Test grondig uit of een toestel buiten jouw privaat netwerk een connectie kan maken met poort 8888 van jouw gateway en dat er op deze manier veilig kan worden ingelogd op de interne client.
+
+$$\texttt{ssh -R 8888:192.168.70.254:22 root@192.168.70.3}$$
+
+\textbf{In welke praktische situatie is deze configuratie nuttig? Is dit local of remote port forwarding?}
+
+
+\section{Bestandsbeheer}
+ In het ssh-pakket zit ook een utility om op een beveiligde manier aan ftp te doen. Dit laat toe om bijvoorbeeld via een ssh-windows-implementering bestandsbeheer op de server mogelijk te maken. Test dit uit. Een beperkter commando dat alleen toelaat om bestanden te kopiëren is ook aanwezig (scp). Test uit. 
+ 
+ $$\texttt{scp bestand root@192.168.70.254:/home}$$
 \chapter{Certificaten}
 
  Tijdens dit labo configureren we de Apache-webserver zodat die kan werken met SSL. Meer informatie over de configuratie van Apache kan je hier vinden.
@@ -380,7 +405,7 @@ ivoryVM	    IN	A   192.168.70.4
  	
  	Op de gateway-VM:
  	$$\texttt{openssl req -x509 -nodes -days 365 -newkey rsa:2048 -keyout key.out -out test.out}$$
-	Er zullen een aantal prompts tevoorschijnkomen. Het enige belangrijke is de \texttt{Common Name} prompt die de volgende waarde \texttt{test.groep20.iii.hogent.be} krijgt.
+	Er zullen een aantal prompts tevoorschijnkomen. Het enige belangrijke is de \texttt{Common Name} prompt die de volgende waarde \texttt{test.groep20.iii.hogent.be} krijgt. Installeer \texttt{mod\_ssl} met \texttt{yum install mod\_ssl}. Plaats \texttt{test.out} en \texttt{key.out} respectievelijk in de \texttt{/etc/pki/tls/certs/} en \texttt{/etc/pki/tls/private/} directory.
 
  	
  	
@@ -388,17 +413,18 @@ ivoryVM	    IN	A   192.168.70.4
  	\textbf{ \item In de praktijk maak je meestal geen gebruik van self-signed certificaten, maar ga je certificaten aanvragen via een Certificate Authority (CA). Voor dit labo hebben wij een CA opgezet die bereikbaar is via https://godfather.iii.hogent.be/CertSrv.
  	
  	Installeer het root certificaat van deze server in firefox.}
- 
- 	\hrulefill
- 	
- 	Op de gateway-VM:
- 	$$\texttt{openssl req -new -newkey rsa:2048 -nodes -keyout default.key -out default.csr}$$ 
- 	Het bestand \texttt{default.csr} moet gegeven worden aan de CA, die een certificaat zal teruggeven.
+
  	
  	\textbf{ \item Genereer op jouw toestel een Certificate Signing Request (CSR) voor groepXX.iii.hogent.be, en vraag het certificaat aan bij de CA. Een correct aangevraagd certificaat wordt door onze CA automatisch uitgegeven.
  	
  	Download het certificaat in base64 codering.}
- 	
+  
+	 \hrulefill
+ 
+	 Op de gateway-VM:
+	 $$\texttt{openssl req -new -newkey rsa:2048 -nodes -keyout default.key -out default.csr}$$ 
+	 Het bestand \texttt{default.csr} moet gegeven worden aan de CA, die een certificaat zal teruggeven.
+	 	
  	\textbf{ \item Zorg er nu voor dat de website geconfigureerd in het eerste puntje (http://groepXX.iii.hogent.be) enkel nog via HTTPS bereikbaar is en gebruikmaakt van dit certificaat.}
  	
  	\textbf{ \item Zorg er nu voor dat alle aanvragen naar http://groepXX.iii.hogent.be doorgestuurd worden naar https://groepXX.iii.hogent.be. Analoog voor http://test.iii.hogent.be. Test dit grondig uit!}

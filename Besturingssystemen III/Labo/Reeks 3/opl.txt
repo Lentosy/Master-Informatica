@@ -1,0 +1,173 @@
+7)
+
+	Win32_WMISetting=@
+	Win32_OperatingSystem=@
+	Win32_ComputerSystem is NIET singleton
+	CIM_LogicalDevice is NIET singleton
+	Win32_LocalTime is NIET singleton
+	Win32_CurrentTime=@
+
+9)
+
+	Access, 4 = Write Once
+	Availability, 4 = /
+	BlockSize = /
+	DriveType, 4 = Network Drive
+	StatusInfo, 4 = Disabled
+
+10) 
+	BackupEventLog = SeSecurityPrivilege, SeBackupPrivilege
+	ChangeSecurityPermissions = /
+	ClearEventLog = SeSecurityPrivilege, SeBackupPrivilege
+	GetEffectivePermission = SeSecurityPrivilege
+
+11) 	
+	GetDescriptor
+	
+
+12)
+	Verplicht:
+		Path
+		Name
+		Type
+
+	Optioneel:
+		MaximumAllowed
+		Description
+		Password
+		Access
+
+13)
+	Win32_SubDirectory, met als composite sleutel: GroupComponent (directory) en PartComponent (een subdirectory van deze directory)
+	Win32_LogicalDiskRootDirectory, met als composite sleutel: GroupComponent (de logische drive) en PartComponent (een directory)
+	Deze laatste associoterklasse bevat 4 instanties ( de verschillende harde schijven/partities )
+		
+
+14) TypeOfDependency is nergens ingevuld.
+
+
+
+
+...
+
+
+
+19)
+	select * from Win32_LogicalDisk
+
+	select *
+	from CIM_storageExtent
+	where __CLASS != "Win32_LogicalDisk"
+
+20)
+
+	select * 
+	from Win32_Directory
+	where Name = "C:\\"
+
+21)
+	select *
+	from Win32_NTLogEvent
+	where SourceName="EventLog"
+		and (EventCode=6005
+		or eventCode=6006)
+
+22)
+	select *
+	from Win32_Process
+	where WorkingSetSize >= 1000000
+		OR (
+		WriteOperationCount > ReadOperationCount
+			AND
+		ThreadCount >= 10
+		)
+
+23) 
+	Nee, er kunnen geen qualifiers gebruikt worden in de where clausule van een WQL query.
+
+24)
+
+	a) 
+		select * from meta_class
+		where __CLASS = "CIM_Service"
+	b)
+		select * from meta_class
+		where __SUPERCLASS = "CIM_Service"
+	c)
+		select * from meta_class
+		where __SUPERCLASS is null
+		
+25)
+	select *
+	from meta_class
+	where __THIS isa 'CIM_Service'
+	and __CLASS != 'CIM_Service'
+
+26)
+	associators of {Win32_Directory.Name="c:\\"}
+
+27)
+	associators of {Win32_Directory.Name="c:\\"}
+	where ClassDefsOnly
+
+28)
+	associators of {Win32_Directory.Name="C:\\"}
+	where resultclass=Win32_LogicalDisk
+
+	->
+
+	associators of {Win32_LogicalDisk.DeviceID="C:"}
+	where resultclass=Win32_DiskPartition
+
+	->
+
+	associators of {Win32_DiskPartition.DeviceID="Disk #0, Partition #0"}
+	where resultclass=Win32_DiskDrive
+
+	-> 
+
+	select TotalSectors
+	from Win32_DiskDrive
+	where DeviceID = "\\\\.\\PHYSICALDRIVE0"
+
+29)
+
+	eth0???
+
+30)
+	associators of {Win32_Directory.Name="c:\\perl64\\lib"}
+	where ClassDefsOnly 
+	-> CIM_DataFile, Win32_Directory, Win32_LogicalFileSecuritySetting 
+	
+	a)
+	associators of {Win32_Directory.Name="c:\\perl64\\lib"}
+	where resultclass=CIM_DataFile
+	resultrole=partcomponent
+
+	b)
+	associators of {Win32_Directory.Name="c:\\perl64\\lib"}
+	where resultclass=Win32_Directory
+	resultrole=partcomponent
+	
+	c)
+	associators of {Win32_Directory.Name="c:\\perl64\\lib"}
+	where resultclass=Win32_Directory
+	resultrole=groupcomponent
+
+31)
+	associators of {Win32_Directory}
+	where schemaonly
+
+32)
+	select *
+	from meta_class
+	where __THIS isa '__EVENT'
+
+
+
+35)
+	select * 
+	from __InstanceModificationEvent within 5
+	where TargetInstance isa 'Win32_Service'
+  	and PreviousInstance.Started = true
+  	and TargetInstance.Started   = false
