@@ -71,11 +71,14 @@ void Bknoop<T, D, m>::voegToe(const T & s, const D & d) {
 			index[i + 1] = index[i];
 			i--;
 		}
-
 		sleutel[i] = s;
 		data[i] = d;
-	
-
 		k++;
 	} 
 };
+
+
+template<class T, class D, unsigned int m>
+bool Bknoop<T, D, m>::isVol() {
+	return k == m;
+}

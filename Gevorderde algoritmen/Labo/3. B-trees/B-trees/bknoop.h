@@ -31,6 +31,7 @@ private:
 	blokindex geefBlokindexVoorSleutel(const T& s) const;
 	void setDataVoorSleutel(const T& s, const D& d);
 	void voegToe(const T& s, const D& d);
+	bool isVol();
 	static int crashtest;
 };
 

@@ -19,11 +19,7 @@ void Bruggen::printStructuur(std::ostream& out) const {
 		out << *it++;
 	}
 }
-/*
-std::ostringstream fout;
-fout << "Ongeldige ouderpointer bij knoop " << kind->sleutel << "\n";
-fout << " wijst niet naar " << knoop.sleutel << "\n";
-throw fout.str();*/
+
 Bruggen::Bruggen(const char * bestandsnaam) {
 	std::ifstream bestand(bestandsnaam);
 	if (!bestand.is_open()) {
@@ -52,10 +48,9 @@ void Bruggen::printOplossing(std::ostream & out) const {
 		totaleWinst += aangeslotenVerbindingen[i].opbrengst;
 		out << aangeslotenVerbindingen[i];
 	}
-	
+
 	out << "De totale opbrengst is : " << totaleWinst << " euro\n";
 }
-
 
 void Bruggen::zoekOptimaleVerbindingen() {
 	if (!verbindingen.empty()) {

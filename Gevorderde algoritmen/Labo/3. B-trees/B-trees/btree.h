@@ -18,31 +18,24 @@ public:
 		wortelindex = schijf.schrijf(wortel);
 	};
 
-
-	// Deze functie return een pair struct met:
-	// first -> de blokindex waar de sleutel zou moeten zitten
-	// second -> de index in die knoop waar de sleutel moet zitten
 	D zoek(const T& s) const;
 	void voegToe(const T& s, const D& d);
+	class iterator;
+	iterator begin();
+	iterator end();
 private:
 	Schijf<Knoop>& schijf;
 	Knoop wortel;
 	blokindex wortelindex;
 };
-#endif
 
 
-/*
-class iterator;   // voordeel: btree kan aan iterator, en iterator kan aan btree aangezien geneste klasse, basically "friend"
-iterator begin();
-iterator end();
 
 template<class T, class D, unsigned int m>
 class Btree<T, D, m>::iterator {
-public: // todo, nog implementeren
-	iterator& operator++(); // stack bijhouden van blokindexen want veel springen in boom aangezien maximum 3 knopen in geheugen
-	T* operator*();
-	bool operator==();
-	bool operator!=();
-	bool operator !();
-}*/
+	iterator& operator++();// stack bijhouden van blokindexen want veel springen in boom aangezien maximum 3 knopen in geheugen
+	bool operator==(const iterator& it) const;
+	bool operator!=(const iterator& it) const;
+};
+
+#endif

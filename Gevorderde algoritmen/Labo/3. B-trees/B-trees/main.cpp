@@ -16,7 +16,7 @@ int main(void) {
 	Schijf<Bknoop<std::string, int, GROOTTE>> schijf;
 	Btree<std::string, int, GROOTTE> boom(schijf);
 	std::ifstream input("bestand.txt");
-	int aantalwoorden = GROOTTE; // hoeveel woorden van het bestand dat we willen inlezen, voor te testen
+	int aantalwoorden = GROOTTE + 1; // hoeveel woorden van het bestand dat we willen inlezen, voor te testen
 	int woordcount = 0;
 
 	std::string woord;
@@ -35,4 +35,6 @@ int main(void) {
 		woordcount++;
 	}
 	input.close();
+
+	return 0;
 }

@@ -432,5 +432,134 @@ ivoryVM	    IN	A   192.168.70.4
  	
  \end{enumerate}
 
+\chapter{VPN}
+Voor dit labo beschik je over een host en een gateway en is het de bedoeling een verbinding te maken met de gateway en/of host van de groep op dezelfde tafel. 
+\section{Opstelling}
+ Tijdens dit labo maak je een aantal VPN-configuraties met behulp van IPSec. Je kan de SAD en de SPD instellen en configureren met het commando setkey. Neem aandachtig de man-page van dit commando door om alle mogelijkheden te leren kennen.
+
+De optie -f laat toe dat alle instellingen uit een bestand gelezen worden. Zorg ervoor dat de eerste lijnen in dat bestand als volgt zijn, zodat steeds de SAD en SPD in de kernel leeg gemaakt worden.
+\begin{lstlisting}
+spdflush;
+flush;
+\end{lstlisting}
+Voor alle opdrachten maak je gebruik van de volgende opstelling:
+
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{ipsec}
+	\caption{IPSec configuratie.}
+	\label{fig:ipsec}
+\end{figure}
+
+In deze opstelling blijven enkel de twee gateways verbonden met het bestaande netwerk via de lan0 interface, en zijn de IP-adressen 192.168.16.(aa bb) de originele IP-adressen van je toestel. De VPN-verbinding op de figuur loopt dus over het bestaande 192.168.16/24 netwerk.
+
+Maak op de gateways gebruik van wireshark om alle inkomende en/of uitgaande IP-pakketten te bekijken. Ga steeds na of de IP-pakketten over de juiste headers beschikken (ESP en/of AH) en of de payload al dan niet werd geëncrypteerd. 
+
+\section{Opgave}
+
+
+\begin{enumerate}
+	\textbf {\item Voorzie een veilige IPSec-verbinding tussen de twee clientcomputers. Test eerst uit met ESP zonder AH, daarna met AH zonder ESP.
+	Voor deze vraag maak je nog geen gebruik van een combinatie van beide of van tunneling.}
+
+ 	\hrulefill
+ 	
+ 	Verkorte notatie: x = 192.168.70.1 en y = 192.168.76.1
+ 	
+ 	Voer het commando \texttt{setkey -f bestandsnaam} uit, met \textbf{bestandsnaam} de naam van het configuratiebestand waarin volgende instellingen komen.
+ 	
+ 	\begin{itemize}
+ 		\item \textbf{ESP configuratie.}
+ 		\begin{itemize}
+ 			\item hilbert
+			\begin{lstlisting}
+spdflush; -> zit in elk bestand
+flush; -> zit in elk bestand
+add y x esp 0x01 -m transport -E des-cbc "01234567";
+add x y esp 0x02 -m transport -E des-cbc "01234567";
+spdadd y x any -P out ipsec esp/transport//require;
+spdadd x y any -P in ipsec esp/transport//require;
+ 			\end{lstlisting}
+ 			
+ 			\item fermat
+ 			
+ 			\begin{lstlisting}
+add y x esp 0x01 -m transport -E des-cbc "01234567";
+add x y esp 0x02 -m transport -E des-cbc "01234567";
+spdadd x y any -P out ipsec esp/transport//require;
+spdadd y x any -P in ipsec esp/transport//require;
+ 			\end{lstlisting}
+ 		\end{itemize}
+ 		
+ 		
+ 		
+ 		\item \textbf{AH configuratie.}
+ 		 		\begin{itemize}
+ 			\item hilbert
+ 			\begin{lstlisting}
+add y x esp 0x01 -m transport -A hmac-md5 "0123456789ABCDEF";
+add x y esp 0x02 -m transport -A hmac-md5 "0123456789ABCDEF";
+spdadd y x any -P out ipsec ah/transport//require;
+spdadd x y any -P in ipsec ah/transport//require;
+ 			\end{lstlisting}
+ 			
+ 			\item fermat
+ 			
+ 			\begin{lstlisting}
+add y x esp 0x01 -m transport -A hmac-md5 "0123456789ABCDEF";
+add x y esp 0x02 -m transport -A hmac-md5 "0123456789ABCDEF";
+spdadd x y any -P out ipsec ah/transport//require;
+spdadd y x any -P in ipsec ah/transport//require;
+ 			\end{lstlisting}
+ 		\end{itemize}
+ 	\end{itemize}
+ 	
+
+ 		
+	\textbf {\item  Voortbouwend op de vorige vraag test je nu uit of je het verkeer tussen de clients kan encrypteren en bovendien ook kunt voorzien van de nodige authenticatie. Opnieuw wordt er geen tunneling gebruikt.
+	Om dit te realiseren zijn er twee mogelijkheden, eerst encrypteren en dan authenticeren of omgekeerd. Test beide mogelijkheden uit en ga telkens na of er tussen de clients nog communicatie mogelijk is. Wanneer dit niet het geval is, maak je een schets om aan te tonen dat de uitgeteste configuratie niet kan werken.}
+	
+	\hrulefill
+	
+	De combinatie waarbij AH eerst gebruikt wordt is onmogelijk. AH zal eerst het bericht authenticeren op basis van de IP header. ESP zal deze IP header overschrijven, waardoor het onmogelijk is om de authenticatie te bevestigen. Eerst ESP, gevolgd door AH zal werken. 
+	
+	\begin{itemize}
+		\item hilbert 
+			\begin{lstlisting}
+add y x esp 0x01 -m transport -E des-cbc "01234567";
+add y x esp 0x02 -m transport -A hmac-md5 "0123456789ABCDEF";.
+spdadd y x any -P out ipsec esp/transport//require ah/transport//require;
+spdadd x y any -P in ipsec esp/transport//require ah/transport//require;
+			\end{lstlisting}
+		\item fermat 
+			\begin{lstlisting}
+add y x esp 0x01 -m transport -E des-cbc "01234567";
+add y x esp 0x012 -m transport -A hmac-md5 "0123456789ABCDEF";.
+spdadd x y any -P out ipsec esp/transport//require ah/transport//require;
+spdadd y x any -P in ipsec esp/transport//require ah/transport//require;
+			\end{lstlisting}
+	\end{itemize}
+	
+
+	
+	
+	
+	
+	\textbf {\item  Op de clientcomputers behoud je het authenticatiegedeelte in transportmode. Het is dus niet nodig om het verkeer tussen beide clients te encrypteren.
+	Tussen de gateways voorzie je nu bovendien een IPSec-tunnel. Test eerst uit met een AH-tunnel, daarna met een ESP-tunnel. Maak bij iedere opstelling een schets die aantoont of de gevraagde configuratie mogelijk is.}
+
+\hrulefill
+
+Extra notatie: a = 192.168.70.254 en b = 192.168.76.254
+	
+	\textbf {\item  Net zoals bij de vorige vraag zet je tussen de beide gateways een ESP-tunnel op. Aanvullend zorg je ervoor dat er tussen beide gateways authenticatie gebeurt in transportmode.
+	Beide clients maken nog steeds gebruik van AH in transportmode. Test grondig uit en maak opnieuw de nodige schetsen.}
+	
+	\textbf {\item  Herneem de vorige vraag maar gebruik nu de racoon-daemon voor het aanmaken van de SA's op de clients en op de gateways. Om niet vanaf nul te moeten vertrekken kan je gebruikmaken van dit configuratiebestand. Vergeet niet om het bestand /etc/racoon/psk.txt aan te vullen zodat beide eindpunten over dezelfde sleutel beschikken.
+	Ter info: wanneer er geen verkeer optreedt tussen de eindpunten, worden er door racoon geen nieuwe SA's aangemaakt! Je doet er dus goed aan om steeds een console open te houden waar je een ping stuurt naar het andere eindpunt.}
+	
+	\textbf {\item  Tot slot kan je eens nagaan wat er gebeurt als je tussen de gateways een dubbele tunnel opzet (ESP en AH in tunnelmode). Test uit in welke mate de volgorde een rol speelt en maak opnieuw een schets om na te gaan of het gevraagde enerzijds mogelijk is en anderzijds zinvol is.}
+\end{enumerate}
+
+
 \end{document}
 
