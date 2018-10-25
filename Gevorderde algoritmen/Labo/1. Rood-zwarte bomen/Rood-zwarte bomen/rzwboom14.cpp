@@ -185,9 +185,6 @@ void RZWboom<Sleutel>::inorder(
 	};
 }
 
-
-
-
 template <class Sleutel>
 void RZWboom<Sleutel>::schrijf(ostream& os) const {
 	inorder([&os](const RZWknoop<Sleutel>& knoop) {

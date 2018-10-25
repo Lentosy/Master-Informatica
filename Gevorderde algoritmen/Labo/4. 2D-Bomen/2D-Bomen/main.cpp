@@ -42,7 +42,7 @@ void Tree2DToDot(Tree2D& tree, int maxdepth) {
 int main(void) {
 	Tree2D tree;
 	populateTreeFromFile(tree, "puntenverzameling.dat");
-	Tree2DToDot(tree, 6);
+	Tree2DToDot(tree, 4);
 
 	for (int i = 0; i < 200; i += 10) {
 		for (int j = 0; j < 200; j += 10) {
@@ -50,8 +50,6 @@ int main(void) {
 			Point pointToFind = Point(i, j);
 			Point foundPoint = tree.search(pointToFind, amountVisited);
 			std::cout << pointToFind << " has neighbour " << foundPoint << ", " << amountVisited << " visited nodes\n";
-
-
 		}
 	}
 

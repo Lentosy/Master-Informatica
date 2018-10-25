@@ -30,33 +30,27 @@ void tekenBoom(RZWboom<Sleutel>& boom, bool open_bestand) {
 
 int main() {
 
-	const std::vector<int> sleutels1 = { 0, -4, 30, -5, -2, 15, 45, 8, 23, 37, 52, 4, 11, 19, 26, 34, 40, 48, 60, 1, 5, 9, 13, 16, 21, 24, 28, 31, 35, 39, 43, 46, 51, 54, 61 };
-	const std::vector<int> zwarteSleutels1 = { 0, -4, -5, -2, 15, 45, 4, 11, 19, 26, 34, 40, 48, 60 };
+	const std::vector<std::vector<int>> sleutels = {
+		{ 0, -4, 30, -5, -2, 15, 45, 8, 23, 37, 52, 4, 11, 19, 26, 34, 40, 48, 60, 1, 5, 9, 13, 16, 21, 24, 28, 31, 35, 39, 43, 46, 51, 54, 61 },
+		{ 10, 3, 15, 2, 6, 12, 18, 4, 8, 11, 13, 16, 20 },
+		{ 13, 8, 17, 1, 11, 15, 25, 6, 22, 27 }
+	};
 
-	const std::vector<int> sleutels2 = { 10, 3, 15, 2, 6, 12, 18, 4, 8, 11, 13, 16, 20 };
-	const std::vector<int> zwarteSleutels2 = { 10, 3, 2, 6, 12, 18, 11, 13, 16, 20 };
+	const std::vector<std::vector<int>> zwarteSleutels = {
+		{ 0, -4, -5, -2, 15, 45, 4, 11, 19, 26, 34, 40, 48, 60 },
+		{ 10, 3, 2, 6, 12, 18, 11, 13, 16, 20 },
+		{ 13, 1, 11, 15, 25 }
+	};
 
-	const std::vector<int> sleutels3 = { 13, 8, 17, 1, 11, 15, 25, 6, 22, 27 };
-	const std::vector<int> zwarteSleutels3 = { 13, 1, 11, 15, 25 };
-
-	RZWboom<int> boom(sleutels3, zwarteSleutels3);
+	RZWboom<int> boom(sleutels[0], zwarteSleutels[0]);
 	/*for (int i = 0; i < 3; i++) {
 		boom.voegtoe(sleutels2[i]);
 	}*/
-	try {
 
-		//boom.voegtoe(-3);
-		//boom.voegtoe(7);
-		boom.voegtoe(28);
-		
-		if (boom.repOK()) {
-			std::cout << "Representatie OK\n";
-		}
+	for (int i = 0; i < sleutels.size(); i++) {
+		RZWboom<int> boom(sleutels[i], zwarteSleutels[i]);
+		std::cout << "Representatie: " + boom.repOK() ? std::cout << "OK\n" : std::cout << "NIET OK\n";
 		tekenBoom(boom, true);
 	}
-	catch (const char * ex) {
-		std::cout << ex;
-	}
-
 	return 0;
 }

@@ -20,7 +20,7 @@ public:
 	}
 
 	friend std::ostream& operator<<(std::ostream& os, const Point p2) {
-		return os << "(" << setw(5) << p2.x << "," << setw(5) << p2.y << ")";
+		return os << "(" << setw(3) << p2.x << "," << setw(3) << p2.y << ")";
 	}
 	//opletten voor overflow!
 	unsigned int kwadafstand(const Point& p) const {
