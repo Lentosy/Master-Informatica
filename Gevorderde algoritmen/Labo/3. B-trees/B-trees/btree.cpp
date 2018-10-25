@@ -102,7 +102,7 @@ void Btree<T, D, m>::voegToe(const T& s, const D& d) {
 			k++;
 		}
 
-		broerIndex = huidigeIndex + 1;
+		broerIndex = huidigeIndex + 1; // -> klopt niet
 		huidigeIndex = gebruikteBlokIndices.top();
 		gebruikteBlokIndices.pop();
 

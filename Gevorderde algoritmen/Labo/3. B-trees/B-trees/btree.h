@@ -20,6 +20,10 @@ public:
 
 	D zoek(const T& s) const;
 	void voegToe(const T& s, const D& d);
+	
+	
+	
+	
 	class iterator;
 	iterator begin();
 	iterator end();
