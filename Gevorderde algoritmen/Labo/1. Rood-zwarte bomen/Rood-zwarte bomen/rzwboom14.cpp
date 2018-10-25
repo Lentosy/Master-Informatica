@@ -49,24 +49,25 @@ void RZWboom<Sleutel>::herstelboom() {
 
 
 	RZWknoop<Sleutel>* p = this->get()->ouder;
-	if (!p) { // de huidige knoop is de wortel
+	if (!p) { // de huidige knoop is de wortel, gewoon de kleur zwart maken
 		this->zetKleur(RZWkleur::zwart);
 		return;
 	}
 	RZWknoop<Sleutel>* g = p->ouder;
-	if (!g) { // de huidige knoop is een kind van de wortel, herkleuring is niet nodig.
-		return;
-	}
+
+	if (!g) return; // de huidige knoop is een kind van de wortel, herkleuring is niet nodig.
 
 	// instellen belangrijke switches
 	bool p_is_zwart = p->kleur == RZWkleur::zwart;
 	bool p_is_linkerkind_van_g = p->sleutel < g->sleutel;
 	RZWknoop<Sleutel>* b = g->geefKind(!p_is_linkerkind_van_g).get();
-	bool b_is_zwart = g->geefKind(!p_is_linkerkind_van_g)->kleur == RZWkleur::zwart;
+	bool b_is_zwart = !b ? true
+		: g->geefKind(!p_is_linkerkind_van_g)->kleur == RZWkleur::zwart;
+
 	bool c_ligt_aan_binnenkant;
 
-	c_ligt_aan_binnenkant = p_is_linkerkind_van_g ?	this->get()->sleutel > p->sleutel
-											      : this->get()->sleutel < p->sleutel;
+	c_ligt_aan_binnenkant = p_is_linkerkind_van_g ? this->get()->sleutel > p->sleutel
+		: this->get()->sleutel < p->sleutel;
 
 	if (!p_is_zwart) {  // indien p zwart is kunnen we zonder problem een rode
 						// knoop toevoegen, is dit echter niet het geval moeten we
@@ -78,35 +79,25 @@ void RZWboom<Sleutel>::herstelboom() {
 			g->geefBoomVanKnoop()->herstelboom();
 		}
 		else {  // b is zwart
-		 //hier maakt de positie van p uit
-			if (p_is_linkerkind_van_g) { // p is het linkerkind van g
-				if (c_ligt_aan_binnenkant) { // c ligt aan de binnenkant
-					p->geefBoomVanKnoop()->roteer(true);
-					c_ligt_aan_binnenkant = false;
-				}
 
-				if (!c_ligt_aan_binnenkant) { // c ligt aan de buitenkant (dus de drie knopen c, p en g liggen op een rij)
-					g->geefBoomVanKnoop()->roteer(false);
-					g->kleur = RZWkleur::rood;
-					p->kleur = RZWkleur::zwart;
-				}
+			// indien c aan de binnenkant ligt, moet geroteerd worden zodat deze aan de buitenkant ligt met als gevolg dat de 3 knopen g, p en c op een rij liggen
+			if (c_ligt_aan_binnenkant) {
+				p->geefBoomVanKnoop()->roteer(p_is_linkerkind_van_g);
+				c_ligt_aan_binnenkant = false;
 			}
-			else { // p is het rechterkind van g
-				if (c_ligt_aan_binnenkant) { // c ligt aan de binnenkant
-					p->geefBoomVanKnoop()->roteer(false);
-					c_ligt_aan_binnenkant = false;
-				}
 
-				if (!c_ligt_aan_binnenkant) { // c ligt aan de buitenkant (dus de drie knopen c, p en g liggen op een rij)
-					g->geefBoomVanKnoop()->roteer(true);
-					g->kleur = RZWkleur::rood;
-					p->kleur = RZWkleur::zwart;
-				}
+			// de vorige stap moet altijd gevolgd worden door deze stap, maar deze stap kan ook onafhankelijk van de vorige stap voorkomen.
+			if (!c_ligt_aan_binnenkant) { // de 3 knopen liggen nu op een rij
+				g->geefBoomVanKnoop()->roteer(!p_is_linkerkind_van_g);
+				g->kleur = RZWkleur::rood;
+				p->kleur = RZWkleur::zwart;
 			}
 		}
 	}
 }
 
+
+// zal falen indien 'this' de wortel is
 template<class Sleutel>
 RZWboom<Sleutel>* RZWknoop<Sleutel>::geefBoomVanKnoop() {
 	if (this->ouder) {
@@ -121,6 +112,8 @@ RZWboom<Sleutel>* RZWknoop<Sleutel>::geefBoomVanKnoop() {
 		return nullptr; // foutief
 	}
 }
+
+#pragma region Onbelangrijke functies
 
 template <class Sleutel>
 int RZWboom<Sleutel>::geefZwarteDiepte() const {
@@ -168,6 +161,7 @@ bool RZWboom<Sleutel>::repOK() const {
 	return ok;
 }
 
+#pragma endregion
 
 #pragma region Gegeven Functies
 

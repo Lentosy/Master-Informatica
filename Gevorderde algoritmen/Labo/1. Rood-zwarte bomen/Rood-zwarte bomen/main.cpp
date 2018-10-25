@@ -22,7 +22,7 @@ void tekenBoom(RZWboom<Sleutel>& boom, bool open_bestand) {
 	}
 
 	if (open_bestand) {
-		system((bestandsnamen[0].substr(0, bestandsnamen[0].length() - 3 ) + "png").c_str());
+		system((bestandsnamen[0].substr(0, bestandsnamen[0].length() - 3) + "png").c_str());
 	}
 	huidigeBoom++;
 }
@@ -36,18 +36,25 @@ int main() {
 	const std::vector<int> sleutels2 = { 10, 3, 15, 2, 6, 12, 18, 4, 8, 11, 13, 16, 20 };
 	const std::vector<int> zwarteSleutels2 = { 10, 3, 2, 6, 12, 18, 11, 13, 16, 20 };
 
-	RZWboom<int> boom(sleutels1, zwarteSleutels1);
+	const std::vector<int> sleutels3 = { 13, 8, 17, 1, 11, 15, 25, 6, 22, 27 };
+	const std::vector<int> zwarteSleutels3 = { 13, 1, 11, 15, 25 };
+
+	RZWboom<int> boom(sleutels3, zwarteSleutels3);
 	/*for (int i = 0; i < 3; i++) {
 		boom.voegtoe(sleutels2[i]);
 	}*/
 	try {
+
+		//boom.voegtoe(-3);
+		//boom.voegtoe(7);
+		boom.voegtoe(28);
+		
 		if (boom.repOK()) {
 			std::cout << "Representatie OK\n";
-			//boom.voegtoe(-3);
-			//boom.voegtoe(6);
-			tekenBoom(boom, true);
 		}
-	} catch (const char * ex) {
+		tekenBoom(boom, true);
+	}
+	catch (const char * ex) {
 		std::cout << ex;
 	}
 
