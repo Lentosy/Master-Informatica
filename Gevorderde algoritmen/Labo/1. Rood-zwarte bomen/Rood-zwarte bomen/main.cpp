@@ -44,7 +44,7 @@ int main() {
 		if (boom.repOK()) {
 			std::cout << "Representatie OK\n";
 			//boom.voegtoe(-3);
-			boom.voegtoe(6);
+			//boom.voegtoe(6);
 			tekenBoom(boom, true);
 		}
 	} catch (const char * ex) {
