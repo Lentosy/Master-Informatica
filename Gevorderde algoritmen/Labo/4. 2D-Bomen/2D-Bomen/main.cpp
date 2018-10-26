@@ -21,15 +21,12 @@ void testTree() {
 
 void populateTreeFromFile(Tree2D& tree, const char * filename) {
 	std::ifstream in(filename);
-
 	int x, y;
-	while (!in.eof()) {
+	while (in.good()) {
 		in >> x >> y;
 		tree.add(Point(x, y));
 	}
-
 	in.close();
-
 }
 
 void Tree2DToDot(Tree2D& tree, int maxdepth) {
@@ -42,16 +39,14 @@ void Tree2DToDot(Tree2D& tree, int maxdepth) {
 int main(void) {
 	Tree2D tree;
 	populateTreeFromFile(tree, "puntenverzameling.dat");
-	Tree2DToDot(tree, 4);
-
+	Tree2DToDot(tree, 5);
 	for (int i = 0; i < 200; i += 10) {
 		for (int j = 0; j < 200; j += 10) {
 			int amountVisited = 0;
 			Point pointToFind = Point(i, j);
-			Point foundPoint = tree.search(pointToFind, amountVisited);
-			std::cout << pointToFind << " has neighbour " << foundPoint << ", " << amountVisited << " visited nodes\n";
+			Point foundPoint = tree.searchClosest(pointToFind, amountVisited);
+			std::cout << pointToFind << " => " << foundPoint << " ( " << amountVisited << " visited nodes)\n";
 		}
 	}
-
 	return 0;
 }

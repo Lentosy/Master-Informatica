@@ -5,8 +5,29 @@
 #include <fstream>
 #include <sstream>
 
-Point Tree2D::search(const Point& point, int& amountVisited) const {
-	return (*this)->point; // placeholder
+Point Tree2D::searchClosest(const Point& point, int& amountVisited) {
+	Point best = (*this)->point;
+	int level = 0;
+	searchClosestRecursive(point, best, amountVisited, level);
+	return best;
+}
+
+void Tree2D::searchClosestRecursive(const Point& searchPoint, Point& best, int& amountVisited, int level) {
+	
+}
+
+Tree2D* Tree2D::search(const Point & point) {
+	if (!*this) return nullptr; // boom is ledig
+
+	Tree2D* current = this;
+	bool xAlignment = true;
+
+	while (*current && (*current)->point != point) {
+		xAlignment
+			? current = &((*current)->giveChild(((*current)->point.x > point.x)))
+			: current = &((*current)->giveChild(((*current)->point.y > point.y)));
+	}
+	return current;
 }
 
 void Tree2D::add(const Point & point) {
@@ -15,27 +36,13 @@ void Tree2D::add(const Point & point) {
 		return;
 	}
 
-	Tree2D* current = this;
-	bool xAlignment = true;
-
-	while (*current && (*current)->point != point) {
-		if (xAlignment) { // xAlignment:true = vergelijk de x-waarden om te beslissen of het punt in het linkerdeel of rechterdeel zit
-			current = &((*current)->giveChild(((*current)->point.x > point.x)));
-			xAlignment = false;
-		}
-		else { //  xAlignment:false = vergelijk de y-waarden om te beslissen of het punt in het bovendeel of onderdeel zit
-			current = &((*current)->giveChild(((*current)->point.y > point.y)));
-			xAlignment = true;
-		}
-	}
-
+	Tree2D* current = search(point);
 	// in geval dat de punten gelijk zijn, moet de rechterknoop ingevuld worden,
 	// maar deze rechterknoop kan al ingevuld zijn met hetzelfde punt.
 	// Dus blijven het rechterkind nemen todat we ergens een nullptr tegenkomen
 	while (*current && (*current)->point == point) {
 		current = &((*current)->giveChild(false));
 	}
-	
 	(*current) = std::make_unique<Node2D>(point);
 }
 
@@ -74,6 +81,8 @@ std::string Tree2D::drawrecursive(std::ostream& os, int& nullcounter, int maxdep
 	};
 	return rootstring.str();
 }
+
+
 
 
 void Tree2D::print(std::ostream& os) const {
