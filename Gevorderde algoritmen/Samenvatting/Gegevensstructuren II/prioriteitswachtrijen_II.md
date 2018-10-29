@@ -50,3 +50,11 @@
 * Een binomiaalboom wordt voorgesteld door een gewone binaire boom.
 * Een knoop bevat wijzers naar zijn linkerkind en rechterbroer.
 ## Pairing heaps
+* Algemene boom waarvan de sleutels voldoen aan de heapvoorwaarde.
+* Binaire boomvoorstelling: elke knoop bevat een wijzer naar zijn linkerkind en rechterbroer
+
+#### Operaties
+* **PRIORITEIT WIJZIGEN**: Na de wijziging moet er nagegaan worden of de heapvoorwaarde stil voldaan is. Koppel de gewijzigde knoop (en dus zijn deelbomen) los van de heap, en voeg deze samen met de oorspronkelijke heap.  
+* **SAMENVOEGEN**: De wortel met het grootste element wordt het linkerkind van deze met het kleinste element.
+* **TOEVOEGEN**: Speciaal geval van samenvoegen.
+* **MINIMUM VERWIJDEREN**: Verwijder de wortel, en voeg beide kinderen samen.
