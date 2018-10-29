@@ -5,15 +5,58 @@
 #include <fstream>
 #include <sstream>
 
-Point Tree2D::searchClosest(const Point& point, int& amountVisited) {
-	Point best = (*this)->point;
-	int level = 0;
-	searchClosestRecursive(point, best, amountVisited, level);
+
+
+/// Constructor that takes a file containing an x and y value per line
+Tree2D::Tree2D(const char * filename) {
+	std::ifstream in(filename);
+	int x, y;
+	while (in.good()) {
+		in >> x >> y;
+		add(Point(x, y));
+	}
+	in.close();
+}
+
+Point Tree2D::nearestNeighbourSearch(const Point& point, int& amountVisited) {
+	Point best;
+	nearestNeighbourSearchRecursive(point, best, amountVisited, true);
 	return best;
 }
 
-void Tree2D::searchClosestRecursive(const Point& searchPoint, Point& best, int& amountVisited, int level) {
+void Tree2D::nearestNeighbourSearchRecursive(const Point& searchPoint, Point& best, int& amountVisited, bool xAlignment) {
+	if (!*this) return;
+
+	amountVisited++;
+
+	unsigned int bestDistance = best.quadDistance(searchPoint);
+
+	if ((*this)->point.quadDistance(searchPoint) < bestDistance) {
+		best = (*this)->point;
+	}
+
 	
+	// bepaal volgende knoop op basis van alignment en afhankelijk ofdat het zoekpunt links of rechts zal zitten
+	Tree2D* next;
+	xAlignment
+		? next = &((*this)->giveChild(searchPoint.x < (*this)->point.x))
+		: next = &((*this)->giveChild(searchPoint.y < (*this)->point.y));
+
+	next->nearestNeighbourSearchRecursive(searchPoint, best, amountVisited, !xAlignment);
+
+	unsigned int a = 0;
+	xAlignment
+		? a = ((*this)->point.x - searchPoint.x)
+		: a = ((*this)->point.y - searchPoint.y);
+
+	a *= a;
+
+	if (a < bestDistance) {
+		xAlignment // inverse keuze maken nu, indien zoekpunt in linkerdeelboom zou zitten, bekijken we nu rechterdeelboom
+			? next = &((*this)->giveChild(!(searchPoint.x < (*this)->point.x)))
+			: next = &((*this)->giveChild(!(searchPoint.y < (*this)->point.y)));
+		next->nearestNeighbourSearchRecursive(searchPoint, best, amountVisited, !xAlignment);
+	}
 }
 
 Tree2D* Tree2D::search(const Point & point) {
@@ -24,11 +67,14 @@ Tree2D* Tree2D::search(const Point & point) {
 
 	while (*current && (*current)->point != point) {
 		xAlignment
-			? current = &((*current)->giveChild(((*current)->point.x > point.x)))
-			: current = &((*current)->giveChild(((*current)->point.y > point.y)));
+			? current = &((*current)->giveChild((*current)->point.x > point.x))
+			: current = &((*current)->giveChild((*current)->point.y > point.y));
 	}
 	return current;
 }
+
+
+
 
 void Tree2D::add(const Point & point) {
 	if (!*this) { // huidige boom is ledig
@@ -74,16 +120,13 @@ std::string Tree2D::drawrecursive(std::ostream& os, int& nullcounter, int maxdep
 		rootstring << '"' << (*this)->point << '"';
 		os << rootstring.str() << "[label=\"" << (*this)->point << "\"]";
 		os << ";\n";
-		std::string linkskind = (*this)->left.drawrecursive(os, nullcounter, --maxdepth);
-		std::string rechtskind = (*this)->right.drawrecursive(os, nullcounter, --rightMaxDepth);
-		os << rootstring.str() << " -> " << linkskind << ";\n";
-		os << rootstring.str() << " -> " << rechtskind << ";\n";
+		std::string leftchild = (*this)->left.drawrecursive(os, nullcounter, --maxdepth);
+		std::string rightchild = (*this)->right.drawrecursive(os, nullcounter, --rightMaxDepth);
+		os << rootstring.str() << " -> " << leftchild << ";\n";
+		os << rootstring.str() << " -> " << rightchild << ";\n";
 	};
 	return rootstring.str();
 }
-
-
-
 
 void Tree2D::print(std::ostream& os) const {
 	inorder([&os](const Node2D& node) {
@@ -111,7 +154,6 @@ void Tree2D::inorder(std::function<void(const Node2D&)> visit) const {
 	}
 }
 
-Tree2D & Node2D::giveChild(bool leftchild)
-{
+Tree2D & Node2D::giveChild(bool leftchild) {
 	return leftchild ? this->left : this->right;
 }

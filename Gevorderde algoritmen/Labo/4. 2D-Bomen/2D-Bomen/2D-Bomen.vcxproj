@@ -128,6 +128,9 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Tree2D.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="puntenverzameling.dat" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

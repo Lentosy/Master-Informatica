@@ -23,7 +23,7 @@ public:
 		return os << "(" << setw(3) << p2.x << "," << setw(3) << p2.y << ")";
 	}
 	//opletten voor overflow!
-	unsigned int kwadafstand(const Point& p) const {
+	unsigned int quadDistance(const Point& p) const {
 		return (p.x - x)*(p.x - x) + (p.y - y)*(p.y - y);
 	}
 };
