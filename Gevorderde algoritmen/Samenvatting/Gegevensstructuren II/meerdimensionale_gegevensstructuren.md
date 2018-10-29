@@ -25,7 +25,7 @@
 ### k-d trees
 * Binaire boom
 * Een inwendige knoop bevat 1 punt, dat de zoekruimte verdeelt in slechts één dimensie.
-* Ideale opsplitings bestaat uit gelijkmatige verdeling van dimensies.
+* Ideale opspliting bestaat uit gelijkmatige verdeling van dimensies.
 * Indien punten gekend => evenwichtige k-d tree met hoogte <a href="http://www.codecogs.com/eqnedit.php?latex=O(\lg&space;n)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?O(\lg&space;n)" title="O(\lg n)" /></a> is mogelijk met constructietijd <a href="http://www.codecogs.com/eqnedit.php?latex=O(kn\lg&space;n)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?O(kn\lg&space;n)" title="O(kn\lg n)" /></a>
 * Gemiddelde hoogte van <a href="http://www.codecogs.com/eqnedit.php?latex=O(\lg&space;n)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?O(\lg&space;n)" title="O(\lg n)" /></a> in beste geval en <a href="http://www.codecogs.com/eqnedit.php?latex=O(n)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?O(n)" title="O(n)" /></a> in slechtste geval. 
 * Geen rotaties van deelbomen of verwijderen van knopen mogelijk door dimensies. Wel eventueel knopen markeren als **deleted** (lazy deletion) en deelbomen **reconstrueren**.
