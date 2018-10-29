@@ -42,5 +42,11 @@
 #### Operaties
 * **MINIMUM VINDEN**: Overloop alle wortels van elke boom in het bos. Het minimum zal één van deze wortels zijn.
 * **SAMENVOEGEN**: Bomen met dezelfde hoogte "optellen". De opteloperatie maakt de wortel met de grootste sleutel kind van deze met de kleinste. Het resultaat is een boom <a href="http://www.codecogs.com/eqnedit.php?latex=B_{h&space;&plus;&space;1}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?B_{h&space;&plus;&space;1}" title="B_{h + 1}" /></a>. Samenvoegen van twee binomiaalbomen is <a href="http://www.codecogs.com/eqnedit.php?latex=O(1)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?O(1)" title="O(1)" /></a>. Samenvoegen van twee binomiaalqueues is dus <a href="http://www.codecogs.com/eqnedit.php?latex=O(\lg&space;n)" target="_blank"><img src="http://latex.codecogs.com/gif.latex?O(\lg&space;n)" title="O(\lg n)" /></a>. 
+* **TOEVOEGEN**: Speciaal geval van samenvoegen, waarbij één van de bomen slechts uit één knoop bestaat.
+* **MINIMUM VERWIJDEREN**: Zoek de binomiaalboom met het kleinste wortelelement, verwijder deze uit de queue. Verwijder nu de wortel uit de gevonden boom
 
+#### Implementatie
+* Bos wordt voorgesteld door tabel van binomiaalbomen.
+* Een binomiaalboom wordt voorgesteld door een gewone binaire boom.
+* Een knoop bevat wijzers naar zijn linkerkind en rechterbroer.
 ## Pairing heaps
