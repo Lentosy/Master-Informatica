@@ -561,5 +561,141 @@ Extra notatie: a = 192.168.70.254 en b = 192.168.76.254
 \end{enumerate}
 
 
+\chapter{PGP}
+Dit labo voer je elk afzonderlijk uit op je eigen \textbf{virtuele machine}, dus niet in groep. Maak op je VM drie gewone gebruikers aan: \textit{pgp1, pgp2} en \textit{pgp3}. Alle vollgende opdrachten voer je uit als één van deze gebruikers.
+\section{Sleutelbeheer}
+	\begin{figure}[h]
+	\includegraphics[width=\textwidth]{keyrings}
+	\caption{Keyrings}
+	\label{fig:keyrings}
+\end{figure}
+\subsection{Aanmaken sleutels}
+\textbf{Maak voor gebruiker \textit{pgp1} drie sleutelparen aan (RSA and RSA, DSA en RSA). Voor gebruikers \textit{pgp2} en \textit{pgp3} maak je telkens twee sleutelparen aan; een RSA and RSA sleutelpaar en een DSA-sleutelpaar. Zorg er voor dat elke sleutel een verschillend ID heeft die de naam van de gebruiker bevat alsook de encryptiemethode. Kies een verschillende geldigheidsperiode voor de sleutels.}
+
+
+	 Indien gpg nog niet geïnstalleerd is :
+	$$\texttt{yum install gpg}$$
+	Het kan zijn dat hij de mirrors niet kan resolven, clear de cache dan:
+	$$\texttt{yum clean all}$$
+	Installeer ook de rng-tools om entropy te genereren:
+	$$\texttt{yum install rng-tools}$$
+	In de virtual machine kan je nieuwe terminals openen via CTRL + $\vert$ F1 $\vert$ F2 $\vert$ F3 $\vert$ ... $\vert$ F7. Log in op deze verschillende terminals als de drie gebruiker accounts. Behou ook nog een terminal voor de root gebruiker (CTRL + F1 voor root bijvoorbeeld). Run het commando rng-tools in de voorgrond, zodat het random activiteit zal blijven genereren, dit is nodig bij het genereren van sleutels:
+	$$\texttt{/usr/sbin/rngd -f -r /dev/urandom}$$
+	
+	Een sleutel genereren kan met 
+	$$\texttt{gpg --gen-key}$$
+	Als \textit{pgp1} doe je dit drie keer, telkens met een verschillend algoritme. Als \textit{pgp2} en \textit{pgp3} twee keer: eens met DSA en dan met RSA. 
+\begin{itemize}
+	\item \textbf{Waarvoor dient de passphrase?} De passphrase dient om de private sleutel te beschermen. Sommige acties op sleutels vereisen ook deze passphrase.
+	\item \textbf{Waarom wordt er bij het aanmaken van een sleutel soms naar extra toetsaanslagen gevraagd en soms ook niet?} GPG maakt gebruik van activiteiten zoals toestaanslagen en muisbewegingen (systeemactiviteiten) om entropy te genereren. Gelukkig kan dit vermeden worden door \textit{rngd} te gebruiken.
+	\item \textbf{Wat is het verschil tussen "RSA and RSA" en "DSA and Elgamal"?}
+\subsection{Exporteren en uitwisselen sleutels}
+\textbf{Exporteer al je publieke sleutels naar meerdere bestanden die je aan andere gebruikers kan aanbieden. Exporteer deze in 2 verschillende formaten, waarvan er één geschikt is voor transport via e-mail of publicatie op een webserver.}
+
+Gebruik het volgende commando om één enkele sleutel te exporteren. De variabele \texttt{UNIEKE\_NAAM} bevat een identificatie van de sleutel (bv op basis van Real Name en Comment, of gewoon het ID van de sleutel). 
+$$\texttt{gpg --export UNIEKE\_NAAM --output \textasciitilde/outputnaam}$$
+Voor leesbare exports gebruik je de \texttt{--armor} optie:
+$$\texttt{gpg --armor --export UNIEKE\_NAAM --output \textasciitilde/outputnaam}$$
+Het is ook mogelijk om alle sleutels direct te exporten, door geen argument mee te geven aan \texttt{--export}:
+$$\texttt{gpg --export --output \textasciitilde/outputnaam}$$
+\textbf{Wat is het formaat van deze bestanden?} Zonder de \texttt{--armor} optie hebben de exportbestanden een binair formaat. Deze bestanden uitprinten op een terminal heeft dan ook geen nut. Met de \texttt{--armor} optie ziet het er bijvoorbeeld als volgt uit (ingekort):
+\begin{lstlisting}
+-----BEGIN PGP PUBLIC KEY BLOCK-----
+Version: GnuPG v1.2.1 (GNU/Linux)
+Comment: For info see http://www.gnupg.org
+
+mQGiBDkHP3URBACkWGsYh43pkXU9wj/X1G67K8/DSrl85r7dNtHNfLL/ewil10k2
+q8saWJn26QZPsDVqdUJMOdHfJ6kQTAt9NzQbgcVrxLYNfgeBsvkHF/POtnYcZRgL
+=BMEc
+-----END PGP PUBLIC KEY BLOCK-----
+\end{lstlisting}
+
+\textbf{Wissel deze bestanden uit met de andere gebruikers (bv. door ze in een gedeelde directory te plaatsen). We gaan er op dit ogenblik van uit dat sleutels die op deze manier zijn verkregen, volledig te vertrouwen zijn.} 
+
+De eenvoudigste manier is om als root gebruiker de bestanden te kopieëren naar de root folder van elke gebruiker (gebruik hiervoor de terminal die voor de root gebruiker beschikbaar is).
+$$\texttt{cp /home/pgp1/exportbestand /home/pgp2/exportbestand\_pgp1}$$
+\end{itemize}
+
+\subsection{Toevoegen sleutels}
+\textbf{Voeg voor elke gebruiker de verkregen publieke sleutels toe aan zijn publieke sleutelhanger. Verifieer of ze wel zijn opgenomen.}
+
+Een sleutel importeren kan met 
+$$\texttt{gpg --import bestandsnaam}$$
+Dit commando zal ook specificeren hoeveel publieke sleutels er zijn toegevoegd. Om een lijst van alle sleutels op te vragen gebruik je
+$$\texttt{gpg --list-key}$$
+
+\textbf{Verwijder één van de sleutels uit de sleutelhanger. Controleer en voeg de sleutel nadien weer toe.}
+
+Een sleutel verwijderen kan met 
+$$\texttt{gpg --delete-key sleutelID}$$
+
+\subsection{Wijzigen sleutels}
+\textbf{Wijzig één van de sleutels: verander de passeerzin.}
+Een sleutel wijzigen kan met
+$$\texttt{gpg --edit-key sleutelID}$$
+Na het uitvoeren van dit commando zit je in een menu. Met \textit{help} kan je alle mogelijke opties ophalen. Een passphrase veranderen kan met \textit{passwd}.
+
+\subsection{Vertrouwen sleutels}
+\begin{itemize}
+	\item \textbf{Controleer de sleutels en de handtekeningen die er bij horen.}
+	\item \textbf{Verifieer de fingerprint van de sleutels bij de verschillende gebruikers.}
+	
+	Gebruik \texttt{gpg --verify sleutelID}
+	\item \textbf{Zorg er voor dat al de sleutels in de sleutelhangers volledig vertrouwd worden, indien dit nog niet het geval zou zijn.}
+	
+	Een sleutel vertrouwen kan terug met \texttt{gpg --edit-key sleutelID}.
+	In het menu gebruik je nu \texttt{trust}, en geef je ultimate trust aan elke sleutel. Hiervoor moet dus elke keer het gpg commando met de \texttt{--edit-key} optie uitgevoerd worden voor elke sleutel.
+	\item \textbf{Teken voor elke gebruiker de eigen sleutels en die van de andere gebruikers van wie de sleutel vertrouwd wordt.}
+	
+	Gebruik hiervoor de \texttt{sign} optie in de \texttt{--edit-key} menu.
+\end{itemize}
+
+\section{Encrypteren en decrypteren van bestanden}
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{encrypting}
+	\caption{Encryptie.}
+	\label{fig:encrypting}
+\end{figure}
+\subsection{Lokaal encrypteren en decrypteren}
+\textbf{Maak als gebruiker \textit{pgp1} vijf korte tekstbestanden aan om ze nadien aan de andere gebruikers over te maken. Encrypteer deze bestanden als volgt: }
+\begin{enumerate}
+	\item \textbf{het eerste bestand encrypteer je door middel van conventionele encryptie op twee manieren:
+		de eerste keer met het default algoritme,
+		de tweede keer geef je zelf het algoritme op (bv. AES256). }
+	Het default algoritme is CAST5. Het volgende commando zal een bestand encrypteren met dit algoritme:
+	$$\texttt{gpg --encrypt bestand1}$$
+	Er zal een prompt komen voor User IDs, laat dit voorlopig leeg. Het uitvoerbestand zal \texttt{bestand1.gpg} zijn. Dit zullen ook de bestanden zijn die moeten verzonden worden over een netwerk naar de begunstigde.
+	
+	
+	Zelf aan algoritme meegeven kan met de \texttt{--cipher-algo} optie:
+	$$\texttt{gpg --encrypt --cipher-algo AES256 bestand1}$$
+	
+	\item \textbf{het tweede bestand encrypteer je zodat alleen gebruiker pgp2 het bestand kan decrypteren.}
+	
+	Hier wordt ervan uitgegaan dat de naam van de sleutels van de gebruiker pgp2, zelf ook de string "pgp2" bevatten.
+	$$\texttt{gpg --encrypt --recipient pgp2 bestand2}$$
+	
+	\item \textbf{het derde bestand encrypteer je zodat dit door gebruikers pgp2 en pgp3 kan ontcijferd en gelezen worden. Zorg dat de encryptie met een ander dan het default algoritme gebeurt.}
+	$$\texttt{gpg --encrypt --cipher-algo AES256 bestand3}$$
+	Vul nu in de prompt twee User IDs in, namelijk die van pgpp2 en pgp3 (op aparte lijnen).
+	
+	\item \textbf{het vierde bestand encrypteer je zodat gebruiker pgp2 hem niet zonder meer kan opslaan op zijn vaste schijf.}
+	
+	???
+	
+	\item \textbf{het vijfde bestand encrypteer je conventioneel maar het resultaat is in radix64.}
+\end{enumerate}
+
+\textbf{Veeg de originele plaintextbestanden uit. Probeer nu de plaintext te herstellen uitgaande van de ciphertext van elk bestand. Controleer wat er al dan niet nog kan gebeuren}
+
+\subsection{Remote decrypteren}
+\textbf{Wissel al de geëncrypteerde bestanden uit met de gebruikers pgp2 en pgp3. Decrypteer alle ontvangen bestanden. Beschrijf in elk van de gevallen wat er gebeurt.}
+Een bestand decrypteren kan met:
+$$\texttt{gpg --decrypt bestandsnaam}$$
+Indien dit bestand bedoeld was voor de huidige gebruiker, dan zal hij deze kunnen decrypteren, en zal de inhoud van het bestand naar de console geschreven worden. Is dit niet zo zal er een foutmelding komen dat de juiste sleutel niet beschikbaar is.
+
+\section{Sleutelbeheer}
+
+
 \end{document}
 
