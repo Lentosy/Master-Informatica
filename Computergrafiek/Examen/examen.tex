@@ -344,9 +344,105 @@
 	\chapter{Informatie derde vraag}
 	Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over één of enkele van volgende onderwerpen:
 	\begin{itemize}
-		\vraag{\accentuate{(1-3)} de Casteljau constructie (van een punt met specifieke parameterwaarde) van een Bézier kromme}{ 	\todo{oplossen}}
-		\vraag{\accentuate{(1)} verhoging van de graad van Bézier splines (in één enkele stap); voorafgaand moet het verband tussen de \textit{oude} en de \textit{nieuwe} controlepunten opgesteld worden (vermenigvuldiging met een specifieke matrix, cfr. theorieles)}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
-		\vraag{\accentuate{(2)} verhoging van de graad van Bézier splines (\textit{stapsgewijs}: één graad verhogen per stap)}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
+		\vraag{\accentuate{(1-3)} de Casteljau constructie (van een punt met specifieke parameterwaarde) van een Bézier kromme}{
+		\begin{itemize}
+			\item Gegeven volgende inputgegevens:
+			\begin{figure}[h]
+				\centering
+				\includegraphics[width=0.4\textwidth]{decasteljau_constructie}
+			\end{figure}
+			Stel de casteljauconstructie op voor t=0,3; t=0,6 en t=0,9 op. Teken ook de kromme.
+			
+			\item Eerst algemene constructie opstellen: \todo{lol, te moeilijk om op pc te doen, maar zoals Fig 3.24 op pagina 44 cursurs}
+				Uiteindelijke uitkomst:
+				\begin{figure}[!tbp]
+					\centering
+					\begin{minipage}[b]{0.3\textwidth}
+						\includegraphics[width=\textwidth]{decasteljau_constructie_t3}
+						\caption{t = 0,3}
+					\end{minipage}
+					\hfill
+					\begin{minipage}[b]{0.3\textwidth}
+						\includegraphics[width=\textwidth]{decasteljau_constructie_t6}
+						\caption{t = 0,6}
+					\end{minipage}
+				\hfill
+				\begin{minipage}[b]{0.3\textwidth}
+					\includegraphics[width=\textwidth]{decasteljau_constructie_t9}
+					\caption{t = 0,9}
+				\end{minipage}
+				\end{figure}
+
+		\end{itemize}
+	
+		}
+	
+		\newpage
+		\vraag{\accentuate{(1)} verhoging van de graad van Bézier splines (in één enkele stap); voorafgaand moet het verband tussen de \textit{oude} en de \textit{nieuwe} controlepunten opgesteld worden (vermenigvuldiging met een specifieke matrix, cfr. theorieles)}{
+		\begin{itemize} 
+			Eerst algemene formule (niet te kennen):
+			Een verhoging van de graad kan eenvoudig uitgevoerd worden met een matrix, waarin de coëfficiënten van Pascal instaan. Hier uitgewerkt om een Bézier kromme van graad 4 te verhogen naar graad 7, in één enkele stap:
+			$$
+			\begin{pmatrix}
+			1 & 0 & 0  & 0\\ 
+			1 & 1 & 0  & 0 \\ 
+			1 & 2 & 1  & 0\\ 
+			1 & 3 & 3  & 1\\ 
+			0 & 4 & 6  & 4\\ 
+			0 & 0 & 10 & 10\\ 
+			0 & 0 & 0  & 20
+			\end{pmatrix}
+			\rightarrow
+			\begin{pmatrix}
+			20 & 0  & 0  & 0\\ 
+			10 & 10 & 0  & 0\\ 
+			4  & 6  & 4  & 0\\ 
+			1  & 3  & 3  & 1\\ 
+			0  & 1  & 2  & 1\\ 
+			0  & 0  & 1  & 1\\ 
+			0  & 0  & 0  & 1
+			\end{pmatrix}
+			\rightarrow
+			\begin{pmatrix}
+			20 & 0  & 0  & 0\\ 
+			10 & 10 & 0  & 0\\ 
+			4  & 12 & 4  & 0\\ 
+			1  & 9  & 9  & 1\\ 
+			0  & 4  & 12 & 4\\ 
+			0  & 0  & 10 & 10\\ 
+			0  & 0  & 0  & 20
+			\end{pmatrix}
+			$$
+			Elke kolom stelt één van de originele 4 punten voor. Een punt $P_i$ kan hieruit afgeleidt worden door op de $i$-de rij, de som van 
+			de producten van het originele punt met de factor voor die kolom te berekenen, en deze som te delen door $\binom{m}{n}$. In dit geval is $m = 7$ en $n = 4$, zodat $\binom{7}{4} = \frac{7!}{4! 3!} = 35$. De zeven punten worden dus:
+			\begin{itemize}
+				\item $P_0 = \frac{1}{35} (20P_0 + 0P_1  + 0P_2  + 0P_3) = \frac{4}{7}P_0$ \todo{klopt niet, zou gewoon $P_0$ moeten zijn...}
+				\item $P_1 = \frac{1}{35}(10P_0 + 10P_1 + 0P_2  + 0P_3) = \frac{2}{7}[P_0 + P_1]$ 
+				\item $P_2 = \frac{1}{35}(4P_0  + 12P_1 + 4P_2  + 0P_3) = \frac{1}{35}(4P_0  + 12P_1 + 4P_2)$
+				\item $P_3 = \frac{1}{35}(1P_0  + 9P_1 + 9P_2  + 1P_3) = \frac{1}{35}(P_1  + 9P_2 + P_3)$
+				\item $P_4 = \frac{1}{35}(0P_0  + 4P_1 + 12P_2  + 4P_3) = \frac{1}{35}(4P_1  + 12P_2 + 4P_3)$
+				\item $P_5 = \frac{1}{35}(0P_0  + 0P_1 + 10P_2  + 10P_3) = \frac{2}{7}(P_2 + P_3)$
+				\item $P_6 = \frac{1}{35}(0P_0  + 0P_1 + 0P_2  + 20P_3) = \frac{4}{7}(P_3)$
+			\end{itemize}
+			
+			
+		\end{itemize}}
+		\vraag{\accentuate{(2)} verhoging van de graad van Bézier splines (\textit{stapsgewijs}: één graad verhogen per stap)}{
+		\begin{itemize} 
+			\item Slechts één graad verhogen per stap is heel eenvoudig:
+			$$Q_k = \frac{k}{n + 1}P_{k - 1} + \frac{n + 1 - k}{n + 1}P_k$$
+			Stel een bézierkromme van de 3de graad met punten $P_{000}, P_{001}, P_{011}$ en $P_{111}$.
+			
+			De nieuwe punten van de bézierkromme van de 4de graad worden dan:
+			\begin{itemize}
+				\item $Q_{0000} = \frac{0}{3 + 1}P_{0 - 1} + \frac{3 + 1 - 0}{3 + 1}P_{1} = P_{000}$
+				\item $Q_{0001} = \frac{1}{4}P_{0} + \frac{4 - 1}{4}P_{1} = \frac{1}{4}P_{000} + \frac{3}{4}P_{001}$
+				\item $Q_{0011} = \frac{1}{2}P_{001} + \frac{1}{2}P_{011}$
+				\item $Q_{0111} = \frac{3}{4}P_{011} + \frac{1}{4}P_{111}$
+				\item $Q_{1111} = P_{111}$
+			\end{itemize}
+		Het punt $Q_{0001}$ ligt bijvoorbeeld op $t = 0.75$ voor het lijnstuk $[P_{000}P_{001}]$.
+		\end{itemize}}
 		\vraag{\accentuate{(3,4)} segmentering (subdivisie) van Bézier krommen (eventueel meerdere segmenten in één enkele stap)}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
 		\vraag{\accentuate{(9-10,14-16)} constructie van de \textit{kromtecirkel} in een punt van een Bézier kromme}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
 		\vraag{\accentuate{(5-7,9-11)} constructie van de \textit{Bézier representatie} van een (polynomiale) NURBS}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
