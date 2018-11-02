@@ -28,7 +28,7 @@ RZWboom<Sleutel>::RZWboom(const std::vector<Sleutel>& sleutels,
 }
 
 template <class Sleutel>
-void RZWboom<Sleutel>::voegtoe(const Sleutel& sleutel) {
+void RZWboom<Sleutel>::voegtoe_bottomup(const Sleutel& sleutel) {
 	RZWboom<Sleutel>* plaats;
 	RZWknoop<Sleutel>* ouder;
 	zoek(sleutel, ouder, plaats);
@@ -38,6 +38,41 @@ void RZWboom<Sleutel>::voegtoe(const Sleutel& sleutel) {
 		plaats->herstelboom();
 	}
 }
+
+
+/*
+template <class Sleutel>
+void RZWboom<Sleutel>::voegtoe_topdown(const Sleutel& sleutel) {
+	RZWboom<Sleutel>* plaats = this;
+	RZWknoop<Sleutel>* ouder = nullptr;
+
+	bool is_toegevoegd = false;
+	while (!is_toegevoegd) {
+		RZWboom<Sleutel>* linkerkind = &((*plaats)->geefKind(true));
+		RZWboom<Sleutel>* rechterkind = &((*plaats)->geefKind(false));
+
+		if (!(*plaats)) {
+			(*plaats) = std::make_unique<RZWknoop<Sleutel>>(sleutel);
+			(*plaats)->ouder = ouder_knoop;
+			is_toegevoegd = true;
+		}
+		else if ((*plaats)->geefKleur() == zwart && linkerkind->geefKleur() == rood && rechterkind->geefKleur() == rood) {
+			(*plaats)->zetKleur(rood);
+			(*linkerkind)->zetKleur(zwart);
+			(*rechterkind)->zetKleur(zwart);
+		}
+
+
+		if ((*plaats)->ouder 
+			&& (*plaats)->ouder->ouder 
+			&& ((*plaats)->geefKleur == rood) 
+			&& ((*plaats)->ouder->kleur == rood)) {
+
+
+		}
+
+	}
+}*/
 
 template <class Sleutel>
 void RZWboom<Sleutel>::herstelboom() {

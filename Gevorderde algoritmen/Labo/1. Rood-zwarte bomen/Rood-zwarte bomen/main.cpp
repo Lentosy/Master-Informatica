@@ -47,6 +47,8 @@ int main() {
 		boom.voegtoe(sleutels2[i]);
 	}*/
 
+	
+
 	for (int i = 0; i < sleutels.size(); i++) {
 		RZWboom<int> boom(sleutels[i], zwarteSleutels[i]);
 		std::cout << "Representatie: " + boom.repOK() ? std::cout << "OK\n" : std::cout << "NIET OK\n";
