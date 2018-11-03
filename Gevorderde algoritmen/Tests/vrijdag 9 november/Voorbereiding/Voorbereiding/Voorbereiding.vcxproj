@@ -120,14 +120,21 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="BinarySearchTree.h" />
-    <ClInclude Include="Heap.h" />
+    <ClInclude Include="Bottling.h" />
+    <ClInclude Include="DNASequence.h" />
+    <ClInclude Include="PairingHeap.h" />
     <ClInclude Include="RedBlackTree.h" />
     <ClInclude Include="SplayTreeBottomUp.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="BinarySearchTree.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="PairingHeap.cpp" />
     <ClCompile Include="SplayTreeBottomUp.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="chimp.dna" />
+    <None Include="human.dna" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

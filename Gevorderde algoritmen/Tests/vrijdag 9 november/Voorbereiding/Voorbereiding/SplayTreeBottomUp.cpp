@@ -5,18 +5,18 @@
 #include <cmath>
 
 
-template<typename Key, typename Value>
-void SplayTreeBottomUp<Key, Value>::add(const Key & key, const Value & value) {
-	BinarySearchTree<Key, Value>::add(key, value);
+template<typename Priority, typename Value>
+void SplayTreeBottomUp<Priority, Value>::add(const Priority & key, const Value & value) {
+	BinarySearchTree<Priority, Value>::add(key, value);
 
-	BinarySearchTree<Key, Value>* position = nullptr;
-	Node<Key, Value>* parent = nullptr;
-	BinarySearchTree<Key, Value>::search(key, parent, position);
+	BinarySearchTree<Priority, Value>* position = nullptr;
+	Node<Priority, Value>* parent = nullptr;
+	BinarySearchTree<Priority, Value>::search(key, parent, position);
 	splay(position);
 }
 
-template<typename Key, typename Value>
-void SplayTreeBottomUp<Key, Value>::splay(BinarySearchTree<Key, Value>*& position) {
+template<typename Priority, typename Value>
+void SplayTreeBottomUp<Priority, Value>::splay(BinarySearchTree<Priority, Value>*& position) {
 	if (!position) {
 		return;
 	}
@@ -24,8 +24,8 @@ void SplayTreeBottomUp<Key, Value>::splay(BinarySearchTree<Key, Value>*& positio
 
 
 
-template<typename Key, typename Value>
-double SplayTreeBottomUp<Key, Value>::potential() const {
+template<typename Priority, typename Value>
+double SplayTreeBottomUp<Priority, Value>::potential() const {
 	// assume s_i, the weight for node i, 
 	// is equal to the amount of nodes in the subtree where node i is the root.
 	// 
@@ -40,8 +40,8 @@ double SplayTreeBottomUp<Key, Value>::potential() const {
 
 }
 
-template<typename Key, typename Value>
-void SplayTreeBottomUp<Key, Value>::calculate_potential(const BinarySearchTree<Key, Value>& splaytree, double & potential, int & nodes) const {
+template<typename Priority, typename Value>
+void SplayTreeBottomUp<Priority, Value>::calculate_potential(const BinarySearchTree<Priority, Value>& splaytree, double & potential, int & nodes) const {
 	int nodes_left = 0;
 	int nodes_right = 0;
 

@@ -6,8 +6,8 @@
 #include <fstream>
 #include <sstream>
 
-template<typename Key, typename Value>
-BinarySearchTree<Key, Value>::BinarySearchTree(const std::vector<Key> keys, const std::vector<Value> values) {
+template<typename Priority, typename Value>
+BinarySearchTree<Priority, Value>::BinarySearchTree(const std::vector<Priority> keys, const std::vector<Value> values) {
 	if (keys.size() != values.size()) {
 		std::string error = __FUNCTION__;
 		error += ": size() of keys and values are not equal";
@@ -15,11 +15,11 @@ BinarySearchTree<Key, Value>::BinarySearchTree(const std::vector<Key> keys, cons
 	}
 
 	for (size_t i = 0; i < keys.size(); i++) {
-		BinarySearchTree<Key, Value>* position;
-		Node<Key, Value>* parent;
+		BinarySearchTree<Priority, Value>* position;
+		Node<Priority, Value>* parent;
 		search(keys[i], parent, position);
 		if (!*position) {
-			*position = std::make_unique<Node<Key, Value>>(keys[i], values[i]);
+			*position = std::make_unique<Node<Priority, Value>>(keys[i], values[i]);
 			(*position)->parent = parent;
 		}
 	}
@@ -27,13 +27,13 @@ BinarySearchTree<Key, Value>::BinarySearchTree(const std::vector<Key> keys, cons
 
 
 
-template<typename Key, typename Value>
-void BinarySearchTree<Key, Value>::add(const Key & key, const Value & value) {
-	BinarySearchTree<Key, Value>* position;
-	Node<Key, Value>* parent;
+template<typename Priority, typename Value>
+void BinarySearchTree<Priority, Value>::add(const Priority & key, const Value & value) {
+	BinarySearchTree<Priority, Value>* position;
+	Node<Priority, Value>* parent;
 	search(key, parent, position);
 	if (!*position) {
-		*position = std::make_unique<Node<Key, Value>>(key, value);
+		*position = std::make_unique<Node<Priority, Value>>(key, value);
 		(*position)->parent = parent;
 	} else {
 		std::string error = __FUNCTION__;
@@ -42,9 +42,9 @@ void BinarySearchTree<Key, Value>::add(const Key & key, const Value & value) {
 	}
 }
 
-template<typename Key, typename Value>
-Value BinarySearchTree<Key, Value>::search(const Key & key) {
-	BinarySearchTree<Key, Value>* position;
+template<typename Priority, typename Value>
+Value BinarySearchTree<Priority, Value>::search(const Priority & key) {
+	BinarySearchTree<Priority, Value>* position;
 	search(key, position);
 	if (*position) {
 		return (*position)->value;
@@ -53,10 +53,10 @@ Value BinarySearchTree<Key, Value>::search(const Key & key) {
 	}
 }
 
-template<typename Key, typename Value>
-void BinarySearchTree<Key, Value>::remove(const Key & key) {
-	BinarySearchTree<Key, Value>* position;
-	Node<Key, Value>* parent;
+template<typename Priority, typename Value>
+void BinarySearchTree<Priority, Value>::remove(const Priority & key) {
+	BinarySearchTree<Priority, Value>* position;
+	Node<Priority, Value>* parent;
 	search(key, parent, position);
 	if (*position) {
 		//the node to remove is a leaf, easy
@@ -69,9 +69,9 @@ void BinarySearchTree<Key, Value>::remove(const Key & key) {
 	}
 }
 
-template<typename Key, typename Value>
-void BinarySearchTree<Key, Value>::print(std::ostream& os) const {
-	inorder([&os](const Node<Key, Value>& node) {
+template<typename Priority, typename Value>
+void BinarySearchTree<Priority, Value>::print(std::ostream& os) const {
+	inorder([&os](const Node<Priority, Value>& node) {
 
 		os << "(" << node.key << ";" << node.value << ")";
 		os << "\n Left Child: ";
@@ -86,8 +86,8 @@ void BinarySearchTree<Key, Value>::print(std::ostream& os) const {
 	});
 }
 
-template<typename Key, typename Value>
-void BinarySearchTree<Key, Value>::inorder(std::function<void(const Node<Key, Value>&)> visit) const {
+template<typename Priority, typename Value>
+void BinarySearchTree<Priority, Value>::inorder(std::function<void(const Node<Priority, Value>&)> visit) const {
 	if (*this) {
 		(*this)->left.inorder(visit);
 		visit(**this);
@@ -95,8 +95,8 @@ void BinarySearchTree<Key, Value>::inorder(std::function<void(const Node<Key, Va
 	}
 }
 
-template<typename Key, typename Value>
-void BinarySearchTree<Key, Value>::getDotCode(const char * filename) const {
+template<typename Priority, typename Value>
+void BinarySearchTree<Priority, Value>::getDotCode(const char * filename) const {
 	std::ofstream out(filename);
 	int nullcounter = 0;
 	out << "digraph {";
@@ -105,8 +105,8 @@ void BinarySearchTree<Key, Value>::getDotCode(const char * filename) const {
 	out << "}";
 }
 
-template<typename Key, typename Value>
-std::string BinarySearchTree<Key, Value>::getDotCodeRecursive(std::ostream & os, int & nullcounter) const {
+template<typename Priority, typename Value>
+std::string BinarySearchTree<Priority, Value>::getDotCodeRecursive(std::ostream & os, int & nullcounter) const {
 	std::ostringstream node;
 	if (!*this) {
 		node << "null" << ++nullcounter;
@@ -124,9 +124,9 @@ std::string BinarySearchTree<Key, Value>::getDotCodeRecursive(std::ostream & os,
 }
 
 
-template<typename Key, typename Value>
-void BinarySearchTree<Key, Value>::rotate(bool toLeft) {
-	BinarySearchTree<Key, Value> child = std::move((*this)->giveChild(!toLeft));
+template<typename Priority, typename Value>
+void BinarySearchTree<Priority, Value>::rotate(bool toLeft) {
+	BinarySearchTree<Priority, Value> child = std::move((*this)->giveChild(!toLeft));
 	(*this)->giveChild(!toLeft) = std::move(child->giveChild(toLeft));
 	child->giveChild(toLeft) = std::move(*this);
 	*this = std::move(child);
@@ -138,16 +138,16 @@ void BinarySearchTree<Key, Value>::rotate(bool toLeft) {
 	}
 }
 
-template<typename Key, typename Value>
-bool BinarySearchTree<Key, Value>::representative() const {
-	const Key& previous = nullptr;
+template<typename Priority, typename Value>
+bool BinarySearchTree<Priority, Value>::representative() const {
+	const Priority& previous = nullptr;
 	std::string error = __FUNCTION__;
 	if (*this && (*this)->ouder != nullptr) {
 
 		error += " root has a poiner to a parent\n";
 		throw error;
 	}
-	inorder([&previous](const Node<Key, Value>& node) {
+	inorder([&previous](const Node<Priority, Value>& node) {
 		if (previous && node.key < *previous) {
 			error += " wrong order\n";
 			throw error;
@@ -156,8 +156,8 @@ bool BinarySearchTree<Key, Value>::representative() const {
 	});
 }
 
-template<typename Key, typename Value>
-void BinarySearchTree<Key, Value>::search(const Key & key, Node<Key, Value>*& parent, BinarySearchTree<Key, Value>*& position) {
+template<typename Priority, typename Value>
+void BinarySearchTree<Priority, Value>::search(const Priority & key, Node<Priority, Value>*& parent, BinarySearchTree<Priority, Value>*& position) {
 	position = this;
 	parent = nullptr;
 	while (*position && (*position)->key != key) {
@@ -169,8 +169,8 @@ void BinarySearchTree<Key, Value>::search(const Key & key, Node<Key, Value>*& pa
 
 
 
-template<typename Key, typename Value>
-BinarySearchTree<Key, Value>& Node<Key, Value>::giveChild(bool takeLeft) {
+template<typename Priority, typename Value>
+BinarySearchTree<Priority, Value>& Node<Priority, Value>::giveChild(bool takeLeft) {
 	if (takeLeft) {
 		return left;
 	} else {

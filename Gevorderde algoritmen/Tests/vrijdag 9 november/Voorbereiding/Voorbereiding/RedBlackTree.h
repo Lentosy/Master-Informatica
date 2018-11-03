@@ -19,7 +19,7 @@
 *
 */
 
-template <typename Key, typename Value>
-class RedBlackTree : BinarySearchTree<Key, Value> {
+template <typename Priority, typename Value>
+class RedBlackTree : BinarySearchTree<Priority, Value> {
 
 };

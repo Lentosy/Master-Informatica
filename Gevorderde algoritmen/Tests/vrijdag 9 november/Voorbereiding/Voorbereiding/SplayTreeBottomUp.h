@@ -24,21 +24,20 @@
 * 3) Zig-Zig: This case occurs when p is not the root node, and c is on the OUTSIDE of the tree.
 *              In this case we rotate g and p, so that p becomes parent of c and g. Then we rotate p and c, so that c becomes parent of p, and p still is parent of g.
 */
-
-template<typename Key, typename Value>
-class SplayTreeBottomUp : public BinarySearchTree<Key, Value> {
+template<typename Priority, typename Value>
+class SplayTreeBottomUp : public BinarySearchTree<Priority, Value> {
 public:
-	SplayTreeBottomUp(const std::vector<Key> keys, const std::vector<Value> values) : BinarySearchTree<Key, Value>(keys, values) {};
+	SplayTreeBottomUp(const std::vector<Priority> keys, const std::vector<Value> values) : BinarySearchTree<Priority, Value>(keys, values) {};
 
 	// adds a key like a normal binary search tree, but then executes the splay-operation on the newly added node
-	void add(const Key& key, const Value& value);
+	void add(const Priority& key, const Value& value);
 	// searches a key like a normal binary search tree, but then executes the splay-operation on the found node. If no node is found, nothing happens.
-	void search(const Key& key, Node<Key, Value>*& parent, BinarySearchTree<Key, Value>*& position);
+	void search(const Priority& key, Node<Priority, Value>*& parent, BinarySearchTree<Priority, Value>*& position);
 	// calculates the potential of the splay tree, a lower potential means a better balanced tree.
 	double potential() const;
 
 private:
 	//executes the splay operation, untill position is the root node of the tree
-	void splay(BinarySearchTree<Key, Value>*& position);
-	void calculate_potential(const BinarySearchTree<Key, Value>& splaytree, double& potential, int& nodes) const;
+	void splay(BinarySearchTree<Priority, Value>*& position);
+	void calculate_potential(const BinarySearchTree<Priority, Value>& splaytree, double& potential, int& nodes) const;
 };
