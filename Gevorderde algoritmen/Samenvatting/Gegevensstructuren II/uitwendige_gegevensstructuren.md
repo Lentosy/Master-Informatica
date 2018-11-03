@@ -14,7 +14,7 @@ Een B-tree van orde *m*, waarbij *m > 2*, wordt als volgt gedefinieerd:
 Elke knoop heeft dan:
 * Een variabele *k* dat het huidig aantal **sleutels** in die knoop aanduidt.
 * Een tabel voor maximaal *m* wijzers naar de **kinderen** van de knoop.
-* Een tabel voor maximaal *k = m - 1* sleutels, plus een tweede tabel van dezelfde grootte voor de informatie
+* Een tabel voor maximaal *k = m - 1* sleutels, die stijgend (niet dalend) gerangschikt zijn, plus een tweede tabel van dezelfde grootte voor de informatie.
 * Een logische waarde *b* die aanduidt of de knoop een blad is.
 
 ### Eigenschappen
@@ -29,12 +29,25 @@ Elke knoop heeft dan:
 
 <a href="http://www.codecogs.com/eqnedit.php?latex=h&space;\leq&space;log_{g}\frac{n&space;&plus;&space;1}{2}" target="_blank"><img src="http://latex.codecogs.com/gif.latex?h&space;\leq&space;log_{g}\frac{n&space;&plus;&space;1}{2}" title="h \leq log_{g}\frac{n + 1}{2}" /></a>
 
+De hoogte is dus O(lg n), zelfde als voor rood-zwarte bomen, maar de (verborgen) constante is een factor <a href="http://www.codecogs.com/eqnedit.php?latex=\lg&space;g" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\lg&space;g" title="\lg g" /></a> kleiner.
+
 
 ### Operaties
 
 #### Zoeken
+* Zoekweg vanuit de wortel, richting een blad
+
+1. In elke knoop moet nagegaan worden of de gezochte sleutel er in zit (lineair zoeken of binair zoeken).
+1. Is dit niet zo, en de huidige knoop is nog geen blad, dan moet de juiste wijzer naar de volgende knoop gekozen worden, deze knoop inlezen en het proces herhaalt zich.
+1. Is de huidige knoop een blad en zit de gezochte sleutel niet in deze knoop, dan zit de sleutel **niet** in de boom.
+
+*  Het resultaat van de zoekoperatie is een verwijzing naar de knoop op de schijf (paginaindex, blokindex, whatever ge het wilt noemen). 
+* Aantal schijfoperaties is O(h).
 
 #### Toevoegen
+
+
+
 
 
 #### Verwijderen
