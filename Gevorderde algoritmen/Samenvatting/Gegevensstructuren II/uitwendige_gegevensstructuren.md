@@ -35,17 +35,19 @@ De hoogte is dus O(lg n), zelfde als voor rood-zwarte bomen, maar de (verborgen)
 ### Operaties
 
 #### Zoeken
-* Zoekweg vanuit de wortel, richting een blad
+* In elke knoop moet nagegaan worden of de gezochte sleutel er in zit (lineair zoeken of binair zoeken).
+* Is dit niet zo, en de huidige knoop is nog geen blad, dan moet de juiste wijzer naar de volgende knoop gekozen worden, deze knoop inlezen en het proces herhaalt zich.
+* Is de huidige knoop een blad en zit de gezochte sleutel niet in deze knoop, dan zit de sleutel **niet** in de boom.
 
-1. In elke knoop moet nagegaan worden of de gezochte sleutel er in zit (lineair zoeken of binair zoeken).
-1. Is dit niet zo, en de huidige knoop is nog geen blad, dan moet de juiste wijzer naar de volgende knoop gekozen worden, deze knoop inlezen en het proces herhaalt zich.
-1. Is de huidige knoop een blad en zit de gezochte sleutel niet in deze knoop, dan zit de sleutel **niet** in de boom.
 
-*  Het resultaat van de zoekoperatie is een verwijzing naar de knoop op de schijf (paginaindex, blokindex, whatever ge het wilt noemen). 
+* Het resultaat van de zoekoperatie is een verwijzing naar de knoop op de schijf (paginaindex, blokindex, whatever ge het wilt noemen). 
 * Aantal schijfoperaties is O(h).
 
 #### Toevoegen
+* Enkel **bottom-up** wordt besproken. De **top-down** versie wordt minder vaak gebruikt, maar is handig indien meerdere gebruikers aan de boom moeten, aangezien knopen op de zoekweg vroeger worden vrijgegeven.
 
+* Toevoegen gebeurt steeds bij een blad. Heeft dit blad nog plaats, dan is er geen probleem.
+* Heeft het blad reeds *m* kinderen, wordt de knoop gesplitst bij de middelste sleutel. 
 
 
 
