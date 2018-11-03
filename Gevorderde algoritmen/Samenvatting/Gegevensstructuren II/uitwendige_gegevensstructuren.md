@@ -35,24 +35,36 @@ De hoogte is dus O(lg n), zelfde als voor rood-zwarte bomen, maar de (verborgen)
 ### Operaties
 
 #### Zoeken
+---
 * In elke knoop moet nagegaan worden of de gezochte sleutel er in zit (lineair zoeken of binair zoeken).
 * Is dit niet zo, en de huidige knoop is nog geen blad, dan moet de juiste wijzer naar de volgende knoop gekozen worden, deze knoop inlezen en het proces herhaalt zich.
 * Is de huidige knoop een blad en zit de gezochte sleutel niet in deze knoop, dan zit de sleutel **niet** in de boom.
-
-
+---
 * Het resultaat van de zoekoperatie is een verwijzing naar de knoop op de schijf (paginaindex, blokindex, whatever ge het wilt noemen). 
 * Aantal schijfoperaties is O(h).
 
 #### Toevoegen
 * Enkel **bottom-up** wordt besproken. De **top-down** versie wordt minder vaak gebruikt, maar is handig indien meerdere gebruikers aan de boom moeten, aangezien knopen op de zoekweg vroeger worden vrijgegeven.
-
+---
 * Toevoegen gebeurt steeds bij een blad. Heeft dit blad nog plaats, dan is er geen probleem.
 * Heeft het blad reeds *m* kinderen, wordt de knoop gesplitst bij de middelste sleutel. 
-
-
-
-
+* Er wordt een nieuwe knoop aangemaakt op hetzelfde niveau (op bladniveau). Deze knoop krijgt de gegevens die zicht rechts van de middelste sleutel bevinden (de gegevens links van de middelste sleutel blijven dus in de oorspronkelijke knoop zitten). Deze operatie noemt men een splitsing (kost drie schijfoperaties).
+* De middelste sleutel wordt nu verwijderd van de knoop, en wordt toegevoegd bij de ouderknoop van de huidige knoop. Nu kan hetzelfde proces herhaalt worden, en de ouderknoop beschouwd worden als een blad. 
+* In het slechtste geval wordt het probleem opgeschoven tot de wortel (splitsing van h + 1 knopen). In dit geval zal er een nieuwe wortel aangemaakt worden met slechts 1 element (het middelste element van de vorige wortel).
+---
 #### Verwijderen
 
+
+
+## B+ tree
+* Deze variant zal alle gegevens (sleutels en de bijhorende informatie) in de bladeren opslaan.
+* De inwendige knopen worden gebruikt als index en bevatten dus enkel de sleutel.
+
+## Prefix B+ tree
+* Wordt gebruikt indien de sleutels strings zijn.
+* Elke sleutel in een inwendige knoop is zo een kort mogelijke string, vaak een prefix van de te onderscheiden string.
+
+## B* tree
+* Zal bij de splitstoperatie de gegevens over de drie knopen verdelen, in plaats van de twee knopen.
 
 # UITWENDIGE HASHING
