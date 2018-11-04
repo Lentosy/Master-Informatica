@@ -78,3 +78,7 @@ De hoogte is dus O(lg n), zelfde als voor rood-zwarte bomen, maar de (verborgen)
 * Zal bij de splitstoperatie de gegevens over de drie knopen verdelen, in plaats van de twee knopen.
 
 # UITWENDIGE HASHING
+* Indien niet geïnteresseerd in volgorde van sleutels.
+* Woordenboekoperaties gemiddeld O(1) schijfoperaties
+* **Hypothese**: we zouden aan elk element een schijfpagina kunnen toekennen (alle sleutels met dezelfde hashwaarde komen dus in dezelfde pagina). In het geval dat een pagina volgeraakt, zullen methoden zoals [Open Adressering](https://en.wikipedia.org/wiki/Hash_table#Open_addressing) en (Seperate Chaining)[https://en.wikipedia.org/wiki/Hash_table#Separate_chaining] zoals bij een inwendige hashtabel, het aantal schijfoperaties vergroten. Dit is niet gewenst.
+
