@@ -53,8 +53,18 @@ De hoogte is dus O(lg n), zelfde als voor rood-zwarte bomen, maar de (verborgen)
 * In het slechtste geval wordt het probleem opgeschoven tot de wortel (splitsing van h + 1 knopen). In dit geval zal er een nieuwe wortel aangemaakt worden met slechts 1 element (het middelste element van de vorige wortel).
 ---
 #### Verwijderen
-
-
+* Ook enkel **bottom-up** versie.
+---
+* Altijd verwijderen in een blad, anders teveel structuurwijziging.
+* Vervang de te verwijderen sleutel met zijn opvolger of voorloper (die zit altijd in een blad). 
+* Meestal zit de gezochte sleutel wel in een blad aangezien de meeste sleutels van een B-tree in bladeren zitten.
+* Wanneer een knoop te weinig sleutels heeft (< <a href="http://www.codecogs.com/eqnedit.php?latex=\lceil&space;m/2&space;\rceil" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\lceil&space;m/2&space;\rceil" title="\lceil m/2 \rceil" /></a>), dan kan men proberen om een sleutel over te nemen van een broerknoop
+    1. de sleutel van de broer gaat naar zijn ouder
+    1. een sleutel van de ouder gaat naar de knoop, die ook een kindwijzer van de broer overneemt.
+    1. Omdat hier drie knopen worden aangepast, gaan we vaak meerdere sleutels verdelen, zodat elke knoop evenveel sleutels heeft.
+* Als de ene broer geen sleutel kan uitlenen, kan men proberen bij de andere broer. 
+* Indien geen van beide broers kan, gebeurt het omgekeerde van splitsen. De knoop wordt samengevoegd met een broer, de ouder verliest dus een kind, zodat de sleutel tussen de twee broers moet verdwijnen, deze wordt toegevoegd aan de samengevoegde knoop. 
+---
 
 ## B+ tree
 * Deze variant zal alle gegevens (sleutels en de bijhorende informatie) in de bladeren opslaan.
