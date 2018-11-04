@@ -80,5 +80,14 @@ De hoogte is dus O(lg n), zelfde als voor rood-zwarte bomen, maar de (verborgen)
 # UITWENDIGE HASHING
 * Indien niet geïnteresseerd in volgorde van sleutels.
 * Woordenboekoperaties gemiddeld O(1) schijfoperaties
-* **Hypothese**: we zouden aan elk element een schijfpagina kunnen toekennen (alle sleutels met dezelfde hashwaarde komen dus in dezelfde pagina). In het geval dat een pagina volgeraakt, zullen methoden zoals [Open Adressering](https://en.wikipedia.org/wiki/Hash_table#Open_addressing) en (Seperate Chaining)[https://en.wikipedia.org/wiki/Hash_table#Separate_chaining] zoals bij een inwendige hashtabel, het aantal schijfoperaties vergroten. Dit is niet gewenst.
+* **Hypothese**: we zouden aan elk element een schijfpagina kunnen toekennen (alle sleutels met dezelfde hashwaarde komen dus in dezelfde pagina). In het geval dat een pagina volgeraakt, zullen methoden zoals [Open Adressering](https://en.wikipedia.org/wiki/Hash_table#Open_addressing) en [Seperate Chaining](https://en.wikipedia.org/wiki/Hash_table#Separate_chaining) zoals bij een inwendige hashtabel, het aantal schijfoperaties vergroten. Dit is niet gewenst.
+* Een boom is meer flexibel dan een tabel, dus gebruiken we een **trie** (voorbeeld hieronder). 
+![trie](https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Trie_example.svg/400px-Trie_example.svg.png)
+Het zoekproces bij een trie vergelijkt opeenvolgende bits. Elke deelboom van een trie bevat alle sleutels met een gemeenschappelijke prefix. De bladeren van de trie zijn hier schijfpaginas, alle sleutels van een deelboom brengen we onder in één pagina. Indien de pagina vol is, wordt ze gesplitst, en beide pagina's krijgen een nieuwe trieknoop als ouder.
+* Dit kan slecht uitvallen, de vorm van de trie wordt bepaald door de bits van de sleutels. Het zou beter zijn moest men de **hashwaarden** gebruiken als sleutel gebruiken. 
+* Er zijn twee **betere** methoden:
+    1. *Extendible Hashing*
+    1. *Linear Hashing*
+#### Extendible Hashing
 
+#### Linear Hashing
