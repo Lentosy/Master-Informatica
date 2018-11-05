@@ -68,11 +68,45 @@
 
 	\section{attributeSchema objecten \accentuate{ (\textsection 2.2.4 en \textsection 2.2.5)}}
 	\begin{enumerate}
-		\vraag { Bespreek het \textit{doel} en de \textit{werking} van attributeSchema objecten. Hoe kunnen deze objecten het best \textit{geraadpleegd} en \textit{gewijzigd} worden ? } { \todo{Oplossen}}
+		\vraag { Bespreek het \textit{doel} en de \textit{werking} van attributeSchema objecten. Hoe kunnen deze objecten het best \textit{geraadpleegd} en \textit{gewijzigd} worden ? } { 
+		\begin{itemize}
+			\item Het attributeSchema bevat alle kenmerken die in het schema voorkomen. Een kenmerk is zelf een object. Zo een kenmerk wordt éénmaal gedefinieerd en kan meerdere malen gebruikt worden bij verschillende klassen, wat voor consistentie zorgt. Een goed voorbeeld hiervan is het description kenmerk. Om op een eenvoudige manier objecten te raadplegen of wijzigen, kan men met het schema snap-in mechanisme werken. \textbf{Active Directory Schema} is zo een snap-in, dat eenvoudig in twee vensters zowel de kenmerken als de klassen weergeeft. Dubbelklikken op een item geeft de meest relevante eigenschappen van het object, en de mogelijkheid om deze in te stellen. 
+		\end{itemize}
+		}
 		
-		\vraag { Bespreek de \textit{diverse naamgevingen}, specifiek voor attributeSchema objecten. } { \todo{Oplossen}}
+		\vraag { Bespreek de \textit{diverse naamgevingen}, specifiek voor attributeSchema objecten. } { 
+			\begin{itemize}
+				\item \textbf{Common Name}: De RDN van het attributeSchema object in de Schema container.
+				\item \textbf{GUID}: Dit kan automatisch gegenereerd worden bij de creatie van een nieuw kenmerk. Een attribuut krijgt dan wel een verschillende GUID in verschillende forests. Manueel een GUID instellen kan ook, met bv de \textbf{guidgen} of \textbf{uuidgen} opdrachten.
+				\item \textbf{LDAP Display Name}: De naam die gebruikt wordt voor LDAP. Deze naam is belangrijk voor programmatische toegang.
+				\item \textbf{Object Identifier}: De interne representatie van een object. Deze identifiers worden verleend door specialie autoriteiten, en zijn gegarandeerd uniek in alle netwerken over de hele wereld. Een Object Identifier bestaat uit een decimale reeks met punten, waarbij de toekenning op een hiërarchische manier gebeurd. Een Object Identifier kan aangevraagd worden bij een regionale ISO vertegenwoordiger. Indien dit niet gewenst is, kan er ook een Object Identifier gegenereerd worden in een Microsoft subtak, met behulp van de opdracht \textbf{oidgen}.
+			\end{itemize}
+		}
 		
-		\vraag { Bespreek de belangrijkste \textit{kenmerken} van attributeSchema objecten, en op welke waarden die ingesteld kunnen worden. } { \todo{Oplossen}}
+		\vraag { Bespreek de belangrijkste \textit{kenmerken} van attributeSchema objecten, en op welke waarden die ingesteld kunnen worden. } { 
+		\begin{itemize}
+			\item \textbf{attributeSyntax en oMSyntax}: De syntax bepaalt het data type zoals: Object ID, Boolean, Integer, DirectoryString zijn enkele van de 26 mogelijkheden. Slechts 18 van deze 26 worden momenteel gebruikt in Active Directory. Het is \textbf{onmogelijk} om een nieuwe syntax te definieëren. Het object ID van een syntax wordt geïdentificeerd in de vorm van 2.5.5.x . Sommige Object Identifiers zijn blijkbaar niet te onderscheiden, waarop beroep moet gedaan worden op een bijkomende Integer waarde: mOSyntax.
+			\item \textbf{rangeLower en rangeUpper}: Bepalen de lengte- of bereikbeperkingen van kenmerken.
+			\item \textbf{isSingleValued}: Geeft aan of een attribuut meerdere waarden kan bevatten (een lijst).
+			\item \textbf{searchFlags}: Dit veld bevat binaire informatie, waarbij elke afzonderlijke bit kan ingesteld worden. Veronderstel de vorm $b_6b_5b_4b_3b_2b_1$, dan betekent elke bit het volgende:
+			\begin{itemize}
+				\item \textbf{$b_1$}: Deze wordt meestal gezet, zodat eenvoudige indexering van de waarde van het kenmerk geactiveerd wordt, ongeacht van waar het object zich in Acive Directory bevindt.
+				\item \textbf{$b_2$}: Indien deze gezet wordt, wordt de waarde van het kenmerk gecbomineerd met de identificatie van de container waarin het object zich bevindt. Dit heet een containerized index, en zijn in staat om snel objecten op te sporen in een specifieke container.
+				\item \textbf{$b_3$}: Dit laat Ambiguous Name Resolution toe. Bij opzoekingen van kenmerken waaraan een bepaalde waarde voldaan moet worden, kan i.p.v. (|(kenmerk1=waarde)(kenmerk2=waarde)(kenmerk3=waarde)...) gewoon (anr=waarde) gebruiken. 
+				\item \textbf{$b_4$}: \accentuate{(staat niets over in de cursus)}
+				\item \textbf{$b_5$}: Deze bit heeft niets met indexering te maken, maar geeft aan of de waarde van een attribuut behouden blijft bij het maken van een kopie van dit object.
+				\item \textbf{$b_6$}: Deze bit instellen versnelt opzoekingen waarn kenmerken metw wildcards vermeld worden. Deze tuple indexen worden best zeldzaam gebruikt, aangezien ze veel resources in beslag nemen.
+			\end{itemize}
+			\item \textbf{systemFlags}: Dit heeft dezelfde vorm als searchFlags, een binair formaat $b_3b_2b_1$ waarvan de bits het volgende betekenen:
+				\begin{itemize}
+					\item \textbf{$b_1$}: Deze bit geeft aan of dat het kenmerk gerepliceerd mag worden naar andere domeincontrollers of niet. Attributen die vaak wijzigen zoals lastLogOn en lastLogOff worden niet gerepliceerd.
+					\item \textbf{$b_2$}: \accentuate{(staat niets over in de cursus)}
+					\item \textbf{$b_3$}: Dit geeft aan of een attribuut geconstrueerd is of niet. Een dergerlijk attribuut wordt niet opgeslagen in Active Directory, maar wordt telkens opnieuw berekend op basis van andere kenmerken.
+				\end{itemize}
+		\item \textbf{isMemberOfPartialAttributeSet}: Bepaalt of een attribuut in de global catalog wordt opgenomen of niet.
+		\item \textbf{linkID}: ??
+	\end{itemize}
+		}
 		
 		\vraag { Welke andere types objecten bevat het \textit{Active Directory schema}, en wat is hun bedoeling ? \accentuate{ (o.a. \textsection 2.2.7)} } { \todo{Oplossen}}
 		
