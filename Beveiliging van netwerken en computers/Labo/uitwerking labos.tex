@@ -696,6 +696,100 @@ Indien dit bestand bedoeld was voor de huidige gebruiker, dan zal hij deze kunne
 
 \section{Sleutelbeheer}
 
+\chapter{Sendmail}
+Dit labo bestaat uit 2 delen: in het eerste deel maken we een basisconfiguratie aan voor sendmail, die we in het tweede deel gebruiken om de mogelijkheden van S/MIME even uit te testen. Binnen elke groep zal één virtuele machine dienst doen als sendmail-server. Deze server zal verantwoordelijk zijn voor jouw domein. Vooraleer echt aan de slag te gaan, doe je best het volgende: 
+\begin{itemize}
+	\item Voor dit labo start je best met een 'cleane' VM. Zet indien nodig de backup van je virtuele machine terug. Controleer zeker volgende instellingen: 
+	\begin{itemize}
+		\item De virtuele netwerkinterface is in bridge modus verbonden met de fysieke netwerkadapter en heeft een IP-adres binnen jouw netwerkrange (192.168.x.2 of 192.168.x.3).
+		\item De default gateway is ingesteld naar jouw gateway (192.168.x.254).
+		\item Je eigen DNS-servers staan ingesteld in /etc/resolv.conf.
+		\item \texttt{firewalld} is \textbf{niet} geïnstalleerd (yum remove firewalld + reboot).
+		\item Om problemen te voorkomen schakel je ook best SELinux uit.
+	\end{itemize}
+	\item Maak eventueel een extra backup van je VM die je indien nog snel kan terugplaatsen.
+	\item Maak een kopie van het configuratiebestand sendmail en plaats dit in de homedirectory van de root-gebruiker (\texttt{cp /etc/mail/sendmail.mc ~/sendmail.mc.bak}).
+	\item Zorg dat je over twee gebruikers beschikt: \textit{tiwi1} en \textit{tiwi2} met hetzelfde wachtwoord als \textit{root}
+\end{itemize}
+Aangezien er twee DNS-domeinen per tafel zijn voorzien, kan je voor het uittesten van sendmail gebruikmaken van het naburige domein. E-mailverkeer treedt dan ook voornamelijk op tussen deze twee domeinen, maar is ook mogelijk met andere domeinen.
+\section{Configuratie sendmail}
+\subsection{Basisconfiguratie}
+\textbf{Voor de basisconfiguratie van sendmail kan je starten van dit} (wordt gegeven) \textbf{ configuratiebestand.
+Let op: hier en daar moet je nog iets aanpassen! Ga na of je nu met deze basisconfiguratie via jouw mailserver een mail kan versturen naar een lokale gebruiker.
+Controleer ook of je een mail kan versturen naar een lokale gebruiker van het andere domein.
+Een e-mail versturen kan je m.b.v. het commando mail -v (of -vv om nog meer informatie te verkrijgen). Zorg er tenslotte voor dat post die bestemd is voor lokale gebruikers niet meer wordt rondgestuurd naar eventuele andere mailservers.}
 
+Wij gebruiken de gateway als mailserver. Dus alle configuratie gebeurd dan ook op dat toestel. Installeer eerst de software:
+$$\texttt{yum install sendmail sendmail-cf mailx m4}$$
+Het sendmail.mc bestand dat we gekregen hebben is grotendeels goed, enkel twee lijnen moeten aangepast worden:
+\begin{lstlisting}
+MASQUERADE_AS(groep20.iii.hogent.be)dnl
+GENERICS_DOMAIN('groep20.iii.hogent.be')dnl
+\end{lstlisting}
+
+
+Voeg bij de primaire DNS (NIET de gateway) het volgende \textbf{MX} (mail exchange) record toe in het zonebestand (\texttt{/var/named/groep20.iii.hogent.be}) en herstart hierna de \textbf{named} service:
+$$\texttt{ivoryVM IN MX 10 192.168.70.2}$$
+$$\texttt{service named restart}$$
+Terug op de gateway in het bestand \texttt{/etc/mail/local-host-names}:
+\begin{lstlisting}
+ivoryVM.groep20.iii.hogent.be
+groep20.iii.hogent.be
+FEATURE('use_cw_file')
+\end{lstlisting}
+Verstuur een email met:
+$$\texttt{[root@ivoryVM]: mail -s "Onderwerp"\space tiwi1@hilbertVM < /dev/null}$$
+en bekijk deze met:
+$$\texttt{root@hilbertVM}: cat /var/mail/tiwi1$$
+
+\subsection{Aliases}
+\textbf{Zorg er voor dat tiwi1 een alias is voor jouwvoornaam.jouwnaam@jouwdomein.iii.hogent.be. Doe hetzelfde voor jouw collega, maar dan met gebruiker tiwi2. Welke bestanden heb je aangepast en welke informatie heb je aan die bestanden toegevoegd? Test deze instellingen eerst uit vanuit je lokale domein, en nadien vanuit een ander domein.}
+In het bestand \texttt{/etc/aliases}:
+\begin{lstlisting}
+xandro.vermeulen@groep20.iii.hogent.be: tiwi1@ivoryVM
+bert.desaffel@groep20.iii.hogent.be: tiwi2@hilbertVM
+\end{lstlisting}
+Hierna moet het commando \texttt{newaliases} uitgevoerd worden, zodat sendmail op de hoogte is van deze aliases. Vanaf dan kunnen de aliases gebruikt worden.
+
+\textbf{Wat moet je aanpassen als je ook mails wenst te versturen vanaf jouwvoornaam.jouwnaam@jouwdomein.iii.hogent.be?}
+\subsection{IMAP en/of POP3}
+\textbf{ Om via IMAP en/of POP3 je mails te kunnen ophalen kan je gebruikmaken van dovecot.
+Installeer indien nodig dovecot op je VM (via yum).
+	
+Voor een correcte werking van dovecot overschrijf je het configuratiebestand (/etc/dovecot/dovecot.conf) door dit bestand.
+De bestanden /etc/dovecot/conf.d/10-auth.conf en /etc/dovecot/conf.d/10-ssl.conf vervang je respectievelijk door dit en dit bestand.
+	
+Lees de man-pagina van het commando mail en gebruik dit commando met bijhorende opties om op een ander toestel jouw persoonlijke berichten via POP3 van de mailserver af te halen. Beantwoord een ontvangen bericht en ga na of alles correct werkt. }
+Gewoon de bestanden kopieren, daarna:
+\begin{lstlisting}
+yum install dovecot
+service dovecot start 
+\end{lstlisting}
+
+\section{S/MIME}
+\subsection{Configuratie e-mail client}
+\textbf{ Om S/MIME te kunnen gebruiken en uittesten is het noodzakelijk een e-mail-client te gebruiken die dit aankan. In dit labo maken we hiervoor gebruik van Mozilla Thunderbird.
+	
+	Configureer op beide fysieke toestellen (gateway en client1) Thunderbird voor de gebruikers tiwi1 en tiwi2.
+	Kies bijvoorbeeld tiwi1 op de gateway en tiwi2 op de primaire DNS-server.
+	
+	Probeer je berichten op te halen via IMAP of POP3.
+	Merk op dat dovecot hiervoor correct geconfigureerd moet zijn!
+	Stuur een mail naar de andere gebruiker en controleer of alles werkt. }
+\subsection{Certificaat}
+\textbf{ Om een digitale handtekening toe te voegen aan e-mails, of e-mails te kunnen encrypteren hebben we opnieuw een certificaat nodig.
+	Vraag via onze CA (link) een certificaat aan en voeg dit certificaat toe in Thunderbird.
+	Voor deze vraag moet je geen CSR genereren, maar mag je het online formulier gebruiken.}
+\subsection{Authenticatie en/of encryptie}
+\textbf{Verzend naar je collega een bericht dat je probeert te encrypteren.
+	Waarom lukt dat niet? Waarom lukt dit wel als je naar jezelf een e-mail stuurt?
+	
+	Verzend nu naar elkaar een ondertekend bericht. Bij ontvangst wordt het gebruikte certificaat automatisch geïnstalleerd. Controleer dit en verifieer ook de vingerafdruk.
+	
+	Probeer nu opnieuw een bericht te encrypteren en naar je collega te versturen. Voeg eventueel ook een handtekening toe aan je bericht.}
+\subsection{Opslag mails op server}
+\textbf{ Alle mails worden op de sendmail-server opgeslagen in de directory /var/spool/mail/.
+	Bekijk de inhoud van deze bestanden.
+	Wat is het formaat van een mail met authenticatie en/of encryptie?}
 \end{document}
 
