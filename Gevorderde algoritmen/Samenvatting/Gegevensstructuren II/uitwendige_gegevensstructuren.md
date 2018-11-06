@@ -53,8 +53,18 @@ De hoogte is dus O(lg n), zelfde als voor rood-zwarte bomen, maar de (verborgen)
 * In het slechtste geval wordt het probleem opgeschoven tot de wortel (splitsing van h + 1 knopen). In dit geval zal er een nieuwe wortel aangemaakt worden met slechts 1 element (het middelste element van de vorige wortel).
 ---
 #### Verwijderen
-
-
+* Ook enkel **bottom-up** versie.
+---
+* Altijd verwijderen in een blad, anders teveel structuurwijziging.
+* Vervang de te verwijderen sleutel met zijn opvolger of voorloper (die zit altijd in een blad). 
+* Meestal zit de gezochte sleutel wel in een blad aangezien de meeste sleutels van een B-tree in bladeren zitten.
+* Wanneer een knoop te weinig sleutels heeft (< <a href="http://www.codecogs.com/eqnedit.php?latex=\lceil&space;m/2&space;\rceil" target="_blank"><img src="http://latex.codecogs.com/gif.latex?\lceil&space;m/2&space;\rceil" title="\lceil m/2 \rceil" /></a>), dan kan men proberen om een sleutel over te nemen van een broerknoop
+    1. de sleutel van de broer gaat naar zijn ouder
+    1. een sleutel van de ouder gaat naar de knoop, die ook een kindwijzer van de broer overneemt.
+    1. Omdat hier drie knopen worden aangepast, gaan we vaak meerdere sleutels verdelen, zodat elke knoop evenveel sleutels heeft.
+* Als de ene broer geen sleutel kan uitlenen, kan men proberen bij de andere broer. 
+* Indien geen van beide broers kan, gebeurt het omgekeerde van splitsen. De knoop wordt samengevoegd met een broer, de ouder verliest dus een kind, zodat de sleutel tussen de twee broers moet verdwijnen, deze wordt toegevoegd aan de samengevoegde knoop. 
+---
 
 ## B+ tree
 * Deze variant zal alle gegevens (sleutels en de bijhorende informatie) in de bladeren opslaan.
@@ -68,3 +78,16 @@ De hoogte is dus O(lg n), zelfde als voor rood-zwarte bomen, maar de (verborgen)
 * Zal bij de splitstoperatie de gegevens over de drie knopen verdelen, in plaats van de twee knopen.
 
 # UITWENDIGE HASHING
+* Indien niet geïnteresseerd in volgorde van sleutels.
+* Woordenboekoperaties gemiddeld O(1) schijfoperaties
+* **Hypothese**: we zouden aan elk element een schijfpagina kunnen toekennen (alle sleutels met dezelfde hashwaarde komen dus in dezelfde pagina). In het geval dat een pagina volgeraakt, zullen methoden zoals [Open Adressering](https://en.wikipedia.org/wiki/Hash_table#Open_addressing) en [Seperate Chaining](https://en.wikipedia.org/wiki/Hash_table#Separate_chaining) zoals bij een inwendige hashtabel, het aantal schijfoperaties vergroten. Dit is niet gewenst.
+* Een boom is meer flexibel dan een tabel, dus gebruiken we een **trie** (voorbeeld hieronder). 
+![trie](https://upload.wikimedia.org/wikipedia/commons/thumb/b/be/Trie_example.svg/400px-Trie_example.svg.png)
+Het zoekproces bij een trie vergelijkt opeenvolgende bits. Elke deelboom van een trie bevat alle sleutels met een gemeenschappelijke prefix. De bladeren van de trie zijn hier schijfpaginas, alle sleutels van een deelboom brengen we onder in één pagina. Indien de pagina vol is, wordt ze gesplitst, en beide pagina's krijgen een nieuwe trieknoop als ouder.
+* Dit kan slecht uitvallen, de vorm van de trie wordt bepaald door de bits van de sleutels. Het zou beter zijn moest men de **hashwaarden** gebruiken als sleutel gebruiken. 
+* Er zijn twee **betere** methoden:
+    1. *Extendible Hashing*
+    1. *Linear Hashing*
+#### Extendible Hashing
+
+#### Linear Hashing
