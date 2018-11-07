@@ -30,8 +30,9 @@ void Tree2D::nearestNeighbourSearchRecursive(const Point& searchPoint, Point& be
 	amountVisited++;
 
 	unsigned int bestDistance = best.quadDistance(searchPoint);
+	unsigned int currentDistance = (*this)->point.quadDistance(searchPoint);
 
-	if ((*this)->point.quadDistance(searchPoint) < bestDistance) {
+	if (currentDistance < bestDistance) {
 		best = (*this)->point;
 	}
 
