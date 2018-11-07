@@ -89,5 +89,7 @@ Het zoekproces bij een trie vergelijkt opeenvolgende bits. Elke deelboom van een
     1. *Extendible Hashing*
     1. *Linear Hashing*
 #### Extendible Hashing
+* Elimineert het zoeken door de trie, door het langst mogelijke prefix uit de trie als index te gebruiken in een hashtabel, die verwijzingen naar de overeenkomstige pagina's bevat. 
+* Kortere prefix komt overeen met meerdere tabelelementen die dezelfde pagina moeten bevatten.
 
 #### Linear Hashing
