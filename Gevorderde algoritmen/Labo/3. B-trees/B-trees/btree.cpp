@@ -3,8 +3,15 @@
 #include <fstream>
 #include <stack>
 
+//FEEDBACK: functies moeten algemeen zijn, slechts 1 voegtoe, niet meerdere voor specifieke gevallen
+// in labo was D int, maar moet alle datatypen kunnen hebben, dus niet in voegtoe ++ doen
+//
+// ingeleesde knopen bijhouden
+//  er moet extra parameter bijgehouden worden
 
-template<class T, class D, unsigned int m>
+// iemand had ook functie zoek die bool teruggeeft -> zoek functie moet bruikbaar zijn, geeft best altijd een knoop terug
+// 
+template<class T, class D, unsigned int m> //feedback; geen throw doen hier, want wordt lastig in voegtoe functie
 D Btree<T, D, m>::zoek(const T& s) const {
 	Bknoop<T, D, m> huidigeKnoop = wortel;
 	blokindex huidigeIndex = wortelindex;
