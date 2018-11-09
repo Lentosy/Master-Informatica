@@ -51,7 +51,9 @@ public:
 	int geefZwarteDiepte() const;
 
 	//noot: volgende functie mag alleen opgeroepen worden bij hoofdboom, niet bij deelboom!
-	void voegtoe(const Sleutel& sleutel);
+	void voegtoe_bottomup(const Sleutel& sleutel);
+
+	void voegtoe_topdown(const Sleutel& sleutel);
 protected:
 	//zoekfunctie zoekt sleutel en geeft de boom in waaronder de sleutel zit (eventueel een lege boom als de sleutel
 	//ontbreekt) en de pointer naar de ouder (als die bestaat, anders nulpointer).

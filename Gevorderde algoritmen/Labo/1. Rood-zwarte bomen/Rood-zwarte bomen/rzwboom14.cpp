@@ -4,11 +4,14 @@ template <class Sleutel>
 RZWboom<Sleutel>::RZWboom(unique_ptr<RZWknoop<Sleutel>>&& a)
 	: unique_ptr<RZWknoop<Sleutel>>(move(a)) {}
 
+
+// level order toevoegen
 template <class Sleutel>
 RZWboom<Sleutel>::RZWboom(const std::vector<Sleutel>& sleutels,
 	const std::vector<Sleutel>& zwarteSleutels) {
 	RZWboom<Sleutel>* plaats;
 	RZWknoop<Sleutel>* ouder;
+	
 	// toevoegen van de sleutels, ongeacht hun kleur
 	for (size_t i = 0; i < sleutels.size(); i++) {
 		zoek(sleutels[i], ouder, plaats);
@@ -28,7 +31,7 @@ RZWboom<Sleutel>::RZWboom(const std::vector<Sleutel>& sleutels,
 }
 
 template <class Sleutel>
-void RZWboom<Sleutel>::voegtoe(const Sleutel& sleutel) {
+void RZWboom<Sleutel>::voegtoe_bottomup(const Sleutel& sleutel) {
 	RZWboom<Sleutel>* plaats;
 	RZWknoop<Sleutel>* ouder;
 	zoek(sleutel, ouder, plaats);
@@ -37,6 +40,14 @@ void RZWboom<Sleutel>::voegtoe(const Sleutel& sleutel) {
 		plaats->get()->ouder = ouder;
 		plaats->herstelboom();
 	}
+}
+
+template<class Sleutel>
+void RZWboom<Sleutel>::voegtoe_topdown(const Sleutel& sleutel) {
+	// tijdens afdalen voor zorgen dat oom zwart is
+	// op weg naar beneden geen rode broers toelaten, want nieuwe knoop zou kind van beide kunnen wprden
+	// indien zwarte knoop twee rode knopen heeft, wisselen de kleuren om, eventueel met rotaties op te lossen
+	//      indien de zwarte knoop een rode ouder heeft
 }
 
 template <class Sleutel>
@@ -114,7 +125,7 @@ RZWboom<Sleutel>* RZWknoop<Sleutel>::geefBoomVanKnoop() {
 }
 
 #pragma region Onbelangrijke functies
-
+//feedback: 
 template <class Sleutel>
 int RZWboom<Sleutel>::geefZwarteDiepte() const {
 	if (*this) {
@@ -312,9 +323,6 @@ string RZWboom<Sleutel>::tekenrecBinair(ostream& uit, int& nullteller) const {
 	};
 	return wortelstring.str();
 }
-
-
-
 
 
 template <class Sleutel>

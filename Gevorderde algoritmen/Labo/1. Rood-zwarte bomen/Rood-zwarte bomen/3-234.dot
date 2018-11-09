@@ -1,0 +1,51 @@
+digraph {
+node[shape=rectangle]
+"13"[label="13"][style=filled][fillcolor=black][fontcolor=white];
+"8"[label="8"][style=filled][fillcolor=red][fontcolor=black];
+"1"[label="1"][style=filled][fillcolor=black][fontcolor=white];
+null1 [shape=point];
+"6"[label="6"][style=filled][fillcolor=red][fontcolor=black];
+null2 [shape=point];
+null3 [shape=point];
+"6" -> null2
+"6" -> null3
+"1" -> null1
+"11"[label="11"][style=filled][fillcolor=black][fontcolor=white];
+null4 [shape=point];
+null5 [shape=point];
+"11" -> null4
+"11" -> null5
+"8" -> "1";
+"8" -> "11";
+"17"[label="17"][style=filled][fillcolor=red][fontcolor=black];
+"15"[label="15"][style=filled][fillcolor=black][fontcolor=white];
+null6 [shape=point];
+null7 [shape=point];
+"15" -> null6
+"15" -> null7
+"25"[label="25"][style=filled][fillcolor=black][fontcolor=white];
+"22"[label="22"][style=filled][fillcolor=red][fontcolor=black];
+null8 [shape=point];
+null9 [shape=point];
+"22" -> null8
+"22" -> null9
+"27"[label="27"][style=filled][fillcolor=red][fontcolor=black];
+null10 [shape=point];
+null11 [shape=point];
+"27" -> null10
+"27" -> null11
+subgraph cluster_1 {
+   { rank="same"; "22" , "27" , "25"}
+   "22" ->"25"[dir=back];
+   "25" -> "27";
+color=white
+}
+"17" -> "15";
+"17" -> "25";
+subgraph cluster_2 {
+   { rank="same"; "8" , "17" , "13"}
+   "8" ->"13"[dir=back];
+   "13" -> "17";
+color=white
+}
+}
