@@ -52,7 +52,6 @@ public:
 
 	//noot: volgende functie mag alleen opgeroepen worden bij hoofdboom, niet bij deelboom!
 	void voegtoe_bottomup(const Sleutel& sleutel);
-
 	void voegtoe_topdown(const Sleutel& sleutel);
 protected:
 	//zoekfunctie zoekt sleutel en geeft de boom in waaronder de sleutel zit (eventueel een lege boom als de sleutel

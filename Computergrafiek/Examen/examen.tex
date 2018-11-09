@@ -3,11 +3,6 @@
 \usepackage{ugentstyle}
 \usepackage{amsmath}
 
-\newcommand{\vraag}[2]{
-	\item #1
-	
-	#2
-}
 
 \begin{document}
 	\maketitle{Computergrafiek - Examen}
@@ -347,31 +342,31 @@
 		\vraag{\accentuate{(1-3)} de Casteljau constructie (van een punt met specifieke parameterwaarde) van een Bézier kromme}{
 		\begin{itemize}
 			\item Gegeven volgende inputgegevens:
-			\begin{figure}[h]
-				\centering
-				\includegraphics[width=0.4\textwidth]{decasteljau_constructie}
-			\end{figure}
+		%	\begin{figure}[h]
+		%		\centering
+		%		\includegraphics[width=0.4\textwidth]{decasteljau_constructie}
+		%	\end{figure}
 			Stel de casteljauconstructie op voor t=0,3; t=0,6 en t=0,9 op. Teken ook de kromme.
 			
 			\item Eerst algemene constructie opstellen: \todo{lol, te moeilijk om op pc te doen, maar zoals Fig 3.24 op pagina 44 cursurs}
 				Uiteindelijke uitkomst:
-				\begin{figure}[!tbp]
-					\centering
-					\begin{minipage}[b]{0.3\textwidth}
-						\includegraphics[width=\textwidth]{decasteljau_constructie_t3}
-						\caption{t = 0,3}
-					\end{minipage}
-					\hfill
-					\begin{minipage}[b]{0.3\textwidth}
-						\includegraphics[width=\textwidth]{decasteljau_constructie_t6}
-						\caption{t = 0,6}
-					\end{minipage}
-				\hfill
-				\begin{minipage}[b]{0.3\textwidth}
-					\includegraphics[width=\textwidth]{decasteljau_constructie_t9}
-					\caption{t = 0,9}
-				\end{minipage}
-				\end{figure}
+			%	\begin{figure}[!tbp]
+			%		\centering
+			%		\begin{minipage}[b]{0.3\textwidth}
+			%			\includegraphics[width=\textwidth]{decasteljau_constructie_t3}
+			%			\caption{t = 0,3}
+			%		\end{minipage}
+			%		\hfill
+			%		\begin{minipage}[b]{0.3\textwidth}
+			%			\includegraphics[width=\textwidth]{decasteljau_constructie_t6}
+			%			\caption{t = 0,6}
+			%		\end{minipage}
+			%	\hfill
+			%	\begin{minipage}[b]{0.3\textwidth}
+			%		\includegraphics[width=\textwidth]{decasteljau_constructie_t9}
+			%		\caption{t = 0,9}
+			%	\end{minipage}
+			%	\end{figure}
 
 		\end{itemize}
 	
@@ -380,7 +375,13 @@
 		\newpage
 		\vraag{\accentuate{(1)} verhoging van de graad van Bézier splines (in één enkele stap); voorafgaand moet het verband tussen de \textit{oude} en de \textit{nieuwe} controlepunten opgesteld worden (vermenigvuldiging met een specifieke matrix, cfr. theorieles)}{
 		\begin{itemize} 
-			Eerst algemene formule (niet te kennen):
+			Eerst algemene formule \accentuate{(niet te kennen)}:
+			$$p[u_1, u_2, ... u_m] = \sum_{i_1 = 1}^{m}
+									 \sum_{\substack{i_2 = 1 \\ i_2 \neq i_1}}^{m}
+									 ...
+									 \sum_{\substack{i_n = 1 \\ i_n \not\in \{i_1, ... i_{n}\}}}^{m}
+									 P[{u_i}_1, {u_i}_2, ..., {u_i}_n] \bigg/ \binom{m}{n}
+									 $$
 			Een verhoging van de graad kan eenvoudig uitgevoerd worden met een matrix, waarin de coëfficiënten van Pascal instaan. Hier uitgewerkt om een Bézier kromme van graad 4 te verhogen naar graad 7, in één enkele stap:
 			$$
 			\begin{pmatrix}

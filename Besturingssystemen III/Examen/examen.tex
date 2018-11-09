@@ -2,21 +2,15 @@
 
 \usepackage{ugentstyle}
 
-\newcommand{\vraag}[2]{
-	\item #1
-	
-	#2
-}
-
 \begin{document}
 	\maketitle{Besturingssystemen III: Examen}
-
+	
 	\tableofcontents
 	
 	\chapter{Modelvragen theorie: reeks A}
 	Het examen wordt \accentuate{volledig schriftelijk} beantwoord. Indien de student dit wenst, wordt het antwoord onmiddellijk na indienen geëvalueerd, en eventueel gevolgd door enkele vragen ter verduidelijking of aanvulling.
 	
-
+	
 	\section{Structuur van Active Directory gegevens}
 	\begin{enumerate}
 		\vraag { Bespreek de \textit{diverse namen} die alle Active Directory objecten \textit{identificeren}. \accentuate{\textsection 2.2.1} } 
@@ -30,12 +24,10 @@
 				
 				\item \textbf{GUID.} Elk object heeft een \textbf{unieke} GUID. Dit is een 128-bit getal dat niet kan gewijzigd worden. Een GUID wordt aangemaakt bij de \textbf{creatie} van een object en kan dan \textbf{niet meer aangepast} worden. Dit wordt opgeslagen in het attribuut \textbf{objectGUID}.
 			\end{itemize}
-		
+			
 		}	
 		\vraag { Wat zijn \textit{SPN objecten} ? Bespreek de \textit{aanvullende naamgeving} voor deze objecten. \accentuate{ (\textsection 2.2.2)} } { 
-			\textbf{Security Principal Objects (SPN)} zijn objecten die \textbf{security IDs (SIDs)} bevatten. Dergelijke objecten worden gebruikt voor het verlenen van toegang tot domeinbronnen en zijn daarom van toepassing op gebruikersaccounts, computeraccounts, groepen en domeinen. Een SID is net zoals een GUID uniek voor elk nieuw aangemaakt object.
-			
-			
+			\textbf{Security Principal Objects (SPN)} zijn objecten die \textbf{security IDs (SIDs)} bevatten. Dergelijke objecten worden gebruikt voor het verlenen van toegang tot domeinbronnen en zijn daarom van toepassing op gebruikersaccounts, computeraccounts, groepen en domeinen. Een SID is net zoals een GUID uniek binnen een forest voor elk nieuw aangemaakt object. Bij het verplaatsen en hernoemen binnen hetzelfde domein blijven de GUID en SID behouden van een SPN object. Indien het object naar een andere domein verplaatst wordt, zal enkel GUID hetzelfde blijven. Hierbij wordt het \textbf{sIDHistory} attribuut aangevuld met het vorige SID.	
 		}
 		
 		\vraag { Enkele veel gebruikte klassen (hiermee worden \textit{attributeschema} en \textit{classschema} objecten niet bedoeld) vertonen nog meer identificerende attributen voor hun instanties. Bespreek deze klassen en attributen. } { 		
@@ -60,71 +52,215 @@
 		\vraag { In welke \textit{partities} is de Active Directory informatie verdeeld ? Geef de betekenis van elke partitie, hun onderlinge relatie (zowel fysiek als met betrekking tot hun naamgeving), en de replicatiekarakteristieken ervan. \accentuate{(laatste helft \textsection 2.2.3)} } {
 			\begin{itemize}
 				\item \textbf{Domeingegevens.} Deze partitie bevat informatie over alle objecten in het domein (servers, bestanden, printers, accounts, ...). Objecten die aangemaakt of gewijzigd zijn, worden steeds opgeslagen in de domeingegevens. In Active Directory kunnen er meerdere domeinen bestaan in een forest. Deze domeinen vormen een boomstructuur met als wortel de domeingegevens van het \textbf{root} domein. Domeingegevens van een bepaald domein worden gerepliceerd tussen alle domeincontrollers van enkel dat domein.
-				\item \textbf{Applicatiepartitie.}
-				\item \textbf{Configuratiegegevens.} Deze partitie beschrijft de fysieke topologie van de directory. Het bevat onder andere een lijst van alle domeinstructuren, de locaties van de domeincontrollers, de sites en de replicatietopologie.
+				\item \textbf{Applicatiepartitie.} Elk van de eventuele applicatiepartities wordt uitgewisseld tussen een eigen deelverzameling specifiek hiervoor geconfigureerde domeincontrollers van het forest, onafhankelijk van domeingrenzen. De applicatiepartitie DomainDNSZones wordt enkel gesynchroniseerd met domeincontrollers binnen een domein die ook DNS server zijn. De applicatiepartitie ForestDNSZones daarentegen zal de domeincontrollers die DNS server zijn op forestniveau synchroniseren.
+				\item \textbf{Configuratiegegevens.} Deze partitie beschrijft de fysieke topologie van de directory. Het bevat onder andere een lijst van alle domeinstructuren, de locaties van de domeincontrollers, de sites en de replicatietopologie. Deze partitie bevat ook de koppeling tussen een partitie en zijn replicerende domeincontrollers in het attribuut \textbf{msDS-NC-Replica-Locations} van het overeenkomstige \textbf{crossref} object. Enkel voor applicatiepartities kan dit dynamisch gewijzigd worden. 
+				\item \textbf{Het schema.} Dit is de formele definitie van alle objecten en kenmerkgegevens die kunnen opgeslagen worden in Active Directory. Dit schema is uniek voor alle domeinen in het forest.	
+			\end{itemize}
+			Een willekeurige domeincontroller zorgt voor de opslag en replicatie van 
+			
+		}
+	\end{enumerate}
+	
+	\section{attributeSchema objecten \accentuate{ (\textsection 2.2.4 en \textsection 2.2.5)}}
+	\begin{enumerate}
+		\vraag { Bespreek het \textit{doel} en de \textit{werking} van attributeSchema objecten. Hoe kunnen deze objecten het best \textit{geraadpleegd} en \textit{gewijzigd} worden ? } { 
+			\begin{itemize}
+				\item Het attributeSchema bevat alle kenmerken die in het schema voorkomen. Een kenmerk is zelf een object. Zo een kenmerk wordt éénmaal gedefinieerd en kan meerdere malen gebruikt worden bij verschillende klassen, wat voor consistentie zorgt. Een goed voorbeeld hiervan is het description kenmerk. Om op een eenvoudige manier objecten te raadplegen of wijzigen, kan men met het schema snap-in mechanisme werken. \textbf{Active Directory Schema} is zo een snap-in, dat eenvoudig in twee vensters zowel de kenmerken als de klassen weergeeft. Dubbelklikken op een item geeft de meest relevante eigenschappen van het object, en de mogelijkheid om deze in te stellen. Er kan ook gebruikt gemaakt worden van de opdracht \textbf{dsquery *}. Deze opdracht kan om het even welke kenmerken tonen van één enkel object, of van alle objecten in een container, zowel niet-recursief als recursief.
+			\end{itemize}
+		}
+		
+		\vraag { Bespreek de \textit{diverse naamgevingen}, specifiek voor attributeSchema objecten. } { 
+			\begin{itemize}
+				\item \textbf{Common Name}: De RDN van het attributeSchema object in de Schema container.
+				\item \textbf{GUID}: Dit kan automatisch gegenereerd worden bij de creatie van een nieuw kenmerk. Een attribuut krijgt dan wel een verschillende GUID in verschillende forests. Manueel een GUID instellen kan ook, met bv de \textbf{guidgen} of \textbf{uuidgen} opdrachten.
+				\item \textbf{LDAP Display Name}: De naam die gebruikt wordt voor LDAP. Deze naam is belangrijk voor programmatische toegang.
+				\item \textbf{Object Identifier}: De interne representatie van een object. Deze identifiers worden verleend door specialie autoriteiten, en zijn gegarandeerd uniek in alle netwerken over de hele wereld. Een Object Identifier bestaat uit een decimale reeks met punten, waarbij de toekenning op een hiërarchische manier gebeurd. Een Object Identifier kan aangevraagd worden bij een regionale ISO vertegenwoordiger. Indien dit niet gewenst is, kan er ook een Object Identifier gegenereerd worden in een Microsoft subtak, met behulp van de opdracht \textbf{oidgen}.
+			\end{itemize}
+		}
+		
+		\vraag { Bespreek de belangrijkste \textit{kenmerken} van attributeSchema objecten, en op welke waarden die ingesteld kunnen worden. } { 
+			\begin{itemize}
+				\item \textbf{attributeSyntax en oMSyntax}: De syntax bepaalt het data type zoals: Object ID, Boolean, Integer, DirectoryString zijn enkele van de 26 mogelijkheden. Slechts 18 van deze 26 worden momenteel gebruikt in Active Directory. Het is \textbf{onmogelijk} om een nieuwe syntax te definieëren. Het object ID van een syntax wordt geïdentificeerd in de vorm van 2.5.5.x . Sommige Object Identifiers zijn blijkbaar niet te onderscheiden, waarop beroep moet gedaan worden op een bijkomende Integer waarde: mOSyntax.
+				\item \textbf{rangeLower en rangeUpper}: Bepalen de lengte- of bereikbeperkingen van kenmerken.
+				\item \textbf{isSingleValued}: Geeft aan of een attribuut meerdere waarden kan bevatten (een lijst).
+				\item \textbf{searchFlags}: Dit veld bevat binaire informatie, waarbij elke afzonderlijke bit kan ingesteld worden. Veronderstel de vorm $b_{10}b_9b_9b_7b_6b_5b_4b_3b_2b_1$, dan betekent elke bit het volgende:
+				\begin{itemize}
+					\item \textbf{$b_1$}: Deze wordt meestal gezet, zodat eenvoudige indexering van de waarde van het kenmerk geactiveerd wordt, ongeacht van waar het object zich in Acive Directory bevindt.
+					\item \textbf{$b_2$}: Indien deze gezet wordt, wordt de waarde van het kenmerk gecbomineerd met de identificatie van de container waarin het object zich bevindt. Dit heet een containerized index, en zijn in staat om snel objecten op te sporen in een specifieke container.
+					\item \textbf{$b_3$}: Dit laat Ambiguous Name Resolution toe. Bij opzoekingen van kenmerken waaraan een bepaalde waarde voldaan moet worden, kan i.p.v. \\ ($\mid$ (kenmerk1=waarde)(kenmerk2=waarde)(kenmerk3=waarde)...) gewoon (anr=waarde) gebruiken. 
+					\item \textbf{$b_4$}: \accentuate{(staat niets over in de cursus)}
+					\item \textbf{$b_5$}: Deze bit heeft niets met indexering te maken, maar geeft aan of de waarde van een attribuut behouden blijft bij het maken van een kopie van dit object.
+					\item \textbf{$b_6$}: Deze bit instellen versnelt opzoekingen waarn kenmerken metw wildcards vermeld worden. Deze tuple indexen worden best zeldzaam gebruikt, aangezien ze veel resources in beslag nemen.
+					\item \textbf{$b_7$}: \accentuate{niet belangrijk, dus niet opschrijven}
+					\item \textbf{$b_8$}: \accentuate{(staat niets over in de cursus)}
+					\item \textbf{$b_9$}: \accentuate{niet belangrijk, dus niet opschrijven}
+					\item \textbf{$b_{10}$}: \accentuate{(staat niets over in de cursus)}
+				\end{itemize}
+				\item \textbf{systemFlags}: Dit heeft dezelfde vorm als searchFlags, een binair formaat $b_{28}...b_{5}b_{4}b_3b_2b_1$ waarvan de bits het volgende betekenen:
+				\begin{itemize}
+					\item \textbf{$b_1$}: Deze bit geeft aan of dat het kenmerk gerepliceerd mag worden naar andere domeincontrollers of niet. Attributen die vaak wijzigen zoals lastLogOn en lastLogOff worden niet gerepliceerd.
+					\item \textbf{$b_2$}: \accentuate{(staat niets over in de cursus)}
+					\item \textbf{$b_3$}: Dit geeft aan of een attribuut geconstrueerd is of niet. Een dergerlijk attribuut wordt niet opgeslagen in Active Directory, maar wordt telkens opnieuw berekend op basis van andere kenmerken.
+					\item \textbf{$b_5$}: \todo{opzoeken}
+					\item \textbf{$b_28$}: \todo{opzoeken}
+				\end{itemize}
+				\item \textbf{isMemberOfPartialAttributeSet}: Bepaalt of een attribuut in de global catalog wordt opgenomen of niet.
+				\item \textbf{linkID}: ??
+			\end{itemize}
+		}
+		
+		\vraag { Welke andere types objecten bevat het \textit{Active Directory schema}, en wat is hun bedoeling ? \accentuate{ (o.a. \textsection 2.2.7)} } { \todo{Oplossen}}
+		
+		\vraag { Via welke attributen kun je de \textit{klasse} van een willekeurig Active Directory object achterhalen ? Hoe moet je op zoek gaan naar alle objecten van een bepaalde klasse ? Illustreer aan de hand van relevante voorbeelden. \accentuate{ (laatste paragraaf \textsection 2.2.6)} } { 
+			\begin{itemize}
+				\item De \textbf{objectClass} en \textbf{objectCategory} attributen laten toe om een klasse te achterhalen. Het attribuut objectClass 
+			\end{itemize}	
+		}
+	\end{enumerate}
+	
+	\section{classSchema objecten \accentuate{ (\textsection 2.2.4 en \textsection 2.2.6)}}
+	\begin{enumerate}
+		\vraag { Bespreek het \textit{doel} en de \textit{werking} van classSchema objecten. } { 
+			\begin{itemize}
+				\item Voor elke klasse is er een classSchema object waarmee de klasse kan ingesteld worden. 
+			\end{itemize}	
+		}
+		
+		\vraag { Hoe benadert Active Directory het mechanisme van \textit{overerving} ? } {
+			\begin{itemize}
+				\item Een klasse die een andere klasse (de superklasse) overeft, neemt de kenmerken van deze superklasse over, inclusief de structuurregels en de inhoudsregels. Deze overerving werkt recursief: de subklasse erft alle gegevens van opeenvolgende superklasse. Een klasse kan echter maar van één superklasse overerven, en eventueel van speciaal hiervoor bestemde hulpklassen, die zelf geen instanties kunnen bevatten. Vanaf Windows Server 2003 is het mogelijk om dynamische objecten te definiëren. Hierdoor is het mogelijk om hulpklassen dynamisch te gebruiken: tijdens de create van een object kunnen extra dynamische hulpklassen gegenereerd worden, die enkel voor die instantie geldig zijn, door aanvullingen van het objectClass attribuut. Na de create kan dit attribuut niet meer gewijzigd worden.
+			\end{itemize}	
+		}
+		
+		\vraag { Bespreek de diverse \textit{naamgevingen}, specifiek voor classSchema objecten. } { 
+			\accentuate{komt overeen met vraag 1.2.2, maar enkel de naamgeving is anders}
+			\begin{itemize}
+				\item \textbf{cn}: De RDN van het attributeSchema object in de Schema container.
+				\item \textbf{schemaIDGUID}: Dit kan automatisch gegenereerd worden bij de creatie van een nieuw kenmerk. Een attribuut krijgt dan wel een verschillende GUID in verschillende forests. Manueel een GUID instellen kan ook, met bv de \textbf{guidgen} of \textbf{uuidgen} opdrachten.
+				\item \textbf{lDAPDisplayName}: De naam die gebruikt wordt voor LDAP. Deze naam is belangrijk voor programmatische toegang.
+				\item \textbf{governsID}: De interne representatie van een object. Deze identifiers worden verleend door specialie autoriteiten, en zijn gegarandeerd uniek in alle netwerken over de hele wereld. Een Object Identifier bestaat uit een decimale reeks met punten, waarbij de toekenning op een hiërarchische manier gebeurd. Een Object Identifier kan aangevraagd worden bij een regionale ISO vertegenwoordiger. Indien dit niet gewenst is, kan er ook een Object Identifier gegenereerd worden in een Microsoft subtak, met behulp van de opdracht \textbf{oidgen}.
+			\end{itemize}
+		}
+		
+		\vraag { Bespreek de belangrijkste \textit{kenmerken} van classSchema objecten, en op welke waarden die ingesteld kunnen worden. } { 
+			\begin{itemize}
+				\item 
+			\end{itemize}	
+		}
+		
+		\vraag { Welke andere types objecten bevat het \textit{Active Directory schema}, en wat is hun bedoeling ? \accentuate{ (o.a. \textsection 2.2.7)} } { \todo{Oplossen}}
+		
+		\vraag { Hoe en met welke middelen kan het Active Directory schema uitgebreid worden ? Waarom moet je en hoe kan je hierbij \textit{voorzichtig} te werk gaan ? \accentuate{ (o.a. \textsection 2.2.8, ldifde fractie \textsection 2.2.3)} } { 
+			\begin{itemize}
+				\item Wanneer onvoorzichtig uitbreidingen aan het schema worden toegevoegd, kan dit nefaste gevolgen hebben op domein en forestniveau. Een domein kan beschadigd geraken of zelfs uitschakelen. Bovendien gelden de wijzigingen voor het gehele forest.
+				
+				De veiligste manier om uitbreidingen op het schema te ontwikkelen en uit te testen is een geïsoleerd netwerk van een testomgeving. Bovendien worden schemaobjecten beveiligd door Access Control Lists, zodat enkel gemachtigde gebruikers aanpassingen kunnen doen. Verder kunnen ook nog volgende richtlijnen gehanteerd worden:
+				\begin{itemize}
+					\item Vermijdt het wijzigen van de attributen van een bestaande klasse.
+					\item Maak enkel een nieuwe structurele klasse (een subklasse van de superklasse Top) aan als er geen enkel ander object enigszins aan de behoeften voldoet.
+				\end{itemize}
+				
+				Een schema uitbreiden heeft echter veel potentieel. De aanbevolen manier om het Active Directory op grote schaal uit te breiden is via de \textbf{ldifde} opdracht, aangezien één ldifde inputbestand meerdere aanpassingen ineens kan uitvoeren. Zo een inputbestand heeft als formaat het LDAP Data Interchange Format.
 			\end{itemize}
 		}
 	\end{enumerate}
-
-	\section{attributeSchema objecten \accentuate{ (\textsection 2.2.4 en \textsection 2.2.5)}}
+	
+	\section{Active Directory domeinstructuren \accentuate{(§2.4.4, laatste paragraaf §2.4.5 en §2.4.6)}}
 	\begin{enumerate}
-		\vraag { Bespreek het \textit{doel} en de \textit{werking} van attributeSchema objecten. Hoe kunnen deze objecten het best \textit{geraadpleegd} en \textit{gewijzigd} worden ? } { \todo{Oplossen}}
+		\vraag { Wat is de bedoeling van \textit{vertrouwensrelaties} ? } { \todo{Oplossen}}
 		
-		\vraag { Bespreek de \textit{diverse naamgevingen}, specifiek voor attributeSchema objecten. } { \todo{Oplossen}}
+		\vraag { Bespreek de verschillende \textit{soorten} vertrouwensrelaties. } { \todo{Oplossen}}
 		
-		\vraag { Bespreek de belangrijkste \textit{kenmerken} van attributeSchema objecten, en op welke waarden die ingesteld kunnen worden. } { \todo{Oplossen}}
+		\vraag { Op welke diverse manieren kunnen vertrouwensrelaties \textit{gecreëerd} en \textit{gecontroleerd} worden ? Bespreek ook de \textit{optionele configuratiemogelijkheden}. } { \todo{Oplossen}}
 		
-		\vraag { Welke andere types objecten bevat het \textit{Active Directory schema}, en wat is hun bedoeling ? \accentuate{ (o.a. \textsection 2.2.7)} } { \todo{Oplossen}}
-		
-		\vraag { Via welke attributen kun je de \textit{klasse} van een willekeurig Active Directory object achterhalen ? Hoe moet je op zoek gaan naar alle objecten van een bepaalde klasse ? Illustreer aan de hand van relevante voorbeelden. \accentuate{ (laatste paragraaf \textsection 2.2.6)} } { \todo{Oplossen}}
+		\vraag { Welke verschillen zijn er in praktijk tussen \textit{NT 4.0} en \textit{Windows Server} domeinstructuren ? Bespreek onder andere telkens de noodzaak om meerdere domeinen in te voeren. Bespreek de alternatieve mogelijkheden bij de \textit{conversie van een NT 4.0 domeinstructuur} naar een Windows Server omgeving. } { \todo{Oplossen}}
 	\end{enumerate}
-
-	\section{classSchema objecten \accentuate{ (\textsection 2.2.4 en \textsection 2.2.6)}}
+	
+	\section{Active Directory server rollen \accentuate{(§2.4.7, §2.3 en fractie §2.4.2)}}
+	Welke vragen moet men zich stellen na de initiële installatie van een Windows Server toestel, in verband met \textit{bijzondere functies} die de server kan vervullen met betrekking tot Active Directory ? Formuleer bij het beantwoorden van deze vragen telkens (voor zover relevant): 
 	\begin{enumerate}
-		\vraag { Bespreek het \textit{doel} en de \textit{werking} van classSchema objecten. } { \todo{Oplossen}}
+		\vraag { Hoe bepaald wordt \textit{welke servers} een dergelijke specifieke functie vervullen ? \textit{Hoeveel} zijn er nodig (in termen van: \textit{minimaal/exact/maximaal} \#, \textit{in functie van} ...), en waarom ? } { \todo{Oplossen}}
 		
-		\vraag { Hoe benadert Active Directory het mechaniscme van \textit{overerving} ? } { \todo{Oplossen}}
+		\vraag { \textit{Eigenschappen} zoals bedoeling, noodzaak, kriticiteit, inhoud, synchronisatie, voor welke Windows versie(s) van toepassing, ... ? } { \todo{Oplossen}}
 		
-		\vraag { Bespreek de diverse \textit{naamgevingen}, specifiek voor classSchema objecten. } { \todo{Oplossen}}
+		\vraag { De \textit{eventuele relatie} tussen de diverse functies. Vermeld bijvoorbeeld welke functies al dan niet door dezelfde server \textit{kunnen} vervuld worden, of misschien wel juist wel door dezelfde server \textit{moeten} vervuld worden. } { \todo{Oplossen}}
 		
-		\vraag { Bespreek de belangrijkste \textit{kenmerken} van classSchema objecten, en op welke waarden die ingesteld kunnen worden. } { \todo{Oplossen}}
-		
-		\vraag { Welke andere types objecten bevat het \textit{Active Directory schema}, en wat is hun bedoeling ? \accentuate{ (o.a. \textsection 2.2.7)} } { \todo{Oplossen}}
-		
-		\vraag { Hoe en met welke middelen kan het Active Directory schema uitgebreid worden ? Waarom moet je en hoe kan je hierbij \textit{voorzichtig} te werk gaan ? \accentuate{ (o.a. \textsection 2.2.8, ldifde fractie \textsection 2.2.3)} } { \todo{Oplossen}}
-	\end{enumerate}
-
- 	\section{Active Directory domeinstructuren \accentuate{(§2.4.4, laatste paragraaf §2.4.5 en §2.4.6)}}
- 	\begin{enumerate}
- 		\vraag { Wat is de bedoeling van \textit{vertrouwensrelaties} ? } { \todo{Oplossen}}
- 		
- 		\vraag { Bespreek de verschillende \textit{soorten} vertrouwensrelaties. } { \todo{Oplossen}}
- 		
- 		\vraag { Op welke diverse manieren kunnen vertrouwensrelaties \textit{gecreëerd} en \textit{gecontroleerd} worden ? Bespreek ook de \textit{optionele configuratiemogelijkheden}. } { \todo{Oplossen}}
- 		
- 		\vraag { Welke verschillen zijn er in praktijk tussen \textit{NT 4.0} en \textit{Windows Server} domeinstructuren ? Bespreek onder andere telkens de noodzaak om meerdere domeinen in te voeren. Bespreek de alternatieve mogelijkheden bij de \textit{conversie van een NT 4.0 domeinstructuur} naar een Windows Server omgeving. } { \todo{Oplossen}}
- 	\end{enumerate}
- 
- 	\section{Active Directory server rollen \accentuate{(§2.4.7, §2.3 en fractie §2.4.2)}}
- 		Welke vragen moet men zich stellen na de initiële installatie van een Windows Server toestel, in verband met \textit{bijzondere functies} die de server kan vervullen met betrekking tot Active Directory ? Formuleer bij het beantwoorden van deze vragen telkens (voor zover relevant): 
- 		\begin{enumerate}
- 			\vraag { Hoe bepaald wordt \textit{welke servers} een dergelijke specifieke functie vervullen ? \textit{Hoeveel} zijn er nodig (in termen van: \textit{minimaal/exact/maximaal} \#, \textit{in functie van} ...), en waarom ? } { \todo{Oplossen}}
- 		
- 			\vraag { \textit{Eigenschappen} zoals bedoeling, noodzaak, kriticiteit, inhoud, synchronisatie, voor welke Windows versie(s) van toepassing, ... ? } { \todo{Oplossen}}
- 		
- 			\vraag { De \textit{eventuele relatie} tussen de diverse functies. Vermeld bijvoorbeeld welke functies al dan niet door dezelfde server \textit{kunnen} vervuld worden, of misschien wel juist wel door dezelfde server \textit{moeten} vervuld worden. } { \todo{Oplossen}}
- 		
- 			\vraag { Hoe kan achterhaald worden welk(e) toestel(len) de bijzondere functie vervult, en op welke diverse manieren men de \textit{toewijzing} ervan kan instellen, wijzigen en/of ongedaan maken ? } { \todo{Oplossen}}
- 		\end{enumerate}	
+		\vraag { Hoe kan achterhaald worden welk(e) toestel(len) de bijzondere functie vervult, en op welke diverse manieren men de \textit{toewijzing} ervan kan instellen, wijzigen en/of ongedaan maken ? } { \todo{Oplossen}}
+	\end{enumerate}	
 	\chapter{Modelvragen theorie: reeks B}
 	\section{Active Directory functionele niveaus \accentuate{(§2.4.3)}}
 	\begin{enumerate}
-		\vraag { Geef de diverse \textit{functionele niveaus} waarop Active Directory kan ingesteld worden, en welke beperkingen er het gevolg van zijn. } { \todo{Oplossen}}
-		\vraag { Bespreek van elk niveau alle eraan gekoppelde voordelen. Geef hierbij telkens een korte bespreking \accentuate{(verspreid over de cursus !)} van ingevoerde begrippen. } { \todo{Oplossen}}
+		\vraag { Geef de diverse \textit{functionele niveaus} waarop Active Directory kan ingesteld worden, en welke beperkingen er het gevolg van zijn. } {
+			\begin{itemize}
+				\item \textbf{Windows 2000 mixed.} Een forest met dit functioneel niveau stelt geen enkele eis aan het functioneel niveau van de liddomeinen. Een domein met dit functioneel niveau biedt echter de laagste functionaliteit. 
+				\item \textbf{Windows 2000 native.} Dit heeft geen impact op een forest. Op domeinniveau legt dit echter de beperking op dat een domeincontroller NT 5+ draait. Lidservers en werkposten hebben deze restrictie niet.
+				\item \textbf{Windows Server 2003.} Een forest met dit functioneel niveau kan enkel domeinen bevatten waarbij hun domein functioneel niveau minstens Windows Server 2003 is. Op domein functioneel niveau laat dit enkel nog Windows Server 2003+ domeincontrollers toe, zonder deze restrictie ook op te leggen aan lidservers en werkposten. 
+				\item \textbf{Windows Server 2008.} Een forest met dit functioneel niveau kan enkel domeinen bvatten waarbij hun domein functioneel niveau minstens Windows Server 2008 is. Het biedt echter geen aanvullende functionaliteit. Analoog met Windows Server 2003, zal een domein met functioneel niveau Windows Server 2008 enkel Windows Server 2008+ domeincontrollers toelaten, zonder deze restrictie ook op te leggen aan lidservers en werkposten. 
+			\end{itemize}
+			
+		}
+		\vraag { Bespreek van elk niveau alle eraan gekoppelde voordelen. Geef hierbij telkens een korte bespreking \accentuate{(verspreid over de cursus !)} van ingevoerde begrippen. } {
+			Elk niveau kan ondergebracht worden in het domein functioneel niveau en forest functioneel niveau.
+			\begin{itemize}
+				\item \textbf{Domein functioneel niveau.}
+				\begin{itemize}
+					\item \textbf{Windows 2000 mixed.} Geen voordelen, standaardfunctionaliteit.
+					\item \textbf{Windows 2000 native.}
+					\begin{itemize}
+						\item Er is de keuze om slechts één global catalog te hebben voor het hele forest, wat voor minder replicatie zorgt. De global catalog bevat een read-only en verkorte inhoudsopgave van elk domein in een groep domeinen. Hierdoor kunnen objecten opgezocht worden, zonder te weten in welk specifiek domein van de directory deze gegevens feitelijk zijn opgeslagen.
+						\item Transitieve vertrouwensrelaties tussen verschillende domeinen van eenzelfde forest zijn mogelijk. Twee domeinen kunnen een vertrouwensrelatie opstellen, zodat gebruikers in het vertrouwd domein kunnen geverifieerd worden door de domeincontroller in het vertrouwend domein. 
+						\item Domeincontrollers zijn zelf in staat om SPN objecten aan te maken, hiervoor gedelegeerd door de RID master. De RID master is een serverrol dat slechts door één domeincontroller kan vervuld worden. Deze RID master geeft reeksen relatieve SIDs wanneer een domeincontroller zijn RID pool voor 80\% heeft opgebruikt.
+						\item Gebruikers en/of computers kunnen verzameld worden in groepen. Een groep wordt gebruikt om een verzameling van gebruikersobjecten die dezelfde toegangsmachtigingen hebben te groeperen, zodat restricties enkel op deze groep moeten gedefinieerd worden en niet op de individuele gebruikersobjecten.
+						\item Alle SIDs die in een SPN object in het verleden gehad heeft, worden bijgehouden in het sIDHistory kenmerk.
+					\end{itemize}
+					\item \textbf{Windows Server 2003.}
+					\begin{itemize}
+						\item Gebruik van aanvullende schema klassen en attributen.
+						\item Het veranderen van de naam van een domeincontroller, zonder degradatie en promotie.
+						\item Gebruik van aanvullende opdrachten zoals \textit{redirusr} en \textit{redircmp} om de default Active Directory containers te wijzigen waarin respectievelijk nieuwe gebruikers en nieuwe computers terechtkomen.
+						\item Caching op domeincontroller niveau van UPN suffices en het lidmaatschap van universele groepen, zodat het niet meer strikt noodzakelijk is dat tijdens het inlogproces een global catalog bereikbaar is. Een universele groep is een groep die leden kan bevatten uit elk domein van het forest. Restricties op zo een groep is dan ook geldig op elk domein van het forest.
+						\item Filteren van group policies, nu niet alleen op basis van beveiligingsgroepen, maar ook met behulp van WMI scripts.					
+					\end{itemize}
+					\item \textbf{Windows Server 2008.}
+					\begin{itemize}
+						\item Opnieuw aanvullende schema klasse en attributen.
+						\item Encryptie van het Kerberos protocol met langere sleutels.
+						\item Fijnkorrelig wachtwoordbeleid, zodat wachtwoordrestricties niet langer globaal zijn voor het gehele domein, maar specifiek ingesteld kunnen worden voor individuele gebruikers of groepen.
+						\item Replicatie van DFS namespaces en van de SYSVOL share met behulp van DFS Replication.
+					\end{itemize}
+				\end{itemize}
+				\item \textbf{Forest functioneel niveau.}
+				\begin{itemize}
+					\item \textbf{Windows 2000 mixed.} Geen voordelen, standaardfunctionaliteit.
+					\item \textbf{Windows 2000 native.} Geen voordelen, standaardfunctionaliteit.
+					\item \textbf{Windows Server 2003.}
+					\begin{itemize}
+						\item Het hergebruiken van gedactiveerde attributen en klassen.
+						\item Dynamische hulpklassen.
+						\item Dynamische objecten, met een beperkte levensduur.
+						\item Efficiënte replicatie van de global catalog gegevens.
+						\item Het veranderen van de naamgeving en de hiërarchische structuur van domeinen in een forest.
+						\item Transitieve vertrouwensrelaties tussen verschillende forests.
+						\item Read-only Windows Server 2008+ domeincontrollers.
+						\item Efficiëntere KCC algoritmen voor de herconstruering van de replicatietopologie.
+						\item Replicatie van de individuele waarden van multi-valued attributen.				
+					\end{itemize}
+					\item \textbf{Windows Server 2008.} Geen extra functionaliteit ten opzichte van Windows Server 2003.
+				\end{itemize}
+			\end{itemize}	
+		}
 		
-		\vraag { Hoe kan men detecteren op welk niveau een Active Directory omgeving zicht bevindt ? } { \todo{Oplossen}}
+		\vraag { Hoe kan men detecteren op welk niveau een Active Directory omgeving zicht bevindt ? } { 
+			\begin{itemize}
+				\item Het attribuut \textbf{msDS-Behaviour-Version} geeft voor zowel op domeinniveau als forestniveau aan welk functioneel niveau beschikbaar is.
+			\end{itemize}
+		}
 		
-		\vraag { Op welke diverse manieren kan men het functionele niveau verhogen of verlagen ? } { \todo{Oplossen}}
+		\vraag { Op welke diverse manieren kan men het functionele niveau verhogen of verlagen ? } 
+	\begin{itemize}
+		\item Omschakelen naar een bepaald functioneel niveau gebeurd steeds manueel en kan enkel opwaarts: het is niet mogelijk om een hoger niveau om te vormen naar een lager niveau. Er moet steeds rekening gehouden worden met de restricties die elk niveau oplegt, indien deze niet voldaan zijn heeft het geen zin om te verhogen, en zal dit ook met een gepaste foutmelding getoond worden. Een niveau aanpassen kan enerzijds rechtstreeks, door de attributen van het domeinobject te manipuleren, ofwel via een GUI met behulp van de Active Directory Domains and Trust snap-in, beschikbaar in \textbf{domain.msc}.  
+	\end{itemize}	
+}
 	\end{enumerate}
 	
 	\section{Active Directory replicatie \accentuate{(§2.5)}}
@@ -139,7 +275,7 @@
 		
 		\vraag { Hoe wordt bepaald \textit{tot welke site} computers, servers in het bijzonder, behoren ? \accentuate{(laatste paragraaf §2.6.2 en fractie §2.6.3)} } { \todo{Oplossen}}
 	\end{enumerate}
-
+	
 	\section{Gedeelde mappen en NTFS}
 	\begin{enumerate}
 		\vraag { Welke \textit{configuratieinstellingen} kun je maken tijdens of onmiddellijk na het creëren van gedeelde mappen ? Bespreek het \textit{doel} van elk van deze diverse instellingen en de belangrijkste \textit{eigenschappen} en \textit{mogelijkheden} ervan. \accentuate{(§3.2.1, §3.2.2, fracties §3.3.1, §3.4.2, §3.4.3, §3.5 en §3.6)} } { \todo{Oplossen}}
@@ -148,7 +284,7 @@
 		
 		\vraag { Geef een overzicht van de belangrijkste voordelen van de opeenvolgende versies van het \textit{NTFS bestandssysteem}. Bespreek elk van deze aspecten (ondermeer het doel, de voordelen en de beperkingen ervan), en geef aan hoe je er gebruik kan van maken, bij voorkeur vanuit een \textit{Command Prompt}. \accentuate{(NTFS fractie §1.6, fracties §3.4.1, §3.4.2 en §3.4.4)} } { \todo{Oplossen}}
 	\end{enumerate}
-
+	
 	\section{Machtigingen op bestandstoegang \accentuate{(§3.3)}}
 	\begin{enumerate}
 		\vraag { Welke rol spelen machtigingen bij de beveiliging van bronnen ? Geef een gedetailleerd overzicht van het \textit{algemeen} (op alle windows objecten toegepast) mechanisme van \textit{machtigingen}. } { \todo{Oplossen}}
@@ -162,7 +298,7 @@
 		\vraag { Wie is \textit{in principe} verantwoordelijk voor het configureren van machtigingen ? Door welke instelling is dit zo vastgelegd ? Hoe kan ervoor gezorgd worden dat enkel \textit{administrators} verantwoordelijk gesteld worden voor het configureren van machtigingen ? } { \todo{Oplossen}}
 		
 	\end{enumerate}
-
+	
 	\section{Gebruikersgroepen \accentuate{(§4.2.2 en §4.2.3)}}
 	\begin{enumerate}
 		\vraag{ Bespreek in detail het onderscheid tussen de diverse soorten \textit{veiligheidsgroepen}, ondermeer afhankelijk of het toestel al dan niet in een domein is opgenomen. Behandel hierbij vooral de mogelijkheden en beperkingen. Bespreek ondermeer:
