@@ -167,15 +167,86 @@
 	\end{table}
 
 	Uiteindelijk kan men ook de combinatie maken van \textbf{substitution} en \textbf{transposition} ciphers, wat de basis vormt van moderne cryptografie.
-	\section{Moderne cryptografie}
 
-	\subsection{Symmetrische algoritmen}
+	\section{Symmetrische algoritmen}
 	Vooraleer er in detail kan ingegaan worden op symmetrische algoritmen, moet eerst de term \textbf{block cipher} besproken worden. Een block cipher wil zeggen dat informatie in blokken zullen verstuurd worden en kan best vergeleken worden met een substitutiecipher, maar dan toegepast op blokken. Een typische blokgrootte varieert van 8 tot 128 bytes en wordt door de meeste algoritmen gebruikt. De \textbf{Feistel Cipher encryptie} vormt de basis van moderne blockciphers en maakt gebruik van twee primitieve encryptieoperaties:
 	\begin{itemize}
 		\item Substitutie (de S-box)
 		\item Permutatie  (de P-box)
 	\end{itemize}
-	Het Feistel encryptieschema maakt gebruik van $n$ ronden, een functie $F$ en . In elke ronde 
+	Het Feistel encryptieschema maakt gebruik van $n$ ronden, een functie $F$ en de XOR operator. \todo{slide 36 uitleggen}
+
+	\subsection{DES \& 3-DES}
+	\begin{figure}
+	\begin{tikzpicture}[
+		base/.style = {rectangle, text centered, draw=black, minimum height=1cm, minimum width=3.25cm},
+		orange/.style = {base, fill=orange!15},
+		blue/.style = {base, fill=blue!15},
+		every node/.style={fill=white, align=center},
+		node distance=1.5cm
+		]
+		\node (plaintext) [orange] {64 bit plaintext};
+		\node (IP) [blue, below of=plaintext] {Initieële permutatie};
+		\node (it1) [blue, below of=IP] {Iteratie 1};
+		\node (it2) [blue, below of=it1] {Iteratie 2};
+		\node (itx) [blue, below of=it2] {...};
+		\node (it16) [blue, below of=itx] {Iteratie 16};
+		\node (bitswap) [blue, below of=it16] {32 bit swap};
+		\node (invIP) [blue, below of=bitswap] {Inverse permutatie};
+
+		\node (key) [orange, right of=plaintext, xshift=8cm] {56 bit key};
+		\node (PC1) [blue, below of=key] {Permutatieschema 1};
+		\node (LCS1) [blue, below of =PC1] {Circulaire left shift};
+		\node (LCS2) [blue, below of =LCS1] {Circulaire left shift};
+		\node (LCSx) [blue, below of =LCS2] {...};
+		\node (LCS16) [blue, below of =LCSx] {Circulaire left shift};
+
+		%PC2x => Permutatieschema 2 voor ronde x
+		\node (PC21) [blue, left of= LCS1, xshift=-3.25cm] {Permutatieschema 2};
+		\node (PC22) [blue, left of= LCS2, xshift=-3.25cm] {Permutatieschema 2};
+		\node (PC2x) [blue, left of= LCSx, xshift=-3.25cm] {...};
+		\node (PC216) [blue, left of= LCS16, xshift=-3.25cm] {Permutatieschema 2};
+
+		\draw[->] (plaintext) -- (IP);
+		\draw[->] (IP) -- (it1);
+		\draw[->] (it1) -- (it2);
+		\draw[->] (it2) -- (itx);
+		\draw[->] (itx) -- (it16);
+		\draw[->] (it16) -- (bitswap);
+		\draw[->] (bitswap) -- (invIP);
+
+		\draw[->] (key) -- (PC1);
+		\draw[->] (PC1) -- (LCS1);
+		\draw[->] (LCS1) -- (LCS2);
+		\draw[->] (LCS2) -- (LCSx);
+		\draw[->] (LCSx) -- (LCS16);
+
+		\draw[->] (LCS1) -- (PC21);
+		\draw[->] (LCS2) -- (PC22);
+		\draw[->] (LCSx) -- (PC2x);
+		\draw[->] (LCS16) -- (PC216);
+
+		\draw[->] (PC21) -| node[xshift=0.5cm, yshift=0.5cm]{$K_1$} (it1) ;
+		\draw[->] (PC22) -| node[xshift=0.5cm, yshift=0.5cm]{$K_2$}  (it2);
+		\draw[->] (PC2x) -| node[xshift=0.5cm, yshift=0.5cm]{$K_n$}  (itx);
+		\draw[->] (PC216) -| node[xshift=0.5cm, yshift=0.5cm]{$K_{16}$}  (it16);
+
+	\end{tikzpicture}
+\end{figure}
+
+	Het \textbf{DES (Data Encryption Standard)} maakt gebruik van het reeds vermelde Feistel schema waarbij de \textbf{blokgrootte 64 bits} en \textbf{sleutelgrootte 56 bits} bedraagt. Deze methode is redelijk traag, ondanks de kleine blokgrootte, en wordt door de kleine sleutelgrootte ook als onveilig beschouwd. Een 56 bit sleutel kan namelijk binnen de 10 uur gekraakt worden indien het aantal operatiers per \textbf{micro}seconde $10^6$ bedraagt. 
+	
+	Het algoritme maakt gebruik van 16 ronden in het Feistel schema. De 56 bit sleutel wordt gebruikt om rondesleutels $K_1, K_2, ... K_{16}$ te bepalen, die elk 48 bits groot zijn. Voor de eerste ronde en na de laatste ronde wordt er een extra permutatie uitgevoerd, waarbij de laatste permutatie het inverse is van de eerste permutatie. Het resultaat van dit algoritme is één van de $2^{64}$ uitvoermogelijkheden van de 64 bits. 
+
+	De 16 vereiste rondesleutels worden in het begin van het algoritme aangemaakt. Eerst en vooral wordt de 56 bit sleutel gepermuteerd, afhankelijk van het gekozen permutatieschema, op de afbeelding permutatieschema 1 genoemd. Een permutatieschema mapt een bit van de oorspronkelijke sleutel op een bit van de gepermuteerde sleutel, zodat er $2^{64}$ mogelijke schemas bestaan. De gepermuteerde sleutel wordt hierna beschouwd als twee resultaatsleutels $C_n$ en $D_n$, met $n$ het huidig rondenummer, van elk 28 bits groot. Beide resultaatsleutels worden onafhankelijk van elkaar verwerkt door een circulaire left shift van 1 of 2 bits, afhankelijk van de huidige ronde, dat eenvoudig door de conditionele operator kan beschreven worden: $n\;\% == 0\;?\;2\;:\;1$. Indien $C_2$ en $D_2$ de resultaatsleutels zijn van ronde 2, dan zijn $C_3$ en $D_3$ de resultaatsleutels van ronde 3 door respectievelijk $C_2$ en $D_2$ 2 bits naar links te permuteren. Voor elke ronde wordt er een rondesleutel $K_n$ gegenereerd, door een tweede permutatieschema, op de afbeelding permutatieschema 2 genoemd, toe te passen op $C_nD_n$, waarbij de 8 meest significante bits van $C_n$ genegeert worden. Het eindresultaat zijn 16 verschillende rondesleutels, die zullen toegepast worden bij elke DES ronde. 
+
+	Bij elke ronde wordt het 64-bit blok opgedeeld in twee 32-bit blokken $L_n$ en $R_n$ waarbij de 32 meest significante bits in $L_n$ komen, en de 32 minst significante bits in $R_n$. Vooraleer dit proces plaatsvindt is er eerst een initiele permutatie van het hele 64-bit blok. Deze permutatie wordt uitgevoerd met behulp van een permutatieschema, zoals bij de sleutelgeneratie. Het gepermuteerde blok wordt hierna opgedeeld in de blokken $L_n$ en $R_n$, en kan ronde 1 van start gaan. Bij elke iteratie wordt de functie $F$ gebruikt, die twee blokken manipuleert: $R_{n-1}$ en de sleutel van 48-bit groot, die op voorhand al gegenereerd werd. Deze functie $F$ genereert een blok van 32 bits. $L$ en $R$ kan voor een volgende iteratie berekent worden als:
+	$$L_{n + 1} = R_{n}$$
+	$$R_{n + 1} = L_{n} + F(R_{n}, K_{n + 1})$$
+
+	Hoe werkt de functie $F$? Eerst moet het blok $R_n$ uitgebreidt worden via een selectietabel. Het gebruik van deze selectietabel wordt hier voorgesteld als de functie $E$. De funtie $E$ heeft als input een blok van 32-bit en zal als output een blok van 48-bit genereren.
+
+	\subsection{Andere}
 
 
 	\chapter{Software- en systeembeveiliging}
