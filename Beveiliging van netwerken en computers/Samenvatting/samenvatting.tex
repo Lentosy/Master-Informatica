@@ -1,5 +1,4 @@
 \documentclass{report}
-
 \usepackage{ugentstyle}
 
 \begin{document}
@@ -76,7 +75,7 @@
 	Encryptiemethoden worden al eeuwenlang gebruikt om informatie onleesbaar te maken voor partijen die deze informatie niet mogen achterhalen. Deze inleiding bespreekt de basismethoden om encryptie toe te passen.
 	
 	Zogenaamde \textbf{substitution ciphers} zijn de meest eenvoudigste vorm van encryptie. De originele versie, ook wel \underline{Caesar cipher} genoemd, vervangt elke letter van het alfabet met een voorgedefinieerde shift in positie. Een shift van 3 zal het originele alfabet (in kleine letters) afbeelden op het verschoven alfabet (in grote letters):
-	\begin{table}[h]
+	\begin{table}[ht]
 	\centering
 	\setlength\tabcolsep{1pt}
 	\begin{tabular}{c c c c c c c c c c c c c c c c c c c c c c c c c c c}
@@ -85,7 +84,7 @@
 	\end{tabular}
 	\end{table}
 	Het duidelijke nadeel is dat er slechts 25 verschillende encryptiemogelijkheden zijn. Een verbeterde versie mapt elke letter met een willekeurige andere (nog niet gebruikte) letter:
-		\begin{table}[h]
+		\begin{table}[ht]
 		\centering
 		\setlength\tabcolsep{1pt}
 		\begin{tabular}{c c c c c c c c c c c c c c c c c c c c c c c c c c c}
@@ -98,7 +97,7 @@
 	Een encryptiealgoritme wil ook de relatieve frequenties verbergen. Een methode dat dit implementeert is de \underline{Vigenère Cipher}. Deze bevat een sleutel $K = k_1k_2 ... k_d$ waarbij $k_i$ het $i$-de alfabet specifieert dat gebruikt moet worden. Na $d$ letters start ment terug vanaf $k_i$.
 
 	Een laatste voorbeeld van een substitutiecipher is de \underline{Playfair cipher}. Hier wordt er een $5x5$ matrix opgesteld, waarbij eerst het sleutelwoord ingevuld wordt, gevolgd door de niet gebruikte letters in alfabetische volgorde. Dit wordt uitgewerkt met de sleutel \texttt{MONARCHY} in Tabel \ref{table:playfair}.
-	\begin{table}[h]
+	\begin{table}[ht]
 		\centering
 		\begin{tabular}{| c | c | c | c | c |}
 			\hline
@@ -132,7 +131,7 @@
 			$$\texttt{A SIMPLE EXAMPLE} \rightarrow \texttt{A ELPMIS ELPMAXE}$$
 	\end{enumerate}
 	Een iets beter voorbeeld is de \underline{Rail Fence cipher}. Deze heeft als private sleutel het aantal rijen dat gebruikt wordt. Elke letter zal diagonaal geschreven worden, uitgewerkt in Tabel \ref{table:railfence} op de zin \texttt{DEFEND THE EAST WALL}: 
-	\begin{table}[h]
+	\begin{table}[ht]
 		\centering
 		\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
 			\hline
@@ -149,7 +148,7 @@
 	Geëncrypteerd is dit dus \texttt{DNETLEEDHESWLXFTAAX}.
 
 	De laatste methode die besproken wordt is de \underline{columnar transposition cipher}. Een bericht wordt in rijen geschreven over een bepaald aantal kolommen. Hierna worden de kolommen gesorteerd op basis van de geheime sleutel $K = k_ik_j ... k_n$. Stel $K = k_3k_4k_2k_1k_5k_6k_7$ en plaintext \texttt{ATTACK POSTPONED UNTIL TWO AM}: Op Tabel \ref{table:columnartransposition} wordt deze plaintext uitgeschreven in rijen en kolommen. De ciphertext wordt dan \texttt{TTNAAPTMTSUOAODWCOIXKNLYPETZ}.
-	\begin{table}[h]
+	\begin{table}[ht]
 		\centering
 		\begin{tabular}{|c|c|c|c|c|c|c|}
 			\hline
@@ -177,7 +176,7 @@
 	Het Feistel encryptieschema maakt gebruik van $n$ ronden, een functie $F$ en de XOR operator. \todo{slide 36 uitleggen}
 
 	\subsection{DES \& 3-DES}
-	\begin{figure}
+	\begin{figure}[ht]
 	\begin{tikzpicture}[
 		base/.style = {rectangle, text centered, draw=black, minimum height=1cm, minimum width=3.25cm},
 		orange/.style = {base, fill=orange!15},
@@ -207,6 +206,8 @@
 		\node (PC2x) [blue, left of= LCSx, xshift=-3.25cm] {...};
 		\node (PC216) [blue, left of= LCS16, xshift=-3.25cm] {Permutatieschema 2};
 
+		\node (ciphertext) [orange, below of=invIP] {64 bit ciphertext};
+
 		\draw[->] (plaintext) -- (IP);
 		\draw[->] (IP) -- (it1);
 		\draw[->] (it1) -- (it2);
@@ -214,6 +215,7 @@
 		\draw[->] (itx) -- (it16);
 		\draw[->] (it16) -- (bitswap);
 		\draw[->] (bitswap) -- (invIP);
+		\draw[->] (invIP) -- (ciphertext);
 
 		\draw[->] (key) -- (PC1);
 		\draw[->] (PC1) -- (LCS1);
@@ -226,28 +228,49 @@
 		\draw[->] (LCSx) -- (PC2x);
 		\draw[->] (LCS16) -- (PC216);
 
-		\draw[->] (PC21) -| node[xshift=0.5cm, yshift=0.5cm]{$K_1$} (it1) ;
+		\draw[->] (PC21) -| node[xshift=0.5cm, yshift=0.5cm]{$K_1$} (it1);
 		\draw[->] (PC22) -| node[xshift=0.5cm, yshift=0.5cm]{$K_2$}  (it2);
 		\draw[->] (PC2x) -| node[xshift=0.5cm, yshift=0.5cm]{$K_n$}  (itx);
 		\draw[->] (PC216) -| node[xshift=0.5cm, yshift=0.5cm]{$K_{16}$}  (it16);
 
 	\end{tikzpicture}
+	\caption{DES schema.}
+	\label{fig:DES}
 \end{figure}
 
-	Het \textbf{DES (Data Encryption Standard)} maakt gebruik van het reeds vermelde Feistel schema waarbij de \textbf{blokgrootte 64 bits} en \textbf{sleutelgrootte 56 bits} bedraagt. Deze methode is redelijk traag, ondanks de kleine blokgrootte, en wordt door de kleine sleutelgrootte ook als onveilig beschouwd. Een 56 bit sleutel kan namelijk binnen de 10 uur gekraakt worden indien het aantal operatiers per \textbf{micro}seconde $10^6$ bedraagt. 
+	Het \textbf{DES (Data Encryption Standard)} algoritme maakt gebruik van het reeds vermelde Feistel schema waarbij de \textbf{blokgrootte 64 bits} en \textbf{sleutelgrootte 56 bits} bedraagt. Deze methode is redelijk traag, ondanks de kleine blokgrootte, en wordt door de kleine sleutelgrootte ook als onveilig beschouwd. Een 56 bit sleutel kan namelijk binnen de 10 uur gekraakt worden indien het aantal operatiers per \textbf{micro}seconde $10^6$ bedraagt. 
 	
 	Het algoritme maakt gebruik van 16 ronden in het Feistel schema. De 56 bit sleutel wordt gebruikt om rondesleutels $K_1, K_2, ... K_{16}$ te bepalen, die elk 48 bits groot zijn. Voor de eerste ronde en na de laatste ronde wordt er een extra permutatie uitgevoerd, waarbij de laatste permutatie het inverse is van de eerste permutatie. Het resultaat van dit algoritme is één van de $2^{64}$ uitvoermogelijkheden van de 64 bits. 
 
-	De 16 vereiste rondesleutels worden in het begin van het algoritme aangemaakt. Eerst en vooral wordt de 56 bit sleutel gepermuteerd, afhankelijk van het gekozen permutatieschema, op de afbeelding permutatieschema 1 genoemd. Een permutatieschema mapt een bit van de oorspronkelijke sleutel op een bit van de gepermuteerde sleutel, zodat er $2^{64}$ mogelijke schemas bestaan. De gepermuteerde sleutel wordt hierna beschouwd als twee resultaatsleutels $C_n$ en $D_n$, met $n$ het huidig rondenummer, van elk 28 bits groot. Beide resultaatsleutels worden onafhankelijk van elkaar verwerkt door een circulaire left shift van 1 of 2 bits, afhankelijk van de huidige ronde, dat eenvoudig door de conditionele operator kan beschreven worden: $n\;\% == 0\;?\;2\;:\;1$. Indien $C_2$ en $D_2$ de resultaatsleutels zijn van ronde 2, dan zijn $C_3$ en $D_3$ de resultaatsleutels van ronde 3 door respectievelijk $C_2$ en $D_2$ 2 bits naar links te permuteren. Voor elke ronde wordt er een rondesleutel $K_n$ gegenereerd, door een tweede permutatieschema, op de afbeelding permutatieschema 2 genoemd, toe te passen op $C_nD_n$, waarbij de 8 meest significante bits van $C_n$ genegeert worden. Het eindresultaat zijn 16 verschillende rondesleutels, die zullen toegepast worden bij elke DES ronde. 
+	De 16 vereiste rondesleutels worden in het begin van het algoritme aangemaakt. Eerst en vooral wordt de 56 bit sleutel gepermuteerd, afhankelijk van het gekozen permutatieschema, op Figuur \ref{fig:DES} permutatieschema 1 genoemd. Een permutatieschema mapt een bit van de oorspronkelijke sleutel op een bit van de gepermuteerde sleutel, zodat er $2^{64}$ mogelijke schemas bestaan. De gepermuteerde sleutel wordt hierna beschouwd als twee resultaatsleutels $C_n$ en $D_n$, met $n$ het huidig rondenummer, van elk 28 bits groot. Beide resultaatsleutels worden onafhankelijk van elkaar verwerkt door een circulaire left shift van 1 of 2 bits, afhankelijk van de huidige ronde, dat eenvoudig door de conditionele operator kan beschreven worden: $n\;\% == 0\;?\;2\;:\;1$. Indien $C_2$ en $D_2$ de resultaatsleutels zijn van ronde 2, dan zijn $C_3$ en $D_3$ de resultaatsleutels van ronde 3 door respectievelijk $C_2$ en $D_2$ 2 bits naar links te permuteren. Voor elke ronde wordt er een rondesleutel $K_n$ gegenereerd, door een tweede permutatieschema, op Figuur \ref{fig:DES} permutatieschema 2 genoemd, toe te passen op $C_nD_n$, waarbij de 8 meest significante bits van $C_n$ genegeert worden. Het eindresultaat zijn 16 verschillende rondesleutels, die zullen toegepast worden bij elke DES ronde. 
 
 	Bij elke ronde wordt het 64-bit blok opgedeeld in twee 32-bit blokken $L_n$ en $R_n$ waarbij de 32 meest significante bits in $L_n$ komen, en de 32 minst significante bits in $R_n$. Vooraleer dit proces plaatsvindt is er eerst een initiele permutatie van het hele 64-bit blok. Deze permutatie wordt uitgevoerd met behulp van een permutatieschema, zoals bij de sleutelgeneratie. Het gepermuteerde blok wordt hierna opgedeeld in de blokken $L_n$ en $R_n$, en kan ronde 1 van start gaan. Bij elke iteratie wordt de functie $F$ gebruikt, die twee blokken manipuleert: $R_{n-1}$ en de sleutel van 48-bit groot, die op voorhand al gegenereerd werd. Deze functie $F$ genereert een blok van 32 bits. $L$ en $R$ kan voor een volgende iteratie berekent worden als:
-	$$L_{n + 1} = R_{n}$$
-	$$R_{n + 1} = L_{n} + F(R_{n}, K_{n + 1})$$
+	\begin{equation}
+		\begin{split}
+			L_{n + 1} & = R_{n} \\
+			R_{n + 1} & = L_{n} \mathbin{\oplus} F(R_{n}, K_{n + 1})
+		\end{split}
+		\label{formula:DES}
+	\end{equation}
 
-	Hoe werkt de functie $F$? Eerst moet het blok $R_n$ uitgebreidt worden via een selectietabel. Het gebruik van deze selectietabel wordt hier voorgesteld als de functie $E$. De funtie $E$ heeft als input een blok van 32-bit en zal als output een blok van 48-bit genereren.
+	Hoe werkt de functie $F$? Eerst moet het blok $R_n$ uitgebreidt worden via een selectietabel. Het gebruik van deze selectietabel wordt hier voorgesteld als de functie $E(R_n)$, die als input een blok van 32-bit en zal als output een blok van 48-bit genereren waarbij de bits gegroepeerd per 6 zitten. Sommige bits van $R_n$ worden zullen dus meerdere keren gemapt moeten worden. Na deze uitbreiding wordt het resultaat van $E(R_n)$ en de sleutel $K_n$ met een XOR operatie bewerkt (XOR geeft 0 indien beide bits gelijk zijn, en 1 als ze verschillend zijn). Elke groep van 6 bits stelt een adres voor in een welbepaalde substitutie tabel $S_i$, voor de $i$-de groep van 6 bits: er zijn dus 8 substitutietabellen. Elk adres wijst naar een 4-bit getal, dat de originele 6 bits zal vervangen, zodat het eindresultaat terug een blok van 32 bits is. Hoe worden deze 4 bits bepaald? De substitutietabel neemt een blok van 6 bits $B$ als input, de bits $b_5b_4b_3b_2b_1b_0$ van $B$ doen het volgende:
+	\begin{itemize}
+		\item $b_5$ en $b_0$ representeren tesamen een getal van 0 tot en met 3. Stel dit getal gelijk aan $i$. 
+		\item De tussenliggende bits representeren tesamen een getal van 0 tot en met 15. Stel dit getal gelijk aan $j$.
+		\item Zoek in de tabel het getal op de $i$-de rij en $j$-de kolom. Dit getal heeft een waarde tussen 0 en 15, en bevat dus slechts 4 bits. Deze bitrepresentatie van dat getal vervangt de 6 bits.
+	\end{itemize}
+	Tot slot moet er nog een permutatie $P$ uitgevoerd worden op de 32 bits verkregen van de substitutiestap. Met behulp van deze functie $F$ worden opeenvolgende $L_i$ en $R_i$ bepaalt (formule \ref{formula:DES}).
 
-	\subsection{Andere}
+	\subsubsection{Block cipher modi}
+	Er zijn verschillende implementaties van het DES-algoritme, en deze hangen dan weer af van de gebruikte block cipher modus. Verschillende mogelijkheden zijn:
+	\begin{itemize}
+		\item \textbf{ECB (Electronic Code Book).} Elk 64-bit blok van oorspronkelijke informatie wordt individueel geëncrypteerd
+		\item \textbf{CBC (Chain Block Chaning).} Elk cipherblok is nu afhankelijk van elkaar, door een initiële XOR-operatie uit te voeren met het vorige geëncrypteerde blok, en het te encrypteren blok.
+		\item \textbf{CFB (Cipher Feedback).} Gelijkaardig aan CBC, maar \todo{wat?}
+	\end{itemize}
+	\todo{rest van block cipher mody en 3-DES}
 
-
+	\subsection{AES}
+	Het \textbf{AES (Advanced Encryption Standard)} algoritme maakt is ook een symmetrisch encryptiealgoritme waarbij de \textbf{blokgrootte 128 bits} en \textbf{sleutelgrootte 129, 129 of 256 bits} bedraagt. Het werd speciaal ontworpen om cryptoanalyse moeilijk te maken en is zelfs sneller dan 3DES op 32-bit toestellen.
 	\chapter{Software- en systeembeveiliging}
 \end{document}
