@@ -1,12 +1,43 @@
 \documentclass{report}
 \usepackage{ugentstyle}
 
-
 \begin{document}
 	\maketitle{Gevorderde algoritmen}
 	\tableofcontents
 	\chapter{Efficiënte zoekbomen}
-	Vooraleer efficiënte zoekbomen behandeld kunnen worden moet er eerst een fundamentele operatie besproken worden: \textbf{rotaties}. Rotaties wijzigen de vorm van de boom, maar behouden de inorder volgorde van de sleutels. Dit is nodig omdat de eigenschap van een binaire zoekboom steeds voldaan moet zijn, namelijk dat het linkerkind kleiner is, en het rechterkind groter, dan de ouder. Een rotatie is $O(1)$ omdat enkel pointers verplaatst moet worden. \todo{foto van rotatie}
+	Vooraleer efficiënte zoekbomen behandeld kunnen worden moet er eerst een fundamentele operatie besproken worden: \textbf{rotaties}. Rotaties wijzigen de vorm van de boom, maar behouden de inorder volgorde van de sleutels. Dit is nodig omdat de eigenschap van een binaire zoekboom steeds voldaan moet zijn, namelijk dat het linkerkind kleiner is, en het rechterkind groter, dan de ouder. Een rotatie is $O(1)$ omdat enkel pointers verplaatst moet worden.
+	
+	\begin{adjustbox}{valign=t}
+		\begin{forest}
+			for tree = {draw, circle, node options = {minimum width = 5ex}}
+			[p
+				[l
+					[$\alpha$, rectangle]
+					[$\beta$, rectangle]
+				]
+				[$\gamma$, rectangle]
+			]	
+		\end{forest}
+	\end{adjustbox}\qquad
+	\begin{adjustbox}{valign=c}
+	$\Leftrightarrow$
+	\end{adjustbox}\qquad
+	\begin{adjustbox}{valign=t}
+		\begin{forest}
+			for tree = {draw, circle, node options = {minimum width = 5ex}}
+			[l
+				[$\alpha$, rectangle]
+				[p
+					[$\beta$, rectangle]
+					[$\gamma$, rectangle]	
+				]
+			]	
+		\end{forest}
+	\end{adjustbox}
+	
+	
+
+
 	\section{Rood-zwarte bomen}
 	Een rood-zwarte boom is een \textbf{binaire zoekboom} waarbij bovendien:
 	\begin{itemize}

@@ -6,6 +6,7 @@
 	\maketitle{Beveiliging van netwerken en computers}
 	\tableofcontents
 	\chapter{Basisconcepten}
+	Computerbeveiliging 
 	
 	\chapter{Netwerk en communicatiebeveiliging}
 	Voorlopig hebben we enkel de basisconcepten gezien zoals: symmetrische encryptie, asymmetrische encryptie, hashfuncties en message authentication codes. Dit hoofdstuk zal deze concepten toepassen om beveiligingsprotocollen te ontwikkelen voor netwerken.
@@ -40,6 +41,14 @@
 		\item[$\delta$] \textbf{Random padding.} Dit veld dient om cryptoanalyse moeilijk te maken. Kleine pakketten zijn op deze manier minder veel minder voorspelbaar en algoritmen, die vaak een kenmerkende vaste lengte hebben, worden ook moeilijker te achterhalen.
 		\item[/] \textbf{MAC veld.} Dit veld wordt enkel gegenereerd indien dit zo in de onderhandeling besproken werd. Dit veld wordt berekent over het hele pakket en krijgt ook nog een bijhorend sequentienummer. Het sequentienummer start op 0, en wordt telkens met 1 geïncrementeerd voor elk pakket. Een aanvaller kan dit sequentienummer niet achterhalen aangezien een MAC een onomkeerbaar proces is.
 	\end{itemize}
+	\todo{juiste afbeelding}
+	\begin{bytefield}[bitwidth = 1.5em, leftcurly = .]{16}
+		\bitheader[endianness = big]{0 - 15} \\
+		\begin{leftwordgroup}{packet}
+			\bitbox{8}{pakketlengte}
+		\end{leftwordgroup}
+	\end{bytefield}
+
 	Het \textbf{sleuteluitwisselingsproces} vraagt wat enige uitleg, er is echter nog niet nagegaan of deze sleutels op een \textbf{veilige} manier uitgewisseld worden. Op het moment van sleuteluitwisseling is er helemaal nog geen SSH connectie. Het uitwisselingsproces verloopt in twee fasen: eerst wordt er een gedeelde sleutel gegenereerd met Diffie-Helman, daarna wordt deze gedeelde sleutel gesigneerd met de publieke sleutel van de cliënt voor authenticatie. Sleutels kunnen ook heruitwisseld worden, hierbij gelden volgende regels:
 	\begin{itemize}
 		\item Mogelijk op elk moment, behalve tijdens het sleuteluitwisselingsproces.
@@ -63,9 +72,10 @@
 
 	
 	\chapter{Encryptiealgoritmen}
+	\section{Geschiedenis}
 	Encryptiemethoden worden al eeuwenlang gebruikt om informatie onleesbaar te maken voor partijen die deze informatie niet mogen achterhalen. Deze inleiding bespreekt de basismethoden om encryptie toe te passen.
 	
-	Zogenaamde \textbf{Substitution ciphers} zijn de meest eenvoudigste vorm van encryptie. De originele versie vervangt elke letter van het alfabet met een voorgedefinieerde shift in positie. Een shift van 3 zal het originele alfabet (in kleine letters) afbeelden op het verschoven alfabet (in grote letters):
+	Zogenaamde \textbf{substitution ciphers} zijn de meest eenvoudigste vorm van encryptie. De originele versie, ook wel \underline{Caesar cipher} genoemd, vervangt elke letter van het alfabet met een voorgedefinieerde shift in positie. Een shift van 3 zal het originele alfabet (in kleine letters) afbeelden op het verschoven alfabet (in grote letters):
 	\begin{table}[h]
 	\centering
 	\setlength\tabcolsep{1pt}
@@ -83,8 +93,90 @@
 			D&K&V&Q&F&I&B&J&W&P&E&S&C&X&H&T&M&Y&A&U&O&L&R&G&Z&N
 		\end{tabular}
 	\end{table}
-	waardoor er nu $26! \approx 4\cdot10^{26}$ mogelijkheden zijn. Deze manier is daarom niet meer secuur, aangezien de onderliggende frequentie van letters nog steelds dezelfde is. Een eenvoudige dencryptiemethode is om de relatieve frequenties van de ciphertekst te tellen, waardoor er statistisch kan achterhaald worden met welke gedecrypteerde letter elke geëncrypteerde letter overeenkomt. \todo{vanaf slide 21 C04}
+	waardoor er nu $26! \approx 4\cdot10^{26}$ mogelijkheden zijn. Deze manier is daarom niet meer secuur, aangezien de onderliggende frequentie van letters nog steeds dezelfde is. Een eenvoudige dencryptiemethode is om de relatieve frequenties van de ciphertekst te tellen, waardoor er statistisch kan achterhaald worden met welke gedecrypteerde letter elke geëncrypteerde letter overeenkomt. 
 
-	
+	Een encryptiealgoritme wil ook de relatieve frequenties verbergen. Een methode dat dit implementeert is de \underline{Vigenère Cipher}. Deze bevat een sleutel $K = k_1k_2 ... k_d$ waarbij $k_i$ het $i$-de alfabet specifieert dat gebruikt moet worden. Na $d$ letters start ment terug vanaf $k_i$.
+
+	Een laatste voorbeeld van een substitutiecipher is de \underline{Playfair cipher}. Hier wordt er een $5x5$ matrix opgesteld, waarbij eerst het sleutelwoord ingevuld wordt, gevolgd door de niet gebruikte letters in alfabetische volgorde. Dit wordt uitgewerkt met de sleutel \texttt{MONARCHY} in Tabel \ref{table:playfair}.
+	\begin{table}[h]
+		\centering
+		\begin{tabular}{| c | c | c | c | c |}
+			\hline
+			\accentuate{M} & \accentuate{O} & \accentuate{N} & \accentuate{A} & \accentuate{R} \\
+			\hline
+			\accentuate{C} & \accentuate{H} & \accentuate{Y} & B & D \\
+			\hline
+			E & F & G & I/J & K \\
+			\hline
+			L & P & Q & S & T \\
+			\hline
+			U & V & W & X & Z \\
+			\hline
+		\end{tabular}
+		\caption{Playfair cipher.}
+		\label{table:playfair}
+	\end{table}
+	Een bericht wordt in paren van letters geëncrypteerd. Stel dat we het woord ballon willen encrypteren, de paren letters worden: ba lx lo nx. Er wordt een x toegevoegd indien er twee dezelfde letters achter elkaar komen, en als het eindpaar uit slechts één letter bestaat. Er kunnen zich drie gevallen voordoen bij elk paar:
+	\begin{enumerate}
+		\item Als beide letters in dezelfde rij voorkomen, wordt elke letter vervangen door de letter die er rechts van ligt:  \accentuate(on $\rightarrow$ na).
+		\item Als beide letters in dezelfde kolom voorkomen, wordt elke letter vervangen door de letter die er onder van ligt: \accentuate(ba $\rightarrow$ ib).
+		\item Anders wordt elke letter vervangen door de letter van de kolom van de andere letter: \accentuate(lx $\rightarrow$ su).
+	\end{enumerate}
+	Er zijn $26 * 26 = 676$ mogelijke diagrammen die gemaakt kunnen worden.
+
+	Na de \textbf{substitution ciphers} zijn er ook \textbf{transposition ciphers}. Zulke ciphers gaan letters niet vervangen, maar gaan ze echter verplaatsen. Dit heeft natuurlijk als nadeel dat de relatieve frequentie van de letters behouden wordt. Twee eenvoudige voorbeelden zijn:
+	\begin{enumerate}
+		\item Keer elke letter om:
+			$$\texttt{A SIMPLE EXAMPLE} \rightarrow \texttt{ELPMAXE ELPMIS A}$$
+		\item Keer de woordvolgorde om, en elk woord keert ook de lettervolgorde om:
+			$$\texttt{A SIMPLE EXAMPLE} \rightarrow \texttt{A ELPMIS ELPMAXE}$$
+	\end{enumerate}
+	Een iets beter voorbeeld is de \underline{Rail Fence cipher}. Deze heeft als private sleutel het aantal rijen dat gebruikt wordt. Elke letter zal diagonaal geschreven worden, uitgewerkt in Tabel \ref{table:railfence} op de zin \texttt{DEFEND THE EAST WALL}: 
+	\begin{table}[h]
+		\centering
+		\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|c|}
+			\hline
+			D & & & & N & & & & E & & & & T & & & & L & & \\
+			\hline
+			& E & & E & & D & & H & & E & & S & & W & & L & & X & \\
+			\hline
+			& & F & & & & T & & & & A & & & & A & & & & X \\
+			\hline
+		\end{tabular}
+		\caption{Rail Fence cipher.}
+		\label{table:railfence}
+	\end{table}
+	Geëncrypteerd is dit dus \texttt{DNETLEEDHESWLXFTAAX}.
+
+	De laatste methode die besproken wordt is de \underline{columnar transposition cipher}. Een bericht wordt in rijen geschreven over een bepaald aantal kolommen. Hierna worden de kolommen gesorteerd op basis van de geheime sleutel $K = k_ik_j ... k_n$. Stel $K = k_3k_4k_2k_1k_5k_6k_7$ en plaintext \texttt{ATTACK POSTPONED UNTIL TWO AM}: Op Tabel \ref{table:columnartransposition} wordt deze plaintext uitgeschreven in rijen en kolommen. De ciphertext wordt dan \texttt{TTNAAPTMTSUOAODWCOIXKNLYPETZ}.
+	\begin{table}[h]
+		\centering
+		\begin{tabular}{|c|c|c|c|c|c|c|}
+			\hline
+			A & T & T & A & C & K & P \\
+			\hline
+			O & S & T & P & O & N & E \\
+			\hline
+			D & U & N & T & I & L & T \\
+			\hline
+			W & O & A & M & X & X & X \\
+			\hline
+		\end{tabular}
+		\caption{Rail Fence cipher.}
+		\label{table:columnartransposition}
+	\end{table}
+
+	Uiteindelijk kan men ook de combinatie maken van \textbf{substitution} en \textbf{transposition} ciphers, wat de basis vormt van moderne cryptografie.
+	\section{Moderne cryptografie}
+
+	\subsection{Symmetrische algoritmen}
+	Vooraleer er in detail kan ingegaan worden op symmetrische algoritmen, moet eerst de term \textbf{block cipher} besproken worden. Een block cipher wil zeggen dat informatie in blokken zullen verstuurd worden en kan best vergeleken worden met een substitutiecipher, maar dan toegepast op blokken. Een typische blokgrootte varieert van 8 tot 128 bytes en wordt door de meeste algoritmen gebruikt. De \textbf{Feistel Cipher encryptie} vormt de basis van moderne blockciphers en maakt gebruik van twee primitieve encryptieoperaties:
+	\begin{itemize}
+		\item Substitutie (de S-box)
+		\item Permutatie  (de P-box)
+	\end{itemize}
+	Het Feistel encryptieschema maakt gebruik van $n$ ronden, een functie $F$ en . In elke ronde 
+
+
 	\chapter{Software- en systeembeveiliging}
 \end{document}
