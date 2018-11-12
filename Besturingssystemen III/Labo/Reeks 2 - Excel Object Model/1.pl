@@ -1,15 +1,14 @@
 use Win32::OLE qw(in); 
 #gebruik bestaand process of start een nieuw proces in embedded mode
 
-$excelAppl = Win32::OLE->GetActiveObject('Excel.Application') || Win32::OLE->new('Excel.Application', 'Quit');
+my $excel = Win32::OLE->GetActiveObject('Excel.Application') || Win32::OLE->new('Excel.Application', 'Quit');
 
-#$excelAppl->{visible}=1;  #naar keuze
-print "\naantal werkboeken in excel : ", $excelAppl->{Workbooks}->{Count};
+print "\naantal werkboeken in excel : ", $excel->{Workbooks}->{Count};
 print "\n-----------------------------------------\n";
 
 #werkbook toevoegen
-my $book=$excelAppl->{Workbooks}->Add();
-print "\naantal werkboeken in excel : ", $excelAppl->{Workbooks}->{Count};
+my $book=$excel->{Workbooks}->Add();
+print "\naantal werkboeken in excel : ", $excel->{Workbooks}->{Count};
 print "\naantal werksheets in het toegevoegd boek:", $book->{Worksheets}->{Count};
 print "\n\t$_->{name}" foreach in $book->{Worksheets};
 print "\n-----------------------------------------\n";
@@ -20,4 +19,4 @@ print "\nNa add : aantal werksheets in het toegevoegd boek:", $book->{Worksheets
 print "\n\t$_->{name}" foreach in $book->{Worksheets};
 print "\n-----------------------------------------\n";
 
-$excelAppl->{DisplayAlerts}=0; #geen foutboodschappen tonen 
+$excel->{DisplayAlerts}=0; #geen foutboodschappen tonen 
