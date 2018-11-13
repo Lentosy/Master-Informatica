@@ -1,7 +1,6 @@
 \documentclass{report}
 
 \usepackage{ugentstyle}
-\usepackage{listings}
 
 \begin{document}
 	\maketitle{Beveiliging van netwerken en computers}
@@ -743,7 +742,10 @@ en bekijk deze met:
 $$\texttt{root@hilbertVM}: cat /var/mail/tiwi1$$
 
 \subsection{Aliases}
-\textbf{Zorg er voor dat tiwi1 een alias is voor jouwvoornaam.jouwnaam@jouwdomein.iii.hogent.be. Doe hetzelfde voor jouw collega, maar dan met gebruiker tiwi2. Welke bestanden heb je aangepast en welke informatie heb je aan die bestanden toegevoegd? Test deze instellingen eerst uit vanuit je lokale domein, en nadien vanuit een ander domein.}
+\textbf{Zorg er voor dat tiwi1 een alias is voor jouwvoornaam.jouwnaam@jouwdomein.iii.hogent.be.
+ Doe hetzelfde voor jouw collega, maar dan met gebruiker tiwi2. Welke bestanden heb je aangepast en welke informatie heb je aan die bestanden toegevoegd? 
+ Test deze instellingen eerst uit vanuit je lokale domein, en nadien vanuit een ander domein.}
+
 In het bestand \texttt{/etc/aliases}:
 \begin{lstlisting}
 xandro.vermeulen@groep20.iii.hogent.be: tiwi1@ivoryVM
@@ -751,7 +753,8 @@ bert.desaffel@groep20.iii.hogent.be: tiwi2@hilbertVM
 \end{lstlisting}
 Hierna moet het commando \texttt{newaliases} uitgevoerd worden, zodat sendmail op de hoogte is van deze aliases. Vanaf dan kunnen de aliases gebruikt worden.
 
-\textbf{Wat moet je aanpassen als je ook mails wenst te versturen vanaf jouwvoornaam.jouwnaam@jouwdomein.iii.hogent.be?}
+\textbf{Wat moet je aanpassen als je ook mails wenst te versturen vanaf \\
+jouwvoornaam.jouwnaam@jouwdomein.iii.hogent.be?}
 \subsection{IMAP en/of POP3}
 \textbf{ Om via IMAP en/of POP3 je mails te kunnen ophalen kan je gebruikmaken van dovecot.
 Installeer indien nodig dovecot op je VM (via yum).
@@ -760,6 +763,7 @@ Voor een correcte werking van dovecot overschrijf je het configuratiebestand (/e
 De bestanden /etc/dovecot/conf.d/10-auth.conf en /etc/dovecot/conf.d/10-ssl.conf vervang je respectievelijk door dit en dit bestand.
 	
 Lees de man-pagina van het commando mail en gebruik dit commando met bijhorende opties om op een ander toestel jouw persoonlijke berichten via POP3 van de mailserver af te halen. Beantwoord een ontvangen bericht en ga na of alles correct werkt. }
+
 Gewoon de bestanden kopieren, daarna:
 \begin{lstlisting}
 yum install dovecot
@@ -791,5 +795,125 @@ service dovecot start
 \textbf{ Alle mails worden op de sendmail-server opgeslagen in de directory /var/spool/mail/.
 	Bekijk de inhoud van deze bestanden.
 	Wat is het formaat van een mail met authenticatie en/of encryptie?}
+
+\chapter{PAM}
+Dit labo voer je elk afzonderlijk uit op je eigen \textbf{virtuele machine}, dus niet in groep. Om dit labo te kunnen uitvoeren moeten de globale configuratieinstellingen in \texttt{/etc/pam.d} worden aangepast. Neem daarom bij het begin van het labo een backup van je virtuele harde schijf. Aan het einde van dit labo plaats je deze kopie terug! 
+
+\accentuate{Opgelet: het aanpassen van de configuratie doe je als root-gebruiker en \textbf{TREEDT ONMIDDELLIJK IN WERKING}. \textbf{Blijf dus op elk moment op minstens 1 console als root-gebruiker ingelogd} voor het geval er iets verkeerd zou gaan!}
+
+Maake 2 extra lokale gebruikers aan met volgende eigenschappen:
+\begin{itemize}
+	\item pam1: UID $>$ 1000 en GID $>$ 1000
+	\item pam2: UID $<$ 1000 en GID $<$ 1000
+	\item beide gebruikers hebben een wachtwoord.
+\end{itemize}
+Voordat je een gebruiker aanmaakt, controleer je best of het UID dat je wil instellen nog niet door een andere gebruiker ingenomen is. 
+\begin{lstlisting}
+cat /etc/passwd | cut -d ':' -f3 // om reeds gebruikte UIDs te zien
+cat /etc/groups | cut -d ':' -f3 // om reeds gebruikte GIDs te zien
+
+adduser pam1 -u 1500
+groupmod -g 1600 pam1 
+passwd pam1
+
+adduser pam2 -u 500
+groupmod -g 600 pam2 
+passwd pam2
+\end{lstlisting}
+
+\section{Pamtester}
+Pamtester is een tool die werd ontwikkeld voor het testen van de PAM-configuratie. Meer informatie over Pamtester en over het gebruik ervan kun je vinden in de bijgevoegde man-pages. De installatie gebeurt als volgt:
+$$\texttt{yum install pamtester}$$
+Na deze stappen kun je de tester gewoon gebruiken. Probeer hem ook eens uit, zodat je weet hoe hij werkt. 
+
+\section{Opdrachten}
+\begin{enumerate}
+	\item \textbf{Configureer PAM zodat de meeste modules debug-informatie wegschrijven.}
+	
+	Het bestand \texttt{/etc/pam.d/system-auth} aanpassen, zodat elke lijn eindigt met 'debug'.
+	\begin{lstlisting}
+
+auth     required   pam_env.so debug
+auth     sufficient pam_unix.so nullok try_first_pass debug
+auth     requisite  pam_succeed_if.so uid >= 500 debug
+auth     required   pam_deny.so debug
+		
+account  required   pam_unix.so debug
+account  sufficient pam_succeed_if.so uid < 500 debug
+account  required   pam_permit.so debug
+		
+password requisite  pam_pwquality.so try_first_pass retry=3 debug
+password sufficient pam_unix.so md5 ... use_authtok debug
+password required   pam_deny.so debug
+		
+session  required   pam_limits.so debug
+session  required   pam_unix.so debug
+	\end{lstlisting}
+	\textbf{In welk(e) bestand(en) komt deze informatie terecht?}
+	Je kan logbestanden opvragen met 
+	$$\texttt{journalctl -f -l SYSTEM\_FACILITY=10}$$
+	\item \textbf{Pas de configuratie aan zodat een gebruiker 5 kansen krijgt om een aanvaardbaar nieuw wachtwoord in te geven bij het wijzigen van zijn wachtwoord.}
+	
+	Verander lijn 8 van het bestand \texttt{/etc/pam.d/system-auth} zodat retry op 5 staat i.p.v. 3.
+	\begin{lstlisting}
+password requisite  pam_pwquality.so try_first_pass retry=5 debug
+	\end{lstlisting}
+	\item \textbf{Pas het systeem aan zodat gebruikers met UID $>$ 1000 (bv. pam1) niet kunnen inloggen en die met een UID $<$ 1000 (bv. pam2) wel. Test uit met de nieuw aangemaakte gebruikers.}
+
+	Voeg deze twee lijnen toe in de bestanden \texttt{/etc/pam.d/su} en \texttt{/etc/pam.d/login} in hun respectievelijke stack. Waar dat deze lijnen komen maakt niet zoveel uit, als het maar zeker niet onder de pam module \texttt{pam\_deny.so} staat:
+	\begin{lstlisting}
+auth    requisite pam_succeed_if.so uid < 1000
+account requisite pam_succeed_if.so uid < 1000
+	\end{lstlisting}
+
+	\item \textbf{Bij systeemonderhoud is het wenselijk dat niet-root-gebruikers zich voor een bepaalde tijd niet kunnen aanmelden; pas dit toe voor ssh en voor login. Zorg er bovendien voor dat gebruikers die toch proberen in te loggen een passende boodschap te zien krijgen.}
+	
+	In de bestanden \texttt{/etc/pam.d/sshd} en \texttt{/etc/pam.d/login} staat al de nodige lijn om deze module in te schakelen, namelijk:
+	\begin{lstlisting}
+auth required pam_nologin.so
+	\end{lstlisting}
+	Deze module wordt echter pas uitgevoerd indien er een bestand \texttt{/etc/nologin} bestaat. In dit bestand staat ook de boodschap die getoond zal worden indien een niet-root gebruiker zal proberen inloggen.
+
+	\item \textbf{Configureer PAM zodat gebruiker pam1 enkel kan inloggen vanop de computer van je collega.}
+	
+	Voeg de volgende lijn toe in het bestand \texttt{/etc/pam.d/system-auth}:
+	\begin{lstlisting}
+auth requisite pam_access.so debug
+	\end{lstlisting}
+	Deze module kijkt in het bestand \texttt{/etc/security/access.conf}. Vul de inhoud aan met (vanuit perspectief van hilbertVM):
+	\begin{lstlisting}
++ : pam1 : 192.168.70.2
+- : pam1 : 192.168.70.3
+	\end{lstlisting}
+	\item \textbf{Configureer PAM zodanig dat root uitsluitend nog kan inloggen vanop tty4. Vergeet niet om root nog steeds ingelogd te houden op 1 andere console!}
+	
+	Ook hier staat de nodige pam module (\texttt{pam\_securetty}) al ingesteld in de nodige bestanden. Enkel het bestand \texttt{/etc/securetty} moet aangepast worden zodat deze enkel tty4 bevat. Maak eerst een backup met 
+	$$\texttt{cp /etc/securetty /etc/securetty.bak}$$
+	en verwijder daarna alles behalve tty4 uit \texttt{/etc/securetty}.
+
+	\item \textbf{Zorg ervoor dat lokaal inloggen en inloggen via ssh enkel mogelijk is op maandagen van 10 tot 12. Uiteraard pas je deze tijden aan om te kunnen testen.}
+	
+	Voeg volgende lijn toe in \texttt{/etc/pam.d/sshd} en \texttt{/etc/pam.d/login}:
+	\begin{lstlisting}
+auth required pam_time.so
+	\end{lstlisting}
+
+	Pas dan volgende instelling toe in het bestand \texttt{/etc/security/time.conf}:
+	\begin{lstlisting}
+login;*;*;Th1000-1200
+sshd;*;*;Th1000-1200
+	\end{lstlisting}
+	
+	\item \textbf{Zorg ervoor dat lokaal inloggen en inloggen via ssh enkel mogelijk is op maandagen en vrijdagen voor pam1 en pam2. Uiteraard pas je deze dagen aan om te kunnen testen.}
+	
+	Terug het bestand \texttt{/etc/security/time.conf} aanpassen:
+	\begin{lstlisting}
+login; * ; pam1 | pam2 ; MoFr0000-2400
+sshd ; * ; pam1 | pam2 ; MoFr0000-2400
+	\end{lstlisting}
+	\item \textbf{Wat gebeurt er indien iemand zich aanmeldt via een service die niet voorkomt in de directory \texttt{/etc/pam.d}?}
+\end{enumerate}
+
+
 \end{document}
 

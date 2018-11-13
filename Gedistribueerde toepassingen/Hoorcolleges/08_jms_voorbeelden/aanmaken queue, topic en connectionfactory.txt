@@ -1,0 +1,4 @@
+asadmin uitvoeren en dan
+create-jms-resource --restype javax.jms.Queue --property Name=PhysicalQueue jms/MyQueue
+create-jms-resource --restype javax.jms.Topic --property Name=PhysicalTopic jms/MyTopic
+create-jms-resource --restype javax.jms.ConnectionFactory --description "connection factory for durable subscriptions" --property ClientId=MyID jms/DurableConnectionFactory

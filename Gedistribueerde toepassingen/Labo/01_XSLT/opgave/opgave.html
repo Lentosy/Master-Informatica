@@ -1,0 +1,52 @@
+<!DOCTYPE HTML> 
+<HTML>
+    <HEAD>
+        <TITLE>Labo XSLT</TITLE>
+    </HEAD>
+    <BODY>
+        <h2>Opdracht</h2>
+        <p>In dit labo transformeren we op verschillende manieren het <a href="stratenInGent.xml">XML-bestand</a> met de 
+            straten van Stad Gent. Open dit bestand in een teksteditor of browser. Het bestand is te groot om in Netbeans te bekijken. 
+            Een overzicht van de transformaties die je moet implementeren:
+        <ol>
+            <li><a href="#oef1">Wijken gesorteerd op volgnummer</a>, dubbels toegelaten.</li>
+            <li><a href="#oef2">Wijken gesorteerd op volgnummer</a>, dubbels NIET toegelaten.</li>
+            <li><a href="#oef3">Straten uit de sector A20</a>, alfabetisch gesorteerd.</li>
+            <li><a href="#oef4">Stadsdelen</a>, alfabetisch gesorteerd.</li>
+            <li><a href="#oef5">Straten per stadsdeel</a>.</li>
+        </ol>
+        Merk op dat de figuren maar een deel van de uitvoer tonen.
+        <ol><li id="oef1"> 
+                Schrijf een XSLT die op basis van het stratenbestand alle wijken volgens oplopend
+                volgnummer uitschrijft. In de eerste versie mag je de "dubbels" behouden.
+                <br>
+                <img src="wijken.png">
+            </li>
+            <li id="oef2"> Lees het artikel <a href="http://www.jenitennison.com/xslt/grouping/muenchian.html">
+                    Grouping Using the Muenchian Method</a> en gebruik de eerst beschreven methode om een XML-bestand met alle wijken te maken. 
+                    Dit is de methode die nog geen gebruik maakt van keys, maar wel van de lange asnamen.
+                <br>
+                <img src="verschillendeWijken.png">
+            </li>
+            <li id="oef3">
+                Lees het vervolg van het artikel en gebruik een xsl-element <code>key</code>) om
+                alle straten uit sector <b>A20</b> uit te schrijven met een XSLT.
+                <br>
+                <img src="stratenA20.png">
+            </li>
+            <li id="oef4">Gebruik de tweede methode "The Muenchian Method" (met het xsl-element <code>key</code>) om een XSLT 
+                te maken die alle stadsdelen gesorteerd uitschrijft (zonder dubbels).
+                <br>
+                <img src="stadsdelen.png"></li>
+            <li id="oef5">Maak tot slot een XSLT die alle stadsdelen uitschrijft en per stadsdeel ook de straten vermeldt. 
+                (zonder dubbels in de stadsdelen en straten) Gebruik hiervoor een samengestelde sleutel m.b.v de functie 
+                <code>concat</code> (zie 
+                <a href="http://stackoverflow.com/questions/3557405/distinct-nodes-on-multiple-keys-with-xslt">distinct nodes on multiple-keys</a>
+                of <a href="http://stackoverflow.com/questions/1706412/grouping-by-2-fields-in-xsl">grouping-by-2-fields-in-xsl</a>). 
+                Uitleg over de functie <a href="https://www.w3schools.com/xml/func_generateid.asp">generate-id()</a> vind je op w3schools.	
+                <br>
+                <img src="stratenPerStadsdeel2.png">
+            </li>
+        </OL>
+    </BODY>
+</HTML>

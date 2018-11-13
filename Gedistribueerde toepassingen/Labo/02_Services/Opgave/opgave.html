@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+ <HEAD>
+  <TITLE>Labo SOAP Web Services</TITLE>
+  <META NAME="Author" CONTENT="vo" charset="UTF-8">
+ </HEAD>
+
+<BODY>
+
+  
+	<h2>GUI met als datalaag een SOAP-webservice</h2>
+	<p>Voor de datalaag van de onderstaande GUI zullen we gebruik maken van de SOAP-webservice
+<a href="http://services.aonaware.com/DictService/DictService.asmx">DictService</a>.
+
+<ul>
+	<li>
+<p>Bekijk de WSDL en test enkele operaties uit <i>via de browser</i>.
+Vraagjes:
+<ul>
+<li>Wat is de naam van de aangeboden <em>service</em>?
+<li>Welke <em>poorten</em> worden er gedefinieerd?
+<li>Welke <em>transportprotocol</em> gebruikt de <code>DictServiceSoap</code>-binding?
+<li>Welke <em>operaties</em> worden er in de <code>DictServiceSoap</code>-binding gedefinieerd?
+<li>Welke parameters verwacht de operatie <code>MatchInDict</code>?
+<li>Wat retourneert de operatie <code>MatchInDict</code>? 
+</ul></p>
+</li>
+<li>
+Maak een NetBeans-project om de web service te testen (een gewone console-applicatie).
+Vraag aan de gebruiker een tekst,
+haal verbetersuggesties op via de webservice, en schrijf deze uit.
+<p><img src="spellcheck.png" width="800"></p>
+<p><b>
+Tip: Laat NetBeans de Web Service Client genereren.</b></p>
+</li>
+<li>
+Gebruik daarna deze webservice als datalaag voor een GUI-applicatie. In de applicatie krijg je een overzicht van de beschikbare woordenboeken. Verder kan je de beginletters van een woord opgeven. De applicatie zoekt dan in de beschikbare woordenboeken alle woorden die starten met deze prefix. Selecteer je een gevonden woord en klik je op "definitie", dan krijg je de bijhorende verklaring. De GUI-applicatie is reeds ontwikkeld en maakt gebruik van een dummy-implementatie van de datalaag (<code>be.tiwi.woordenboek.impl.WoordenboekDAODummy</code>). Vervang deze dummy-implementatie door een implementatie die de data ophaalt van de bovenstaande webservice.
+<p><img src="woordenboekGUI.jpg" width="800"></p>
+<p>De <a href="woordenboekGUI.zip">GUI-applicatie</a> bevat de volgende bestanden te ontwikkelen: Woordenboek.java, WoordenboekDAO.java, WoordenboekDAODummy, WoordenboekFrame.java en WoordenboekFrame.form.</p>
+</li>
+</ul>
+
+<h2>PlantService</h2>
+<p>
+    Voeg een SOAP-webservice toe aan een (<code>java-</code>)webapplicatie PlantService.
+    Deze service maakt gebruik van de datalaag <a href="PlantenDatalaag.jar"><code>PlantenDatalaag.jar</code></a>. In het zip-bestand <a href="javadoc.zip">javadoc.zip</a> vind je de documentatie van deze datalaag. Het bestand <code>PlantenDatalaag.jar</code> bevat ook een tekstbestand <code>planten.txt</code> om een object
+van het type be.tiwi.planten.impl.PlantenGeheugenDB te initialiseren. Standaard bevat dit object geen
+planten.
+<p>
+Deze webservice heeft twee operaties ééntje om alle planten van een bepaalde kleur op te vragen en
+    ééntje om een plant toe te voegen. Zorg ervoor dat er maar één <code>PlantBeheer-object</code> is voor deze
+webservice.
+    <ul>
+<li> De operatie voegPlantToe verwacht een Plant-object als parameter en geeft een string ("gelukt" of
+"mislukt") terug om aan te geven of de opdracht gelukt is.
+<li> De operatie getPlanten verwacht een string die de kleur van de planten voorstelt. Het resultaat
+van deze opdracht is een lijst van Plant-objecten waarvan de eigenschap kleur de opgegeven kleur
+is.
+    </ul></p>
+<p>Een nieuwe plant heeft de volgende kenmerken. De unieke identificatie wordt automatisch toegekend
+door de datalaag
+    <ul>
+<li> de naam</li>
+<li> de kleur</li>
+<li> de prijs</li>
+<li> de afbeelding (=een URL)</li>
+    </ul></p>
+
+ </BODY>
+</HTML>
+
