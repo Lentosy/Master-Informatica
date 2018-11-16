@@ -28,4 +28,3 @@ for(@ARGV){
 }
 
 # voor Win32_OperatingSystem geeft het IsSingleton = 0
-

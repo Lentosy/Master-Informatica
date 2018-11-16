@@ -1,25 +1,10 @@
-use strict;
-use warnings;
-
 use Win32::OLE qw(in);
+Win32::OLE->Option(Warn => 3);
 
-my $locator = Win32::OLE->new("Wbemscripting.SWbemLocator");
-my $service = $locator->ConnectServer("127.0.0.1", "root/CIMV2");
+my $locator = Win32::OLE->new('WbemScripting.SWbemLocator');
+my $service = $locator->ConnectServer('.', 'root/cimv2');
 
-#ASSOCIATORS OF {Win32_Directory.Name="c:\\"} 
-my @assoc_instances = in $service->AssociatorsOf("Win32_Directory.Name='c:\\'");
-my %distinct_classes = ();
+my $Win32_Directory = $service->Get('Win32_Directory.Name=\'C:\\\'');
 
-
-print "List of all the instances:\n";
-for(@assoc_instances){
-	print $_->{Path_}->{RelPath};
-	print "\n";
-	$distinct_classes{$_->{Path_}->{Class}} = undef;
-}
-
-
-
-my $count_distinct_classes = scalar keys %distinct_classes;
-print "\nList of the distinct classes (count = $count_distinct_classes): \n";
-print join "\n", keys %distinct_classes;
+printf "%d instances that are associated with Win32_Directory.Name=\'C:\\\'\n",  scalar (in $Win32_Directory->Associators_());
+printf "%d different classes that are associated with Win32_Directory.Name=\'C:\\\'\n", scalar (in $Win32_Directory->Associators_(undef, undef, undef, undef, 1));
