@@ -110,7 +110,7 @@ GiveAttributes('Win32_Directory');
 GiveAttributes('Win32_Subdirectory');
 
 
-15. # Geef van de SNMP service een op naam gesorteerde lijst van alle attributen en systeemattributen, en hun waarden. Zorg er ook voor dat meervoudige waarden geconcateneerd op één lijn getoond worden.
+15. # Geef van de SNMP service een op naam gesorteerde lijst van alle attributen en systeemattributen, en hun waarden. Zorg er ook voor dat meervoudige waarden geconcateneerd op ï¿½ï¿½n lijn getoond worden.
     # Wijzig je oplossing zodat je die informatie ophaalt voor de bijhorende klasse. Wat merk je op ? 
 
 # kan ik nie doen thuis omda ik geen SNMP heb
@@ -189,7 +189,7 @@ Get-Command -CommandType Cmdlet| Group-Object -Property Verb | Sort -Descending 
 Get-Command | Where {$_.Verb -MATCH "^$"}
 
 27. # Zoek alle cmdlets waarmee je services kan aanspreken. Bepaal het aantal services.
-    # Initialiseer een variabele met één service, neem bijvoorbeeld de eerste service. Toon alle properties van de service.
+    # Initialiseer een variabele met ï¿½ï¿½n service, neem bijvoorbeeld de eerste service. Toon alle properties van de service.
     # Toon de naam van alle services die gestopt zijn.
     # Bepaal het totaal aantal services voor elke status.
     
@@ -204,5 +204,33 @@ $Win32_Services_Stopped | Select @{Name="Process";Expression={$_.Properties_.Ite
 $Win32_Service_Instances = $service.InstancesOf('Win32_Service')
 $Win32_Service_Instances | Select @{Name="Service";Expression={$_.Properties_.Item('Name').Value}}, @{Name='State';Expression={$_.Properties_.Item('State').Value}} | Group-Object State | Select Name, Count
 
+28. # Toon een aantal interessante properties (Caption, Description en FileSystem) van de logical disk die hoort bij C: 
+$C_LogicalDisk = $service.Get("Win32_LogicalDisk.DeviceID='C:'")
+$C_LogicalDisk | Select @{Name='Caption';Expression={$_.Properties_.Item('Caption').Value}},
+                        @{Name='Description';Expression={$_.Properties_.Item('Description').Value}},
+                        @{Name='FileSystem';Expression={$_.Properties_.Item('FileSystem').Value}}
 
-#todo vanaf 28
+29. # Start zelf minstens 1 keer Notepad op. Toon nu de naam en het handlenummer van (alle) Notepad-processen. 
+$service.ExecQuery("SELECT * FROM Win32_Process WHERE Name='notepad.exe'") | Select @{Name='Name';Expression={$_.Properties_.Item('Name').Value}}, 
+                                                                                    @{Name='Handle';Expression={$_.Properties_.Item('Handle').Value}}
+
+30. # Toon de beschrijving van alle Win32-klassen die iets met NetWorkAdapter te maken hebben. 
+$service.ExecQuery("SELECT * FROM META_CLASS Where __CLASS like '%NetworkAdapter%'", 'WQL', 131072) | Select @{Name='Class';Expression={$_.Path_.Class}},
+                                                                                                             @{Name='Description';Expression={$_.Qualifiers_.Item('Description').Value}}
+
+
+31. # Toon alle namespaces, startend vanaf "root\cimV2". Schrijf hiervoor een recursieve functie. Indien je onvoldoende rechten hebt, dan resulteert dit in een fout. 
+
+$locator = New-Object -ComObject WbemScripting.SWbemLocator
+
+function Get-NameSpaces([string] $namespace){
+    $service = $locator.ConnectServer('.', $namespace)
+    $namespaces = $service.InstancesOf('__NAMESPACE')
+    $namespaces | ForEach-Object {
+       $newnamespace = $namespace + "\" + $_.Properties_.Item('Name').Value
+       $newnamespace
+       Get-NameSpaces($newnamespace)
+   }
+}
+
+Get-NameSpaces('root\cimv2')

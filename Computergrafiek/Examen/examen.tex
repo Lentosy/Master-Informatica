@@ -1,8 +1,8 @@
 \documentclass{report}
 
 \usepackage{ugentstyle}
-\usepackage{amsmath}
-
+\usepackage{caption}
+\DeclareCaptionFormat{empty}{}
 
 \begin{document}
 \maketitle{Computergrafiek - Examen}
@@ -526,7 +526,12 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 	\vraag{\accentuate{(12,19)} berekening en constructie van de controlepunten van de \textit{uniforme} representatie van een polynomiale of rationale NURBS met een \textit{open-uniforme} knopenvector}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
 	\vraag{\accentuate{(12)} de Boor constructie (van een punt met specifieke parameterwaarde) van een (polynomiale) NURBS}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
 	\vraag{\accentuate{(13)} constructie van de \textit{hodograaf} van een Bézier kromme of spline}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
-	\vraag{\accentuate{(13-16)} vaststellen van de continuïteit in de knooppunten van Bézier splines (\textit{stelling van Stärk})}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
+	\vraag{\accentuate{(13-16)} vaststellen van de continuïteit in de knooppunten van Bézier splines (\textit{stelling van Stärk})}{
+		\begin{itemize} 
+		\item \textbf{Stelling van Stärk:} Men bereikt $C^k$ continuïteit indien de blossomargumenten voor elk van de $2k$ naburige controlepunten hetzelfde punt in de ruimte oplevert, of men nu de argumenten evalueert in de blossompolynoom van het ene segment, of in de blossompolynoom van het andere segment. 
+		\item Stel een linkersegment met data- en controlepunten $P[a, a, a], P[a, a, b], P[a, b, b]$ en $P[b, b, b]$, en een rechtersegment, bepaald door $Q[b, b, b], Q[b, b, c], Q[b, c, c]$ en $Q[c, c, c]$.
+			\todo{afwerken P56}
+		\end{itemize}}
 	\vraag{\accentuate{(17)} constructie van de controlepunten van de \textit{uniforme} Lagrange representatie van een Lagrange geïnterpoleerde kromme met \textit{niet-uniforme} knopenvector; schematisch aantonen hoe de berekening van de Bézier representatie van deze kromme zou kunnen uitgevoerd worden (ondermeer opstellen van de \textit{inverse} van de Bézier basismatrix).}{
 		\begin{itemize} 
 			\item Veronderstel de niet-uniforme knopenvector $\{0, 3, 6, 12\}$ en volgende figuur (\accentuate{afbeelding kan niet volledig kloppen, dient enkel als illustratie}):
@@ -572,26 +577,335 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 				\end{tikzpicture}
 			\end{figure}
 			In de niet-uniforme knopenvector wordt $P_1$ bereikt voor $t = 3$. Het punt $P_1$ moet echter in de uniforme knopenvector bereikt worden voor $t = 4$. Analoog voor het punt $P_2$, die nu bereikt moet worden voor $t = 8$. Gebruik van het piramidaal schema geeft de exacte posities van deze punten. \accentuate{Algemeen:}
-			\begin{figure}[h]
+			\begin{figure}[ht]
 				\centering
 				\begin{tikzpicture}
-					\node (x) at (0, 0) {$P_{pqr...wx}(t)$};
-					\node (z) at (1, 2) {$P_{pqr...wxy}(t)$};
-					\node (y)at (2, 0) {$P_{qr...wxy}(t)$};
+					\node (x) at (0, 0) {$P_{{\color{green}p}qr...wx}(t)$};
+					\node (z) at (1, 2) {$P_{{\color{green}p}qr...wx{\color{green}y}}(t)$};
+					\node (y)at (2, 0) {$P_{qr...wx{\color{green}y}}(t)$};
 
-					\draw[->] (x) -- (z);
-					\draw[->] (y) -- (z);
+					\draw[->] (x) -- node[xshift=-0.5cm]{$\frac{t_y - t}{t_y - t_p}$} (z);
+					\draw[->] (y) -- node[xshift=0.5cm]{$\frac{t - t_p}{t_y - t_p}$} (z);
 				\end{tikzpicture}
 			\end{figure}
+
+			Toegepast voor $t = 4, t_0 = 0, t_1 = 3, t_2 = 6$ en $t_3 = 12$:
+			\begin{figure}[ht]
+				\centering
+				\begin{tikzpicture}[scale=0.8]
+					\node (p0) at (0, 0) {$P_0 \leftarrow t_0$};
+					\node (p01) at (2, 2) {$P_{01}(t)$};
+					\node (p1) at (4, 0) {$P_1 \leftarrow t_1$};
+					\node (p12) at (6, 2) {$P_{12}(t)$};
+					\node (p2) at (8, 0) {$P_2 \leftarrow t_2$};
+					\node (p23) at (10, 2) {$P_{23}(t)$};
+					\node (p3) at (12, 0) {$P_3 \leftarrow t_3$};
+				
+
+					\node (p012) at (4, 4) {$P_{012}(t)$};
+					\node (p123) at (8, 4) {$P_{123}(t)$};
+
+					\node (p0123) at (6, 6) {$P(t) \equiv P_{0123}(t)$};
+
+					\draw[->] (p0) -- node[xshift=-2cm]{$\frac{t_1 - t}{t_1 - t_0} = \frac{3 - 4}{3 - 0} = -\frac{1}{3}$} (p01);
+					\draw[->] (p1) -- node[xshift=0.5cm]{$\frac{4}{3}$} (p01);
+
+					\draw[->] (p1) -- node[xshift=-0.5cm]{$\frac{2}{3}$} (p12);
+					\draw[->] (p2) -- node[xshift=0.5cm]{$\frac{1}{3}$} (p12);
+
+					\draw[->] (p2) -- node[xshift=-0.5cm]{$\frac{4}{3}$} (p23);
+					\draw[->] (p3) -- node[xshift=0.5cm]{$-\frac{1}{3}$} (p23);
+
+					\draw[->] (p01) -- node[xshift=-0.5cm]{$\frac{1}{3}$} (p012);
+					\draw[->] (p12) -- node[xshift=0.5cm]{$\frac{2}{3}$} (p012);
+					\draw[->] (p12) -- node[xshift=-0.5cm]{$\frac{8}{9}$} (p123);
+					\draw[->] (p23) -- node[xshift=0.5cm]{$\frac{1}{9}$} (p123);
+
+					\draw[->] (p012) -- node[xshift=-0.5cm]{$\frac{1}{3}$} (p0123);
+					\draw[->] (p123) -- node[xshift=0.5cm]{$\frac{2}{3}$} (p0123);
+				\end{tikzpicture}
+			\end{figure}
+
+			Hieruit kunnen eenvoudig alle (hulp)punten afgeleidt worden \accentuate{($P_{01}$ ligt op $4/3$ van het lijnstuk $[P_0P_1$], $P_{123}$ ligt op $1/9$ van het lijnstuk $[P_{12}P_{23}]$)}:
+
+			\begin{figure}[ht]
+				\centering
+				\begin{tikzpicture}[every node/.style={circle, fill=red},
+					label/.style={fill=none}, 
+					new/.style={fill=green},
+					scale=0.8]
+
+					\node (p0) at (0, 0) {};
+					\node[label] at (-0.5, 0) {$P_{0}$};
+
+					\node (p1) at (3, 3) {};
+					\node[label] at (3, 3.5) {$P_{1}$};
+
+					\node[new] (p01) at (4, 4) {};
+					\node[label] at (4,4.5) {$P_{01}$};
+
+					\node[new] (p23) at (2.33, -0.066) {};
+					\node[label] at (2.33,0.5) {$P_{23}$};
+
+					\node[new] (p12) at (3.4, 1.7) {};
+					\node[label] at (4,1.7) {$P_{12}$ };
+
+					\node[new] (p012) at (3.6, 2.5) {};
+					\node[label] at (4.2,2.66) {$P_{012}$};
+
+					\node (p2) at (4, -0.1) {};
+					\node[label] at (4, 0.4) {$P_{2}$};
+
+					\node[new] (p123) at (3.1, 1.2) {};
+					\node[label] at (2.5,1.3) {$P_{123}$};
+
+					\node (p3) at (9, -0.2) {};
+					\node[label] at (9,0.3) {$P_{3}$};
+
+
+					\draw[red] plot [smooth, tension=1.4] coordinates {(0, 0) (3, 3) (4, -0.1) (9, -0.2)};
+
+					\draw (p0) -- (p1);
+					\draw (p1) -- (p2);
+					\draw (p2) -- (p3);
+
+					\draw[dotted] (p1) -- (p01);
+					\draw[dotted] (p01) -- (p12);
+
+					\draw[dotted] (p12) -- (p23);
+					\draw[dotted] (p23) -- (p2);
+
+					\draw[dotted] (p012) -- (p123);
+				\end{tikzpicture}
+			\end{figure}
+
+			\todo{figuur ontbreekt $P_{0123}$ aangezien deze figuur niet klopt. Je kan zien dat het lijnstuk $[P_{012}P_{123}]$ geen punt van de kromme heeft, dit komt puur door het feit dat de kromme niet juist getekend is.}
+
+			\item De matrix voor een Bézierkromme van willekeurige graad $n$ kan als volgt opgesteld worden:
+				\begin{enumerate}
+					\item Construeer de driehoek van Pascal, in de linkerbovenhoek van een $(n + 1) \cdot (n + 1)$ matrix, vertrekkend van de rechterbovenhoek. De overige coëfficiënten blijven nul.
+					\item Vermenigvuldig alle coëfficiënten van kolom $j$, met de coëfficiënt in rij $j$ van de eerste kolom.
+					\item Keer het teken om van alle coëfficiënten op de even nevendiagonalen. 
+				\end{enumerate}
+				Toegepast op de figuur \accentuate{($n = 3$ aangezien 4 datapunten)}:
+				$$
+				\begin{pmatrix}
+					-1 & 3 & -3 & 1 \\
+					3 & -6 & 3 & 0 \\
+					-3 & 3 & 0 & 0 \\
+					1& 0 & 0 & 0
+				\end{pmatrix}
+				$$
+				\todo {verder}
+			\newpage
 		\end{itemize}}
+		
 	\vraag{\accentuate{(18,19)} constructie van een  \textit{benadering door lijnstukken} van een uniforme NURBS door toepassing van het algoritme van Lane \& Riesenfeld}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
 	\vraag{\accentuate{(20)} constructie van een \textit{triangulair schema} met behulp van het veralgemeend algoritme van Neville (voor een specifieke configuratie van inputgegevens), en berekening hieruit van de \textit{gewichtsfuncties} en de \textit{matrixrepresentatie}}{
 		\begin{itemize} 
-			\item \textbf{Stelling van Stärk:} Men bereikt $C^k$ continuïteit indien de blossomargumenten voor elk van de $2k$ naburige controlepunten hetzelfde punt in de ruimte oplevert, of men nu de argumenten evalueert in de blossompolynoom van het ene segment, of in de blossompolynoom van het andere segment. Stel een linkersegment met data- en controlepunten $P[a, a, a], P[a, a, b], P[a, b, b]$ en $P[b, b, b]$, en een rechtersegment, bepaald door $Q[b, b, b], Q[b, b, c], Q[b, c, c]$ en $Q[c, c, c]$.
+			\item \accentuate{Het veralgmeend algoritme van Neville laat toe om de rekenregels van Hermite interpolatie op te stellen, aangezien Hermite interpolatie ook nog gebruik maakt van richtingsvectoren en eventueel krommingen, die gedefinieerd worden op hetzelfde punt, zodat het punt een hogere multipliciteit krijgt. Hermite interpolatie gebruikt slechts twee datapunten $P_0$ en $P_1$, waarvoor men meestal respectievelijk $t=0$ en $t=1$ neemt}. Bij het veralgemeend algoritme van Neville zijn er twee mogelijkheden:
+				\begin{enumerate}
+					\item Indien er minstens twee verschillende indicies in $P_{pqr...wxy}(t)$ optreden, dan blijft de traditionele versie van het algoritme onveranderd geldig:
+					\begin{figure}[ht]
+						\centering
+						\begin{tikzpicture}
+							\node (x) at (0, 0) {$P_{{\color{green}p}qr...wx}(t)$};
+							\node (z) at (1, 2) {$P_{{\color{green}p}qr...wx{\color{green}y}}(t)$};
+							\node (y)at (2, 0) {$P_{qr...wx{\color{green}y}}(t)$};
+		
+							\draw[->] (x) -- node[xshift=-0.5cm]{$\frac{t_y - t}{t_y - t_p}$} (z);
+							\draw[->] (y) -- node[xshift=0.5cm]{$\frac{t - t_p}{t_y - t_p}$} (z);
+						\end{tikzpicture}
+					\end{figure}	
+					\item Indien echter in de labeling van een hulppunt, of van het eindresultaat, slechts één enkele index $i$ optreedt, met multipliciteit $\mu_i = m + 1$, dan moet op het lager niveau slechts één enkel hulppunt geïntroduceerd worden: het hulppunt waarin de index $i$ optreedt met multipliciteit $\mu_i = m$.
+					\begin{figure}[ht]
+						\centering
+						\begin{tikzpicture}
+							\node (x) at (0, 0) {$P_{i}^{(m)}$};
+							\node (z) at (1, 2) {$\substack{P_{\underline{i...i}}(t) \\ \hbox{\scriptsize {m+1 termen}}}$};
+							\node (y)at (2, 0) {$\substack{P_{\underline{i...i}}(t) \\ \hbox{\scriptsize {m termen}}}$};
+		
+							\draw[->] (x) -- node[xshift=-0.5cm]{$\frac{(t - t_i)^m}{m!}$} (z);
+							\draw[->] (y) -- node[xshift=0.5cm]{$1$} (z);
+						\end{tikzpicture}
+					\end{figure}	
+						
+				\end{enumerate}
+				Veronderstel nu een Hermite interpolatie van graad vijf. Dit heeft twee datapunten $P_0$ en $P_1$, de richtingsvectoren in deze punten $P_0^{'}$ en $P_1^{'}$, en de krommingen $P_0^{''}$ en $P_{1}^{''}$. Punt $P_{000111}(t)$ is de top van het piramidaal schema. Op figuur \ref{fig:20triangular} wordt dit schema voorgesteld.
+
+				\begin{figure}[ht]
+					\centering
+					\begin{tikzpicture}[scale=1.5]
+						\node (p000111) at (5, 10) {$P_{000111}(t)$};
+							\node (p00011) at (4, 8) {$P_{00011}(t)$};
+							\node (p00111) at (6, 8) {$P_{00111}(t)$};
+								\node (p0001) at (3, 6) {$P_{0001}(t)$};
+								\node (p0011) at (5, 6) {$P_{0011}(t)$};
+								\node (p0111) at (7, 6) {$P_{0111}(t)$};
+									\node (p000) at (2, 4) {$P_{000}(t)$};
+									\node (p001) at (4, 4) {$P_{001}(t)$};
+									\node (p011) at (6, 4) {$P_{011}(t)$};
+									\node (p111) at (8, 4) {$P_{111}(t)$};
+										\node (p0'') at (1, 2) {$P_{0}^{''}$};
+										\node (p00) at (3, 2) {$P_{00}(t)$};
+										\node (p01) at (5, 2) {$P_{01}(t)$};
+										\node (p11) at (7, 2) {$P_{11}(t)$};
+										\node (p1'') at (9, 2) {$P_{1}^{''}$};
+											\node (p0') at (2, 0) {$P_{0}^{'}$};
+											\node (p0) at (4, 0) {$P_{0}$};
+											\node (p1) at (6, 0) {$P_{1}$};
+											\node (p1') at (8, 0) {$P_{1}^{'}$};
+						
+						\draw[->] (p0') -- node[xshift=-0.5cm]{t} (p00);
+						\draw[->] (p0) -- node[xshift=0.2cm]{1} (p00);
+						\draw[->] (p0) -- node[xshift=-0.5cm]{1 - t} (p01);
+						\draw[->] (p1) -- node[xshift=0.2cm]{t} (p01);
+						\draw[->] (p1) -- node[xshift=-0.2cm]{t}(p11);
+						\draw[->] (p1') -- node[xshift=0.5cm]{t - 1} (p11);
+
+						\draw[->] (p0'') -- node[xshift=-0.5cm]{$\frac{t^2}{2}$} (p000);
+						\draw[->] (p00) -- node[xshift=0.2cm]{1} (p000);
+						\draw[->] (p00) -- node[xshift=-0.5cm]{1 - t} (p001);
+						\draw[->] (p01) -- node[xshift=0.2cm]{t}  (p001);
+
+						\draw[->] (p01) -- node[xshift=-0.5cm]{1 - t}(p011);
+						\draw[->] (p11) -- node[xshift=0.2cm]{t} (p011);
+						\draw[->] (p11) -- node[xshift=-0.2cm]{1}(p111);
+						\draw[->] (p1'') -- node[xshift=0.5cm]{$\frac{(t - 1)^2}{2}$}  (p111);
+
+						\draw[->] (p000) -- node[xshift=-0.5cm]{1 - t}(p0001);
+						\draw[->] (p001) -- node[xshift=0.2cm]{t}(p0001);
+						\draw[->] (p001) -- node[xshift=-0.5cm]{1 - t} (p0011);
+						\draw[->] (p011) -- node[xshift=0.2cm]{t}(p0011);
+						\draw[->] (p011) -- node[xshift=-0.5cm]{1 - t} (p0111);
+						\draw[->] (p111) -- node[xshift=0.2cm]{t} (p0111);
+
+						\draw[->] (p0001) -- node[xshift=-0.5cm]{1 - t}(p00011);
+						\draw[->] (p0011) -- node[xshift=0.2cm]{t}(p00011);
+						\draw[->] (p0011) -- node[xshift=-0.5cm]{1 - t} (p00111);
+						\draw[->] (p0111) -- node[xshift=0.2cm]{t}(p00111);
+
+						\draw[->] (p00011) -- node[xshift=-0.5cm]{1 - t}(p000111);
+						\draw[->] (p00111) -- node[xshift=0.2cm]{t}(p000111);				
+					\end{tikzpicture}
+					\caption{}
+					\label{fig:20triangular}
+				\end{figure}
+
 		\end{itemize}}
+		De gewichtsfuncties kunnen berekent worden via de volgende stappen:
+		\begin{enumerate}
+			\item Keer elke pijl van het schema om.
+			\item Plaats de constante 1 op de top van de piramide.
+			\item De mengfunctie horend bij een specifiek basisdatapunt $P_i$, kan bekomen worden door in het aangepaste diagram achtereenvolgens:
+				\begin{enumerate}
+					\item het aantal alternatieve paden te zoeken die tot dit punt leiden (eenvoudig via de driehoek van Pascal),
+					\item de gewichtsfactoren langs een specifiek pad te vermenigvuldigen,
+					\item de bijdrage van elk individueel pad te sommeren.
+				\end{enumerate}
+		\end{enumerate}
+
+		Op figuur\ref{fig:20invtriangular} wordt het omgekeerde schema getoond.
+
+		\begin{figure}[ht]
+			\centering
+			\begin{tikzpicture}[scale=1.5]
+				\node (p000111) at (5, 10) {};
+					\node (p00011) at (4, 8){};
+					\node (p00111) at (6, 8) {};
+						\node (p0001) at (3, 6) {};
+						\node (p0011) at (5, 6) {};
+						\node (p0111) at (7, 6) {};
+							\node (p000) at (2, 4) {};
+							\node (p001) at (4, 4) {};
+							\node (p011) at (6, 4) {};
+							\node (p111) at (8, 4) {};
+								\node (p0'') at (1, 2) {$H_{2,5}(t)$};
+								\node (p00) at (3, 2) {};
+								\node (p01) at (5, 2) {};
+								\node (p11) at (7, 2) {};
+								\node (p1'') at (9, 2) {$H_{3,5}(t)$};
+									\node (p0') at (2, 0) {$H_{1,5}(t)$};
+									\node (p0) at (4, 0) {$H_{0,5}(t)$};
+									\node (p1) at (6, 0) {$H_{5,5}(t)$};
+									\node (p1') at (8, 0) {$H_{4,5}(t)$};
+				
+				\draw[<-] (p0') -- node[xshift=-0.5cm]{t} (p00);
+				\draw[<-] (p0) -- node[xshift=0.2cm]{1} (p00);
+				\draw[<-] (p0) -- node[xshift=-0.5cm]{1 - t} (p01);
+				\draw[<-] (p1) -- node[xshift=0.2cm]{t} (p01);
+				\draw[<-] (p1) -- node[xshift=-0.2cm]{t}(p11);
+				\draw[<-] (p1') -- node[xshift=0.5cm]{t - 1} (p11);
+
+				\draw[<-] (p0'') -- node[xshift=-0.5cm]{$\frac{t^2}{2}$} (p000);
+				\draw[<-] (p00) -- node[xshift=0.2cm]{1} (p000);
+				\draw[<-] (p00) -- node[xshift=-0.5cm]{1 - t} (p001);
+				\draw[<-] (p01) -- node[xshift=0.2cm]{t}  (p001);
+
+				\draw[<-] (p01) -- node[xshift=-0.5cm]{1 - t}(p011);
+				\draw[<-] (p11) -- node[xshift=0.2cm]{t} (p011);
+				\draw[<-] (p11) -- node[xshift=-0.2cm]{1}(p111);
+				\draw[<-] (p1'') -- node[xshift=0.5cm]{$\frac{(t - 1)^2}{2}$}  (p111);
+
+				\draw[<-] (p000) -- node[xshift=-0.5cm]{1 - t}(p0001);
+				\draw[<-] (p001) -- node[xshift=0.2cm]{t}(p0001);
+				\draw[<-] (p001) -- node[xshift=-0.5cm]{1 - t} (p0011);
+				\draw[<-] (p011) -- node[xshift=0.2cm]{t}(p0011);
+				\draw[<-] (p011) -- node[xshift=-0.5cm]{1 - t} (p0111);
+				\draw[<-] (p111) -- node[xshift=0.2cm]{t} (p0111);
+
+				\draw[<-] (p0001) -- node[xshift=-0.5cm]{1 - t}(p00011);
+				\draw[<-] (p0011) -- node[xshift=0.2cm]{t}(p00011);
+				\draw[<-] (p0011) -- node[xshift=-0.5cm]{1 - t} (p00111);
+				\draw[<-] (p0111) -- node[xshift=0.2cm]{t}(p00111);
+
+				\draw[<-] (p00011) -- node[xshift=-0.5cm]{1 - t}(p000111);
+				\draw[<-] (p00111) -- node[xshift=0.2cm]{t}(p000111);				
+			\end{tikzpicture}
+			\caption{s}
+			\label{fig:20invtriangular}
+		\end{figure}
+		
+		De mengfuncties worden dan:
+		\begin{equation*}
+			\begin{split}
+				H_{0, 5}(t) = & 6 \cdot \bigg[(1-t)^3 + t(1-t)^3 + 4t^2(1-t)^3\bigg] = -24t^5 + 66t^4 -60t^3 + 24t^2 -12t + 6\\
+				H_{1, 5}(t) = & 4 \cdot \bigg[t(1-t)^3 + 3t^2(1-t)^3\bigg] = -12t^5 +32t^4 -24t^3 + 4t\\
+				H_{2, 5}(t) = & 1 \cdot \bigg[(1 - t)^3\bigg(\frac{t^2}{2}\bigg)\bigg] = -\frac{1}{2}  t^5 + \frac{3}{2}  t^4  - \frac{3}{2}t^3 + \frac{1}{2}t^2\\
+				H_{3, 5}(t) = & 1 \cdot \bigg[(t^3\bigg(\frac{(1-t)^2}{2}\bigg)\bigg] = \frac{1}{2}t^5 - t^4 + \frac{1}{2}t^3\\
+				H_{4, 5}(t) = & 4 \cdot \bigg[a_4t^5 + b_4t^4 + c_4t^3 + d_4t^2 + e_4t + f_4 \bigg]  \\
+				H_{5, 5}(t) = & 6 \cdot \bigg[a_5t^5 + b_5t^4 + c_5t^3 + d_5t^2 + e_5t + f_5 \bigg]  \\
+			\end{split}
+		\end{equation*}
+		Omgevormd tot de matrixrepresentatie:
+		$$
+		P(t) = (t^5, t^4, t^3, t^2, t, 1) 
+		\cdot
+		\begin{pmatrix}
+			-24 & -12 & - \frac{1}{2}  & \frac{1}{2} & a_4 & a_5 \\
+			66  & 32  & \frac{3}{2}    & -1 		 & b_4 & b_5 \\
+			-60 & -24 & - \frac{3}{2}  & \frac{1}{2} & c_4 & c_5 \\
+			24  & 4   &  \frac{1}{2}   & 0 			 & d_4 & d_5 \\
+			-12 & 0   & 0  			   & 0 			 & e_4 & e_5 \\
+			6   & 0   & 0  			   & 0 			 & f_4 & f_5 \\
+		\end{pmatrix}
+		\cdot 
+		\begin{pmatrix}
+			P_0 \\
+			P_1 \\
+			P_0^{'} \\
+			P_1^{''} \\
+			P_0^{'} \\
+			P_1^{''} \\
+
+		\end{pmatrix}
+		$$
+		\accentuate{CONTROLE: Som van de waarden van de rijen voor elk datapunt moet 0 zijn: $-24 -12 - \frac{1}{2} + \frac{1}{2} + a_4 + a_5 = 0 $}.
+
+
+
 			
 \end{itemize}
-	
 \end{document}
 
 

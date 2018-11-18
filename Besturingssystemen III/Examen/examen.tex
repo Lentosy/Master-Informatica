@@ -1,3 +1,4 @@
+
 \documentclass{report}
 
 \usepackage{ugentstyle}
@@ -167,11 +168,33 @@
 	
 	\section{Active Directory domeinstructuren \accentuate{(§2.4.4, laatste paragraaf §2.4.5 en §2.4.6)}}
 	\begin{enumerate}
-		\vraag { Wat is de bedoeling van \textit{vertrouwensrelaties} ? } { \todo{Oplossen}}
+		\vraag { Wat is de bedoeling van \textit{vertrouwensrelaties} ? } {
+			\begin{itemize}
+				\item Tussen twee domeinen kan er een vertrouwensrelatie tot stand gebracht worden, zodat gebruikers in het vertrouwd domain kunnen geverifieerd worden door de domeincontroller in het vertrouwend domein. Dit wil niet zeggen dat de gebruiker toegang heeft tot de bronnen in dat domein. Windows Server maakt automatisch vertrouwensrelaties aan tussen domeinen en hun kinddomeinen. Deze kunnen niet verbroken worden en zijn bovendien bi-directioneel en transitief. Windows Server maakt ook automatisch vertrouwensrelaties aan tussen de trees van eenzelfde forest.
+			\end{itemize}
+		}
 		
-		\vraag { Bespreek de verschillende \textit{soorten} vertrouwensrelaties. } { \todo{Oplossen}}
+		\vraag { Bespreek de verschillende \textit{soorten} vertrouwensrelaties. } { 
+			\begin{itemize}
+				\item \textbf{Forest vertrouwensrelatie.} Deze vertrouwensrelatie kan alleen bestaan tussen Windows Server domeinen in hetzelfde forest. Indien de diverse forests minimaal Windows Server 2003 functioneel niveau hebben, dan kan er een bidirectionele en trasitieve forest trust tussen de root-domeinen van deze forests gelegd worden. 
+				\item \textbf{Realm vertrouwensrelatie.} Dit is een veralgemeening van een forest vertrouwensrelatie. Deze relatie kan gelegd worden tussen een Windows Server 2008 domein en een willekeurig kerberos v5 realm, onafhankelijk van het besturingssysteem waarop die geïmplementeerd zijn. 
+				\item \textbf{Verkorte vertrouwensrelatie.} Deze enkelvoudige of bi-directionele relatie kan gelegd worden tussen Windows Server domeinen binnen hetzelfde forest. Deze verkorte vertrouwensrelaties kunnen gebruikt worden om het vertrouwenspad in grote en complexe trees korter te maken. Praktisch is dit enkel nuttig indien het vertrouwenspad minstens een vijftal domeinen overspant, en dan uiteraard nog indien er frequesnt gebruik van gemaakt wordt. 
+				\item \textbf{Externe vertrouwensrelatie.} Dit is een enkelvoudige relatie waarbij één domein een ander vertrouwt. Verificatieaanvragen kunnen enkel van het trusting domein naar het trusted domein doorgegeven worden. Om een externe vertrouwensrelatie in twee richtingen te leggen, moeten er twee enkelvoudige relaties gelegd worden. Deze relatie is ook niet transitief.
+			\end{itemize}
+
+		}
 		
-		\vraag { Op welke diverse manieren kunnen vertrouwensrelaties \textit{gecreëerd} en \textit{gecontroleerd} worden ? Bespreek ook de \textit{optionele configuratiemogelijkheden}. } { \todo{Oplossen}}
+		\vraag { Op welke diverse manieren kunnen vertrouwensrelaties \textit{gecreëerd} en \textit{gecontroleerd} worden ? Bespreek ook de \textit{optionele configuratiemogelijkheden}. } { 
+			\begin{itemize}
+				\item Om een vertrouwensrelatie aan te maken, moet de domeinnamen en gebruikersaccount met machtigingen om vertrouwensrelaties in beide domeinen te maken, beschikbaar zijn. Een vertrouwensrelatie krijgt een wachtwoord toegewezen, dat bekend moet zijn bij de beheerders van beide domeinen van de vertrouwensrelatie. Dit wachtwoord wordt na het opzetten van de vertrouwensrelatie nooit meer gebruikt. Volgende optionele configuratiemogelijkheden bestaan ook:
+				\begin{itemize}
+					\item \textbf{Selective Authentication.} Standard worden alle gebruikers van het trusted domein opgenomen in de \underline{Authenticated Users} groep van het trusting domein. Via selective Authentication moet dit per individuele gebruiker of gebruikersgroep ingesteld worden.
+					\item \textbf{SID Filtering.} Indien SID Filtering aanstaat, wordt enkel rekening gehouden met de SID opgeslagen in het \textit{objectSid} attribuut van de objecten in het trusted domein. Staat dit niet aan, dan verwerkt het trusting domein ook de SIDs opgeslagen in het sIDHistory attribuut.
+				\end{itemize}
+
+				\item Vertrouwensrelaties kunnen ook aangemaat worden in een \textit{Command Prompt}, met behulp van de \textbf{netdom trust} opdracht. Om een overzicht te krijgen van alle vertrouwensrelatie en hun toestand, kan gebruik gemaakt worden van de \textbf{netdom query trust} opdracht.
+			\end{itemize}
+		}
 		
 		\vraag { Welke verschillen zijn er in praktijk tussen \textit{NT 4.0} en \textit{Windows Server} domeinstructuren ? Bespreek onder andere telkens de noodzaak om meerdere domeinen in te voeren. Bespreek de alternatieve mogelijkheden bij de \textit{conversie van een NT 4.0 domeinstructuur} naar een Windows Server omgeving. } { \todo{Oplossen}}
 	\end{enumerate}
@@ -256,24 +279,51 @@
 			\end{itemize}
 		}
 		
-		\vraag { Op welke diverse manieren kan men het functionele niveau verhogen of verlagen ? } 
-	\begin{itemize}
-		\item Omschakelen naar een bepaald functioneel niveau gebeurd steeds manueel en kan enkel opwaarts: het is niet mogelijk om een hoger niveau om te vormen naar een lager niveau. Er moet steeds rekening gehouden worden met de restricties die elk niveau oplegt, indien deze niet voldaan zijn heeft het geen zin om te verhogen, en zal dit ook met een gepaste foutmelding getoond worden. Een niveau aanpassen kan enerzijds rechtstreeks, door de attributen van het domeinobject te manipuleren, ofwel via een GUI met behulp van de Active Directory Domains and Trust snap-in, beschikbaar in \textbf{domain.msc}.  
-	\end{itemize}	
-}
+		\vraag { Op welke diverse manieren kan men het functionele niveau verhogen of verlagen ? } {
+			\begin{itemize}
+				\item Omschakelen naar een bepaald functioneel niveau gebeurd steeds manueel en kan enkel opwaarts: het is niet mogelijk om een hoger niveau om te vormen naar een lager niveau. Er moet steeds rekening gehouden worden met de restricties die elk niveau oplegt, indien deze niet voldaan zijn heeft het geen zin om te verhogen, en zal dit ook met een gepaste foutmelding getoond worden. Een niveau aanpassen kan enerzijds rechtstreeks, door de attributen van het domeinobject te manipuleren, ofwel via een GUI met behulp van de Active Directory Domains and Trust snap-in, beschikbaar in \textbf{domain.msc}.  
+				
+			\end{itemize}	
+		}
+
 	\end{enumerate}
 	
 	\section{Active Directory replicatie \accentuate{(§2.5)}}
 	\begin{enumerate}
-		\vraag { Wat is de bedoeling van \textit{replicatie} ? } { \todo{Oplossen}}
+		\vraag { Wat is de bedoeling van \textit{replicatie} ? } {
+			\begin{itemize}
+				\item Gebruikers en services moeten op elk gewenst moment vanaf elke computer in het forest toegang kunnen krijgen tot de directory gegevens. Een domein zonder actieve domeincontrollers functioneert niet langer naar gebruikers toe. Doordat in één domein met meerdere domeincontrollers kan gewerkt worden, worden de \underline{fouttolerantie} en de \underline{belastingsverdelingen} verberterd.
+			\end{itemize}
+		}
 		
-		\vraag { Hoe wordt dit in Windows Server (ondermeer ten opzichte van NT 4.0) gerealiseerd: bespreek de verschillende \textit{technische kenmerken} en \textit{concepten} van Windows Server replicatie, en hoe men specifieke problemen vermijdt of oplost. } { \todo{Oplossen}}
+		\vraag { Hoe wordt dit in Windows Server (ondermeer ten opzichte van NT 4.0) gerealiseerd: bespreek de verschillende \textit{technische kenmerken} en \textit{concepten} van Windows Server replicatie, en hoe men specifieke problemen vermijdt of oplost. } { 
+			\begin{itemize}
+				\item Active Directory maakt gebruik van \underline{multi-master} replicatie, zodat de directory kan bijgewerkt worden vanaf elke domeincontroller, behalve read-only domeincontrollers. NT 4.0 daarentegen maakt gebruik van een master-slave model met primaire domeincontrollers en back-up domeincontrollers die gebruikt worden omde SAM gegevens, de policies, de gebruikersprofielen en de logon scripts te distribueren. In het master-slave model had slechts één enkele server, de primaire domeincontroller, een wijzigbare kopie van de directory. De andere domeincontrollers werden ingeschakelt voor het afhandelen van aanvragen, inclusief aanvragen van gebruikers voor wijzigingen. In huidige Windows Server systemen zijn alle Windows Server domeincontrollers equivalent. Dit biedt meer fouttolerantie omdat met meerdere domeincontrollers de replicatie kan voortgezet worden als één of meerdere andere domeincontrollers uitvallen. 
+				\item Een ander verschil met de replicatietechniek van NT 4 wordt \underline{store-and-forward} replicatie genoemd. Elke verandering op een domeincontroller wordt slechts uitgewisseld met enkele ander domeincontrollers, die op hun beurt de wijzigingen communiceren met nog enkele andere domeincontrollers. Hoe de domeincontrollers weten naar welke andere domeincontrollers ze hun wijzigingen moeten doorsturen, gebeurd via de \textbf{KCC (Knowledge Concistency Checker)} software die op elke Active Directory domeincontroller beschikbaar is. De KCC's proberen steeds een topologie te vormen die ten minste twee paden met elke domeincontroller mogelijk maakt, waarbij elke controller maximaal met drie andere controllers rechtstreeks is verbonden, en waarbij het aantal hops tussen twee willekeurige domeincontrollers hoogstens drie is. Deze replicatietopologie wordt periodiek of via een trigger (bv een domeincontroller wordt toegevoegd) vernieuwd. 
+				\item Het laatste verschil tussen NT 4 en Windows Server is de \underline{kleinste replicatie eenheid}. In NT 4 is dat altijd het volledig object. In forests met Windows 2000 functioneel niveau de volledige waarde van een individueel attribuut, en in forests met minimaal Windows Server 2008 functioneel niveau zelfs de atomaire waarde van het attribuut. 
+				\item Windows Server replicatie gebruikt een \underline{pull mechanisme}.  Elke domeincontroller brengt wel zijn intra-site replicatiepartners op de hoogte indien er wijzigingen in de eigen directory aangebracht zijn, maar hij stuurt deze wijzigingen niet op eigen intiatief door. Het opvragen van de gegevens wordt geïnitieerd door de replicatiepartners. Deze methode is zeer foutbestendig. Indien een update mislukt, vraagt de domeincontroller gewoon opnieuw om de gegevens. Verder wordt er niet bij elke wijziging de replicatiepartners verwittigd. De wijzigingen worden gegroepeerd in een bepaald tijdsinterval. Dit heeft als voordeel dat het netwerk minder belast zal worden. Dit wordt \underline{propagation damping} of \underline{replication latency} genoemd. Active Directory garandeerd daarom niet dat elke domeincontroller over de meest actuele directory beschikt, maar dat ze uiteindelijk wel zal convergeren, daarom noemt men dit een \underline{loose consistency} model.
+				\item Windows Server Replicatie is \underline{multi-threaded}: een domeincontroller kan simultan repliceren met diverse partners. Bij replicatie tussen controllers in dezelfde site worden gegevens niet gecomprimeerd om de verwerkingskracht van de domeincontrollers minder te belasten. 
+				\item Een obstakel is het replicatieverkeer, dat moet relatief beperkt blijven. Daarom wordt in Active Directory enkel gewijzigde directory gegevens gerepliceerd. Om te voorkomen dat een domeincontroller meerdere malen dezelfde wijziging zal doorvoeren, wordt zijn \textbf{USN (Update Sequence Number)} verhoogd. De combinatie van USN en GUID van een domeincontroller wordt zijn Up-To-Dateness Vector (UTD vector) genoemd. Elke domeincontroller meldt bij elke wijziging aan een object zijn huidige UTD vector aan de andere domeincontrollers, en houdt in de eigen UTD vectortabel de meest recente UTD vector bij die hij van elke andere controller heeft ontvangen, en waarvan hij de wijzigingen heeft verwerkt.
+				\item Een ander probleem doet zich voor wanneer dat hetzelfde kenmerk van een object op meer dan één domeincontroller quasi tegelijkertijd gewijzigd wordt. De domeincontroller die conflicterende wijzigingen detecteert, lost dit op door naar het tijdstip van wijziging te kijken, en de wijziging met het oudere tijdstip te negeren. Zijn de tijdstippen gelijk, wordt enkel de wijziging van de domeincontroller met het hoogste GUID geaccepteerd. Voor sommige objecten, waarvoor de kans op conflicten klein is door bovenstaande methode, is dit nog altijd niet toelaatbaar, en wordt er beroep gedaan op slechts één domeincontroller, de operations master om de wijzigingen door te voeren.
+				\item Men moet vermijden dat een object opnieuw gecreëerd wordt door replicatie wanneer deze verwijdert wordt. Daarom wordt een object niet onmiddelijk uit Active Directory verwijderd, maar eerst als tombstone gemarkeerd en in een hidden container, \textit{Deleted Items}, geplaatst. Na 60 dagen (180 dagen in Windows Server 2008+ domeinen) wordt een object definitief verwijderd. 
+			\end{itemize}
+		}
 		
-		\vraag { Welke toestellen repliceren onderling in een \textit{forest} ? Welke specifieke gegevens worden hierbij uitgewisseld ? } { \todo{Oplossen}}
+		\vraag { Welke toestellen repliceren onderling in een \textit{forest} ? Welke specifieke gegevens worden hierbij uitgewisseld ? } {
+			\begin{itemize}
+				\item \todo{todo}
+			\end{itemize}
+
+		}
 		
 		\vraag { Welke impact hebben \textit{sites} met betrekking tot de replicatie van Active Directory gegevens ? Welke andere Active Directory aspecten worden door sites beïnvloed ? \accentuate{(§2.6.1)} } { \todo{Oplossen}}
 		
-		\vraag { Hoe wordt bepaald \textit{tot welke site} computers, servers in het bijzonder, behoren ? \accentuate{(laatste paragraaf §2.6.2 en fractie §2.6.3)} } { \todo{Oplossen}}
+		\vraag { Hoe wordt bepaald \textit{tot welke site} computers, servers in het bijzonder, behoren ? \accentuate{(laatste paragraaf §2.6.2 en fractie §2.6.3)} } { 
+			\begin{itemize}
+				\item Computers worden aan sites toegewezen op basis van de locatie in een IP subnet. Een site kan dus beschouwd worden als een verzameling computers in een of meer IP subnetten. Alle computers die geadresseed worden door hetzelfde IP subnet maken automatisch deel uit van dezelfde site.
+				\item Voor een server wordt de locatie bepaald door de vraag tot welke site in de directory het server object van de domeincontroller behoort. Elke site heeft een container met de naam Servers, die alle domeincontrollerobjecten bevatten die in deze site zijn geplaatst. Tijdens de promotie van een server tot domeincontroller wordt de server automatisch toegevoegd aan de site waaraan het subnet, waartoe de server behoort, is gekoppeld. De site van een server ligt hierdoor vast, en kan enkel manueel veranderd worden met \textbf{dssite.msc}.
+			\end{itemize}
+		}
 	\end{enumerate}
 	
 	\section{Gedeelde mappen en NTFS}
