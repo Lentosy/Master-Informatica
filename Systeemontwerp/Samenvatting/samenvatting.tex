@@ -106,7 +106,27 @@
 		\item \textbf{Type 1.} Dit type hypervisor draait rechtstreeks op de hardware van de host en heeft geen behoefte aan een onderliggend besturingssysteem. 
 		\item \textbf{Type 2.} Dit type hypervisor heeft wel nood aan een besturingssysteem. Dit heeft als voordeel dat er ook applicaties op het hosttoestel kunnen draaien.
 	\end{itemize}
-	\underline{Containers} zijn een virtualisatietechniek op besturingssysteemniveau. Op het host toestel draait er slechts één besturingssysteem en zal 
+	\underline{Containers} zijn een virtualisatietechniek op besturingssysteemniveau. Een populaire container technologie is Docker, dat gebruik maakt van de linux container functionaliteit.  
+	\begin{itemize}
+		\item \textbf{Linux Control Groups (cgroups).} Groeperen van taken, en privileges zetten op deze groepen.
+		\item \textbf{Linux namespaces.} Een geïsoleerde weergave van de systeemresources.
+		\item \textbf{Changing root (chroot).} Elk process de illusie geven dat ze vanuit de root-directory aangesproken worden.
+		\item \textbf{Veilige containers.} Mogelijkheden per process vastzetten.
+	\end{itemize}
+
+	\underline{Docker}:
+	\begin{itemize}
+		\item Automatisch verpakken en deployen van een applicatie.
+		\item Beschikbaar op Linux, MacOS, Windows.
+		\item Onafhankelijk. Minimale dependencies.
+		\item Grote flexibiliteit in wat er in de container moet.
+		\item Alle containers kunnen gestart en gestopt worden op dezelfde manier.
+		\item Lightweight. Meerdere containers per host mogelijk (nog meer dan virtuele machines).
+	\end{itemize}
+
+	\section{Docker Architecture}
+	
+
  
 	\part{Distributed Data Storage \& Processing}
 \end{document}

@@ -277,7 +277,7 @@ Het algoritme verloopt als volgt:
 	\item In dit restnetwerk wordt een vergrotend pad gezocht: een weg van producent naar verbruiker die nog meer stroom tussen beide toelaat.
 	\item Als er geen vergrotende paden kunnen gevonden worden, stopt de iteratir, en zal de netwerkstroom maximaal zijn.
 \end{enumerate}
-\url{https://www.youtube.com/watch?v=Tl90tNtKvxs}
+https://www.youtube.com/watch?v=Tl90tNtKvxs
 
 
 
@@ -372,6 +372,112 @@ Tweeledige graaf (of bipartiete graaf) = een ongerichte graaf waarbij de knopen 
 \end{itemize}
 
 
+\part{Strings}
+\chapter{Gegevensstructuren voor strings}
+\section{Digitale zoekbomen}
+Deze zijn compleet analoog zoals gewone zoekbomen, op één verschil na: de juiste deelboom wordt niet bepaald door de zoeksleutel te vergelijken met de sleutel in de knoop, maar enkel door het volgende element van de zoeksleutel (van links naar rechts). Bij de wortel gebruiken we het eerst esleutelelement, een niveau dieper het tweede sleutelelement, enz...
 
+De boom overlopen in \textbf{inorder} geeft de sleutels niet noodzakelijk in volgorde. De hoogte van de boom wordt beperkt tot het aantal bits van de grootste sleutel. Voor een groot aantal sleutels met relatief kleine bitlengte is de performantie in het slechtste geval veel beter dan die van een gewone binaire zoekboom, en vergelijkbaar met die van een rood-zwarte boom. In het gemiddelde geval is de kans op een volgend nul- of éénbit steeds gelijk, zodat er gemiddeld evenveel sleutels links als rechts komen. Daardoor is de gemiddelde hoogte van de boom $O(\lg n)$. De woordenboekoperaties zijn ook $O(\lg n)$.
+
+De dikwijls beperkende voorwaarde is een efficiënte toegang tot de bits van de sleutels. Bovendien zijn er enkel woordenboekoperaties mogelijk.
+
+\section{Tries}
+Deze boom behoudt wel de sleutels in volgorde opslaat.
+\subsection{Binaire tries}
+
+
+
+\chapter{Zoeken in strings}
+Symbolen die gebruikt worden:
+\begin{table}[h]
+	\centering
+	\begin{tabular}{l l}
+		\hline
+		Symbool & Betekenis \\
+		\hline 
+		$\sum$ & Het gebruikte alfabet \\
+		$\sum *$ & De verzameling strings van eindige lengte van letters uit $\sum$ \\
+		$d$ & Aantal karakters in $\sum$ \\
+		$P$ & Het patroon (naald) \\
+		$p$ & Lengte van $P$ \\
+		$T$ & De tekst (hooiberg) \\
+		$t$ & Lengte van $T$ \\
+		\hline 
+	\end{tabular}
+\end{table}
+\section{Formele talen}
+Formele taal over een alfabet = een verzameling eindige strings over dat alfabet. 
+
+In de cursus wordt formele talentheorie beperkt tot wat in de praktijk handig is: generatieve grammatica's en reguliere uitdrukkingen.
+\subsection{Generatieve grammatica's}
+= Een startsymbool wordt getransformeerd tot een zin van de taal met behulp van substitutieregels. Hiervoor zijn \textbf{niet-terminale symbolen}, of kortweg niet-terminalen nodig met als notatie $\langle ... \rangle$.
+
+$\Xi = $ De verzameling van alle strings van letters uit $\sum$ vermengd met niet-terminalen.
+
+$\Xi* = $ de bijhorende verzameling strings.
+
+\underline{Voorbeeld}: stel de volgende niet-terminalen (het symbool $::=$ staat voor "wordt herleidt tot"):
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{l l l}
+		$\langle \textbf{S} \rangle$ & $::=$ & $\langle \textbf{AB} \rangle | \langle \textbf{CD} \rangle$ \\
+		$\langle \textbf{AB} \rangle$ & $::=$ & $a\langle \textbf{AB} \rangle b | \epsilon$ \\
+		$\langle \textbf{CD} \rangle$ & $::=$ & $c\langle \textbf{CD} \rangle d | \epsilon$ \\
+	\end{tabular}
+\end{table}
+Deze grammatica definieert als formele taal de verzameling van alle strings ofwel bestaande uit een rij 'a's gevolgd door een even lange rij 'b's ofwel bestaande uit een rij 'c's gevolgd door een even lange rij 'd's. De afleiding van bijvoorbeeld de string "cccddd" wordt gegeven door
+$$\langle \textbf{S} \rangle \Rightarrow  \langle \textbf{CD} \rangle  \Rightarrow  c\langle \textbf{CD} \rangle d
+\Rightarrow  cc\langle \textbf{CD} \rangle dd \Rightarrow  ccc\langle \textbf{CD} \rangle ddd \Rightarrow  cccddd$$
+
+\subsection{Reguliere uitdrukkingen}
+(reguliere uitdrukking = regexp) = een string over het alfabet $\sum = \{\sigma_0, \sigma_1, ..., .\sigma_{d - 1}\}$ aangevuld met de symbolen $\emptyset$, $\epsilon$, $*$, $($, $)$ en $\underline{|}$ gedefinieerd door
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{l l l}
+		$\langle \textbf{Regexp} \rangle$ & $::=$ & $\langle \textbf{basis} \rangle | \langle \textbf{samengesteld} \rangle$ \\
+		$\langle \textbf{basis} \rangle$ & $::=$ & $\sigma_0 | ... | \sigma_{d - 1} | \emptyset | \epsilon$ \\
+		$\langle \textbf{samengesteld} \rangle$ & $::=$ & $\langle \textbf{plus} \rangle  |  \langle \textbf{of} \rangle | \langle \textbf{ster} \rangle$ \\
+		$\langle \textbf{plus} \rangle $ & $::=$ & $(\langle \textbf{Regexp} \rangle \langle \textbf{Regexp} \rangle)$ \\
+		$\langle \textbf{of} \rangle $ & $::=$ & $(\langle \textbf{Regexp} \rangle \underline{|} \langle \textbf{Regexp} \rangle)$ \\
+		$\langle \textbf{ster} \rangle $ & $::=$ & $(\langle \textbf{Regexp} \rangle)*$
+	\end{tabular}
+\end{table}
+Een taal die door een regexp gedefinieerd kan worden heet een reguliere taal. 
+\begin{enumerate}
+	\item $\emptyset$ is een regexp, met als taal de lege verzameling.
+	\item De lege string, voorgesteld als $\epsilon$, is een regexp met als taal Taal($\epsilon$) = \{$\epsilon$\}.
+	\item Voor elke $a \in \sum$ is \textquotedblleft a\textquotedblright een regexp, met als taal Taal(\textquotedblleft a\textquotedblright ) = \{\textquotedblleft a \textquotedblright\}.
+\end{enumerate}
+\todo{p112-114}
+
+\section{Variabele tekst}
+\subsection{Eenvoudige methode}
+= Voor elke positie $j$ nagaan of $P$ in $T$ voorkomt startend vanaf positie $j$, en de opeenvolgende $p$ posities.\accentuate{brol}
+
+\subsection{Knuth-Morris-Pratt}
+Eerst de definitie van een \textbf{deelstring} bepalen.
+
+\begin{bytefield}{8}
+	
+	\bitbox{1}{} & \bitbox{1}{} & \bitbox{1}{} & \bitbox{1}{} & \bitbox{1}{} & \bitbox{1}{} & \bitbox{1}{} & \bitbox{1}{}
+\end{bytefield}
+
+Volgende code toont de werking van de prefixfunctie.
+\begin{lstlisting}
+q[0] = -1
+q[1] = 0
+for(i = 2; i <= p; i++){
+	prev = q(i - 1)
+	while(prev > 0 && P[i - 1] != P[prev]){
+		prev = q[prev]
+	}
+	if(P[i - 1] == P[prev]){
+		prev++
+	}
+	q[i] = prev
+}
+\end{lstlisting}
 
 \end{document}
+
+

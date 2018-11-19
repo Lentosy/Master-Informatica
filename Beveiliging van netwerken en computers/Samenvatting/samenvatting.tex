@@ -28,9 +28,9 @@
 	Wanneer er een connectie kan gelegd worden van een cliënt tussen een server, is het eerste proces altijd het \textbf{onderhandelen van de algoritmen}. Deze stap zal algoritmen selecteren die compatibel zijn met zowel de cliënt als de server. Wanneer de cliënt een TCP connectie heeft met de server worden volgende pakketten verstuurd:
 	\begin{itemize}
 		\item \textbf{Identification string exchange.} Dit is een string dat zowel het protocolversie als de softwareversie van SSH bevat. Deze string wordt ten eerste van de cliënt naar de server verstuurd, waarop de server dan antwoord met zijn protocol en softwareversie. Indien hieruit blijkt dat de machines niet compatibel zijn met elkaar, wordt de connectie onderbroken \accentuate{(SSH2 is bv niet compatibel met SSH)} en worden volgend stappen bijgevolg niet meer uitgevoerd.
-		\item \textbf{Algorithm Negotiation.} In deze fase sturen zowel de server als de cliënt een SSH\_MSG\_KEXINIT bericht, die een lijst van alle ondersteunde algoritmen bevat, in volgorde van voorkeur. Elk type van algoritme zoals sleuteluitwisseling, encryptie, MAC algoritme en compressiealgoritme heeft zo zijn eigen lijst. Elk type moet dan ook een algoritme toegekend krijgen en wordt bepaald door het eerste algoritme dat de cliënt goed vind dat ook beschikbaar is op de server.
-		\item \textbf{Key Exchange.} Indien de vorige fase goed gelukt is, start nu de sleuteluitwisseling. Voor de sleuteluitwisseling worden er momenteel slechts twee versie van \textbf{Diffie-Helman} ondersteund \accentuate{(cfr. RFC 2409)}. Het einde van de sleuteluitwisseling wordt gesignaleerd door een SSH\_MSG\_NEWKEYS pakket, met als gevolg dat zowel de cliënt als de server de gegenereerde sleutels mag gebruiken.  
-		\item \textbf{Service Request.} De laatste stap, dat eigenlijk het begin is van een volgend proces, wordt gesignaleerd door een SSH\_MSH\_SERVICE\_REQUEST pakket. Dit pakket vraagt ofwel de start van het User Authentication Protocol of van het Connection Protocol. Alle verkeer tussen server en cliënt wordt op dit moment getransporteerd als de payload van een SSH Transport Layer pakket, beveiligd met encryptie en een MAC.
+		\item \textbf{Algorithm Negotiation.} In deze fase sturen zowel de server als de cliënt een \\ \texttt{SSH\_MSG\_KEXINIT} bericht, die een lijst van alle ondersteunde algoritmen bevat, in volgorde van voorkeur. Elk type van algoritme zoals sleuteluitwisseling, encryptie, MAC algoritme en compressiealgoritme heeft zo zijn eigen lijst. Elk type moet dan ook een algoritme toegekend krijgen en wordt bepaald door het eerste algoritme dat de cliënt goed vind dat ook beschikbaar is op de server.
+		\item \textbf{Key Exchange.} Indien de vorige fase goed gelukt is, start nu de sleuteluitwisseling. Voor de sleuteluitwisseling worden er momenteel slechts twee versie van \textbf{Diffie-Helman} ondersteund \accentuate{(cfr. RFC 2409)}. Het einde van de sleuteluitwisseling wordt gesignaleerd door een \texttt{SSH\_MSG\_NEWKEYS} pakket, met als gevolg dat zowel de cliënt als de server de gegenereerde sleutels mag gebruiken.  
+		\item \textbf{Service Request.} De laatste stap, dat eigenlijk het begin is van een volgend proces, wordt gesignaleerd door een \texttt{SSH\_MSH\_SERVICE\_REQUEST} pakket. Dit pakket vraagt ofwel de start van het User Authentication Protocol of van het Connection Protocol. Alle verkeer tussen server en cliënt wordt op dit moment getransporteerd als de payload van een SSH Transport Layer pakket, beveiligd met encryptie en een MAC.
 	\end{itemize}
 	Een SSH Transport Layer pakket heeft de volgende vorm, waarbij elementen met een $\delta$-symbool geëncrypteerd en geauthenticeerd zijn en elementen met een $\Delta$-symbool ook optioneel gecompresseerd kunnen zijn:
 	\begin{itemize}
@@ -62,14 +62,99 @@
 	\begin{itemize}
 		\item \textbf{Public Key Authentication.} De implementatie van deze methode is afhankelijk van het gebruikte public-key algoritme. Een cliënt verstuurt berichten, dat gesigneerd is door de cliënt zijn private sleutel, naar de server, die de publieke sleutel van de cliënt bevat. De server gaat na of deze publieke sleutel nog geldig is en zoja, of dat de signatuur correct is. 
 		\item \textbf{Password Based Authentication.} De cliënt verstuurt zijn paswoord, dat geëncrypteerd wordt door het SSH Transport Layer Protocol naar de server, die nagaat of het paswoord correct is.
-		\item \textbf{Host Based Authentication.} \todo{}
+		\item \textbf{Host Based Authentication.} De authenticatie is gebaseerd op de host in plaats van een individuele gebruiker (cliënt) zelf. De cliënt verstuurt een handtekening, gemaakt met de private key van de host. De server verifieerd enkel de host, en dus niet de individuele gebruikers. 
 	\end{itemize}
 
 	\subsubsection{Connection Protocol}
-	\todo{vanaf slide 26}
+	Het connection protocol veronderstelt dat een beveiligide, geauthenticeerde verbinding tot stand gebracht is. Deze verbinding, \textbf{tunnel} genoemd, wordt gebruikt door het connection protocol om een aantal logische kanalen te multiplexen doorheen deze tunnel. Het connection protocol specifieert vier kanalen:
+	\begin{enumerate}
+		\item \textbf{Session.} Dit kanaal refereert naar het remote uitvoeren van een programma zoals een shell, een applicatie zoals e-mail of een systeemcommando. 
+		\item \textbf{X11.} Het X Window System laat toe om applicaties te runnen op een server, maar dat ze eigenlijk op een desktop getoond worden.
+		\item \textbf{Direct-tcpip.} Dit kanaal dient voor local port forwarding.
+		\item \textbf{forwarded-tcpip.} Dit kanaal dient voor remote port forwarding.
+	\end{enumerate}
+	De lifecycle van een kanaal verloopt in drie stages: een kanaal openen, uitwisselen van informatie en een kanaal sluiten. Wanneer de server of de cliënt (hier uitgewerkt voor de cliënt) een kanaal wil openen, wordt er een lokaal nummer bijgehouden voor dat kanaal en wordt er een bericht verstuurt naar de server met volgende informatie: 
+	\begin{itemize}
+		\item Eén van de vier kanaaltypes. 
+		\item Het lokale kanaalnummer van de cliënt.
+		\item De initiële window size. Dit is het aantal bytes dat kan verstuurt worden naar de verzender zonder dat het venster moet aangepast worden.
+		\item De maximum pakketgrootte specifieert hoeveel bytes een individueel pakket mag bevatten.
+	\end{itemize}
+	Als de server het kanaal kan openen, zal het een \texttt{SSH\_MSG\_CHANNEL\_OPEN\_CONFIRMATION} bericht versturen. Dit bericht bevat het kanaalnummer van de cliënt, het kanaalnummer van de server, en de waarde voor de window-en pakketgrootten voor inkomend verkeer. Als de server het kanaal niet kan openen, zal het een \texttt{SSH\_MSG\_CHANNEL\_OPEN\_FAILURE} versturen, met een foutmelding. Bij een open kanaal worden er voortdurend \texttt{SSG\_MSG\_CHANNEL\_DATA} berichten verstuurd, die het kanaalnummer van de ontvanger en een datablok bevat. Deze berichten kunnen in twee richtingen voorkomen. Tot slot kan er nog een \texttt{SSH\_MSG\_CHANNEL\_CLOSE} bericht verstuurd worden, die het kanaalnumer bevat dat gesloten moet worden.
 	
+	\subsection{Port forwarding}
+	Port forwarding of port mapping is een toepassing van \textbf{NAT (Network Address Translation)} dat een een communicatieaanvraag van een specifiek adres en poort naar een ander zal omleiden. Op deze manier kan elke onveilige TCP verbindingen in een veilige SSH verbinding gemaakt worden. Een klein woordje uitleg over een poort. Een poort is een identificatie van een TCP-gebruiker. Elke applicatie dat bovenop TCP draait, heeft een poortnummer. Het \textbf{SMTP (Simple Mail Transfer Protocol)} luistert algemeen naar poort 25. Inkomende SMTP berichten zullen dus deze poortnummer bevatten. TCP Herkent dit poortnummer en zal het verkeer routen naar de SMTP server applicatie. SSH ondersteunt twee types port forwarding: local forwarding en remote forwarding:
+	\begin{itemize}
+		\item {Local forwarding.}
+		\item {Remote forwarding.}
+	\end{itemize}
 
-	
+	\section{Sleuteluitwisselingen}
+	Gegeven twee partijen $A$ en $B$. Een sleuteluitwisseling kan op verschillende manieren gebeuren:
+	\begin{enumerate}
+		\item $A$ kan het fysiek afleveren aan $B$.
+		\item Een betrouwbare partij geeft de sleutel fysiek aan $A$ en $B$.
+		\item Als $A$ en $B$ vroeger al gecommuniceerd hebben, kunnen ze de vorige sleutel gebruiken om de nieuwe te encrypteren.
+		\item Als $A$ en $B$ een beveiligide verbinding hebben met een derde partij $C$, dan kan $C$ de sleutel doorverwijzen naar $A$ en $B$.
+	\end{enumerate}
+	\subsection{Out-of-band sleuteluitwisseling}
+	Sleutels niet-digitaal uitwisselen wordt out-of-band sleuteluitwisseling genoemd. Dit is toelaatbaar voor kleine organisaties maar voor grotere organisaties is dit niet voldoende.
+	\subsection{Diffie-Hellman}
+	Dit protocol was de eerste praktische methode om een gedeelde sleutel over een onbeveiligide verbinding te versturen, gebaseerd op discrete logaritmen. Het maakt gebruik van de eigenschap
+	$$(g^b\;mod\;p)^a\;mod\;p = (g^a\;mod\;p)^b\;mod\;p$$ indien $p$ een priemgetal en $g$ de primitieve wortel modula $p$ is. Een voorbeeld is $p = 7$ en $g = 3$. 
+	\begin{equation*}
+		\begin{split}
+			3^1 = 3 & = 3\;\hbox{mod}\;7\\
+			3^2 = 9 & = 2\;\hbox{mod}\;7\\
+			3^3 = 27 & = 6\;\hbox{mod}\;7\\
+			3^4 = 81 &  = 4\;\hbox{mod}\;7\\
+			3^5 = 243  & = 5\;\hbox{mod}\;7\\
+			3^6 = 729  & = 1\;\hbox{mod}\;7\\
+		\end{split}
+	\end{equation*}
+	Het algoritme verloopt in volgende stappen:
+	\begin{enumerate}
+		\item Alice en Bob zoeken een priemgetal $p$, en een daarbijhorende primitieve wortel $g$. Deze $p$ en $g$ mogen publiek gekend zijn.
+		\item Alice kiest een geheim getal $a < p$. Haar publieke sleutel is $y_A = g^a\;\hbox{mod}\;p$.
+		\item Bob kiest een geheim getal $b < p$. Zijn publieke sleutel is $y_B = g^b\;\hbox{mod}\;p$.
+		\item Alice en Bob bereken respectievelijk $y_B^a\;\hbox{mod}\;p$ en $y_A^b\;\hbox{mod}\;p$. Deze zullen beiden dezelfde uitkomst bekomen, en wordt dan hun sleutel. 
+	\end{enumerate}
+	 Aangezien $g^x$ elk mogelijk getal zal genereren modulo $p$ voor alle $x < p$, is het moeilijk voor een aanvaller, die de publieke sleutels toch kent, de geheime sleutel te achterhalen. Ze moeten hierbij het discrete logaritme probleem oplossen. 
+	 
+	 Stel $p = 23$ en $g = 5$. Alice neemt $a = 6$ en Bob neemt $b = 15$, dan wordt $y_A = 5^6\;\hbox{mod}\;23 = 8$ en $y_B = 5^{15}\;\hbox{mod}\;23 = 19$. Alice berekent $19^6\;\hbox{mod}\;23 = 2$ en Bob berekent  $8^{15}\;\hbox{mod}\;23 = 2$.
+
+	 Normaal wordt $p$ een priemgetal van ongeveer 300 cijfers genomen. De getallen $a$ en $b$ zijn dan weer minstens 100 cijfers lang. De geheime sleutel bepalen, indien $g$, $p$, $y_A$ en $y_B$ gekend zijn duurt quasi oneindig lang. 
+
+	\subsubsection{Nadelen Diffie-Hellman}
+
+	\subsection{Sleuteldistributiecentrum}
+	Elke gebruiker heeft een geheime sleutel die kan gebruikt worden om met het \textbf{KDC (Key Distribution Centre)} te communiceren. Er zijn twee soorten sleutels: de sessiesleutels zijn een tijdelijke sleutel die gebruikt worden voor één enkele sessie. Deze sessiesleutel wordt gebruikt om data te encrypteren tussen verschillende gebruikers. De ander sleutel is de mastersleutel. Deze wordt gebruikt om sessiesleutels te encrypteren en wordt gedeeld tussen een gebruiker en de KDC. De basiswerking van de KDC (figuur \ref{fig:basiswerkingKDC}) is als volgt:
+	\begin{enumerate}
+		\item Alice vraagt aan de KDC om een verbinding op te zetten met Bob. Alice stuurt ook een "nonce" $N_1$. Dit is een getal dat slechts éénmaal gebruikt wordt om replay aanvallen te voorkomen.
+		\item De KDC geeft volgende informatie terug, dat geëncrypteerd wordt door Alice haar sleutel $K_{A-KDC}$: De sessiesleutel, de identiteit van Bob, dezelfde nonce dat Alice stuurde naar de KDC, en geëncrypteerde data (met Bob zijn sleutel $K_{B-KDC}$).
+		\item Alice verstuurt de geëncrypteerde data naar Bob.
+		\item Bob antwoordt met een tweede nonce $N_2$, geëncrypteerd met de sessiesleutel, zodat Bob geauthenticeerd is naar Alice toe.
+		\item Alice antwoordt terug naar Bob met een bewerkte nonce (een bepaalde functie, bv 1 toevoegen), geëncrypteerd met de sessiesleutel, zodat Alice geauthenticeerd is naar Bob toe.
+	\end{enumerate}
+	\begin{figure}
+		\centering
+		\begin{tikzpicture}
+			\node (A) [rectangle, draw=black] at (0, 0) {Alice};
+			\node (K) [rectangle, draw=black] at (10, 0) {KDC};
+			\node (B) [rectangle, draw=black] at (0, -5) {Bob};
+
+			\draw[->] ([yshift=3pt] A.east) -- node[yshift=7pt]{1) $ID_A || ID_B || N_1$} ([yshift=3pt]  K.west);
+			\draw[<-] ([yshift=-3pt] A.east) -- node[yshift=-7pt]{2) $E_{K_{A-KDC}}[K_s || ID_B || N_1 || E_{K_{B-KDC}}(K_s || ID_A) ]$} ([yshift=-3pt]  K.west);
+
+			\draw[->] ([xshift=6pt] A.south) -- ([xshift=6pt]  B.north);
+			\draw[<-] ([xshift=0pt] A.south) -- ([xshift=0pt]  B.north);
+			\draw[->] ([xshift=-6pt] A.south) -- ([xshift=-6pt]  B.north);
+		\end{tikzpicture}
+		\caption{Basiswerking KDC.}
+		\label{fig:basiswerkingKDC}
+	\end{figure}
+	Een aanvaller kan, indien hij $K_s$ bemachtigd, \todo{p97}
+
 	\chapter{Encryptiealgoritmen}
 	\section{Geschiedenis}
 	Encryptiemethoden worden al eeuwenlang gebruikt om informatie onleesbaar te maken voor partijen die deze informatie niet mogen achterhalen. Deze inleiding bespreekt de basismethoden om encryptie toe te passen.
