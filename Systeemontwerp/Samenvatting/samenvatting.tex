@@ -129,4 +129,71 @@
 
  
 	\part{Distributed Data Storage \& Processing}
+	\chapter{De uitdagingen van moderne data}
+	Data-intensieve applicaties moeten rekening houden met volgende vier categorieën:
+	\begin{itemize}
+		\item \textbf{Volume.} De hoeveelheid opslag die over verschillende plaatsen moeten opgeslagen worden.
+		\item \textbf{Velocity.} De snelheid waarop nieuwe informatie actueel wordt.
+		\item \textbf{Variety.} De verschillende soorten types van data die bestaan. 
+		\item \textbf{Veracity.} De betrouwbaarheid van de data. 
+	\end{itemize}
+	\chapter{Datamodellen}
+	\section{Het relationeel model}
+	\accentuate{zie cursus relationele gegevensbanken, belangrijk is om gewoon de nadelen te kennen zoals:}
+	\begin{itemize}
+		\item Er zou een brede tabel nodig zijn met honderden kolommen (waarvan de meeste dan NULL zijn) om bijvoorbeeld de producten van een winkel op te slaan. Elk product heeft diverse kenmerken die eigen zijn aan een bepaalde productcategorie.
+		\item Men zou dit kunnen oplossen door een nieuwe tabel te maken per productcategorie, maar dit introduceert veel tabellen en relaties (te vergelijken met het verhogen van de normaalvorm).
+	\end{itemize}
+	\section{Het document model}
+	Informatie in een document model wordt in een boomstructuur met one-to-many relaties opgeslagen, en is daarom dus perfect voor \underline{one-to-many relaties}. Een document wordt opgeslagen als één string, meestal in JSON of XML formaat, op deze manier volstaat één enkele query om een hele object, en zijn relaties op te vragen. 
+
+	Een extreem voordeel van het document model is dat het geen restricties oplegt aan de data. Er kunnen twee producten zijn die in het systeem herkent worden als "Product" maar een andere interne structuur hebben. Het \underline{document model} wordt dus best \underline{gekenmerkt door}:
+	\begin{itemize}
+		\item Flexibiliteit in het schemamodel. Dit wordt ook wel "schema-on-read" genoemd aangezien de cliënt niet op voorhand kan weten welke structuur het document zal hebben.
+		\item Data lokaliteit. Hiermee wordt bedoeld dat een document als één enkelvoudige string wordt opgeslagen, en alle informatie zit dan ook in die string. Er is geen nood aan het join-of indexeringmechanisme. Een document wordt altijd in zijn geheel ingelezen, dit kan een nadeel zijn indien slechts een beperkt aantal informatie van dat document nodig is.
+	\end{itemize}
+
+	\section{Het graaf model}
+	Het document model volstaat voor one-to-many relaties, maar is niet perfect voor \underline{many-to-many} of \underline{many-to-one relaties} want dan moeten er toch "joins" gedaan worden, maar dan op documenten. Het graaf model kent twee soorten:
+	\begin{enumerate}
+		\item Een normale graaf met knopen en verbindingen, die beiden attributen kunnen hebben.
+		\item Een drievoudig model waarbij alle informatie opgeslagen wordt als: \texttt{SUBJECT $\rightarrow$ PREDICATE $\rightarrow$ OBJECT}
+	\end{enumerate}
+	Gekende graafalgoritmen kunnen toegepast worden op dit model. Het \underline{graaf model} heeft een aantal \underline{use cases}:
+	\begin{itemize}
+		\item \textbf{Transportnetwerk.} Een graaf is de geschikte manier om een wegennet voor te stellen.
+		\item \textbf{Linkanalyse.} Het zoeken van objecten die gerelateerd zijn aan een ander object (bv vrienden van vrienden zoeken).
+	\end{itemize}
+
+	\section{Het kolomfamilie model}
+	\todo{xxx}
+
+	\chapter{Gedistribueerde informatie}
+	Waarom is het belangrijk dat informatie op verschillende nodes beschikbaar is?
+	\begin{itemize}
+		\item \textbf{Schaalbaarheid:} Een toestel heeft maar een maximum aantal geheugen, opslagplaats en schijfoperaties per seconde. Meerdere nodes betekent dat de belasting kan verdeeld worden tussen de nodes.
+		\item \textbf{Fouttolerantie:} Een reverse voorzien voor in het geval dat een andere node uitvalt.
+		\item \textbf{Latency:} Nodes geografisch verspreiden zodat connecties vanuit andere continenten niet traag zijn.
+	\end{itemize}
+	Er wordt best gebruik gemaakt van het \underline{horizontaal schaalschema}. Dit heeft als voordeel dat er geen speciale hardware vereist is, en er gewoon machines kunnen bijgekocht worden indien dit nodig zou zijn.
+
+	Er zijn \underline{twee belangrijke patronen} om data de distribueren:
+	\begin{enumerate}
+		\item \textbf{Replicatie:} Dit is eenvoudig alle data dupliceren op elke verschillende node, zodat ze allemaal dezelfde data bevatten. De \underline{voordelen} zijn: hoge databeschikbaarheid en fouttolerantietegen het uitvallen van een node door de redundantie van de informatie. Het \underline{nadeel} is: hoe moeten we ervoor zorgen dat alle nodes over dezelfde data beschikken (zie sectie \ref{sec:replicatie})? 
+		\item \textbf{Partitionering (sharding):} De grote hoeveelheid data kan ook gepartitioneerd worden, zodat elke node zijn unieke verzameling van gegevens bevat. Partitionering heeft een aantal \underline{voordelen}: Elke partitie moet slechts zijn beperkte data behandelen. Hoe groter de dataset wordt, hoe minder operaties een bepaalde partitie zal moeten uitvoeren, aangezien er meer patitities zullen ingevoerd worden zodat de data meer verspreidt ligt over alle partities. Het \underline{nadeel} is: hoe kunnen we bepalen op welke node een bepaald stukje informatie moet komen. Idealiter heeft elke node dezelfde workload.
+	\end{enumerate}
+	In praktijk worden replicatie en partitionering gecombineerd. Eerst wordt partitionering toegepast, waarna deze partities ook nog gerepliceerd worden.
+
+	\section{Replicatie}
+	\label{sec:replicatie}
+	Er zijn \underline{twee modellen} om aan replicatie te doen: het leader-follow model en het leaderless model. Een node die repliceerd wordt een replica genoemd.
+	\subsection{Leader-Follower model}
+	Dit model verloopt in drie stappen:
+	\begin{enumerate}
+		\item Een replica wordt tot leader gemaakt. Enkel op deze replica mogen er writeoperaties plaatsvinden.
+		\item Elke andere replica is een follower. Elke keer dat de leader naar zijn schijf schrijft, zal de leader ook de gewijzigde data doorsturen, in de vorm van een \underline{replication log}, naar alle followers. Deze replication log bevat instructies dat elke follower moet ondernemen zodat ze de update juist kunnen uitvoeren.
+		\item Een cliënt kan een readoperatie zowel aan de leader als aan een follower aanvragen. 
+	\end{enumerate}
+	Deze manier garandueerd dat de followers \underline{ooit zullen convergeren} naar de juiste toestand.
+	\subsection{Leaderless model}
 \end{document}

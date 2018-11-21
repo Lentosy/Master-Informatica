@@ -128,9 +128,9 @@
 	\subsubsection{Nadelen Diffie-Hellman}
 
 	\subsection{Sleuteldistributiecentrum}
-	Elke gebruiker heeft een geheime sleutel die kan gebruikt worden om met het \textbf{KDC (Key Distribution Centre)} te communiceren. Er zijn twee soorten sleutels: de sessiesleutels zijn een tijdelijke sleutel die gebruikt worden voor één enkele sessie. Deze sessiesleutel wordt gebruikt om data te encrypteren tussen verschillende gebruikers. De ander sleutel is de mastersleutel. Deze wordt gebruikt om sessiesleutels te encrypteren en wordt gedeeld tussen een gebruiker en de KDC. De basiswerking van de KDC (figuur \ref{fig:basiswerkingKDC}) is als volgt:
+	Het sleuteldistributiecentrum vermijdt dat gebruikers zelf de sleutel moeten overhandigen. Elke gebruiker heeft een geheime sleutel die kan gebruikt worden om met het \textbf{KDC (Key Distribution Centre)} te communiceren. Er zijn twee soorten sleutels: de sessiesleutels zijn een tijdelijke sleutel die gebruikt worden voor één enkele sessie. Deze sessiesleutel wordt gebruikt om data te encrypteren tussen verschillende gebruikers. De ander sleutel is de mastersleutel. Deze wordt gebruikt om sessiesleutels te encrypteren en wordt gedeeld tussen een gebruiker en de KDC. De basiswerking van de KDC (figuur \ref{fig:basiswerkingKDC}) is als volgt:
 	\begin{enumerate}
-		\item Alice vraagt aan de KDC om een verbinding op te zetten met Bob. Alice stuurt ook een "nonce" $N_1$. Dit is een getal dat slechts éénmaal gebruikt wordt om replay aanvallen te voorkomen.
+		\item Alice vraagt aan de KDC om een verbinding op te zetten met Bob. Alice stuurt ook een "nonce" $N_1$. Dit is een willekeurig getal dat slechts éénmaal gebruikt wordt om replay aanvallen te voorkomen.
 		\item De KDC geeft volgende informatie terug, dat geëncrypteerd wordt door Alice haar sleutel $K_{A-KDC}$: De sessiesleutel, de identiteit van Bob, dezelfde nonce dat Alice stuurde naar de KDC, en geëncrypteerde data (met Bob zijn sleutel $K_{B-KDC}$).
 		\item Alice verstuurt de geëncrypteerde data naar Bob.
 		\item Bob antwoordt met een tweede nonce $N_2$, geëncrypteerd met de sessiesleutel, zodat Bob geauthenticeerd is naar Alice toe.
@@ -146,15 +146,188 @@
 			\draw[->] ([yshift=3pt] A.east) -- node[yshift=7pt]{1) $ID_A || ID_B || N_1$} ([yshift=3pt]  K.west);
 			\draw[<-] ([yshift=-3pt] A.east) -- node[yshift=-7pt]{2) $E_{K_{A-KDC}}[K_s || ID_B || N_1 || E_{K_{B-KDC}}(K_s || ID_A) ]$} ([yshift=-3pt]  K.west);
 
-			\draw[->] ([xshift=6pt] A.south) -- ([xshift=6pt]  B.north);
-			\draw[<-] ([xshift=0pt] A.south) -- ([xshift=0pt]  B.north);
-			\draw[->] ([xshift=-6pt] A.south) -- ([xshift=-6pt]  B.north);
+			\draw[->] ([xshift=6pt] A.south) --  node[xshift=68pt, yshift=20pt]{3) $E_{K_{B-KDC}}(K_s || ID_a)$} ([xshift=6pt]  B.north);
+			\draw[<-] ([xshift=0pt] A.south) -- node[xshift=49pt, yshift=0pt]{4) $E_{K_{S}}[N_2]$}([xshift=0pt]  B.north);
+			\draw[->] ([xshift=-6pt] A.south) -- node[xshift=62pt, yshift=-20pt]{5) $E_{K_{S}}[f(N_2)]$}([xshift=-6pt]  B.north);
 		\end{tikzpicture}
 		\caption{Basiswerking KDC.}
 		\label{fig:basiswerkingKDC}
 	\end{figure}
-	Een aanvaller kan, indien hij $K_s$ bemachtigd, \todo{p97}
+	Een aanvaller kan, indien hij $K_s$ bemachtigd, stap 3 herhalen, zodat de aanvaller nu de Bob zijn response kan beantwoorden. Bob is dan aan het praten met de aanvaller, terwijl hij denkt dat het Alice is.
+	Een beter algoritme:
+	\begin{enumerate}
+		\item Alice informeert Bob dat ze wil communiceren.
+		\item Bob antwoordt met een geëncrypteerde nonce $N_2$.
+		\item Alice vraagt aan de KDC om communicatie te starten met Bob. Alice verstuurt een andere nonce $N_1$, samen met de geëncrypteerde nonce $N_2$.
+		\item De KDC beantwoordt dit met een geëncrypteerd bericht, gebruikmakend van Alice haar sleutel $E_{K_{A-KDC}}$ (De KDC authenticeerd zich op die manier naar Alice toe, en bereikt confidentialiteit). De inhoud van dit is: de sessiesleutel, Bob zijn identiteit, $N_1$, en een geëncrypteerd bericht met de sessiesleutel, $N_2$ en Alice haar identiteit.
+		\item Alice verstuurt de sessiesleutel, $N_2$ en haar eigen identiteit geëncrypteerd met de sleutel van Bob naar Bob toe.
+		\item Bob antwoordt met een tweede nonce $N_2$, geëncrypteerd met de sessiesleutel, zodat Bob geauthenticeerd is naar Alice toe.
+		\item Alice antwoordt terug naar Bob met een bewerkte nonce (een bepaalde functie, bv 1 toevoegen), geëncrypteerd met de sessiesleutel, zodat Alice geauthenticeerd is naar Bob toe.
+	\end{enumerate}
+	\begin{figure}
+		\centering
+		\begin{tikzpicture}
+			\node (A) [rectangle, draw=black] at (0, 0) {Alice};
+			\node (K) [rectangle, draw=black] at (10, 0) {KDC};
+			\node (B) [rectangle, draw=black] at (0, -5) {Bob};
 
+			\draw[->] ([yshift=3pt] A.east) -- node[yshift=7pt]{3) $ID_A || ID_B || N_1 || E_{K_{B-KDC}}(ID_A || N_2)$} ([yshift=3pt]  K.west);
+			\draw[<-] ([yshift=-3pt] A.east) -- node[yshift=-7pt]{4) $E_{K_{A-KDC}}[K_s || ID_B || N_1 || E_{K_{B-KDC}}(K_s || N_2 || ID_A) ]$} ([yshift=-3pt]  K.west);
+
+			\draw[->] ([xshift=12pt] A.south)  --  node[xshift=20pt, yshift=40pt]{1) $ID_A$} ([xshift=12pt]  B.north);
+			\draw[<-] ([xshift=6pt] A.south)   --  node[xshift=60pt, yshift=20pt]{2) $E_{K_{B-KDC}}(ID_A || N_2)$} ([xshift=6pt]  B.north);
+			\draw[->] ([xshift=0pt] A.south)   --  node[xshift=76pt, yshift=0pt]{5) $E_{K_{B-KDC}}(K_S || ID_A || N_2)$} ([xshift=0pt]  B.north);
+			\draw[<-] ([xshift=-6pt] A.south)  --  node[xshift=47pt, yshift=-20pt]{6) $E_{K_{S}}[N_2]$} ([xshift=-6pt]  B.north);
+			\draw[->] ([xshift=-12pt] A.south) --  node[xshift=60pt, yshift=-40pt]{7) $E_{K_{S}}[f(N_2)]$} ([xshift=-12pt]  B.north);
+		\end{tikzpicture}
+		\caption{Verbeterde werking KDC.}
+		\label{fig:beterewerkingKDC}
+	\end{figure}
+	\todo{PKI}
+
+	\section{Beveiligen van netwerkprotocollen}
+	\subsection{Beveiligen van de transportlaag}
+	Het belangrijkste protocol is \textbf{SSL (Secure Socket Layer)}. Het  \textbf{TLS (Transport Layer Security)} protocol is de opvolger van SSL, zodat TLS dus ook alle features heeft van de laatste SSL versie. Hedendaags wordt enkel nog TLS gebruikt.
+
+
+	In eerste instantie kan SSL/TLS vergeleken worden met SSH, aangezien SSH ook de transportlaag beveiligd. De \underline{verschillen} tussen \underline{SSH} en \underline{SSL/TLS } zijn:
+	\begin{itemize}
+		\item SSL/TLS  is ontworpen om generiek verkeer over de transportlaag te beveiligen.
+		\item SSH bevat ook nog multiplexing, user authenticatie en terminal management. 
+		\item SSL gebruikt X.509 certificaten, SSH gebruikt een eigen formaat.
+		\item Verschillende optimalisaties: SSH voor shell applicaties en TLS voor betere performantie bij https.
+	\end{itemize}
+
+	Verder wordt enkel nog TLS behandelt, SSL kan gegenegeerd worden.
+
+	De \underline{verschillen} tussen \underline{SSH} en \underline{TLS} zijn:
+	\begin{itemize}
+		\item \textbf{TLS server authenticatie is optioneel.} 
+			\begin{itemize}
+				\item Anonieme operaties zijn toegelaten.
+				\item Hierdoor is een man-in-the-middle attack een zeer eenvoudige aanval.
+				\item Server authenticatie in SSH is verplicht.
+			\end{itemize}
+		\item \textbf{TLS heeft geen user authenticatie.}
+			\begin{itemize}
+				\item TLS moet enkel de twee interfaces authenticeren (SSH kan dit ook).
+				\item User authentication wordt behandeld door een bovenliggende laag.
+			\end{itemize}
+		\item \textbf{TLS gebruikt X.509 public-key certificaten om te authenticeren.}
+			\begin{itemize}
+				\item SSH heeft een eigen certificaatformaat.
+				\item Vereist een werkend PKI systeem.
+				\item Een voordeel van een PKI systeem is dat het schaalbaar is op vlak van sleutelbeheer, iets wat SSH nog niet kan. 
+			\end{itemize}
+		\item \textbf{TLS kent enkel public-key authenticatie}
+			\begin{itemize}
+				\item SSH heeft ook nog host-based, password, ...
+			\end{itemize}
+		\item \textbf{TLS heeft niet de extra features die het SSH connection protocol wel heeft} 
+	\end{itemize}
+
+	\subsubsection{Architectuur}
+	\begin{itemize}
+	\item Een \underline{\textbf{TLS connectie}} is een communicatiekanaal tussen een cliënt en een server. Deze connecties zijn vaak van korte levensduur en servers zullen een connectie zelf vernietigen na een bepaalde tijdsduur indien de connectie te lang op idle modus staat.
+
+	\item Een \underline{\textbf{TLS sessie}} wordt gebruikt om de server een bepaalde staat te geven. De connectie kan gesloten worden, maar kan een sessie behouden. Deze sessie kan dan verdergezet worden met een nieuwe connectie. Een sessie wordt op zowel de client als de server bewaart. Er kan ook een nieuwe sessie aangemaakt worden tijdens een connectie. Een sessie wordt gedefinieerd aan de hand van een aantal parameters:
+	\begin{itemize}
+		\item De sessieidentifier, een random byte sequentie, gegenereerd door de server.
+		\item De optionele X.509 certificaten.
+		\item De optionele compressiemethode.
+		\item De \emph{master secret}, een gedeelde sleutel van 48 bytes die gekend is door de cliënt en de server.
+		\item Een bit \emph{is resumable}, die aangeeft of dat de sessie kan gebruikt worden om nieuwe connecties aan te maken.
+	\end{itemize}
+	Figuur \ref{fig:two-layer_architecture_TLS} toont aan dat TLS gebruik maakt van een tweelagen architectuur met 
+	\begin{enumerate}
+		\item het \underline{TLS record layer protocol} en, 
+		\item het \underline{TLS-specifieke protocollen}: TLS Handshake protocol, TLS Change Cipher Protocol en TLS Alert Protocol.
+	\end{enumerate}
+	\begin{figure}[ht]
+		\includegraphics[width=\textwidth]{tls_architecture}
+		\caption{Tweelagen architectuur van TLS}
+		\label{fig:two-layer_architecture_TLS}
+	\end{figure}
+
+	\item Het \underline{\textbf{Handshake protocol}} laat toe om de cliënt en server te authenticeren aan elkaar. Een HP bericht heeft de volgende structuur:
+	\begin{itemize}
+		\item 1 byte voor de berichtsoort (10 typen gedefinieerd).
+		\item 3 bytes voor de berichtgrootte.
+		\item variabel aantal bytes voor de eigenlijke informatie, soms zelfs leeg.
+	\end{itemize}
+	
+	Het handshake protocol verloopt in \underline{4} fasen:
+	\begin{enumerate}
+		\item Eerst moet een TCP sessie aangemaakt worden via het normale TCP process: SYN $\rightarrow$ SYN-ACK $\rightarrow$ ACK.
+		\item Daarna verstuurt de clënt een \textbf{client\_hello} bericht naar de server met volgende parameters:
+			\begin{itemize}
+				\item \textbf{Version}: De hoogste TLS versie waarover de cliënt beschikt.
+				\item \textbf{Random}: Een timestamp (32 bits) en 28 bytes gegenereerd door een veilige randomgenerator, dat gebruikt wordt als nonce.
+				\item \textbf{SessionID}: Een identifier dat gebruikt wordt om de sessie te identificeren. Wordt onder andere gebruikt om een sessie verder te zetten met een andere connectie.
+				\item \textbf{CipherSuite}: Een lijst van combinaties van cryptografische algoritmen die de cliënt ondersteunt. Een combinatie bestaat uit een sleuteluitwisselingsmethode, de encryptiespecificatie, de MAC functie en de pseudorandomfunctie dat gebruikt wordt.
+				\item \textbf{CompressionMethod}: Een lijst van compressiemthoden waarover de cliënt beschikt.
+			\end{itemize}
+			De server reageert met een \textbf{server\_hello} bericht die dezelfde structuur bevat als de client\_hello variant. De server neemt uiteraard de versie en cryptografische algoritmen dat hijzelf ook ondersteund.
+		\item Indien authenticatie vereist is, stuurt de server een X.509 certificaat naar de cliënt. \textbf{Optioneel} zal de server ook een certificaat vragen aan de cliënt, indien authenticatie vereist is. De server eindigt met een \textbf{server\_done} bericht. De cliënt antwoordt dan indien nodig met zijn certificaat. De cliënt stuurt ook een \textbf{client\_key\_exchange} bericht, met de nodige informatie om een sessiesleutel te genereren. 
+		\item De cliënt verstuurt nu een \textbf{change\_cipher\_spec} bericht (met het Change Cipher Protocol), die de juiste combinatie van cryptografische algoritmen bevat. Tot slot stuurt de cliënt een \textbf{finished} bericht. De server verstuurt dezelfde berichten naar de cliënt. Nu zijn de cliënt en server in staat om te communiceren met elkaar via het SSL Record protocol.
+	\end{enumerate}
+
+	\item Het \underline{\textbf{Change Cipher protocol}} kan slechts één bericht verstaan: 1 byte met 1 waarde. Het zorgt ervoor dat de tijdelijke keuze van cryptografische algoritmen de werkelijke keuze wordt. Het kan ook gebruikt worden om de encryptiealgoritmen te veranderen gedurende een connectie.
+
+	\item Het \underline{\textbf{Alert protocol}} bevat berichten met foutmeldingen en waarchuwingen. Een bericht bestaat enerzijds uit één byte, die "fatal" of "warning" aangeeft, en een andere byte die meer uitleg geeft over de fout. 
+	
+	Mogelijke waarschuwingen:
+	\begin{itemize}
+		\item Problemen met certificaten.
+		\item De connectie wordt verbroken door één van de partijen.
+	\end{itemize}
+	Mogelijke fouten:
+	\begin{itemize}
+		\item Problemen met het decompresseren.
+		\item Een fout tijdens het handshake protocol (geen geldige beveiligingsparameters gevonden).
+		\item Fout ingevulde parameters tijdens het handshake protocol.
+	\end{itemize}
+	\item Het \underline{\textbf{Record protocol}} is een gelaagd protocol dat informatie zo zal bewerken dat: het bruikbare blokken worden van ten hoogste $2^{14}$ bytes, optioneel de informatie zal compresseren, een MAC zal toevoegen voor integriteit, de informatie zal encrypteren en het resultaat doorsturen. Ontvangen data wordt dan in omgekeerde volgorde bewerkt. De typische workflow gaat als volgt (figuur \ref{fig:tls_record_protocol}):
+		\begin{figure}[ht]
+			\includegraphics[width=\textwidth]{tls_record_protocol}
+			\caption{Werking van het TLS record protocol.}
+			\label{fig:tls_record_protocol}
+		\end{figure}
+		\begin{enumerate}
+			\item De informatie wordt verdeeld in fragmenten van hoogstens $2^{14}$ bytes ($\equiv 16$ KB).
+			\item De informatie wordt eventueel gecompresseerd. De compressie is optioneel, moet terugkeerbaar zijn, en mag de lengte van de data niet meer dan $1024$ bytes vergroten.
+			\item De MAC wordt als volgt berekend: MAC($K_{MAC} || Seq \# || Type || Length || Data$).
+			\item De informatie wordt geëncrypteerd met een \underline{symmetrisch encryptiealgoritme}.
+			\item De TLS record header wordt toegevoegd. 
+		\end{enumerate}
+	Het \underline{verschil} met \underline{SSH}:
+		\begin{itemize}
+			\item SSH zal eerst encrypteren, en dan pas de MAC toevoegen. Geen van beide methoden is beter dan de andere, en komt met zijn eigen problemen.
+		\end{itemize}
+	De TLS record header heeft volgende structuur (figuur \ref{fig:tls_record_header}):
+	\begin{figure}[ht]
+		\includegraphics[width=\textwidth]{tls_record_header}
+		\caption{De TLS record header.}
+		\label{fig:tls_record_header}
+	\end{figure}
+	\begin{itemize}
+		\item 1 byte voor het contenttype. Dit is het applicatielaagprotocol dat gebruikt wordt.
+		\item 2 bytes voor de versie (voor TLS 1.2 heeft dit de waarden 3 en 3).
+		\item Lengte van de data.
+	\end{itemize}
+
+	\item De \underline{\textbf{master secret}}, die nodig is bij een TLS sessie, wordt ofwel gegenereerd door de cliënt met RSA encryptie en verzonden naar de server, ofwel uitgewisseld met Diffie-Helman. De grootte van de sleutel bedraagt 384 bits. Sleutels kunnen niet hergebruikt worden aangezien ze afhankelijk zijn van de nonces die gebruikt werden tijdens het handshake protocol.
+	\item Het \underline{\textbf{heartbeat protocol}} draait bovenop het record protocol en heeft voornamelijk als doel om huidige connecties te testen, en om ze in leven te houden zonder dat er opnieuw moet onderhandeld worden tussen de cliënt en de server. Het protocol ondersteund twee berichten:
+		\begin{itemize}
+			\item \textbf{HeartbeatRequest}: De cliënt of server verstuurt naar de ander een bericht met daarin een payload (typisch een string) en de lengte van de payload. 
+			\item \textbf{HeartbeatResponse}: Een ontvanger van een HeartbeatRequest moet antwoorden met dezelfde payload als een HeartbeatResponse.
+		\end{itemize}
+		\todo{P20 printout C03c}
+\end{itemize}
+
+	\subsection{Beveiligen van de netwerklaag}
+
+	\subsection{Beveiligen van de datalinklaag}
 	\chapter{Encryptiealgoritmen}
 	\section{Geschiedenis}
 	Encryptiemethoden worden al eeuwenlang gebruikt om informatie onleesbaar te maken voor partijen die deze informatie niet mogen achterhalen. Deze inleiding bespreekt de basismethoden om encryptie toe te passen.
