@@ -1,29 +1,46 @@
 ﻿#include <iostream>
+#include <queue>
 #include "knuthmorrispratt.h"
 
 KnuthMorrisPratt::KnuthMorrisPratt(const uchar * naald, uint naaldlengte) {
 	this->naald = naald;
 	this->naaldlengte = naaldlengte;
-	prefixFunctie(prefixwaarden);
+	prefixfunctie(prefixwaarden, naald, naaldlengte);
 }
 
-void KnuthMorrisPratt::zoek(std::queue<const uchar*>& plaats, const uchar * hooiberg, uint hooiberglengte) {
-	for (int i = 0; i < prefixwaarden.size(); i++) {
-		///zolang dat P(q(i)) == P(i)
+// implementatie van paragraaf 11.2.2.3 'Het Knuth-Morris-Prattalgoritme' op pagina 116 van de cursus
+void KnuthMorrisPratt::zoek(std::queue<const uchar*>& plaats, const uchar * hooiberg, uint hooiberglengte) const {
+	
+}
+
+
+// dient enkel voor testdoeleinden
+void KnuthMorrisPratt::zoekEenvoudig(std::queue<const uchar*>& plaats, const uchar * hooiberg, uint hooiberglengte) const{
+	// implementatie van paragraaf 11.2.2.2 'Eenvoudige lineaire methode' op pagina 116 van de cursus
+	//PPPPPPPPP*TTTTTTTTT
+	int lengte_vorige_prefix = 0;
+	for (size_t i = 1; i <= hooiberglengte; i++) {
+		while (lengte_vorige_prefix > 0 && naald[lengte_vorige_prefix] != hooiberg[i - 1])
+			lengte_vorige_prefix = prefixwaarden[lengte_vorige_prefix];
+		lengte_vorige_prefix++;
+		if (lengte_vorige_prefix == naaldlengte) // prefixlengte == naaldlengte, de naald is gevonden
+			plaats.push(hooiberg + i - naaldlengte);	
 	}
 }
 
-void KnuthMorrisPratt::prefixFunctie(std::vector<int>& q) {
-	q.push_back(-1);
-	q.push_back(0);
-	for (int i = 2; i <= naaldlengte; i++) {
-		int vorig = q[i - 1];
-		while (vorig > 0 && naald[i - 1] != naald[vorig]) {
-			vorig = q[i - 1];
+void KnuthMorrisPratt::prefixfunctie(std::vector<int>& prefix, const uchar* naald, uint naaldlengte) const {
+	prefix.resize(naaldlengte + 1);
+	prefix[0] = -1;
+	prefix[1] = 0;
+
+	for (size_t i = 2; i <= naaldlengte; i++) {
+		int vorige = prefix[i - 1];
+		while (vorige > 0 && naald[i - 1] != naald[vorige]) {
+			vorige = prefix[vorige];
 		}
-		if (naald[i - 1] == naald[vorig]) {
-			vorig++;
+		if (naald[i - 1] == naald[vorige]) {
+			vorige++;
 		}
-		q.push_back(vorig);
+		prefix[i] = vorige;
 	}
 }

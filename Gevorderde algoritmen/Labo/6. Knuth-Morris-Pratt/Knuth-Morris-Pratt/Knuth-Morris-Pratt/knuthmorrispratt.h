@@ -8,10 +8,12 @@ class KnuthMorrisPratt{
 public:
     KnuthMorrisPratt(const uchar* naald,uint naaldlengte);
     void zoek(std::queue<const uchar*>& plaats,
-                     const uchar* hooiberg, uint hooiberglengte);
+                     const uchar* hooiberg, uint hooiberglengte) const;
+
 
 private:
-	void prefixFunctie(std::vector<int>& prefixwaarden);
+	void zoekEenvoudig(std::queue<const uchar*>& plaats, const uchar* hooiberg, uint hooiberglengte) const;
+	void prefixfunctie(std::vector<int>& prefixwaarden, const uchar* naald, uint naaldlengte) const;
 
 	const uchar* naald;
 	uint naaldlengte;

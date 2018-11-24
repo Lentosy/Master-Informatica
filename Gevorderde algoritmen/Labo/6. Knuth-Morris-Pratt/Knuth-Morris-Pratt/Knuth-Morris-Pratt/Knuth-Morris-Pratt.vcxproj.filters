@@ -33,7 +33,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Xml Include="testset.csv">
+    <Xml Include="testset.dat">
       <Filter>Resource Files</Filter>
     </Xml>
   </ItemGroup>
