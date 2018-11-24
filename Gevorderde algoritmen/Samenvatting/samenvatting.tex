@@ -1,12 +1,44 @@
 \documentclass{report}
 \usepackage{ugentstyle}
 
-
 \begin{document}
 	\maketitle{Gevorderde algoritmen}
 	\tableofcontents
+	\part{Gegevensstructuren II}
 	\chapter{Efficiënte zoekbomen}
-	Vooraleer efficiënte zoekbomen behandeld kunnen worden moet er eerst een fundamentele operatie besproken worden: \textbf{rotaties}. Rotaties wijzigen de vorm van de boom, maar behouden de inorder volgorde van de sleutels. Dit is nodig omdat de eigenschap van een binaire zoekboom steeds voldaan moet zijn, namelijk dat het linkerkind kleiner is, en het rechterkind groter, dan de ouder. Een rotatie is $O(1)$ omdat enkel pointers verplaatst moet worden. \todo{foto van rotatie}
+	Vooraleer efficiënte zoekbomen behandeld kunnen worden moet er eerst een fundamentele operatie besproken worden: \textbf{rotaties}. Rotaties wijzigen de vorm van de boom, maar behouden de inorder volgorde van de sleutels. Dit is nodig omdat de eigenschap van een binaire zoekboom steeds voldaan moet zijn, namelijk dat het linkerkind kleiner is, en het rechterkind groter, dan de ouder. Een rotatie is $O(1)$ omdat enkel pointers verplaatst moet worden.
+	
+	\begin{adjustbox}{valign=t}
+		\begin{forest}
+			for tree = {draw, circle, node options = {minimum width = 5ex}}
+			[p
+				[l
+					[$\alpha$, rectangle]
+					[$\beta$, rectangle]
+				]
+				[$\gamma$, rectangle]
+			]	
+		\end{forest}
+	\end{adjustbox}\qquad
+	\begin{adjustbox}{valign=c}
+	$\Leftrightarrow$
+	\end{adjustbox}\qquad
+	\begin{adjustbox}{valign=t}
+		\begin{forest}
+			for tree = {draw, circle, node options = {minimum width = 5ex}}
+			[l
+				[$\alpha$, rectangle]
+				[p
+					[$\beta$, rectangle]
+					[$\gamma$, rectangle]	
+				]
+			]	
+		\end{forest}
+	\end{adjustbox}
+	
+	
+
+
 	\section{Rood-zwarte bomen}
 	Een rood-zwarte boom is een \textbf{binaire zoekboom} waarbij bovendien:
 	\begin{itemize}
@@ -172,4 +204,280 @@ In deze versie bevat elke knoop een punt. De coördinaten van dit punt delen het
 Deze vorm vereist dat de zoekruimte een rechthoek is omdat elke knoop de ruimte in vier gelijke rechthoeken verdeelt, zodat elk deel nul of één punt bevat. Inwendige knopen bevatten geen punten. Hier is de vorm onafhankelijk van de toevoegvolgorde, maar kan wel evenwichtig uitvallen. Het is onmogelijk om de hoogte en grootte in functie van het aantal punten uit te drukken.
 \subsection{k-d trees}
 Een k-d tree gebruikt een binaire boom, waarbij op elk niveau de dimensies afgewisselt wordt. Elke inwendige knoop bevat dan ook één punt, die de zoekruimte verdeelt in de dimensie voor dat niveau. Ideale opsplitsting bestaat uit gelijkmatige verdeling van de dimensies. In twee dimensies zal elk niveau dus afwisselend de x-dimensie en de y-dimensie beschouwen. 
+
+\chapter{Samenvoegbare heaps}
+\todo{k}
+
+\part{Grafen II}
+\chapter{Toepassingen van diepte-eerst zoeken}
+\section{Enkelvoudige samenhang van grafen}
+\subsection{Samenhangende componenten van een ongerichte graaf}
+Een \textbf{samenhangende ongerichte graaf} is een graaf waarbij er een weg bestaat tussen elk paar knopen. Een \textbf{niet samenhangende ongerichte graaf} bestaat dan uit zo groot mogelijke samenhangende componenten.
+
+\subsection{Sterk samenhangende componenten van een gerichte graaf}
+Een \textbf{sterk samenhangende gerichte graaf} is een graaf waarbij er een weg tussen elk paar knopen in beide richtingen bestaat. Een \textbf{zwak samenhangende gerichte graaf} is een graaf die niet sterk, maar toch samenhangend is indien de richtingen buiten beschouwing gelaten worden. Een graaf die niet sterk samenhangend is, bestaat uit zo groot mogelijke sterk samenhangende componenten. 
+
+Sommige algoritmen gaan ervan uit de een graaf sterk samenhangend is. Men moet dus eerst deze componenten bepalen, meestal via een \textbf{componentengraaf}, die een knoop heeft voor elk sterk samenhangend component, en een verbinding van knoop $a$ naar knoop $b$ indien er in de originele graaf een verbinding van één van de knopen van $a$ naar één van de knopen van $b$ is. 
+
+De sterk samenhangende componenten kunnen bekomen worden met behulp van diepte-eerst zoeken:
+\begin{enumerate}
+	\item Stel de omgekeerde graaf op, door de richting van elke verbinding om te keren.
+	\item Pas diepte-eerst zoeken toe op deze omgekeerde graaf, waarbij de knopen in postorder genummered worden.
+	\item Pas diepte-eerst zoeken toe op de originele graaf, met als startknoop de resterende knoop met het hoogste postordernummer. Het resultaat is een diepte-eerst bos, waarvan de bomen sterk samenhangende componenten zijn.
+\end{enumerate}
+Diepte-eerst zoeken is $\Theta(n + m)$ voor ijle en $\Theta(n^2)$ voor dichte grafen. Het omkeren van de graaf is ook $\Theta(n + m)$ voor ijle en $\Theta(n^2)$ voor dichte grafen.
+\section{Dubbele samenhang van ongerichte grafen}
+Twee definities:
+\begin{itemize}
+	\item \textbf{Brug.} Een brug is een verbinding dat, indien deze wordt weggenomen, de graaf in twee deelgrafen opsplitst. Een graaf zonder bruggen noemt men \underline{dubbel lijnsamenhangend}; als er tussen elk paar knopen minstens twee onafhankelijke wegen bestaan, dan is een graaf zeker dubbel lijnsamenhangend.
+	\item \textbf{Scharnierpunt.} Een scharnierpunt is een knoop dat, indien deze wordt weggenomen, de graaf in ten minste twee deelgrafen opsplitst. Een graaf zonder scharnierpunten noemt men \underline{dubbel knoopsamenhangend} (of dubbel samenhangend). Een graaf met scharnierpunten kan onderverdeeld worden in dubbel knoopsamenhangende componenten. Als er tussen elk paar knopen twee onafhankelijke wegen bestaan, dan is de graaf dubbel knoopsamenhangend.
+\end{itemize}
+
+Scharnierpunten, dubbel knoopsamenhangende componenten, bruggen en lijnsamenhangende componenten kunnen opnieuw via diepte-eerst zoeken gevonden worden:
+\begin{enumerate}
+	\item Stel de diepte-eerst boom op, waarbij de knopen in postorder genummerd worden. 
+	\item Bepaal voor elke knoop $u$ de laagst genummerde knoop die vanuit $u$ kan bereikt worden via een weg bestaande uit nul of meer dalende boomtakken gevolgd door één terugverbinding. 
+	\item Indien alle kinderen van een knoop op die manier een knoop kunnen bereiken die hoger in de boom ligt dan hemzelf, dan is de knoop zeker niet samenhangend. De wortel is een scharnierpunt indien hij meer dan één kind in heeft.
+\end{enumerate}
+Diepte-eerst zoeken is $\Theta(n + m)$ voor ijle en $\Theta(n^2)$ voor dichte grafen.
+\section{Eulergraaf}
+Een eulercircuit is een gesloten omloop in een graaf die alle verbindingen éénmaal bevat. Een eulergraaf is een graaf met een eulercircuit, die volgende eigenschappen heeft:
+\begin{itemize}
+	\item De graaf is knoopsamenhangend.
+	\item De graad van elke knoop is even.
+	\item De verbindingen kunnen onderverdeeld worden in lussen, waarbij elke verbinding slechts behoort tot één enkel lus.
+\end{itemize}
+
+\chapter{Kortste Afstanden II}
+\section{Kortste afstanden vanuit één knoop}
+\subsection{Algoritme van Bellman-Ford}
+Dit algoritme werkt voor verbindingen met negatieve gewichten, iets wat het algoritme van Dijkstra niet kon \accentuate{(Dijkstra gebruikt het feit dat indien een pad naar A $\rightarrow$ C bestaat, er geen korter pad A $\rightarrow$ B $\rightarrow$ C kan zijn, daarom is het algoritme performant, maar er mogen dus geen negatieve verbindingen zijn)}.
+\chapter{Stroomnetwerken}
+\begin{itemize}
+	\item Gerichte graaf met twee speciale knopen: \underline{producent} en \underline{verbruiker}.
+	\item Producent levert een bepaald materiaal aan verbruiker via de gerichte verbindingen van de graaf.
+	\item Elke verbinding heeft een capaciteit $c(i, j)$ dat positief is, en de stroom $s(i, j)$ dat er door loopt ($0 \leq s(i, j) \leq c(i, j)$). 
+	\item Verbindingen die niet bestaan, worden toch voorgesteld als een verbinding, maar met $c = 0$, zodat er geen stroom kan doorlopen. Dit maakt implementaties eenvoudiger.
+	\item Een knoop bevat geen capaciteit, en kunnen hierdoor niets opslaan.
+\end{itemize}
+\section{Maximalestroomprobleem}
+= zoveel mogelijk materiaal van producent naar verbruiker laten stromen, zonder de capaciteit van de verbinding te overschrijden.
+\begin{itemize}
+	\item Methode van \textbf{Ford-Fulkerson} \accentuate{('methode' aangezien manier om vergrotende paden te zoeken ontbreekt).}
+	\item Iteratieve methode. Bij elke iteratie neemt netstroom vanuit producent toe.
+	\item Stel de verzameling van knopen $K$, dan is de totale nettostroom $f$ uit de producent $p$ \accentuate{(De som van het materiaal dat toekomt min het materiaal dat toekomt voor elke knoop)}. 
+		$$f = \sum_{j \in K} (s(p, j) - s(j, p))$$
+	\item De stroomverdeling is het geheel van alle stromen voor alle mogelijke knopenparen. 
+	\item Het restnetwerk is een nieuw netwerk dat verkregen wordt door uit de huidige stroomverdeling een overzicht op te stellen van de mogelijke stroomtoename tussen elk paar knopen. Het restnetwerk bevat dezelfde knopen, maar niet noodzakelijk dezelfde verbindingen en capaciteit.
+\end{itemize}
+Het algoritme verloopt als volgt:
+\begin{enumerate}
+	\item Initiële stroomverdeling is nul. Het restnetwerk is initieël de volledige graaf.
+	\item Bij elke iteratie wordt de huidige stroomverdeling en de verschillende capaciteiten gebruikt om een restnetwerk op te stellen.
+	\item In dit restnetwerk wordt een vergrotend pad gezocht: een weg van producent naar verbruiker die nog meer stroom tussen beide toelaat.
+	\item Als er geen vergrotende paden kunnen gevonden worden, stopt de iteratir, en zal de netwerkstroom maximaal zijn.
+\end{enumerate}
+https://www.youtube.com/watch?v=Tl90tNtKvxs
+
+
+
+Hoe gaan we vergrotende weg zoeken? 
+\begin{itemize}
+	\item \textbf{Performantie afhankelijk van de capaciteiten}
+		\begin{itemize}
+			\item Stel dat alle capaciteiten geheel zijn en $C$ de grootste capaciteit voorstelt. Restnetwerk bepalen is $O(m)$, en daarin diepte-eerst of breedte-eerst zoeken naar een vergrotend pad is ook $O(m)$. Aantal iteraties in Ford-Fulkerson is $O(nC)$, dus totale performantie is $O(nmC)$, wat \underline{niet performant is voor grote $C$}.
+			\item Neem de het vergrotend pad die de grootste stroomtoename mogelijk maakt, dan wordt het aantal iteraties $O(m\lg C)$ \accentuate{(zonder bewijs)}. Om die weg te vinden volstaat een kleine aanpassing aan het algoritme van Dijkstra: kortste afstand vervangen door grootste capaciteit, zodat de iteratiestap $O(m \lg n)$ \accentuate{(van Dijkstra)} is. De totale performantie is nu $O(m^2 \lg C \lg n)$
+			\item Een vergrotende weg bepalen die een stroomtoename van minsten $c$, de cut-off, eenheden toelaat, of besluiten dat deze weg niet bestaat, kan in $O(m)$. Indien geen enkele weg meer gevonden wordt, dan is de minimale snedecapaciteit van het restnetwerk lager dan $mc$. Halveer $c$ en gaan opnieuw op zoek, maar nu naar verbindingen die de helft van de oorspronkelijke $c$ kunnen bevatten. Begin met ondergrens $c = 2^{\lfloor \lg C \rfloor}$, deze in elke fase halveren, en eindigen met één, dan wordt de maximale stroom bereikt met $O(m \lg C)$ iteraties.
+		\end{itemize}
+	\item \textbf{Performantie onafhankelijk van de capaciteiten}
+
+		Deze methode is enkel \underline{interessant wanneer $C$ groot is}. Als de vergrotende weg steeds het minimum aantal verbindingen heeft, dan kan men aantonen \accentuate{(zonder bewijs)} dat de lengte van de vergrotende wegen na hoogsten $m$ iteraties stijg, en aangezien de maximale lengte $n - 1$ is, volstaan $O(nm)$ iteraties. Deze iteratiestep gebruikt ook breedte-eerst zoeken en is $O(m)$, zodat de totale performantie $O(nm^2)$ wordt.
+\end{itemize}
+\todo{tododo}
+
+\chapter{Koppelen}
+= een deelverzameling van de verbindingen waarin elke knoop hoogstens eenmaal voorkomt. Een maximale koppeling is een koppeling met het grootste aantal verbindingen. Soms hebben verbindingen ook een gewicht.
+\section{Koppelen in tweeledige grafen}
+Tweeledige graaf (of bipartiete graaf) = een ongerichte graaf waarbij de knopen in twee deelverzamelingen $L$ en $R$ kunnen verdeeld worden, zodat alle verbindingen steeds een knoop uit $L$ met een knoop uit $R$ verbinden.
+\subsection{Ongewogen koppeling}
+\begin{itemize}
+\item Een knoop uit $L$ kan slechts met één knoop uit $R$ verbonden worden. Een maximale ongewogen koppeling zal zoveel mogelijk knopen uit $L$ met $R$ verbinden. 
+
+\item Is eenvoudiger op te lossen met behulp van een stroomnetwerk. Daarom moet eerst de bipartiete graaf omgezet worden in een stroomnetwerk:
+	\begin{itemize}
+		\item Voer een producent $P$ in, die met alle knopen van $L$ verbonden wordt ($P \rightarrow L$).
+		\item Voer een verbruiker $V$ in, die met alle knopen van $R$ verbonden wordt ($R \rightarrow V$).
+		\item De oorspronkelijke verbindingen van de graaf krijgen nu een gerichte verbinding van $L$ naar $R$.
+		\item De capaciteiten van elke verbinding wordt 1.
+	\end{itemize}
+	\begin{tikzpicture}[scale=1.5, every node/.style={circle, fill=blue!20},
+		nocolor/.style={fill=none}
+								 ]
+		\node (L1) at (1, 0) {}; 
+		\node (L2) at (1, -1) {};
+		\node (L3) at (1, -2) {};
+		\node (L4) at (1, -3) {};
+		\node (L5) at (1, -4) {};
+
+		\node (R1) at (2, 0) {}; 
+		\node (R2) at (2, -1) {};
+		\node (R3) at (2, -2) {};
+		\node (R4) at (2, -3) {};
+		\node (R5) at (2, -4) {};
+
+		\draw (L1) -- (R2);
+		\draw (L2) -- (R3);
+		\draw (L3) -- (R1);
+		\draw (L4) -- (R4);
+		\draw (L5) -- (R5);
+
+		\node (P) at (4, -2) {P};
+
+		\node (A1) at (5, 0) {}; 
+		\node (A2) at (5, -1) {};
+		\node (A3) at (5, -2) {};
+		\node (A4) at (5, -3) {};
+		\node (A5) at (5, -4) {};
+
+		\node (B1) at (6, 0) {}; 
+		\node (B2) at (6, -1) {};
+		\node (B3) at (6, -2) {};
+		\node (B4) at (6, -3) {};
+		\node (B5) at (6, -4) {};
+
+		\node (V) at (7, -2) {V};
+
+		\node (x) [nocolor] at (2.5, -2) {};
+		\node (y) [nocolor] at (3.5, -2) {};
+
+		\draw[->] (P) -- node[nocolor, yshift=1cm]{1} (A1);
+		\draw[->] (P) -- node[nocolor , yshift=0.5cm]{1} (A2);
+		\draw[->] (P) -- node[nocolor, yshift=0.2cm]{1} (A3);
+		\draw[->] (P) -- node[nocolor , yshift=-0.5cm]{1} (A4);
+		\draw[->] (P) -- node[nocolor , yshift=-1cm]{1} (A5);
+		\draw[->] (A1) -- node[nocolor]{1} (B2);
+		\draw[->] (A2) -- node[nocolor]{1} (B3);
+		\draw[->] (A3) -- node[nocolor]{1} (B1);
+		\draw[->] (A4) -- node[nocolor]{1} (B4);
+		\draw[->] (A5) -- node[nocolor]{1} (B5);
+
+		\draw[->] (B1)-- (V); 
+		\draw[->] (B2) -- (V);
+		\draw[->] (B3) -- (V);
+		\draw[->] (B4) -- (V);
+		\draw[->] (B5) -- (V);
+
+		\draw[->] (x) -- (y);
+	\end{tikzpicture}
+\end{itemize}
+
+
+\part{Strings}
+\chapter{Gegevensstructuren voor strings}
+\section{Digitale zoekbomen}
+Deze zijn compleet analoog zoals gewone zoekbomen, op één verschil na: de juiste deelboom wordt niet bepaald door de zoeksleutel te vergelijken met de sleutel in de knoop, maar enkel door het volgende element van de zoeksleutel (van links naar rechts). Bij de wortel gebruiken we het eerst esleutelelement, een niveau dieper het tweede sleutelelement, enz...
+
+De boom overlopen in \textbf{inorder} geeft de sleutels niet noodzakelijk in volgorde. De hoogte van de boom wordt beperkt tot het aantal bits van de grootste sleutel. Voor een groot aantal sleutels met relatief kleine bitlengte is de performantie in het slechtste geval veel beter dan die van een gewone binaire zoekboom, en vergelijkbaar met die van een rood-zwarte boom. In het gemiddelde geval is de kans op een volgend nul- of éénbit steeds gelijk, zodat er gemiddeld evenveel sleutels links als rechts komen. Daardoor is de gemiddelde hoogte van de boom $O(\lg n)$. De woordenboekoperaties zijn ook $O(\lg n)$.
+
+De dikwijls beperkende voorwaarde is een efficiënte toegang tot de bits van de sleutels. Bovendien zijn er enkel woordenboekoperaties mogelijk.
+
+\section{Tries}
+Deze boom behoudt wel de sleutels in volgorde opslaat.
+\subsection{Binaire tries}
+
+
+
+\chapter{Zoeken in strings}
+Symbolen die gebruikt worden:
+\begin{table}[h]
+	\centering
+	\begin{tabular}{l l}
+		\hline
+		Symbool & Betekenis \\
+		\hline 
+		$\sum$ & Het gebruikte alfabet \\
+		$\sum *$ & De verzameling strings van eindige lengte van letters uit $\sum$ \\
+		$d$ & Aantal karakters in $\sum$ \\
+		$P$ & Het patroon (naald) \\
+		$p$ & Lengte van $P$ \\
+		$T$ & De tekst (hooiberg) \\
+		$t$ & Lengte van $T$ \\
+		\hline 
+	\end{tabular}
+\end{table}
+\section{Formele talen}
+Formele taal over een alfabet = een verzameling eindige strings over dat alfabet. 
+
+In de cursus wordt formele talentheorie beperkt tot wat in de praktijk handig is: generatieve grammatica's en reguliere uitdrukkingen.
+\subsection{Generatieve grammatica's}
+= Een startsymbool wordt getransformeerd tot een zin van de taal met behulp van substitutieregels. Hiervoor zijn \textbf{niet-terminale symbolen}, of kortweg niet-terminalen nodig met als notatie $\langle ... \rangle$.
+
+$\Xi = $ De verzameling van alle strings van letters uit $\sum$ vermengd met niet-terminalen.
+
+$\Xi* = $ de bijhorende verzameling strings.
+
+\underline{Voorbeeld}: stel de volgende niet-terminalen (het symbool $::=$ staat voor "wordt herleidt tot"):
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{l l l}
+		$\langle \textbf{S} \rangle$ & $::=$ & $\langle \textbf{AB} \rangle | \langle \textbf{CD} \rangle$ \\
+		$\langle \textbf{AB} \rangle$ & $::=$ & $a\langle \textbf{AB} \rangle b | \epsilon$ \\
+		$\langle \textbf{CD} \rangle$ & $::=$ & $c\langle \textbf{CD} \rangle d | \epsilon$ \\
+	\end{tabular}
+\end{table}
+Deze grammatica definieert als formele taal de verzameling van alle strings ofwel bestaande uit een rij 'a's gevolgd door een even lange rij 'b's ofwel bestaande uit een rij 'c's gevolgd door een even lange rij 'd's. De afleiding van bijvoorbeeld de string "cccddd" wordt gegeven door
+$$\langle \textbf{S} \rangle \Rightarrow  \langle \textbf{CD} \rangle  \Rightarrow  c\langle \textbf{CD} \rangle d
+\Rightarrow  cc\langle \textbf{CD} \rangle dd \Rightarrow  ccc\langle \textbf{CD} \rangle ddd \Rightarrow  cccddd$$
+
+\subsection{Reguliere uitdrukkingen}
+(reguliere uitdrukking = regexp) = een string over het alfabet $\sum = \{\sigma_0, \sigma_1, ..., .\sigma_{d - 1}\}$ aangevuld met de symbolen $\emptyset$, $\epsilon$, $*$, $($, $)$ en $\underline{|}$ gedefinieerd door
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{l l l}
+		$\langle \textbf{Regexp} \rangle$ & $::=$ & $\langle \textbf{basis} \rangle | \langle \textbf{samengesteld} \rangle$ \\
+		$\langle \textbf{basis} \rangle$ & $::=$ & $\sigma_0 | ... | \sigma_{d - 1} | \emptyset | \epsilon$ \\
+		$\langle \textbf{samengesteld} \rangle$ & $::=$ & $\langle \textbf{plus} \rangle  |  \langle \textbf{of} \rangle | \langle \textbf{ster} \rangle$ \\
+		$\langle \textbf{plus} \rangle $ & $::=$ & $(\langle \textbf{Regexp} \rangle \langle \textbf{Regexp} \rangle)$ \\
+		$\langle \textbf{of} \rangle $ & $::=$ & $(\langle \textbf{Regexp} \rangle \underline{|} \langle \textbf{Regexp} \rangle)$ \\
+		$\langle \textbf{ster} \rangle $ & $::=$ & $(\langle \textbf{Regexp} \rangle)*$
+	\end{tabular}
+\end{table}
+Een taal die door een regexp gedefinieerd kan worden heet een reguliere taal. 
+\begin{enumerate}
+	\item $\emptyset$ is een regexp, met als taal de lege verzameling.
+	\item De lege string, voorgesteld als $\epsilon$, is een regexp met als taal Taal($\epsilon$) = \{$\epsilon$\}.
+	\item Voor elke $a \in \sum$ is \textquotedblleft a\textquotedblright een regexp, met als taal Taal(\textquotedblleft a\textquotedblright ) = \{\textquotedblleft a \textquotedblright\}.
+\end{enumerate}
+\todo{p112-114}
+
+\section{Variabele tekst}
+\subsection{Eenvoudige methode}
+= Voor elke positie $j$ nagaan of $P$ in $T$ voorkomt startend vanaf positie $j$, en de opeenvolgende $p$ posities.\accentuate{brol}
+
+\subsection{Knuth-Morris-Pratt}
+Eerst de definitie van een \textbf{deelstring} bepalen.
+
+\begin{bytefield}{8}
+	
+	\bitbox{1}{} & \bitbox{1}{} & \bitbox{1}{} & \bitbox{1}{} & \bitbox{1}{} & \bitbox{1}{} & \bitbox{1}{} & \bitbox{1}{}
+\end{bytefield}
+
+Volgende code toont de werking van de prefixfunctie.
+\begin{lstlisting}
+q[0] = -1
+q[1] = 0
+for(i = 2; i <= p; i++){
+	prev = q(i - 1)
+	while(prev > 0 && P[i - 1] != P[prev]){
+		prev = q[prev]
+	}
+	if(P[i - 1] == P[prev]){
+		prev++
+	}
+	q[i] = prev
+}
+\end{lstlisting}
+
 \end{document}
+
+
