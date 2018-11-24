@@ -30,12 +30,11 @@ Win32_OfflineFilesCache : 11 statische methoden
         \end{lstlisting}
     \item[\textbf{10 pt}] Bepaal van de klassen die opgegeven zijn als argumenten of ze twee of meer statische methoden bevatten. Indien geen argumenten meegegeven worden moet heel de \textbf{root/cimv2} namespace onderzocht worden. Bij het genereren van de uitvoer hou je rekening met:
     \begin{itemize}
-        \item[$\bullet$] Sorteer de lijst van klassen die twee of meer statische methoden bevatten, op aflopende volgorde gesorteerd op het aantal statische methoden.
-        \item[$\bullet$] Voorzie een lijst van de statische methoden per klasse, gesorteerd op alfabetische naam.
+        \item[$\bullet$] Sorteer de lijst van klassen, die twee of meer statische methoden bevatten, in aflopende volgorde op het aantal statische methoden.
+        \item[$\bullet$] Voorzie een lijst van de statische methoden per klasse, gesorteerd op alfabetische naam. Voorzie een volgnummer per methode.
         \item[$\bullet$] Geef voor elke methode zijn description. Indien de description niet bestaat, geef dan een gepaste melding voor die methode.
     \end{itemize}
 \end{itemize}
-
 \section*{Vraag 2} 
 \textbf{25 pt} Bepaal, in de \underline{initialisatiefase} van het script, de \emph{Image Name} en het daarbijhorende aantal \emph{threads}. Deze informatie moet in het excelbestand \emph{Process.xlsx} komen. De eerste kolom van dit excelbestand bevat de naam van elke procesgroep, gesorteerd op de niet case-sensitive versie van hun image name. De tweede kolom bevat de daarbijhorende aantal threads. Baseer de opbouw van de excelsheet op het demobestand, \emph{ProcessInitialisatie.xlsx}, die de correcte vorm geeft (processen kunnen verschillen) indien de initialisatiefase correct verlopen is. Zorg ervoor dat jouw excelbestand dezelfde stijlregels bevat (formatteringen, randen, kleuren, ...). Om de felgroene kleur te bekomen kan je gebruik maken van \textbf{...$\rightarrow$\{Interior\}$\rightarrow$\{Color\} = 0X00FF}. 
 Na het correct verlopen van de initialisatiefase volgt de \underline{iteratiefase}. Het \emph{semi-synchroon} script moet om de 3 seconden het Excel bestand aanpassen. Men zou gebruik kunnen maken van de voorgedefinieerde eventklasse, maar dit vermoeilijkt \warning{iets...} ,maak daarom gebruik van het \emph{snap-shot} mechanisme.

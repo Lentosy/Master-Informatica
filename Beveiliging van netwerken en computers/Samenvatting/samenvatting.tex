@@ -5,8 +5,134 @@
 	\maketitle{Beveiliging van netwerken en computers}
 	\tableofcontents
 	\chapter{Basisconcepten}
-	Computerbeveiliging 
+	Begrip \underline{entiteit} = systeem, persoon, organisatie, ...
+	\section{Doel van beveiliging}
+	\begin{itemize}
+		\item \textbf{Confidentialiteit}
+		
+		= \underline{Informatie kan enkel gelezen worden door entiteiten die deze informatie mogen lezen.}
+
+		Berichten die niet geëncrypteerd zijn bieden automatisch geen confidentialiteit.
 	
+		Men kan hier nog verder op ingaan, namelijk: \textbf{traffic-flow confidentialiteit}. Dit wil zeggen dat het ook een geheim is wie de zender en ontvanger zijn. Dit is een pak moeilijker te realiseren dan gewone confidentialiteit.
+
+		\item \textbf{Authenticatie}
+		
+		= \underline{De identiteit van een entiteit garanderen op basis van:}
+			\begin{itemize}
+				\item \emph{Entiteitauthenticatie}: De identiteit wordt bepaald aan de hand van een \emph{verzameling} attributen. Elk entiteit heeft een unieke identiteit.
+				\item \emph{Attribuutauthenticatie}: De identiteit wordt bepaald aan de hand van een enkelvoudig attribuut.
+				\item \emph{Data-origin authenticatie}: De identiteit wordt bepaald op basis van de oorsprong van de brong.
+			\end{itemize}
+			In de realiteit worden deze drie methoden door elkaar gebruikt. Een globale entiteitauthenticatie om een entiteit te authenticeren tegenover het systeem, gevolgd door een attribuutauthenticatie om de entiteit meer functionaliteit te geven in het systeem.
+
+		Indien de identiteit niet gegarandeert is, kan het zijn dat een entiteit zich voordoet als een ander entiteit. Men lost dit op door een bepaalde "handtekening" toe te voegen aan informatie, die uniek is voor elke identiteit.
+
+		\item \textbf{Authorisatie}
+		
+		= \underline{Voor elke entiteit bepalen welke resources ze mogen gebruiken.}
+
+		Hiervoor moet de entiteit eerst geauthenticeerd zijn. Op basis van attributen (bv user, admin, superadmin) wordt er bepaald welke systeemresources de entiteit mag gebruiken.
+
+		\item \textbf{Data-integriteit}
+		
+		= \underline{Garanderen dat de verzonden en ontvangen informatie exact dezelfde is.}
+
+		Als er zelfs maar één bit gewijzigd, toegevoegd of veranderd wordt, is er geen data-integriteit. 
+
+		\item \textbf{Onweerlegbaarheid}
+		
+		= \underline{De zender kan niet ontkennen dat hij een bericht heeft verzonden.}
+
+		= \underline{De ontvanger kan niet ontkennen dat hij een bericht heeft ontvangen.}
+
+		Ten eerste komt dit neer op het feit dat men niet kan liegen over bepaalde transacties, maar ook dat een aanvaller dit bericht niet \emph{kan} verzonden hebben. Onweerlegbaarheid is moeilijker te bereiken bij de ontvanger, omdat de ontvanger dan een antwoord moet geven aan de verzender. 
+
+		\item \textbf{Beschikbaarheid}
+		
+		= \underline{Het systeem is 'altijd' beschikbaar}
+
+		Met altijd beschikbaar bedoelen we, beschikbaar in de vooropgelegde tijden dat het systeem beschikbaar moet zijn. Als het systeem op een bepaald tijdstip moet draaien, maar door een bepaalde aanval ligt deze stil, dan is er geen beschikbaarheid.
+	\end{itemize}
+
+	\section{Bedreigingen}
+	\begin{itemize}
+		\item \textbf{Passieve aanvallen}: Deze soort aanvallen zijn moeilijk te detecteren aangezien er geen extra activiteit naar het systeem is. Voorbeelden zijn: verkeeranalyse en afluisteren.
+		\item \textbf{Actieve aanvallen}: Deze soort aanvallen zullen zelf berichten wijzigen om het systeem binnen te dringen of plat te leggen. Voorbeelden zijn: Berichtmodificatie, impersonatie, replay aanvallen, Denial-of-Service, Hijacking.
+	\end{itemize}
+	Mogelijke aanvallen:
+	\begin{itemize}
+		\item \textbf{Brute force}: Elke mogelijke combinatie uitproberen totdat de juiste gevonden wordt.
+		\item \textbf{Cryptoanalyse}: Deze soort aanvallen maken gebruik van het verkeer dat tussen ontvanger en verzender verstuurd worden. Met behulp van kennis over cryptografische algoritmen proberen ze berichten te ontcijferen of zelf valse berichten te maken.
+		\item \textbf{Side-channel aanval}: Maakt gebruik van fysieke attributen zoals electromagnetische radiatie, processortijd of zelf het energieverbruik.  
+	\end{itemize}
+	De verschillende categorieën van aanvallen:
+	\begin{itemize}
+		\item \textbf{Ciphertext}: Enkel de ciphertext is bekend voor de aanvaller.
+		\item \textbf{Known plaintext}: Eén of meerdere paren $\langle$ plaintekst, ciphertekst $\rangle$, gevonden met één sleutel, zijn bekend voor de aanvaller.
+		\item \textbf{Chosen plaintext}: Eén of meerdere paren $\langle$ plaintekst, ciphertekst $\rangle$, gevonden met één sleutel zijn bekend voor de aanvaller. De aanvaller heeft zelf een plaintekst mogen kiezen. M.a.w.: de aanvaller kan aan een ciphertext geraken voor willekeurige plaintexts.
+		\item \textbf{Chosen ciphertext}: Eén of meerdere paren $\langle$ plaintekst, ciphertekst $\rangle$, gevonden met één sleutel zijn bekend voor de aanvaller. De aanvaller heeft zelf een ciphertext mogen kiezen. M.a.w.: de aanvaller kan aan een plaintext geraken voor willekeurige  ciphertexts.
+		\item \textbf{Chosen text}: Combinatie van chosen plaintext en chosen ciphertext.
+	\end{itemize}
+
+	Bij het best beveiligde systeem is het \underline{onmogelijk om beveiligingstransformaties te inverteren}. Geen enkel beveiligingsmechanisme kan dit garanderen. 
+
+	\section{Beveiligingsmechanismen}
+	\begin{itemize}
+		\item \textbf{Encryptie}
+		
+		= \underline{Een bericht zo aanpassen dat deze onleesbaar wordt.}
+
+		\emph{Symmetrische encryptie} maakt gebruik van dezelfde sleutel voor zowel de zender als ontvanger. Dit garandeert: 
+			\begin{itemize}
+				\item Confidentialiteit: Enkel de geëncrypteerde bestanden worden opgeslagen. De sleutel is het enige dat beveiligd moet worden
+				\item Authenticatie: Enkel indien beide partijen dezelfde sleutel hebben (en dus elkaar vertrouwen), kunnen ze communiceren.
+			\end{itemize}
+
+		\emph{Assymetrische encryptie} zorgt ervoor dat elke entiteit een sleutelpaar heeft bestaande uit een geheime sleutel en een publieke sleutel. Dit garandeert:
+			\begin{itemize}
+				\item Confidentialiteit: Enkel de ontvanger kan berichten decrypteren die geëncrypteerd zijn met de ontvanger zijn publieke sleutel. 
+				\item Authenticatie: Enkel de verzender kan een bericht versturen met zijn specifieke geheime sleutel. Dit bericht is dan ook enkel decrypteerbaar met de publieke sleutel van dezelfde verzender.
+			\end{itemize}
+		
+		\item \textbf{Hash functies}
+		
+		= \underline{Een bericht van lengte $m$ transformeren naar een hash}
+
+		Een hashfunctie \textbf{H(m)} genereert een hash \textbf{h} voor een gegeven input \textbf{m}. Een hashfunctie dat gebruikt wordt voor beveiligingsdoeleinden moet aan een aantal vereisten voldoen:
+	\begin{itemize}
+		\item Het moet werken voor elke lengte van m.
+		\item Ze moeten berekening snel uitvoeren. Hier kan een uitzondering op gemaakt worden indien de hashfunctie deel uitmaakt van heel gevoelige informatie zoals paswoorden. Een tragere hashfunctie zal aanvallers ook vertragen.
+		\item Het moet een \textbf{one-way} functie zijn. Dit wil zeggen dat, indien \textbf{h} gegeven is, \textbf{m} onmogelijk te achterhalen moet zijn.
+		\item Er moet \textbf{weak collision resistance} zijn. Het moet onmogelijk zijn om een bericht \textbf{n} te genereren zodat \textbf{H(n) = H(m)}. Is dit niet het geval, kan het mogelijk zijn dat er totaal andere data verstuurd kan worden door een aanvaller, maar die data heeft dezelfde hash als de geldige data. De ontvanger zal niet doorhebben dat hij met foutieve informatie werkt. Integriteit en data-origin authentication worden hier overtreden.
+		\item Er moet ook \textbf{strong collision resistance} zijn. Indien \textbf{n} een bericht is dat verschillend is van \textbf{m}, mag de hashfunctie nooit dezelfde \textbf{h} uitkomen voor deze twee inputs. Indien dit wel mogelijk is, kan een aanvaller meerdere versies van een document genereren die dezelfde hashwaarde hebben. Niet-verlorenbaarheid wordt hier overtreden.
+	\end{itemize}
+	Strong collision resistance is veel moeilijker om te implementeren dan weak collision resistance. De kans dat twee berichten uit een groep van \textbf{k} berichten dezelfde hashwaarde opleveren met een hashfunctie die \textbf{N} waarden kan genereren is: 
+	$$P(N, k) = \frac{1 - N!}{((N - k)! N^k)} = 1 - e^{\frac{-k^2}{2N}}$$
+	hieruit volgt 
+	$$k \approx -\sqrt{N} \ln(1 - P(N, k))$$
+	Stel nu \textbf{P(N, k)) = 0.99}, dan is \textbf{k $\approx$ 4,6} en \textbf{$\sqrt{N} \approx 4,6 \cdot 2^{n/2}$}.
+	\item \textbf{Message Authentication Code}
+
+	Een \textbf{Message Authentication Code (MAC)} kan net zoals een hash gebruikt worden om informatie te encrypteren. De input van deze functie is echter een combinatie van plaintext en een geheime sleutel. Het biedt ook bijkomende functionaliteit:
+	\begin{itemize}
+		\item Controle of een bericht aangepast wordt.
+		\item Controle of dat de verzender correct is
+		\item Indien een sequentienummer bijgehouden wordt, dat de berichtvolgorde gerespecteerd wordt.
+	\end{itemize}
+
+	\textbf{MAC} kent een gelijkenis met \textbf{symmetrische encryptie}. In beide gevallen moet de zender en ontvanger een geheime sleutel hebben zodat ze hetzelfde authenticatiemechanisme hebben. Het nadeel is natuurlijk dat de ontvanger ook deze sleutel moet hebben. MAC biedt wel geen confidentialiteit. Dit laat echter toe om beide functies op te splitsen. De authenticatie kan met een MAC gebeuren op een server, terwijl confidentialiteit de taak is van een werkstation, gebruik makend van encryptie. Gegeven de notatie \textbf{$MAC = C_k(M)$} met k de geheime sleutel en M het bericht. Een MAC moet aan volgende vereisten voldoen:
+	\begin{itemize}
+		\item Indien $M$ en $C_k(M)$ gekend zijn, moet het onmogelijk zijn om een bericht $M'$ te construeren zodat \textbf{$$C_k(M') = C_k(M)$$}. Dit is nodig voor data-integriteit
+		
+		\item De waarden die $C_k(M)$ kan aannemen met gelijk verspreidt worden over alle mogelijke waarden van de MAC. De kans dat twee berichten $M$ en $M'$ dezelfde MAC krijgen moet $\frac{1}{2^n}$ zijn.
+	\end{itemize}
+
+De ideale MAC is enkel kwetsbaar voor brute force aanvallen. 
+
+	\end{itemize}
+
+
 	\chapter{Netwerk en communicatiebeveiliging}
 	Voorlopig hebben we enkel de basisconcepten gezien zoals: symmetrische encryptie, asymmetrische encryptie, hashfuncties en message authentication codes. Dit hoofdstuk zal deze concepten toepassen om beveiligingsprotocollen te ontwikkelen voor netwerken.
 	\section{SSH}
@@ -40,13 +166,6 @@
 		\item[$\delta$] \textbf{Random padding.} Dit veld dient om cryptoanalyse moeilijk te maken. Kleine pakketten zijn op deze manier minder veel minder voorspelbaar en algoritmen, die vaak een kenmerkende vaste lengte hebben, worden ook moeilijker te achterhalen.
 		\item[/] \textbf{MAC veld.} Dit veld wordt enkel gegenereerd indien dit zo in de onderhandeling besproken werd. Dit veld wordt berekent over het hele pakket en krijgt ook nog een bijhorend sequentienummer. Het sequentienummer start op 0, en wordt telkens met 1 geïncrementeerd voor elk pakket. Een aanvaller kan dit sequentienummer niet achterhalen aangezien een MAC een onomkeerbaar proces is.
 	\end{itemize}
-	\todo{juiste afbeelding}
-	\begin{bytefield}[bitwidth = 1.5em, leftcurly = .]{16}
-		\bitheader[endianness = big]{0 - 15} \\
-		\begin{leftwordgroup}{packet}
-			\bitbox{8}{pakketlengte}
-		\end{leftwordgroup}
-	\end{bytefield}
 
 	Het \textbf{sleuteluitwisselingsproces} vraagt wat enige uitleg, er is echter nog niet nagegaan of deze sleutels op een \textbf{veilige} manier uitgewisseld worden. Op het moment van sleuteluitwisseling is er helemaal nog geen SSH connectie. Het uitwisselingsproces verloopt in twee fasen: eerst wordt er een gedeelde sleutel gegenereerd met Diffie-Helman, daarna wordt deze gedeelde sleutel gesigneerd met de publieke sleutel van de cliënt voor authenticatie. Sleutels kunnen ook heruitwisseld worden, hierbij gelden volgende regels:
 	\begin{itemize}
@@ -187,7 +306,7 @@
 
 	\section{Beveiligen van netwerkprotocollen}
 	\subsection{Beveiligen van de transportlaag}
-	Het belangrijkste protocol is \textbf{SSL (Secure Socket Layer)}. Het  \textbf{TLS (Transport Layer Security)} protocol is de opvolger van SSL, zodat TLS dus ook alle features heeft van de laatste SSL versie. Hedendaags wordt enkel nog TLS gebruikt.
+	Het belangrijkste protocol is \textbf{TLS (Transport Layer Security)}. Dit is de opvolger van SSL, zodat TLS dus ook alle features heeft van de laatste SSL versie. Hedendaags wordt enkel nog TLS gebruikt.
 
 
 	In eerste instantie kan SSL/TLS vergeleken worden met SSH, aangezien SSH ook de transportlaag beveiligd. De \underline{verschillen} tussen \underline{SSH} en \underline{SSL/TLS } zijn:
@@ -227,6 +346,7 @@
 	\end{itemize}
 
 	\subsubsection{Architectuur}
+	\accentuate{(elk belangrijk item staat in het vet en is onderlijnd)}
 	\begin{itemize}
 	\item Een \underline{\textbf{TLS connectie}} is een communicatiekanaal tussen een cliënt en een server. Deze connecties zijn vaak van korte levensduur en servers zullen een connectie zelf vernietigen na een bepaalde tijdsduur indien de connectie te lang op idle modus staat.
 
@@ -256,10 +376,15 @@
 		\item variabel aantal bytes voor de eigenlijke informatie, soms zelfs leeg.
 	\end{itemize}
 	
-	Het handshake protocol verloopt in \underline{4} fasen:
+	Het handshake protocol verloopt in \underline{4} fasen (ook gedemonstreerd op figuur \ref{fig:tls_handshake_protocol}):
+	\begin{figure}[ht]
+		\includegraphics[width=\textwidth]{tls_handshake_protocol}
+		\caption{TLS Handshake Protocol}
+		\label{fig:tls_handshake_protocol}
+	\end{figure}
 	\begin{enumerate}
 		\item Eerst moet een TCP sessie aangemaakt worden via het normale TCP process: SYN $\rightarrow$ SYN-ACK $\rightarrow$ ACK.
-		\item Daarna verstuurt de clënt een \textbf{client\_hello} bericht naar de server met volgende parameters:
+		\item Daarna verstuurt de cliënt een \textbf{client\_hello} bericht naar de server met volgende parameters:
 			\begin{itemize}
 				\item \textbf{Version}: De hoogste TLS versie waarover de cliënt beschikt.
 				\item \textbf{Random}: Een timestamp (32 bits) en 28 bytes gegenereerd door een veilige randomgenerator, dat gebruikt wordt als nonce.
@@ -271,6 +396,7 @@
 		\item Indien authenticatie vereist is, stuurt de server een X.509 certificaat naar de cliënt. \textbf{Optioneel} zal de server ook een certificaat vragen aan de cliënt, indien authenticatie vereist is. De server eindigt met een \textbf{server\_done} bericht. De cliënt antwoordt dan indien nodig met zijn certificaat. De cliënt stuurt ook een \textbf{client\_key\_exchange} bericht, met de nodige informatie om een sessiesleutel te genereren. 
 		\item De cliënt verstuurt nu een \textbf{change\_cipher\_spec} bericht (met het Change Cipher Protocol), die de juiste combinatie van cryptografische algoritmen bevat. Tot slot stuurt de cliënt een \textbf{finished} bericht. De server verstuurt dezelfde berichten naar de cliënt. Nu zijn de cliënt en server in staat om te communiceren met elkaar via het SSL Record protocol.
 	\end{enumerate}
+
 
 	\item Het \underline{\textbf{Change Cipher protocol}} kan slechts één bericht verstaan: 1 byte met 1 waarde. Het zorgt ervoor dat de tijdelijke keuze van cryptografische algoritmen de werkelijke keuze wordt. Het kan ook gebruikt worden om de encryptiealgoritmen te veranderen gedurende een connectie.
 
@@ -317,17 +443,124 @@
 	\end{itemize}
 
 	\item De \underline{\textbf{master secret}}, die nodig is bij een TLS sessie, wordt ofwel gegenereerd door de cliënt met RSA encryptie en verzonden naar de server, ofwel uitgewisseld met Diffie-Helman. De grootte van de sleutel bedraagt 384 bits. Sleutels kunnen niet hergebruikt worden aangezien ze afhankelijk zijn van de nonces die gebruikt werden tijdens het handshake protocol.
-	\item Het \underline{\textbf{heartbeat protocol}} draait bovenop het record protocol en heeft voornamelijk als doel om huidige connecties te testen, en om ze in leven te houden zonder dat er opnieuw moet onderhandeld worden tussen de cliënt en de server. Het protocol ondersteund twee berichten:
+	\item Het \underline{\textbf{Heartbeat protocol}} draait bovenop het record protocol en heeft voornamelijk als doel om huidige connecties te testen, en om ze in leven te houden zonder dat er opnieuw moet onderhandeld worden tussen de cliënt en de server. Het protocol ondersteund twee berichten:
 		\begin{itemize}
 			\item \textbf{HeartbeatRequest}: De cliënt of server verstuurt naar de ander een bericht met daarin een payload (typisch een string) en de lengte van de payload. 
 			\item \textbf{HeartbeatResponse}: Een ontvanger van een HeartbeatRequest moet antwoorden met dezelfde payload als een HeartbeatResponse.
 		\end{itemize}
-		\todo{P20 printout C03c}
+	Ontstaan van \underline{Heartbleed bug}. De server controleerde niet of de lengte van de payload werkelijk de lengte was. Zo kon een aanvaller een payload met werkelijke lengte 5 hebben, maar de payload lengte zelf instellen op 500, zodat er 495 extra bytes teruggestuurd worden vanuit het geheugen van de server, vaak met gevoelige informatie.
 \end{itemize}
 
+	\subsubsection{Performantie}
+	TLS wisselt \underline{minder berichten uit dan SSH} en \underline{authenticeerd het entiteit volledig over de transportlaag}. 
+
+	TLS geeft wel meer overhead op vlak van latency. Het aantal uitwisselingen tussen de cliënt en server is vrij groot. Initieël moet de TCP connectie opgesteld worden (3 uitwisselingen), gevolgd door 4 uitwisselingen via het handshake protocol.
+
+	\underline{Hoe TLS performanter maken?}
+	\begin{itemize}
+		\item \textbf{Sessie voortzetten}: Als de cliënt al eerder met de server heeft gecommuniceerd, kunnen de vorige parameterwaarden gebruikt worden, zodat het aantal uitwisselingen met 2 daalt (de changecipherspec voor zowel server als cliënt).
+		\item \textbf{Valse start}: De cliënt of server zullen al informatie versturen vooraleer het handshake protocol voltooid is, meer specifiek: nadat de ChangeCipherSpec en Finished berichten verstuurt zijn, maar zonder te wachten op de andere kant op dezelfde berichten. Vanaf dat de cliënt de algoritmen kent, kan hij zijn informatie al encrypteren. Deze methode vergt minimale aanpassing aan het TLS algoritme, namelijk wanneer de berichten mogen verstuurd worden.
+		\item \textbf{Proxies}: In het geval dat de geografische afstand tussen cliënt en server te groot is, kunnen er proxyservers geïnstalleerd worden, die dichter bij de cliënt zitten. 
+		\item \textbf{Pakketgrootte}: Alle informatie via TLS wordt verpakt via het record protocol. In het begin van een TLS verbinding is het beter om de fragmentgrootte kleiner te maken dan de default 16 kb, zodat de verbindingen sneller kan gelegt worden.
+		\item \textbf{Certificaatketting}: Stuur niet enkel eigen certificaat maar ook het certificaat van diegene dat het getekend heeft. Dit bespaart een DNS lookup.
+	\end{itemize}
+
 	\subsection{Beveiligen van de netwerklaag}
+	= \underline{gebruik van IPSec}
+
+	Mogelijke bedreigingen op de netwerklaag:
+	\begin{itemize}
+		\item IP-adres kan gewijzigt worden (source spoofing).
+		\item Vervalste routeinformatie kan verzonden worden.
+	\end{itemize}
+	Dit resulteert dat er geen data-integriteit of confidentialiteit is.
+
+	IPSec is een \underline{applicatieonafhankelijk} protocol dat \underline{veilige IP verbindingen legt}. 
+
+	\underline{Voordelen} van IPSec:
+	\begin{itemize}
+		\item Aangezien dat IPSec applicatieonafhankelijk is, moeten applicaties zelf geen beveiliging op netwerklaag voorzien.
+		\item Beveiligingsmechanismen moeten maar gelden op beperkt aantal systemen (firewall of router). Het interne verkeer wordt hierdoor niet beïnvloedt.
+		\item Eindgebruikers moeten zich hier niet van bewust zijn.
+	\end{itemize}
+
+	\underline{Nadelen} van IPSec:
+	\begin{itemize}
+		\item Er is geen beveiliging nadat het bericht de gateway heeft gepasseerd.
+		\item Systeemresources zijn nodig om cryptographische functies te berekenen.
+		\item De implementatie is vrij complex en het gebeurt vaak dat verschillende versies van IPSec incompatibel zijn met elkaar.
+	\end{itemize}
+
+	IPSec kent \underline{twee modi}:
+	\begin{itemize}
+		\item \textbf{Layer 2 tunnel mode} (default): Dit beschermt de interne routinggegevens door heel het pakket te encrypteren en een nieuw IP header vooraan toe te voegen. Dit is geschikt voor \emph{network-to-netwerk} (tussen 2 verschillende routers op verschillende locaties), \emph{host-to-network} (remote user access) en \emph{host-to-host} (private chat) communicatie.
+		\item \textbf{Transport mode}:  Enkel de payload wordt geëncrypteerd zodat de IP header ongewijzigt blijft. Dit is geschikt voor \emph{end-to-end} communicatie tussen toestellen met publieke IP adressen.
+	\end{itemize}
+	
+	\subsubsection{Protocollen}
+	IPsec maakt gebruik van twee protocollen: \underline{Authentication Header} en \underline{Encapsulating Security Payload}.
+
+	\begin{itemize}
+		\item \textbf{Authentication Header} (figuur \ref{fig:authentication_header}): 
+		\begin{figure}[ht]
+			\includegraphics[width=\textwidth]{authentication_header}
+			\caption{Authentication Header.}
+			\label{fig:authentication_header}
+		\end{figure}
+		Dit biedt authenticatie, data-integriteit en voorkomt IP spoofing en replay mechanismen.
+		\begin{enumerate}
+			\item De IP header en data payload worden gehasht.
+			\item De returnwaarde van deze hashfunctie wordt gebruikt om een authentication header te maken, die toegevoegd wordt aan het originele pakket.
+			\item Het pakket wordt doorgestuurd naar de IPSec router van de begunstigde.
+			\item Deze router zal de IP header en data opnieuw hashen, en vergelijkt deze met de authentication header. Indien deze verschillend zijn, wil dit zeggen dat het pakket is aangepast.
+		\end{enumerate}
+		\item \textbf{Encapsulating Security Payload} (figuur \ref{fig:encapsulating_security_payload}): 
+		\begin{figure}[ht]
+			\includegraphics[width=\textwidth]{encapsulating_security_payload}
+			\caption{Encapsulating Security Payload.}
+			\label{fig:encapsulating_security_payload}
+		\end{figure}
+		Dit biedt confidentialiteit, data-origin authenticatie en data-integriteit. Voorkomt ook replay mechanismen en biedt beperkte traffic-flow confidentialiteit.
+		\begin{enumerate}
+			\item ESP maakt gebruik van een confidentialiteitsfunctie. De data (en optioneel de IP header) wordt geëncrypteerd met een traditioneel algoritme (AES-128-CBC, AES-GCM, ...)
+			\item Optioneel wordt er ook geauthenticeerd, gebruik maken van dezelfde methoden als bij de authentication header.
+		\end{enumerate}
+
+		In \underline{transport mode} biedt ESP encryptie en authenticatie, maar geen traffic flow confidentialiteit.
+
+		In \underline{tunnel mode} biedt het wel traffic flow confidentialiteit. Een aanvaller kan enkel zien naar welk lokaal netwerk een pakket werd verstuurd, maar weet niet naar welk specifiek toestal van dit netwerk het verstuurd werd.
+		
+	\end{itemize}
+	Beide protocollen kunnen ook gecombineerd worden in beide modi (figuur \ref{fig:ah_esp}).
+	\begin{figure}[ht]
+		\includegraphics[width=\textwidth]{ah_esp}
+		\caption{AH + ESP.}
+		\label{fig:ah_esp}
+	\end{figure}
+
+
 
 	\subsection{Beveiligen van de datalinklaag}
+	\subsubsection{Mogelijke aanvallen op de datalinklaag}
+	\begin{itemize}
+		\item \textbf{Content Address Memory aanval}: Het blijven versturen van valse MAC adressen zodat de CAM tabel vol geraakt. Op die manier kunnen geen nieuwe MAC adressen meer toegevoegt worden.
+		\item \textbf{Address Resolution Protocol spoofing}: ARP is het mappen van een IP adres naar het bijhorende macadres. Er kunnen echter vervalste ARP berichten verstuurt worden doorheen het netwerk, zodat het IP adres van een willekeurige host gemapt wordt op het MAC adres van de aanvaller. Op die manier krijgt de aanvaller alle berichten die eigenlijk bestemd waren voor de oorspronkelijke host. 
+		\item \textbf{DHCP starvation}: Het blijven versturen van DHCP requests.
+	\end{itemize}
+	Deze lijst kan nog uitgebreidt worden indien men spreekt over \underline{draadloze netwerken}:
+	\begin{itemize}
+		\item \textbf{Pakketten zijn afluisterbaar}
+		\item \textbf{Deauthenticatie aanval}: Om van een draadloos netwerk te gaan, moet er een deauthenticatierequest verstuurd worden naar het access point waarop er geauthenticeerd werd. Een aanvaller kan in de naam van iemand anders zo een deauthenticatierequest versturen.
+		\item \textbf{Hidden node probleem} (figuur \ref{fig:hidden_node_problem}):
+		\begin{figure}[ht]
+			\includegraphics[width=\textwidth]{hidden_node_problem}
+			\caption{Hidden node problem.}
+			\label{fig:hidden_node_problem}
+		\end{figure}
+	\end{itemize}
+	\todo{saai}
+
+
 	\chapter{Encryptiealgoritmen}
 	\section{Geschiedenis}
 	Encryptiemethoden worden al eeuwenlang gebruikt om informatie onleesbaar te maken voor partijen die deze informatie niet mogen achterhalen. Deze inleiding bespreekt de basismethoden om encryptie toe te passen.

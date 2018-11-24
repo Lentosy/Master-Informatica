@@ -446,37 +446,113 @@ Een taal die door een regexp gedefinieerd kan worden heet een reguliere taal.
 \begin{enumerate}
 	\item $\emptyset$ is een regexp, met als taal de lege verzameling.
 	\item De lege string, voorgesteld als $\epsilon$, is een regexp met als taal Taal($\epsilon$) = \{$\epsilon$\}.
-	\item Voor elke $a \in \sum$ is \textquotedblleft a\textquotedblright een regexp, met als taal Taal(\textquotedblleft a\textquotedblright ) = \{\textquotedblleft a \textquotedblright\}.
+	\item Voor elke $a \in \sum$ is \textquotedblleft a\textquotedblright een regexp, met als taal Taal(\textquotedblleft a\textquotedblright ) = \{\textquotedblleft a\textquotedblright\}.
 \end{enumerate}
-\todo{p112-114}
+Regexps kunnen gecombineerd worden:
+\begin{table}[h]
+	\centering
+	\begin{tabular}{c c c }
+		\hline
+		Operatie & Regexp & Operatie op taal/talen \\
+		\hline 
+		Concatenatie & $(RS)$ & Taal($R$) $\cdot$ Taal($S$) \\
+		of & $(R|S)$ & Taal($R$) $\cup$ Taal($S$)  \\
+		Kleenesluiting & ($R$)* & Taal($R$)*
+		 
+	\end{tabular}
+\end{table}
 
 \section{Variabele tekst}
+Zoeken van een patroon $P$ in een tekst $T$ kan op veel manieren. Wij zien volgende methoden:
+\begin{itemize}
+	\item Knuth-Morris-Pratt
+	\item Boyer-Moore
+	\item Karp-Rabinal
+	\item Zoeken met automaten
+	\item De Shift-AND-methode
+\end{itemize}
+
+Zie ook het bestand \texttt{Extra/zoeken\_in\_strings.pdf} voor meer methoden en uitleg.
+
 \subsection{Eenvoudige methode}
-= Voor elke positie $j$ nagaan of $P$ in $T$ voorkomt startend vanaf positie $j$, en de opeenvolgende $p$ posities.\accentuate{brol}
+= Voor elke positie $j$ nagaan of $P$ in $T$ voorkomt startend vanaf positie $j$, en de opeenvolgende $p$ posities. \accentuate{brol}
 
 \subsection{Knuth-Morris-Pratt}
 Eerst de definitie van een \textbf{deelstring} bepalen.
 
 \begin{bytefield}{8}
-	
-	\bitbox{1}{} & \bitbox{1}{} & \bitbox{1}{} & \bitbox{1}{} & \bitbox{1}{} & \bitbox{1}{} & \bitbox{1}{} & \bitbox{1}{}
+	\bitheader{0, 1, 2, 3, 4, 5, 6, 7} \\
+	\bitbox{1}{A} & \bitbox{1}{B} & \bitbox{1}{C} & \bitbox{1}{D} & \bitbox{1}{E} & \bitbox{1}{F} & \bitbox{1}{G} & \bitbox{1}{H}
 \end{bytefield}
+
+Een deelstring $(T[i], T[j])$ begint op positie $i$ en eindigt op positie $j$. Let op dat net zoals bij iterator, de positie $j$ wijst naar het element dat niet meer behoort tot de deelstring. Op het voorbeeld is de deelstring $(T[2], T[7])$ gelijk aan \texttt{CDEFG}.
+
+De \underline{prefixfunctie} $q()$ van een string $P$ bepaalt voor elke stringpositie $i$, $1 \leq i \leq p$, de lengte van het langste prefix van $P$ met lengte kleiner dan $i$ dat we voor $i$ kunnen leggen. \accentuate{Online ga je hier vaak een andere definitie voor terugvinden.} Hieruit volgt:
+\begin{itemize}
+	\item $q(0) = -1$ (ongedefinieerd)
+	\item $q(1) = 0$
+	\item $q(i) < i$
+\end{itemize}
+
+\underline{Hoe $q(i + 1)$ berekenen?}
+\begin{itemize}
+	\item $q(i + 1) = q(i) + 1$ als $P[q(i)] == P[i]$
+	\item Anders, $q(i + 1) = q(i) + 1$ als $P[q(q(i))] == P[i]$
+	\item Anders, $q(i + 1) = q(i) + 1$ als $P[q(q(q(i)))] == P[i]$
+	\item ...
+	\item Als er geen enkele prefix bestaat dat we voor $i$ kunnen leggen kan verlengd worden. Dan is $q(i + 1) = 0$.
+\end{itemize}
 
 Volgende code toont de werking van de prefixfunctie.
 \begin{lstlisting}
 q[0] = -1
 q[1] = 0
 for(i = 2; i <= p; i++){
-	prev = q(i - 1)
-	while(prev > 0 && P[i - 1] != P[prev]){
-		prev = q[prev]
+	vorig = q[i - 1]
+	while(vorig > 0 && P[i - 1] != P[vorig]){
+		prev = q[vorig]
 	}
-	if(P[i - 1] == P[prev]){
-		prev++
+	if(P[i - 1] == P[vorig]){
+		vorig++
 	}
 	q[i] = prev
 }
 \end{lstlisting}
+
+Gegeven een string Q = \texttt{ANOANAANOANO}. De prefixfunctie van $Q$ komt overeen met:
+\begin{lstlisting}
+i = 0 1 2 3 4 5 6 7 8 9 10 11 12 
+Q = A N O A N A A N O A  N  O
+q = - 0 0 0 1 2 1 1 2 3  4  5  3
+\end{lstlisting}
+
+Met de prefixfunctie kan eerst een \underline{eenvoudig linear zoekalgoritme} bedacht worden:
+\begin{enumerate}
+	\item Stel een string samen bestaande uit $P$, gevolgd door $T$, gescheiden door een speciaal karakter $k$ dat in geen van beide voorkomt.
+	
+	\begin{bytefield}[bitwidth=2.4em]{15}
+		\bitbox{1}{$P_0$} & \bitbox{1}{$P_1$} & \bitbox{1}{$...$} & \bitbox{1}{$P_i$} & \bitbox{1}{$...$}& \bitbox{1}{$P_{p-1}$} & \bitbox{1}{$P_p$} & \bitbox{1}{$k$} & \bitbox{1}{$T_0$} & \bitbox{1}{$T_1$} & \bitbox{1}{$...$} & \bitbox{1}{$T_j$}& \bitbox{1}{$...$}& \bitbox{1}{$T_{t-1}$} & \bitbox{1}{$T_t$}
+	\end{bytefield}
+
+	\item Bepaal nu de prefixfunctie van deze nieuwe string. Dit vereist een lineaire tijd $\Theta(t + p)$.
+	\item Wanneer de prefixwaarde van een positie $i$ in deze string gelijk is aan $p$, werd $P$ gevonden, beginnend bij index $i - p$ in $T$.
+
+\end{enumerate}
+
+Een beter algoritme is echter dat van \underline{Knuth-Morris-Pratt}.
+\begin{enumerate}
+	\item 
+\end{enumerate}
+
+
+
+\subsection{Boyer-Moore}
+
+\subsection{Karp-Rabinal}
+
+\subsection{zoeken met automaten}
+
+\subsection{De Shift-AND-methode}
 
 \end{document}
 
