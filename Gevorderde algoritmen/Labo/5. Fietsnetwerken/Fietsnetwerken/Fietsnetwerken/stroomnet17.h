@@ -152,38 +152,38 @@ public:
 		Pad<T> vergrotendpad = vg.geefVergrotendPad();
 
 		while (vergrotendpad.size() != 0) {
-			restnetwerk -= vergrotendpad; // TODO operator -= implementeren
-			oplossing += vergrotendpad;   // TODO operator += implementeren
+			restnetwerk -= vergrotendpad; 
+			oplossing += vergrotendpad;   
 			vergrotendpad = vg.geefVergrotendPad();
 		}
-		restnetwerk.teken("oplossing.dot");
-		system("dot -Tpng oplossing.dot -o oplossing.jpg");
-		system("oplossing.jpg");
+
+		restnetwerk.teken("restnetwerk_oplossing.dot");
+		system("dot -Tpng restnetwerk_oplossing.dot -o restnetwerk_oplossing.jpg");
+		system("restnetwerk_oplossing.jpg");
+
 		return oplossing;
 	}
 
-
-	// EIGEN IMPLEMENTATIE
+	//////////////// EIGEN IMPLEMENTATIE
 	Stroomnetwerk<T>& operator-=(const Pad<T>& pad) {
+		T capaciteit = pad.geefCapaciteit();
 		for (int i = 0; i < pad.size() - 1; i++) {
-			T* t = this->geefTakdata(pad[i], pad[i + 1]);
-			if (t != nullptr) {
-				*t -= pad.geefCapaciteit();
-			}
+			this->vergrootTak(pad[i], pad[i + 1], -pad.geefCapaciteit());
+			this->vergrootTak(pad[i + 1], pad[i], pad.geefCapaciteit());
 		}
 		return *this;
 	}
 
 	Stroomnetwerk<T>& operator+=(const Pad<T>& pad) {
 		for (int i = 0; i < pad.size() - 1; i++) {
-			T* t = this->geefTakdata(pad[i], pad[i + 1]);
-			if (t != nullptr) {
-				*t += pad.geefCapaciteit();
-			}
+			this->vergrootTak(pad[i], pad[i +1], pad.geefCapaciteit());
 		}
 		return *this;
 	}
 	/////////////////////////
+
+
+
 	void vergrootTak(int start, int eind, T delta) {
 		int taknr = this->verbindingsnummer(start, eind);
 		if (taknr == -1)
