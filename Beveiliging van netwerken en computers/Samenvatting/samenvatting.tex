@@ -104,7 +104,7 @@
 		\item Het moet werken voor elke lengte van m.
 		\item Ze moeten berekening snel uitvoeren. Hier kan een uitzondering op gemaakt worden indien de hashfunctie deel uitmaakt van heel gevoelige informatie zoals paswoorden. Een tragere hashfunctie zal aanvallers ook vertragen.
 		\item Het moet een \textbf{one-way} functie zijn. Dit wil zeggen dat, indien \textbf{h} gegeven is, \textbf{m} onmogelijk te achterhalen moet zijn.
-		\item Er moet \textbf{weak collision resistance} zijn. Het moet onmogelijk zijn om een bericht \textbf{n} te genereren zodat \textbf{H(n) = H(m)}. Is dit niet het geval, kan het mogelijk zijn dat er totaal andere data verstuurd kan worden door een aanvaller, maar die data heeft dezelfde hash als de geldige data. De ontvanger zal niet doorhebben dat hij met foutieve informatie werkt. Integriteit en data-origin authentication worden hier overtreden.
+		\item Er moet \textbf{weak collision resistance} zijn. Het moet onmogelijk zijn om een bericht \textbf{n} te genereren zodat \textbf{H(n) = H(m)}. Is dit niet het geval, kan het mogelijk zijn dat er totaal andere informatie verstuurd kan worden door een aanvaller, maar die informatie heeft dezelfde hash als de geldige informatie. De ontvanger zal niet doorhebben dat hij met foutieve informatie werkt. Integriteit en data-origin authentication worden hier overtreden.
 		\item Er moet ook \textbf{strong collision resistance} zijn. Indien \textbf{n} een bericht is dat verschillend is van \textbf{m}, mag de hashfunctie nooit dezelfde \textbf{h} uitkomen voor deze twee inputs. Indien dit wel mogelijk is, kan een aanvaller meerdere versies van een document genereren die dezelfde hashwaarde hebben. Niet-verlorenbaarheid wordt hier overtreden.
 	\end{itemize}
 	Strong collision resistance is veel moeilijker om te implementeren dan weak collision resistance. De kans dat twee berichten uit een groep van \textbf{k} berichten dezelfde hashwaarde opleveren met een hashfunctie die \textbf{N} waarden kan genereren is: 
@@ -247,11 +247,11 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 	\subsubsection{Nadelen Diffie-Hellman}
 
 	\subsection{Sleuteldistributiecentrum}
-	Het sleuteldistributiecentrum vermijdt dat gebruikers zelf de sleutel moeten overhandigen. Elke gebruiker heeft een geheime sleutel die kan gebruikt worden om met het \textbf{KDC (Key Distribution Centre)} te communiceren. Er zijn twee soorten sleutels: de sessiesleutels zijn een tijdelijke sleutel die gebruikt worden voor één enkele sessie. Deze sessiesleutel wordt gebruikt om data te encrypteren tussen verschillende gebruikers. De ander sleutel is de mastersleutel. Deze wordt gebruikt om sessiesleutels te encrypteren en wordt gedeeld tussen een gebruiker en de KDC. De basiswerking van de KDC (figuur \ref{fig:basiswerkingKDC}) is als volgt:
+	Het sleuteldistributiecentrum vermijdt dat gebruikers zelf de sleutel moeten overhandigen. Elke gebruiker heeft een geheime sleutel die kan gebruikt worden om met het \textbf{KDC (Key Distribution Centre)} te communiceren. Er zijn twee soorten sleutels: de sessiesleutels zijn een tijdelijke sleutel die gebruikt worden voor één enkele sessie. Deze sessiesleutel wordt gebruikt om informatie te encrypteren tussen verschillende gebruikers. De ander sleutel is de mastersleutel. Deze wordt gebruikt om sessiesleutels te encrypteren en wordt gedeeld tussen een gebruiker en de KDC. De basiswerking van de KDC (figuur \ref{fig:basiswerkingKDC}) is als volgt:
 	\begin{enumerate}
 		\item Alice vraagt aan de KDC om een verbinding op te zetten met Bob. Alice stuurt ook een "nonce" $N_1$. Dit is een willekeurig getal dat slechts éénmaal gebruikt wordt om replay aanvallen te voorkomen.
-		\item De KDC geeft volgende informatie terug, dat geëncrypteerd wordt door Alice haar sleutel $K_{A-KDC}$: De sessiesleutel, de identiteit van Bob, dezelfde nonce dat Alice stuurde naar de KDC, en geëncrypteerde data (met Bob zijn sleutel $K_{B-KDC}$).
-		\item Alice verstuurt de geëncrypteerde data naar Bob.
+		\item De KDC geeft volgende informatie terug, dat geëncrypteerd wordt door Alice haar sleutel $K_{A-KDC}$: De sessiesleutel, de identiteit van Bob, dezelfde nonce dat Alice stuurde naar de KDC, en geëncrypteerde informatie (met Bob zijn sleutel $K_{B-KDC}$).
+		\item Alice verstuurt de geëncrypteerde informatie naar Bob.
 		\item Bob antwoordt met een tweede nonce $N_2$, geëncrypteerd met de sessiesleutel, zodat Bob geauthenticeerd is naar Alice toe.
 		\item Alice antwoordt terug naar Bob met een bewerkte nonce (een bepaalde functie, bv 1 toevoegen), geëncrypteerd met de sessiesleutel, zodat Alice geauthenticeerd is naar Bob toe.
 	\end{enumerate}
@@ -413,7 +413,7 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 		\item Een fout tijdens het handshake protocol (geen geldige beveiligingsparameters gevonden).
 		\item Fout ingevulde parameters tijdens het handshake protocol.
 	\end{itemize}
-	\item Het \underline{\textbf{Record protocol}} is een gelaagd protocol dat informatie zo zal bewerken dat: het bruikbare blokken worden van ten hoogste $2^{14}$ bytes, optioneel de informatie zal compresseren, een MAC zal toevoegen voor integriteit, de informatie zal encrypteren en het resultaat doorsturen. Ontvangen data wordt dan in omgekeerde volgorde bewerkt. De typische workflow gaat als volgt (figuur \ref{fig:tls_record_protocol}):
+	\item Het \underline{\textbf{Record protocol}} is een gelaagd protocol dat informatie zo zal bewerken dat: het bruikbare blokken worden van ten hoogste $2^{14}$ bytes, optioneel de informatie zal compresseren, een MAC zal toevoegen voor integriteit, de informatie zal encrypteren en het resultaat doorsturen. Ontvangen informatie wordt dan in omgekeerde volgorde bewerkt. De typische workflow gaat als volgt (figuur \ref{fig:tls_record_protocol}):
 		\begin{figure}[ht]
 			\includegraphics[width=\textwidth]{tls_record_protocol}
 			\caption{Werking van het TLS record protocol.}
@@ -421,7 +421,7 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 		\end{figure}
 		\begin{enumerate}
 			\item De informatie wordt verdeeld in fragmenten van hoogstens $2^{14}$ bytes ($\equiv 16$ KB).
-			\item De informatie wordt eventueel gecompresseerd. De compressie is optioneel, moet terugkeerbaar zijn, en mag de lengte van de data niet meer dan $1024$ bytes vergroten.
+			\item De informatie wordt eventueel gecompresseerd. De compressie is optioneel, moet terugkeerbaar zijn, en mag de lengte van de informatie niet meer dan $1024$ bytes vergroten.
 			\item De MAC wordt als volgt berekend: MAC($K_{MAC} || Seq \# || Type || Length || Data$).
 			\item De informatie wordt geëncrypteerd met een \underline{symmetrisch encryptiealgoritme}.
 			\item De TLS record header wordt toegevoegd. 
@@ -439,7 +439,7 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 	\begin{itemize}
 		\item 1 byte voor het contenttype. Dit is het applicatielaagprotocol dat gebruikt wordt.
 		\item 2 bytes voor de versie (voor TLS 1.2 heeft dit de waarden 3 en 3).
-		\item Lengte van de data.
+		\item Lengte van de informatie.
 	\end{itemize}
 
 	\item De \underline{\textbf{master secret}}, die nodig is bij een TLS sessie, wordt ofwel gegenereerd door de cliënt met RSA encryptie en verzonden naar de server, ofwel uitgewisseld met Diffie-Helman. De grootte van de sleutel bedraagt 384 bits. Sleutels kunnen niet hergebruikt worden aangezien ze afhankelijk zijn van de nonces die gebruikt werden tijdens het handshake protocol.
@@ -522,7 +522,7 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 		\end{figure}
 		Dit biedt confidentialiteit, data-origin authenticatie en data-integriteit. Voorkomt ook replay mechanismen en biedt beperkte traffic-flow confidentialiteit.
 		\begin{enumerate}
-			\item ESP maakt gebruik van een confidentialiteitsfunctie. De data (en optioneel de IP header) wordt geëncrypteerd met een traditioneel algoritme (AES-128-CBC, AES-GCM, ...)
+			\item ESP maakt gebruik van een confidentialiteitsfunctie. De informatie (en optioneel de IP header) wordt geëncrypteerd met een traditioneel algoritme (AES-128-CBC, AES-GCM, ...)
 			\item Optioneel wordt er ook geauthenticeerd, gebruik maken van dezelfde methoden als bij de authentication header.
 		\end{enumerate}
 
@@ -799,4 +799,177 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 	
 	
 	\chapter{Software- en systeembeveiliging}
+	\section{Veilige applicaties}
+
+	\section{Veilige systemen}
+	\subsection{Authenticatiemethoden}
+	...
+	\subsection{Vertrouwd besturingssysteem}
+
+	\begin{table}[ht]
+		\centering
+		\begin{tabular}{c c c}
+			Veilig & $\neq$  & Vertrouwd \\
+
+			Iets is ofwel veilig of niet veilig & & Een vertrouwd systeem kent gradaties en is vaak relatief
+		\end{tabular}
+	\end{table}
+
+	Een besturingssysteem \underline{is vertrouwd} indien het \underline{consistent}:
+	\begin{itemize}
+		\item geheugen kan afschermen,
+		\item toegangscontrole ondersteund,
+		\item gebruikers kan authenticeren.
+	\end{itemize}
+
+	Een \underline{policy} moet gedefinieerd worden vooraleer er kan nagegaan worden ofdat een besturingssysteem vertrouwd is of niet. Een voorbeeld hiervan is een \underline{militair beveiligingsmodel} (unclassified, restricted, confidential, secret, top secret). Het wil uiteraard niet zeggen dat als iemand toegang heeft tot 'secret', dat die dan alle informatie van de 'secret', 'confidential', 'restricted' en 'unclassified' tak kan bekijken. Er komt nog een bijkomende \underline{toegangscontrole}. Elk stukje informatie kan gelinkt worden aan een \underline{compartiment} (informatie die bij elkaar hoort, bv informatie over een bepaalde bom).
+	
+	\underline{Voorbeeld}: De informatie $<$secret, België$>$ kan gelezen worden door iemand met $<$top secret, België$>$, $<$secret, België$>$, maar niet door iemand met $<$top secret, Nederland$>$. Een stukje informatie kan in meerdere compartimenten zitten.
+
+	Er bestaand \underline{drie toegangscontrolemethoden}:
+	\begin{itemize}
+		\item \textbf{DAC (Discretionary Access Control)}: De gebruiker die de informatie aanmaakt is ook de eigenaar. Deze gebruiker bepaalt dan ook wie de informatie mag zien. 
+		\item \textbf{MAC (Mandatory Access Control)}: Enkel de administrator bepaalt de rechten van de informatie. Dit brengt veel overhead mee voor de administrator zelf.
+		\item \textbf{RBAC (Role-Based Access Control)}: Elke gebruiker bevindt zich in een een groep of heeft een bepaalde rol. Deze rollen/groepen krijgen authorisaties toegekend. 
+	\end{itemize}
+
+	\todo{os kernel}
+
+	\subsection{Schijfencryptie}
+	= het encrypteren van de harde schijf. Dit zit ofwel standard in het besturingssysteem, of kan via een softwareapplicatie gerealiseerd worden.
+
+	Er zijn \underline{drie manieren om een schijf te encrypteren}:
+	\begin{itemize}
+		\item \textbf{Manueel}: Laat de gebruiker zelf toe om individuele bestanden of mappen te encrypteren. Een voorbeeld hiervan is $PGP$.
+		\item \textbf{Filesystem-level}: Het bestandssysteem zal zelf bestanden encrypteren en decrypteren. Een toepassing hiervoor is het gebruik van shares (onedrive, google drive, lokale share ergens, ...). De bestanden of mappen die geëncrypteerd zijn, zullen ook op die shares in geëncrypteerde vorm staan. Deze methode zal metadata (eigenaar, laatst gewijzigd, grootte) niet encrypteren.
+		\item \textbf{Volledige schijfencryptie}: Deze methode encrypteert heel de schijf, inclusief metadata en tijdelijke bestanden. Het staat wel open voor een aantal aanvallen zoals een \underline{cold boot aanval}: het geheugen uitlezen van het RAM door het systeem te resetten, want de databits in het geheugen blijven voor een beperkte tijd bestaan ook al is het toestel uitgezet. Een andere aanvalsvector zijn keyloggers.
+	\end{itemize}
+	Mogelijke \underline{features van schijfencryptie} zijn:
+	\begin{itemize}
+		\item \textbf{Plausible deniability}: Encryptie zorgt ervoor dat iemand niet kan bevestigen dat de plaintext informatie bestaat.
+		\item \textbf{Hidden containers}: op basis van een wachtwoord slechts een deel van het bestandssysteem beschikbaar maken.
+		\item \textbf{Pre-boot authentication}: Vooraleer de bootprocedure begint al authenticeren. Op deze manier is er geen toegang meer tot de BIOS.
+		\item \textbf{Hardware acceleration}: Een extra chip inschakelen die de encryptie op zich neemt zodat het proces versnelt worden.
+		\item \textbf{Two-factor authentication}
+	\end{itemize}
+
+
+	\section{Veilige software}
+	\subsection{Malware}
+	= \textbf{Mal}icious soft\textbf{ware}. Een systeem kan nog zo goed beveiligd zijn, slechts één malware applicatie is voldoende om een systeem onveilig te maken.
+
+	Een aantal \underline{voorbeelden van malware}:
+	\begin{itemize}
+		\item \textbf{Logische bom}: Een logische bom wordt pas geactiveerd nadat er een bepaald predikaat voldaan is. Deze soort malware wordt vaak intern ontworpen en geplaatst als wraak.
+		\item \textbf{Backdoor}: Een backdoor is een manier om een bepaalde toegangscontroleprocedure te omzeilen. Zulke backdoors worden vaak gebruikt om de software te testen, maar wordt daarna niet meer verwijderd uit vergeetachtigheid of luiheid. Het kan ook geïnstalleerd woorden door malware. Een voorbeeld hiervan is een linux kernel update in 2003. Een functie moest het paswoord vergelijken, maar gebruikte de toekenningsoperator ($=$)  in plaats van de vergelijkingsoperator ($==$). Een toekenning is altijd true.
+		
+		Er bestaan verschillende \underline{soorten backdoors}: 
+		\begin{itemize}
+			\item \emph{Software backdoor}: Deze worden geplaatst in de code zelf.
+			\item \emph{Machinecode backdoors}: Deze worden geplaatst in de machinecode omdat ze dan moeilijker te detecteren zijn.
+			\item \emph{Assymetrische backdoors}: Een assymetrische backdoor laat enkel toe dat de eigenaar van de backdoor toegang krijgt (kleptografie). Een voorbeeld hiervan is de NSA backdoor in de \texttt{Dual\_EC\_DRBG} standaard. Deze elliptische krommen gebruik je dus best niet.
+			\item \emph{Compiler backdoors}
+		\end{itemize}
+		\item \textbf{Trojaans paard}: Software kan doen alsof het nuttig is en goede intenties heeft, maar dat dit eigenlijk niet is. Dit soort malware hoopt dat gebruikers de software zullen uitvoeren als administrator. Een trojaans paard wordt vaak gebruikt om andere soorten malware te injecteren.
+		\item \textbf{Spyware}: Deze software is passief en zal pogingen ondernemen om gevoelige informatie te bemachtigen. Niet alle virusscanners verwijderen spyware om juridische redenen. Spyware werd vroeger niet gezien als malware, en reclamebureaus hadden hier baat bij. Meer recent laten virusscanners wel toe om spyware te verwijderen, maar met verminderde functionaliteit (of extra betalingen).
+		\item \textbf{Adware}: Het vervangen en manipueren van advertenties zodat de aanvaller meer opbrengst krijgt. Als je bijvoorbeeld 'Colruyt' opzoekt, dat je reclame krijgt over Carrefour. 
+		\item \textbf{Ransomware}: Een deel of het volledige bestandssyteem encrypteren. In ruil voor geld zal ransomware de geëncrypteerde bestanden terug decrypteren. Sommige ransomware, dat niet meer ondersteund is, wordt jammer genoeg nog steeds verspreidt. Gebruikers die dus betalen zullen hun bestanden niet kunnen decrypteren, en zijn hun geld kwijt. Als je toestel door ransomware aangevallen is, kan je beter naar de politie gaan aangezien zij voor de populaire ransomware applicaties over decryptiesleutels beschikken.
+		\item \textbf{Scareware}: Dit heeft de bedoeling om de gebruiker af te schrikken met boodschappen zoals 'Het toestel bevat illegale content' of 'Windows is niet meer geactiveerd, betaal nu om te heractiveren'.
+		\item \textbf{Virus}: Een virus heeft als eigenschap dat het zichzelf kan verspreiden. Een virus blijft een lange periode stil, om dan na een bepaalde activiation trigger de virus actief te zetten.
+		\item \textbf{Worm}: Een worm is een subset van een virus, in de mate dat het geen menselijke interactie nodig heeft om te verspreiden. Een worm zal automatisch pogingen ondernemen om zich te verspreiden over het netwerk. Traditioneel is het gebruik van e-mail applicaties, standaardpaswoorden en bepaalde transportprotocollen. Een worm wordt vaak gebruikt om een botnet op te zetten, die dan gebruikt kan worden om DDoS aanvallen uit te voeren.
+	\end{itemize}
+
+	Al deze vormen van malware, kunnen via \underline{één of meerdere aanvalsvectoren} binnendringen:
+	\begin{itemize}
+		\item \textbf{Social Engineering}: De malware doet zich voor als een betrouwbaar programma, vaak door de extentie te verbergen (I\_LOVE\_YOU.txt.vbs)
+		\item \textbf{Besturingssysteem}: Aanvallers doen geen moeite om obscure besturingssystemen te infecteren. Vaak zijn het populaire besturingssystemen (Windows, linux, macOS).
+		\item \textbf{Software exploits}: Door fouten in softwareapplicatie zoals e-mail programmas.
+		\item \textbf{Buffer overflow}: Op het einde van een fuctie worden de inputwaarden in een buffer gestoken. Indien deze buffer te groot is, wordt de stack en het returnadres overschreven. De buffer bevat dan een nieuw returnadres naar het start van de malware code (zie slide 27 C05c). Om dit tegen te gaan wordt het geheugen opgesplitst in het executable en niet-executable deel. Verder wordt ook de adresruimte gerandomiseerd.
+		\item \textbf{Macro virus}: In bijvoorbeeld de Microsoft Office suite kunnen macros geschreven worden die automatisch kunnen uitgevoerd worden wanneer het document geopened wordt. Microsoft heeft dit aangepast zodat macros default niet aan staan.  
+	\end{itemize}
+
+	Malware doet er alles aan om \underline{niet gedetecteerd te worden}, onder andere door gebruik te maken van volgende technieken:
+	\begin{itemize}
+		\item Ervoor zorgen dat de 'last modified date' niet aangepast wordt (in windows is het mogelijk om het last modified date attribuut van een bestand programmatisch aan te passen).
+		\item Ervoor zorgen dat de grootte van een bestand niet gewijzigd wordt. 
+		\item Wanneer een virusscanner de malware wil scannen, probeert de malware dit tegen te houden of een 'mooie' versie van de malware te geven.
+		\item De code van de malware kan geëncrypteerd zijn.
+	\end{itemize}
+
+	\subsection{Software cracking}
+	= het aanpassen van software zodat toegangscontroles worden verwijderd.
+
+	Eenvoudige cracks kunnen uitgevoerd worden met behulp van een aantal tools: W32Dasm (een disassembler), Hex Workshop (een hex editor) en OllyDBG (een debugger). Je kan eenvoudig een breakpoint zetten in OllyDBG bij een bepaalde opcode, en de lijn zoeken die bijvoorbeeld de popup toont om een serial nummer in te geven. Vaak staat dit bij een $cmp$ statement: indien de gebruiker nog niet geauthenticeerd is, vraag naar de authenticatiecode. De $jne$ die daarop volgt kan gewoonweg verwijderd worden en zal het systeem doen alsof de gebruiker wel geauthenticeerd is. In een hex-editor kan bijvoorbeeld het $jne$ statement vervangen worden door een $nop$ statement, zodat elke authenticatiecode nu geldig is.
+
+	Een \underline{key generator} kan legale sleutels aanmaken. De basis voor illegale keygenerators ligt aan de legale keygenerators, die vaak gebruikt worden in bedrijfscontext, zodat het bedrijf zelf sleutels kan maken en niet elke maal aan bijvoorbeeld Microsoft moet vragen voor nieuwe Office sleutels.	
+
+	Een \underline{authenticerende server} kan gesimuleerd worden door een eigen server.
+
+	De code kan ook \underline{geïnjecteerd worden}. Men gaat op zoek naar zogenaamde 'code caves', dit zijn ongebruikte geheugenlocaties in de executable. Deze lege geheugenlocaties kan dan eender welke instructies bevatten.
+
+	\chapter{Intrusiedetectie}
+	= moeilijk te definieren.
+	\begin{itemize}
+		\item Iemand die SSH gebruikt om in te loggen op een systeem? Wat met het root account?
+		\item Iemand die poorten scant?
+		\item Iemand die iets probeert te downloaden van de server?
+	\end{itemize}
+
+	Om aan intrusiedetectie te doen, moet er een \textbf{IDS (Intrusiedetectiesysteem)} zijn. Een goed IDS kan interne en externe hackpogingen monitoren, maar het dient niet om aanvallen tegen te houden.
+
+	\begin{table}[ht]
+		\begin{tabular}{l c l}
+			\underline{Attack detection} & vs & \underline{Intrustion detection} \\
+			De IDS hoort \emph{buiten} de beveiligingsomgeving. & & De IDS hoort \emph{binnen} de beveiligingsomgeving. \\
+			Genereert veel overbodige alerts & & Detecteert interne hacking.
+		\end{tabular}
+	\end{table}
+
+	Het \underline{doel} van intrusiedetectie is:
+	\begin{itemize}
+		\item Een aanval detecteren \emph{tijdens} of \emph{na} de aanval (bijvoorbeeld, vanaf dat iemand poorten begint te scannen).
+		\item Kan geen aanval detecteren \emph{voor} het gaat gebeuren.
+	\end{itemize}
+
+	Intrusiedetectie gaat ervan uit dat \underline{aanvallers een ander gedrag hebben dan legitieme gebruikers}. Er bestaan wel handelingen die zowel aanvallers als normale gebruikers kunnen uitvoeren, zodat er hierdoor een kleine overlap bestaat. Dit heeft als bijkomend effect dat er false negatives (een aanval doorlaten) of false positives (denken dat een legitieme gebruiker een aanvaller is) zijn.
+
+	\section{Audit records}
+	= bevat logs over de handelingen die gebruikers uitvoeren op het interne netwerk. Elke log bevat een user ID om de juiste gebruiker te traceren.
+
+	Er kan gebruikt gemaakt worden van de \underline{naïeve, door het besturingssysteem ondersteunde} loggingsysteem. Dit heeft als voordeel dat er geen extra componenten moeten geïnstalleerd worden, maar het grote nadeel is dat de structuur van de logberichten meestal niet aan de gewenste vorm voldoen. Men gebruikt een \underline{speciaal, op maat gemaakt systeem}, die enkel nuttige informatie (probe points) bijhoudt voor het IDS en ook nog systeemonafhankelijk is. 
+
+	Voorbeelden van \underline{nuttige informatie in een audit record} is:
+	\begin{itemize}
+		\item het onderwerp, die de actie uitvoert,
+		\item het object, waarop de actie uitgevoerd is,
+		\item de uitgevoerde actie,
+		\item de timestamp.
+	\end{itemize}
+
+	Met deze informatie kunnen al heel wat 'rare' gebeurtenissen opgespoord worden:
+	\begin{itemize}
+		\item Gebruikers die inloggen op niet-contionele tijdstippen.
+		\item Accounts waarop veel mislukte inlogpogingen zijn uitgevoerd.
+		\item Onverklaarde reboots/tijdswijzigingen
+		\item ...
+	\end{itemize}
+
+	Er zijn twee manieren om audit informatie te verzamelen: \underline{host based} en \underline{network based}.
+	\begin{itemize}
+		\item \textbf{Host Based}: De informatie kan op het besturingssysteem zelf (via softwarelogs, systeemlogs) gegenereerd worden. De informatie is vrij compact, maar systeemspecifiek. 
+		
+		\underline{Voordelen}: Hoge kwaliteit van de informatie.
+
+		\underline{Nadelen}: Systeemspecifiek, en extra overhead op de toestellen zelf. Ook als een toestel gehackt wordt, kunnen de logs die gegenereerd worden vanuit dat toestel niet meer vertrouwd zijn.
+
+		\item \textbf{Network Based}: In deze versie wordt de informatie verzameld van een hub of switch. Het heeft als doel om netwerkanalyse te gebruiken om aanvallen te detecteren.
+		
+		\underline{Voordelen}: Geen performantieimpact, geen overhead op de toestellen zelf, besturingssysteemonafhankelijk. Deze vorm kan informatie bieden dat Host Based niet kan, namelijk gefragmenteerde pakketten en poort scanning.
+
+		\underline{Nadelen}: Pakketten kunnen verloren geraken op het netwerk of ze kunnen niet terug samengesteld worden. Besturingssysteemafhankelijke protocollen kunnen mogelijks niet geanalyseerd worden. Geëncrypteerde informatie is evenmin leesbaar. 
+
+	\end{itemize}
+
+
+
 \end{document}

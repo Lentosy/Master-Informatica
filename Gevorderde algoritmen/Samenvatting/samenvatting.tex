@@ -61,14 +61,14 @@
 				\item \textbf{Toevoegen.}
 				Een knoop toevoegen gebeurt op dezelfde manier als bij een normale binaire zoekboom. Een nieuwe toegevoegde knoop krijgt altijd een rode kleur, omdat de zwarte diepte herstellen moeilijker is. Bij het toevoegen van een knoop kunnen er zich zes gevallen voordoen, waarvan er drie het spiegelbeeld zijn van elkaar. Hier wordt veronderstelt dat de ouder $p$ van de toegevoegde knoop $c$ het linkerkind is van grootouder $g$, en dus de broer $b$ van $p$ het rechterkind is van $g$. 
 				\begin{enumerate}
-					\item Indien $b$ rood is, kan eenvoudig $p$ en $b$ zwart gemaakt worden, terwijl $g$ rood gemaakt wordt. Indien $g$ een zwarte ouder heeft is de situatie opgelost. Is dit niet het geval, wordt het probleem opgeschoven naar boven, alsof het lijkt dat $g$ de toegevoegde knoop is want die is nu rood. De ligging van $c$ ten opzichte van $p$ heeft in dit geval geen impact. 
-					\item Indien $b$ zwart is, kunnen er zich twee gevallen voordoen:
+					\item Is $b$ rood? Maak $p$ en $b$ zwart en $g$ rood. Als $g$ een zwarte ouder heeft is het probleem opgelost. Anders krijgen we opnieuw één van de drie gevallen, waarbij het nu lijk dat $g$ de toegevoegde rode knoop is. De ligging van $c$ ten opzichte van $p$ heeft in dit geval geen impact. 
+					\item is $b$ zwart, dan zijn er twee gevallen:
 					\begin{enumerate}
 						\item Indien $c$ aan de uitwendige kant ligt van $p$, liggen de drie knopen $g$, $p$ en $c$ op een lijn en moet er een rotatie naar rechts uitgevoerd worden. Deze rotatie wordt gevolgd door $p$ zwart en $g$ rood te kleuren.
 						\item Indien $c$ aan de inwendige kant ligt van $p$, dan moet enkel $p$ en $c$ naar links geroteerd worden, zodat we het vorige geval krijgen ($c$ is nu wel de ouder van $p$).
 					\end{enumerate}
 				\end{enumerate}
-				\item \textbf{Verwijderen.} Ook wordt deze operatie eerst uitgevoerd zoals bij een normale binaire zoekboom. Indien de ffysisch te verwijderen knoop rood is, is verwijderen eenvoudig aangezien de zwarte hoogte ongewijzigd blijft.
+				\item \textbf{Verwijderen.} Ook wordt deze operatie eerst uitgevoerd zoals bij een normale binaire zoekboom. Indien de fysisch te verwijderen knoop rood is, is verwijderen eenvoudig aangezien de zwarte hoogte ongewijzigd blijft. \todo{dubbelzwart enz}
 			\end{itemize}
 		
 		\item \textbf{Top-down.}
@@ -206,8 +206,74 @@ Deze vorm vereist dat de zoekruimte een rechthoek is omdat elke knoop de ruimte 
 Een k-d tree gebruikt een binaire boom, waarbij op elk niveau de dimensies afgewisselt wordt. Elke inwendige knoop bevat dan ook één punt, die de zoekruimte verdeelt in de dimensie voor dat niveau. Ideale opsplitsting bestaat uit gelijkmatige verdeling van de dimensies. In twee dimensies zal elk niveau dus afwisselend de x-dimensie en de y-dimensie beschouwen. 
 
 \chapter{Samenvoegbare heaps}
-\todo{k}
+= heaps die geoptimaliseerd zijn om de 'join' operatie op uit te voeren. De join operatie voegt twee heaps samen, zodat de \underline{heapvoorwaarde} nog steeds geldig is.
 
+Een lijst van voorbeelden die \underline{niet} gekend moeten zijn (\accentuate{In de cursus is er geen uitleg over \emph{hoe} dat je de samenvoegoperatie zou implementeren voor deze heaps}):
+\begin{itemize}
+	\item Leftist tree.
+	\item Skew heaps.
+	\item Fibonacci heaps.
+	\item Relaxed heaps
+\end{itemize}
+
+De belangrijke samenvoegbare heaps zijn: \underline{Binomial queues} en \underline{Pairing heaps}.
+\begin{itemize}
+	\item \textbf{Binomial queues}:
+		\begin{itemize}
+			\item Bestaat uit bos van binomiaalbomen.
+			\item Binomiaalboom $B_n$ bestaat uit twee binomiaalbomen $B_{n-1}$. $B_0$ bestaat uit één knoop.
+			\item De tweede binomiaalboom is de meest linkse deelboom van de wortel van de eerste.
+			\item Een binomiaalboom $B_n$ bestaat uit een wortel met als kinderen $B_{n-1}, ..., B_1, B_0$ (zie figuur \ref{fig:binomialtree_orders})
+			\item Op diepte $d$ zijn er $\binom{n}{d}$ knopen.
+			\item Voorbeeld: Een prioriteitswachtrij met 13 elementen wordt voorgesteld als $\langle B_3, B_2, B_0 \rangle$.
+		\end{itemize}
+		\begin{figure}[ht]
+			\centering
+			\includegraphics[width=0.75\textwidth]{binomialtree_orders}
+			\caption{Verschillende ordes van binomiaalbomen.}
+			\label{fig:binomialtree_orders}
+		\end{figure}
+
+		De \underline{operaties} op een binomiaalqueue:
+		\begin{itemize}
+			\item \textbf{Minimum vinden}: Overloop de wortel van elke binomiaalboom. Het minimum kan ook gewoon bijgehouden worden.
+			\item \textbf{Samenvoegen}: Tel de bomen met dezelfde hoogte bij elkaar op, $B_h + B_h = B_{h + 1}$. Maak de wortel met de grootste sleutel het kind van deze met de kleinste. 
+			\item \textbf{Toevoegen}: Maak een triviale binomiaalqueue met één knoop en voeg deze samen met de andere binomiaalqueue.
+			\item \textbf{Minimum verwijderen}: Zoek binomiaalboom $B_k$ met het kleinste wortelelement. Verwijder deze uit de binomiaalqueue. Verwijder wortel van  $B_k$. Voeg beide binomiaalqueues terug samen.
+		\end{itemize}
+
+	\item \textbf{Pairing heaps}:
+		\begin{itemize}
+			\item Een algemene boom waarvan de sleutels voldoen aan de heapvoorwaarde.
+			\item Elke knoop heeft een wijzer naar zijn linkerkind en rechterbroer (figuur \ref{fig:pairingheap_treeform} en \ref{fig:pairingheap}). Als verminderen van prioriteit moet ondersteund worden, heeft elke knoop als linkerkind een wijzer naar zijn ouder en als rechterkind een wijzer naar zijn linkerkind.
+		\end{itemize}
+		\begin{figure}[ht]
+			\centering
+			\begin{minipage}{.5\textwidth}
+				\centering
+				\includegraphics[width=\linewidth]{pairingheap_treeform}
+				\caption{Een pairing heap in boomvorm.}
+				\label{fig:pairingheap_treeform}
+			\end{minipage}%
+			\begin{minipage}{.5\textwidth}
+				\centering
+				\includegraphics[width=\linewidth]{pairingheap}
+				\caption{Een pairing heap.}
+				\label{fig:pairingheap}
+			\end{minipage}
+
+	
+		\end{figure}
+
+		De \underline{operaties} op een pairing heap.
+		\begin{itemize}
+			\item \textbf{Samenvoegen}: Verlijk het wortelelement van beide heaps. De wortel met het grootste element wordt het linkerkind van deze met het kleinste element.
+			\item \textbf{Toevoegen}: Maak een nieuwe pairingheap met één element, en voeg deze samen met de oorspronkelijke heap.
+			\item \textbf{Prioriteit wijzigen}: De te wijzigen knoop wordt losgekoppeld, krijgt de prioriteitwijziging, en wordt dan weer samengevoegd met de oorspronkelijke heap.
+			\item \textbf{Minimum verwijderen}: De wortel verwijderen levert een collectie van $c$ heaps op. Voeg deze heaps van links naar rechts samen in $O(n)$ of voeg eerst in paren toe, en dan van rechts naar links toevoegen in geamortiseerd $O(\lg n)$.
+			\item \textbf{Willekeurige knoop verwijderen}: De te verwijderen knoop wordt losgekoppeld, zodat er twee deelheaps onstaan. Deze twee deelheaps worden samengevoegd.
+		\end{itemize}
+\end{itemize}
 \part{Grafen II}
 \chapter{Toepassingen van diepte-eerst zoeken}
 \section{Enkelvoudige samenhang van grafen}
@@ -251,7 +317,33 @@ Een eulercircuit is een gesloten omloop in een graaf die alle verbindingen één
 \chapter{Kortste Afstanden II}
 \section{Kortste afstanden vanuit één knoop}
 \subsection{Algoritme van Bellman-Ford}
-Dit algoritme werkt voor verbindingen met negatieve gewichten, iets wat het algoritme van Dijkstra niet kon \accentuate{(Dijkstra gebruikt het feit dat indien een pad naar A $\rightarrow$ C bestaat, er geen korter pad A $\rightarrow$ B $\rightarrow$ C kan zijn, daarom is het algoritme performant, maar er mogen dus geen negatieve verbindingen zijn)}.
+Dit algoritme werkt voor verbindingen met negatieve gewichten, iets wat het algoritme van Dijkstra niet kon. Het algoritme is dan natuurlijk ook trager. \accentuate{(Dijkstra gebruikt het feit dat indien een pad naar A $\rightarrow$ C bestaat, er geen korter pad A $\rightarrow$ B $\rightarrow$ C kan zijn, daarom is het algoritme performant, maar er mogen dus geen negatieve verbindingen zijn. Indien B negatief zou zijn dan klopt Dijkstra niet.)}.
+
+
+
+Het algoritme berust op een belangrijke eigenschap: Indien een graaf geen negatieve lussen heeft, zullen de kortste wegen evenmin lussen hebben en hoogstens $n - 1$ verbindingen bevatten. Hieruit kan een recursief verband opgesteld worden tussen de kortste wegen met maximaal $k$ verbindingen en de kortste wegen met maximaal $k - 1$ verbindingen.
+$$d_i(k) = \min(d_i(k - 1), \min\limits_{j \in V} (d_j(k - 1) + g_{ij}))$$
+met
+\begin{itemize}
+	\item $d_i(k)$ het gewicht van de kortste weg met maximaal $k - 1$ verbindingen vanuit de startknoop naar knoop $i$,
+	\item $g_{ij}$ het gewicht van de verbinding $(j, i)$,
+	\item $j \in V$ elke buur $j$ van $i$.
+\end{itemize}
+
+Er bestaan \underline{twee goede implementaties}:
+\begin{itemize}
+	\item \begin{itemize}
+		\item Niet nodig om in elke iteratie alle verbindingen te onderzoeken. Als een iteratie de voorlopige kortste afstand tot een knoop niet aanpast, is het zinloos om bij de volgende iteratie de verbindingen vanuit die knoop te onderzoeken.
+		\item Plaats enkel de knopen waarvan de afstand door de huidige iteratie gewijzigd werd in een wachtrij.
+		\item Enkel de buren van deze knopen worden in de volgende iteratie getest.
+		\item Elke buur moet, indien hij getest wordt en nog niet in de wachtrij zit, ook in de wachtrij gezet worden.
+		\item ! Zal niet stoppen indien er een negatieve lus in de graaf zit. 
+	\end{itemize}
+	\item \todo{p69}
+
+\end{itemize}
+
+
 \chapter{Stroomnetwerken}
 \begin{itemize}
 	\item Gerichte graaf met twee speciale knopen: \underline{producent} en \underline{verbruiker}.
