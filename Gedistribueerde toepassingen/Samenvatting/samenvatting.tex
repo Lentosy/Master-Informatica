@@ -188,6 +188,33 @@
 		\item \textbf{Numerieke functies} zoals \textit{ceiling(...)}, \textit{floor(...)}, \textit{number(...)}, \textit{round(...}).
 	\end{itemize}
 
+	\section{Groeperen met de methode van Meunchian}
+	Groeperen op een bepaald attribuut kan op twee manieren. 
+	\begin{itemize}
+		\item \underline{Zonder \texttt{xsl:key} te gebruiken}: 
+			Je kan in een variabele alle elementen steken die geen broeren hebben, die hiërarchisch voor hun liggen, met dezelfde waarde voor dat attribuut:
+			\begin{lstlisting}
+<xsl:variable 
+  name='varnaam' 
+  select='element[not(attr = preceding-sibling::element/attr)]'
+/>
+			\end{lstlisting}
+			De variabele bevat nu het eerste element voor elke verschillende waarde voor het attribuut. Om nu de verschillende elementen op te vragen, die dezelfde waarde hebben voor het gegroepeerde attribuut, kan je volgende as gebruiken:
+			$$\texttt{element[attr = current()/attr]}$$
+			
+			Deze methode is uiteraard niet performant, aangezien elke knoop eerst al zijn voorgaande broeren moet overlopen en daarna moet elke knoop overlopen worden om de elementen met de huidige waarde voor het attribuut op te zoeken.
+		\item \underline{Door \texttt{xsl:key} te gebruiken}: 
+			Deze xsl instructie geeft een sleutel aan een element op basis van een één of meerdere attributen. Elementen die dezelfde waarde voor een attribuut hebben, krijgen dezelfde sleutel toegekend. Het \texttt{use} attribuut specifieert het attribuut waarop de sleutel gebaseerd moet worden.
+			$$\texttt{<xsl:key match='element' use='attribuut' name='sleutelnaam'/>}$$
+			Nu kan eenvoudig alle elementen opgehaald worden die een bepaalde waarde voor het attribuut hebben:
+			$$\texttt{<xsl:for-each select="key('sleutelnaam','attribuutwaarde')">}$$
+			Men kan ook alle elementen gegroepeerd ophalen, zonder expliciet de attribuutwaarde mee te geven, door nog een buitenlus te definieëren die elke waarde van het attribuut achterhaald door enkel de eerste tegenkomst van die waarde te selecteren:
+			$$\texttt{<xsl:for-each select='element[count(. | key('..', attr)[1]) = 1]">}$$
+			waarbij \texttt{attr} de naam van het attribuut is en \texttt{..} (wegens plaatsgebrek) de naam van de sleutel.
+
+
+	\end{itemize}
+
 \chapter{Webservices}
 Een gedistribueerd systeem zal over verschillende servers API's beschikbaar hebben. Tabel \ref{table:mono_vs_distributed} geeft de voornaamste verschillen tussen een monolitische architectuur en een gedistribueerde architectuur.
 \begin{table}[h]

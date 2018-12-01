@@ -1,0 +1,104 @@
+<html>
+    <head>
+        <title>Labo WCF</title>
+        <meta charset="UTF-8">
+    </head>
+    <body><h1>Labo WCF</h1>
+<p>In dit labo maken we gebruik van <a href="datalaag_badminton.zip">een bestaande datalaag</a> 
+    die gegevens aanlevert over badmintonclubs.  Een aantal van de gegevens van deze datalaag worden 
+    beschikbaar gesteld voor andere applicaties via WCF in C#.
+</p>
+<p>Hiervoor maken we vijf "Visual Studio"-projecten. Bewaar al je projecten LOKAAL op de computer bv. in <code>C:\temp\...</code>. De "solution" <b>BadmintonServers</b> 
+    bevat drie projecten:
+</p>
+<ul>
+    <li><b>BadmintonServiceLibrary</b> voorziet de interface en de implementatie
+        van de WCF-service die toegang geeft tot de objecten van de datalaag.</li>
+    <li><b>BadmintonService</b> publiceert de bovenstaande WCF-service via IIS </li>
+    <li><b>BadmintonServerConsole</b> publiceert de bovenstaande WCF-service in 
+        een console-applicatie die via WCF toegang geeft tot de objecten van de datalaag. 
+    </li>
+</ul>
+<p>Daarnaast maken we ook twee "client"-projecten die de bovenstaande services
+    uittesten.</p>
+<ul>    
+    <li><b>BadmintonClientConsole</b> is een console-applicatie die via WCF 
+        gegevens opvraagt aan de WCF-service gepubliceerd via IIS. 
+    </li>
+    <li><b>BadmintonWebClient</b> is een webapplicatie die via WCF gegevens 
+        opvraagt aan de console-server. 
+    </li>
+</ul>
+<h2>BadmintonServiceLibrary</h2>
+<p>Maak een nieuw project <b>BadmintonServiceLibrary</b> van het type "WCF Service Library". Zorg ervoor dat de "solution" de naam <b>BadmintonServers</b> krijgt.
+    In dit project beschrijf en implementeer je de WCF-service. In twee volgende projecten
+    gaan we deze service op twee manieren hosten: via IIS en via een console-applicatie. 
+    Meer informatie vind je in de MSDN-libary:
+</p>
+<ul>
+    <li><a href="http://msdn.microsoft.com/en-us/library/ms731835.aspx">Define a Windows Communication Foundation Service Contract</a></li>
+    <li><a href="http://msdn.microsoft.com/en-us/library/ms734686.aspx">Implement a Windows Communication Foundation Service Contract</a></li>
+</ul>
+<p>
+    Bij het aanmaken van het project wordt al één service-interface en -implemenatie aangemaakt. Hernoem ze en pas de functionaliteit aan. De service biedt de twee volgende opdrachten aan:</p>
+<ul>
+    <li>Alle badmintonclubs opvragen. Voor elke club wordt de naam, de unieke 
+        identificatie en de tornooien meegegeven. De tornooi-informatie bestaat uit 
+        naam en id.</li>
+    <li>De leden van &eacute;&eacute;n badmintonclub opvragen. Voor elk lid wordt de naam en de 
+        unieke identificatie meegegeven. De club wordt gekenmerkt door zijn
+        unieke identificatie.</li>
+</ul>
+<p>Om gebruik te maken van de datalaag moet je zijn DLL toevoegen aan dit project (rechts klikken op <code>References</code>; <code>Add Reference</code>; <code>Browse</code>). Je kan de structuur van de datalaag bekijken in de Object Browser.
+</p>
+<p>Merk op dat je ook <b>DataContracten</b> moet aanmaken. Test de aangemaakte service uit
+    (rechtsklikken op het project --&gt; Debug --&gt; Start new instance --&gt; dubbelklik op een methode)</p>
+    <p><b>Tip: </b>Om makkelijk objecten van verschillende klassen met dezelfde eigenschappen te converteren kan je gebruik maken van <a href="http://automapper.org/">AutoMapper</a>. Je voegt dit toe via NuGet (rechts klikken op <code>References</code>; <code>Manage NuGet Packages</code>; <code>Browse</code>)
+<h2>BadmintonService</h2>
+<p>Maak een service op IIS die de bovenstaande diensten via WCF over HTTP. 
+    Je kan hiervoor een project van het type "WCF Service Application" aanmaken. 
+    Pas de standaard aangemaakte service aan:</p>
+<ul>
+    <li>Verwijder de codebehind (=.svc.cs-bestand).</li>
+    <li>Pas het svc-bestand aan zodat het verwijst naar jouw service uit het vorig project.
+        Bv.
+        <pre>
+    <%@ServiceHost language=c# Debug="true" Service="Microsoft.ServiceModel.Samples.CalculatorService"%>
+        </pre></li>
+</ul>
+<p>
+    Informatie over de service krijg je als je "View in Browser" selecteert.
+</p>
+<h2>BadmintonClientConsole</h2>
+<p>Schrijf een console-applicatie die als client gebruik maakt van WCF om 
+    allerlei informatie over de badmintonclubs op te vragen aan de server en op
+    het scherm te tonen. De functionaliteit van dit programma is:</p>
+<ul>
+    <li>Toon alle badmintonclubs (naam en identificatie) en hun tornooien (naam).</li>
+    <li>Vraag een id van een badmintonclub en toon de leden van deze club (naam).</li>
+</ul>
+<p>
+    Om de proxy en de bijhorende configuratie te genereren voeg je de WCF-service 
+    toe aan de hand van zijn WSDL. (Service Reference)
+</p>
+<h2>BadmintonServerConsole</h2>
+<p>Publiceer de service nu als console-applicatie in een nieuw project <b>BadmintonServerConsole</b>
+    gebruik makende van TCP.
+    Neem alle configuratie op in een configuratiebestand (ipv in code). Een voorbeeld van de configuratie over HTTP is</p>
+<img src="config.png">
+<p>
+    Je vindt deze configuratie ook in het project BadmintonServiceLibrary in het bestand App.Config. Voeg deze configuratie toe aan en pas ze aan naar TCP (zoek online naar de juiste instellingen). Bij het opstarten van de service krijg je een waarschuwing. Klik die weg.
+</p>    
+<h2>BadmintonWebClient</h2>
+<p>Maak een website bestaande uit twee webpagina's:</p>
+<ul>
+    <li>De eerste webpagina toont alle badmintonclubs.</li>
+    <li>Als je op een club klikt, dan wordt een pagina met alle leden van die club getoond.</li>
+</ul>
+<p>De data voor de (ASP.NET MVC) webapplicatie wordt verkregen via WCF over TCP van de server BadmintonServerConsole. Voeg hiervoor bij "Connected Services" de "Microsoft WCF Web Service Reference Provider" toe. Gebruik de URI om de service te registreren. Voeg, indien nodig, daarna bij References via NuGet ook de packages: System.ServiceModel.Primitives, System.ServiceModel.NetTcp en System.ServiceModel.Security toe. 
+</p>
+<p>Merk op dat je de server en de webapplicatie niet tegelijk kan starten vanuit Visual Studio. Start de server via de console of via een tweede instantie van Visual Studio.</p>
+<img src="clubs2.png" style="border: solid grey" width="400">
+<img src="leden2.png" style="border: solid grey" width="400">
+</body>
+</html>
