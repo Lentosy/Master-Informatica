@@ -1,0 +1,77 @@
+zeker in vm werken
+root in terminal 5 houden en in 1 2 3 werken in ctrlF5 terug dingen goed maken
+2 gebruikers maken      vindje in /etc/paswd
+wachtwoorden in  /etc/shadow
+pam modules in /lib/security/
+cd /etc/pam.d	bestanden met namen die overeenkomen met services dat je gebruikt
+system-auth wordt ingeladen veel, (in begin daar kopie van maken
+required: verplicht maar we gaan door
+requisite: verplicht maar aje deraan voldoet ist voldoende
+sufficient: voldoende moogt hier stoppen, maar indien niet gaat ie nog verder
+optional: proberen inladen ma ast ni lukt maaket ni uit
+
+man pan_unix
+nullok (blanco paswoorden toegelaten) , try_first_pass: als je meerdere stacks nodig hebt anders zou je paar keer na elkaar paswoord moeten ingeven
+
+pdf pam mag je gebruiken op test.maar kanje niet in zoeken
+
+debug info   journalctl -f -l SYSLOG_FACILITY=10		
+
+
+
+
+
+
+
+groupadd -g 777 groep2
+groupadd -g 1777 groep1
+useradd -u 1555 -g 1777 pam1
+useradd -u 1555 -g 1777 pam2
+
+yum clean all
+yum install pamtester
+
+
+################### system-auth #####################
+....
+auth        required      pam_env.so debug
+auth        sufficient    pam_fprintd.so debug
+auth        sufficient    pam_unix.so nullok try_first_pass debug
+auth        requisite     pam_succeed_if.so uid >= 500 debug
+auth        required      pam_deny.so debug
+...
+
+vraag 2 
+bij eerste lijntje met password vanvoor retry op 5 zetten
+testen:
+su pam1
+passwd
+
+vraag 3
+pam_succeed_if  lijntje vervangen naar <=1000
+
+vraag 4:
+man pam_nologin
+ls /lib/security | grep login 		pam_nologin is module dat we nodig hebben
+nano /etc/pam.d/login   daarin moet dat staan
+tekst haalt hij uit /etc/nologin
+
+vraag 5:
+in system-auth
+auth requisite pam_access.so accessfile=/etc/security/access.conf debug
+in pam.d/sshd en pam.d/login
+auth	required	pam_access.so
+
+
+nano /etc/security/access.conf
+opt einde
++ : pam1 : 192.168.70.3		laat toe vanaf dat ip
+- : pam : 192.168.70.2		niet vanaf daar
+
+vraag 6.
+pam_securetty
+cp /etc/securetty /etc/securetty.BAK
+man pam_tty_audit
+in da bestand alles in commentaar behalve tty4
+
+vraag 7
