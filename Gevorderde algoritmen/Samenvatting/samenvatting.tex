@@ -579,7 +579,9 @@ Eerst de definitie van een \textbf{deelstring} bepalen.
 
 Een deelstring $(T[i], T[j])$ begint op positie $i$ en eindigt op positie $j$. Let op dat net zoals bij iterator, de positie $j$ wijst naar het element dat niet meer behoort tot de deelstring. Op het voorbeeld is de deelstring $(T[2], T[7])$ gelijk aan \texttt{CDEFG}.
 
-De \underline{prefixfunctie} $q()$ van een string $P$ bepaalt voor elke stringpositie $i$, $1 \leq i \leq p$, de lengte van het langste prefix van $P$ met lengte kleiner dan $i$ dat we voor $i$ kunnen leggen. \accentuate{Online ga je hier vaak een andere definitie voor terugvinden.} Hieruit volgt:
+De \underline{prefixfunctie} $q()$ van een string $P$ bepaalt voor elke stringpositie $i$, $1 \leq i \leq p$, de lengte van het langste prefix van $P$ met lengte kleiner dan $i$ dat we voor $i$ kunnen leggen. \accentuate{Online ga je hier vaak een andere definitie voor terugvinden, waarbij $0 \leq i \leq p$ en dus $q(0) = 0$.} 
+
+Hieruit volgt:
 \begin{itemize}
 	\item $q(0) = -1$ (ongedefinieerd)
 	\item $q(1) = 0$
@@ -645,6 +647,133 @@ Een beter algoritme is echter dat van \underline{Knuth-Morris-Pratt}.
 \subsection{zoeken met automaten}
 
 \subsection{De Shift-AND-methode}
+= bitgeoriënteerde methode, die zeer efficiënt werkt voor kleine patronen, en eenvoudig kan uitgebreid worden om patronen te zoeken waarin fouten zitten.
+
+De methode werkt als volgt:
+\begin{enumerate}
+	\item Stel een tabel $S$ op, die $d$ (de grootte van het alfabet) bitpatronen bevat. Bijvoorbeeld: Indien we willen zoeken in de tekst die bestaat uit karakters uit de Extended ASCII standaard. Deze standaard bevat 256 karakters. De tabel $S$ zal 256 bitpatronen bevatten. Enkel de karakters die in het patroon voorkomen zullen een bitpatroon verschillend van 0 hebben. Een bit $i$ van het bitpatroon voor karakter $k$ wordt aangezet indien $k$ voorkomt op positie $i$ in $P$. 
+	
+	Pseudocode:
+	\begin{lstlisting}
+i <- 0
+zolang i < p
+	Bitpatroon <- S[P[i]]
+	Zet bit i van bitpatroon op 1
+	i++
+	\end{lstlisting}
+
+	Een specifiek bit op 1 zetten kan via een OF operatie met het huidige bitpatroon en een bitpatroon die op positie $i$ enkel deze bit op 1 staan heeft.
+
+	Stel dat $P = $ mijnnaald, dan ziet de overeenkomstige tabel S er uit zoals tabel \ref{table:shiftand}.
+	\begin{table}[ht]
+		\centering
+		\begin{tabular}{l l}
+			S['a'] & 00000110000000000000000000000000 \\
+			S['d'] & 00000000100000000000000000000000 \\
+			S['i'] & 01000000000000000000000000000000 \\
+			S['j'] & 00100000000000000000000000000000 \\
+			S['l'] & 00000001000000000000000000000000 \\
+			S['m'] & 10000000000000000000000000000000 \\
+			S['n'] & 00011000000000000000000000000000 \\	
+		\end{tabular}
+		\caption{Tabel $S$ voor $P = $ mijnnaald.}
+		\label{table:shiftand}
+	\end{table}
+	De overige plaatsen hebben uiteraard allemaal een bitpatroon van 0. 
+	\item \underline{Hoe kan hiermee gezocht worden in $T$?}
+	
+	Stel een bitpatroon $R$ op, waarvan alle bits onwaar zijn. Stel ook een bitpatroon $M$ op, waarvan slechts één bit waar is, namelijk het bit op $p - 1$. Elk karakter $T[j]$ moet nu overlopen worden. Op basis van $j$ bouwen we een nieuwe $R$, $R_{j + 1}$ op  als volgt:
+	$$R_{j + 1} = (\hbox{Schuif}(R_j)\;\hbox{OF}\;Bitpatroon(1))\;\hbox{EN}\;S[T[j + 1]]$$
+	De vorige $R$ waarde wordt eerst 1 positie naar rechts geschoven. Aangezien dit een nulbit vooraan zal toevoegen, moet hier ook nog een OF operatie gedaan worden zodat het bit dat vooraan staat 1 wordt. Dit wordt gevolgd door een EN operatie met het bitpatroon voor karakter $T[j + 1]$. Er zijn dan drie gevallen:
+	\begin{itemize}
+		\item Het bitpatroon van $T[j + 1]$ is 0. De nieuwe $R$ krijgt terug een nulbitpatroon, wat neerkomt dat er terug in het begin van het patroon zal gezocht worden.
+		\item Het bitpatroon van $T[j + 1]$ is verschillend van 0, maar de positie $i$ van het meest rechtste éénbit van $R$ heeft een nulbit in $T$ op positie $i$. Dit wil zeggen dat $R$ opnieuw bitpatroon 0 krijgt, en er opnieuw in het begin van het patroon moet gezocht worden.
+		\item Het bitpatroon van $T[j + 1]$ is verschillend van 0, en de positie $i$ van het meest rechtste éénbit van $R$ heeft ook een éénbit in $T$ op positie $i$. Dit wil zeggen dat het patroon matcht met de huidige waarde $T[j + 1]$, en er dus verder in het patroon (door de bitshift naar rechts uit te voeren) wordt gezocht.
+	\end{itemize}
+
+	Wanneer $R = M$, dan wil zeggen dat het patroon gevonden is in $T$. $R$ wordt dan opnieuw geinitialiseerd tot een nulbitpatroon, en kan er verder gezocht worden in $T$.
+
+	Pseudocode:
+	\begin{lstlisting}
+R <- bitpatroon 0
+M <- bitpatroon waarbij bit p - 1 waar is
+j <- 0
+zolang j < t 
+	R <- (Schuif(R) OF Bitpatroon 1) EN S[T[j]]
+	if(R EN M){
+		patroon gevonden
+	} 
+	j++
+	\end{lstlisting}
+\end{enumerate}
+
+\part{Hardnekkige problemen}
+\chapter{NP}
+\section{Complexiteit: P en NP}
+Elk probleem wordt voorgesteld als een beslissingsprobleem, in de vorm van 'Bestaat er een ...?'.
+
+\underline{De klasse P(olynomiaal)}: bevat alle problemen waarvan de uitvoeringstijd begrensd wordt door een veelterm in de grootte van het probleem, bij uitvoering op een realistisch computermodel.
+\begin{itemize}
+	\item Grootte = het aantal bits bedoeld dat nodig is om de invoergegevens in een computer voor te stellen. Deze voorstelling is compact, bevat geen overtollige informatie, en stelt getallen voor in een talstelsel met radix groter dan 1.
+	\item Realistisch computermodel = heeft een polynomiale bovengrens voor het werk dat in één tijdseenheid kan verricht worden. 
+\end{itemize}
+
+Elk probleem in P wordt als efficiënt oplosbaar beschouwd.
+
+Waarom veeltermen gebruiken, want $O(n^{100})$ is toch niet efficiënt?
+\begin{enumerate}
+	\item Als uitvoeringstijd niet begrensd is door een veelterm, is het niet efficiënt oplosbaar. Normaal is de graad ook beperkt (zelden meer dan twee of drie).
+	\item Veeltermen zijn de kleinste klasse functies die kunnen gecombineerd worden warbij het resultaat opnieuw een veelterm is. 
+\end{enumerate}
+
+\underline{De klasse N(iet deterministisch) P(olynomiaal)}: Als het opsplitsen van een verzameling kandidaten en het controleren van één kandidaat beide in polynomiale tijd kunnen gebeuren, dan kan een niet-deterministische computer het antwoord geven in polynomiale tijd.
+\begin{itemize}
+	\item Niet-deterministische computer = Een computer met oneindig veel processoren, waarbij elke processor in een tijdsinterval $k$ aantal andere processoren kan aanspreken. In $t$ tijdsintervallen kunnen we $t^k$ processoren aan het werk stellen. Deze processoren werken niet samen, ze kunnen enkel hun deel van het probleem oplossen.
+	\item Kandidaat = Een kandidaatoplossing voor een deelprobleem. Denk bijvoorbeeld aand sudoku; stel dat je een getal in een vakje moet plaatsen, kan je dit gewoon aan 9 processoren doorgeven en wachten op hun resultaat, sommige van deze processoren zullen op het beslissingsprobleem 'nee' antwoorden, en sommige 'ja'.
+\end{itemize}
+
+Elk probleem uit $P$ behoort dus zeker tot $NP$, want je kan gewoon het probleem aan de hoofdprocessor van de niet-deterministische computer geven. Men is er toch niet in geslaagd om aan te tonen dat de niet-deterministische computer krachtiger is dan de klassieke determinstische computer. Dit heet het $P-versus-NP$ probleem.
+
+\underline{NP-harde problemen}: Als we een probleem $X$ kunnen reduceren naar een probleem $Y$, dan is $Y$ minstens even zwaar als $X$. Een reductie is het omvormen van het ene probleem naar een ander. Er zullen dus problemen zijn die minstens even zwaar zijn als elk NP-probleem. Deze problemen noemen we NP-hard.
+
+\underline{NP-complete problemen}: Dit zijn NP-harde problemen die zeker in NP zitten. Een NP-complete problemen hebben een typische structuur die aan backtracking doen denken, waardoor het vaa kvrij gemakkelijk door reductie van het ene naar het andere problem over te gaan.
+
+Indien er één NP-compleet probleem tot P zou behoren, dan behoren alle NP-complete problemen tot P. Op die manier wordt $NP = P$.
+
+Als je kan bewijzen dat een bepaald probleem NP-compleet is, weet je dat je niet moet zoeken naar een efficiënte oplossing, maar kan je eerder gebruik maken van volgende technieken:
+\begin{itemize}
+	\item Als de invoer van het probleem relatief klein is, kan je toch met backtracking alle mogelijkheden doorzoeken (bv 3x3 sudoku).
+	\item Misschien bestaan er efficiënte algoritmen om speciale gevallen van het probleem op te lossen.
+	\item Misschien is de gemiddelde uitvoeringstijd stukken beter dan het slechtste geval.
+	\item Er bestaan benaderde algoritmen, die de vereisten voor de oplossing wat relaxeren. Sommige benaderingen zijn zelf NP-compleet.
+	\item Maak gebruik van efficiënte heuritische methoden. Deze geven vaak niet de optimale oplossing, maar wel vaak een goede, maar het kan ook de slechtste oplossing zijn.
+\end{itemize}
+
+\section{NP-complete problemen}
+\subsection{Het basisprobleem: SAT (en 3SAT)}
+Gegeven een verzameling logische variabelen $\chi = \{x_1, ..., x_n\}$ en een collectie logische uitspraken $\mathcal{F} = \{F_1, ..., F_m \}$
+Elke uitspraak $F_j$ bestaat uit atomaire uitspraken $x_i$ of de inverse $\overline{x_i}$ samengevoegd met ofoperaties zoals:
+$$F_1 = x_2 \vee \overline{x_5} \vee x_7 \vee x_8 \vee x_9$$.
+De vraag is nu: \underline{kan men waarden toekennen aan de variabelen, zodat elke uitspraak $F_j$ waar is?} 
+
+Dit is natuurlijk eenvoudig op te lossen met backtracking, door incrementeel waarden toe te kennen.
+
+Er werd bewezen dat elk probleem uit NP polynomiaal kan gereduceerd worden tot het SAT probleem. 
+
+Er is hier nog een uitbreiding op, waarbij elke uitspraak slechts 3 atomaire variabelen mag bevatten. We kunnen $F_1$ dan omvormen naar:
+\begin{equation*}
+	\begin{split}
+		F'_1  & = x_2 \vee \overline{x_5} \vee x_n \\
+		F''_1  & = \overline{x_n} \vee x_7 \vee x_m \\
+		F'''_1 & = \overline{x_m} \vee x_8 \vee x_9
+	\end{split}
+\end{equation*}
+
+\subsection{Graafproblemen}
+\subsubsection{Vertex Cover}
+\todo{les 06 december}
+
+
 
 \end{document}
 
