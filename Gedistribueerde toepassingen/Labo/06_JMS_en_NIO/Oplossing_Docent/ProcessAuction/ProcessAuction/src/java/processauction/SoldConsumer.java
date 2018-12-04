@@ -21,7 +21,7 @@ public class SoldConsumer {
 
     @Resource(lookup = "java:comp/DefaultJMSConnectionFactory")
     private static ConnectionFactory connectionFactory;
-    @Resource(lookup = "jms/MyQueue")
+    @Resource(lookup = "jms/AuctionQueue")
     private static Queue queue;
 
     /**

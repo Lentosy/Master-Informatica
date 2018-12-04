@@ -337,22 +337,115 @@
 	
 	\section{Gedeelde mappen en NTFS}
 	\begin{enumerate}
-		\vraag { Welke \textit{configuratieinstellingen} kun je maken tijdens of onmiddellijk na het creëren van gedeelde mappen ? Bespreek het \textit{doel} van elk van deze diverse instellingen en de belangrijkste \textit{eigenschappen} en \textit{mogelijkheden} ervan. \accentuate{(§3.2.1, §3.2.2, fracties §3.3.1, §3.4.2, §3.4.3, §3.5 en §3.6)} } { \todo{Oplossen}}
+		\vraag { Welke \textit{configuratieinstellingen} kun je maken tijdens of onmiddellijk na het creëren van gedeelde mappen ? Bespreek het \textit{doel} van elk van deze diverse instellingen en de belangrijkste \textit{eigenschappen} en \textit{mogelijkheden} ervan. \accentuate{(§3.2.1, §3.2.2, fracties §3.3.1, §3.4.2, §3.4.3, §3.5 en §3.6)} } { 
+			\begin{itemize}
+				\item \todo{Oplossen}
+			\end{itemize}
+		}
 		
 		\vraag { Waar wordt de definitie en (partiële) configuratie van gedeelde mappen \textit{opgeslagen} ? Hoe kan men deze wijzigen vanuit een \textit{Command Prompt} ?  } { \todo{Oplossen}}
 		
-		\vraag { Geef een overzicht van de belangrijkste voordelen van de opeenvolgende versies van het \textit{NTFS bestandssysteem}. Bespreek elk van deze aspecten (ondermeer het doel, de voordelen en de beperkingen ervan), en geef aan hoe je er gebruik kan van maken, bij voorkeur vanuit een \textit{Command Prompt}. \accentuate{(NTFS fractie §1.6, fracties §3.4.1, §3.4.2 en §3.4.4)} } { \todo{Oplossen}}
+		\vraag { Geef een overzicht van de belangrijkste voordelen van de opeenvolgende versies van het \textit{NTFS bestandssysteem}. Bespreek elk van deze aspecten (ondermeer het doel, de voordelen en de beperkingen ervan), en geef aan hoe je er gebruik kan van maken, bij voorkeur vanuit een \textit{Command Prompt}. \accentuate{(NTFS fractie §1.6, fracties §3.4.1, §3.4.2 en §3.4.4)} } {
+			\begin{itemize}
+				\item \textbf{NTFS 1.2}
+					\begin{itemize}
+						\item \textbf{Beveiliging tot op bestandsniveau}: NTFS is het enige Windows bestandssysteem dat voldoende beveiliging biedt voor gebruikers die zich lokaal aanmelden.
+						\item \textbf{Logging van schijfactiviteiten}: Schijfactiviteiten worden vastgelegd in logboekbestanden, kan de oorspronkelijke situatie na een stroomonderbreking herstelt worden.
+						\item \textbf{Grotere volumes, zonder performantiedegradatie}: Naarmate de stationsgrootte toeneemt, nemen de prestaties met NTFS niet af zoals met FAT.
+						\item \textbf{Compressie}: Alleen NTFS volumes ondersteunen compressie. Via het commando \texttt{compact} kan je bestanden of directories compresseren. \accentuate{Voer zelf het commando 'compact /?' uit en studeer de opties /C, /F, /I en /S}.
+						\item \textbf{Hardlinks}: Je kan diverse mappen in een volume hetzelfde bestand laten bevatten, zonder dit bestand fysiek te dupliceren. Om een hard link naar een bestand te creëren gebruik je de opdracht \texttt{fsutil hardlink create \emph{linkbestand} \emph{bronbestand}} of \texttt{mklink /H \emph{linkbestand} \emph{bronbestand}}.
+						\item \textbf{Dynamisch uitbreiden van partities/volumes}:\todo{vinden} (\texttt{diskpart extend})
+						\item \textbf{Spanned volumes}: \todo{vinden}
+					\end{itemize}
+				\item \textbf{NTFS 3.0}
+					\begin{itemize}
+						\item \textbf{Mounten van volumes in NTFS mappen} (\texttt{mountvol} of \texttt{diskpart assign})
+						\item \textbf{Symbolische links}: Een symbolische link naar een directory, eventueel in een ander volume, kan aangemaakt worden met het commando \texttt{linkd \emph{linkmap} \emph{bronmap}}. Om ook een symbolische link naar een bestand te maken gebruik je \texttt{mklink \emph{linkbestand} \emph{bronbestand}}. Dit commando werkt ook met directories met de /D optie: \texttt{mklink /D \emph{linkmap} \emph{bronmap}}.
+						\item \textbf{Sparse bestanden}: Indien een bestand sparse is, kan NTFS enkel schijfruimte toewijzen aan de delen van grote bestanden waarnaar effecties wordt geschreven. Om een bestand als sparse te markeren, moet je het commando \texttt{fsutil sparse setflag \emph{bestandsnaam}} gebruiken. 
+						\item \textbf{File markers voor Remote Storage Service}: \todo{vinden}
+						\item \textbf{Transparante encryptie en decodering}: \todo{§3.4.1} (\texttt{cipher /e /a /s:...})
+						\item \textbf{Individuele diskquota op volumeniveau}: Voor elke gebruiker kan er een diskquota op volumeniveau ingesteld worden, zodat er een  maximale beschikbare opslagcapaciteit voor die gebruiker in een specifiek volume is. Om quotabeheer in te schakelen op een specifiek volume gebruik je het commando \texttt{fsutil quota enforce \emph{volumenaam}}. Om na te gaan of er gebruikers over de limiet zitten, gebruik je het commando \texttt{fsutil quota violations}. Informatie over het gebruik van volumes wordt geregistreerd per security ID en niet per accountnaam.
+					\end{itemize}
+				\item \textbf{NTFS 3.1}
+					\begin{itemize}
+						\item \textbf{Historische versies van bestanden}: De Volume Shadow Copy service (VSS), geïntroduceerd door Windows Server 2003+, gecombineerd met de reparsepunt technologie van NTFS 3+ biedt de Shadow Copy Restore functionaliteit aan. VSS neemt periodieke snapshots van alle betanden in een volume, en houdt een databank bij van incrementele wijzigingen aan deze bestanden. Deze databank wordt bijgehouden in een verborgen en geëncrypteerde map System Volume Information.Om VSS in te stellen gebruik je het \texttt{vsadmin} commando.
+						\item \textbf{Self-healing correctie van corrupties}: Eventuele corrupties worden online opgespoord en gecorrigeerd, waardoor de continue beschikbaarheid van het systeem verhoog, en gegevensverlies geminimaliseerd wordt.
+						\item \textbf{Ondersteuning van transacties}: Een transactie is een reeks opeenvolgende bewerkingen op hetzelfde volume. Een transactie is atomair, zodat op het einde van een transactie ofwel alle wijzigingen doorgevoerd worden, of dat alle wijzigingen ongedaan gemaakt worden. Dit systeem vereenvoudigt de implementaties van transacties door RDBMS'en zoals SQL Server. 
+						\item \textbf{Globale diskquota op mapniveau}: Deze diskqouta's kunnen gelden op individuele mappen, maar zijn onafhankelijk van de eigenaar. Elke individuele bijdrage van een gebruiker tot de map zal een impact hebben op het al dan niet overschrijden van de limiet. Een lijst van mapquota's kan opgevgraagd worden met \texttt{dirquota template list}. Om een mapquota aan te maken gebruik je dan \texttt{dirquota quota add /path:map}
+						\item \textbf{File Screens}: Een file screen verhindert dat in een specifieke maphiërarchie bestanden met bepaalde extensies kunnen opgeslagen worden, en kunnen reacties triggeren als een gebruiker poogt dat toch te doen. OM file screens te beheren kan gebruikt gemaakt worden van het commando \texttt{filescrn}. 
+					\end{itemize}
+				
+				
+			\end{itemize}
+		}
 	\end{enumerate}
 	
 	\section{Machtigingen op bestandstoegang \accentuate{(§3.3)}}
 	\begin{enumerate}
-		\vraag { Welke rol spelen machtigingen bij de beveiliging van bronnen ? Geef een gedetailleerd overzicht van het \textit{algemeen} (op alle windows objecten toegepast) mechanisme van \textit{machtigingen}. } { \todo{Oplossen}}
+		\vraag { Welke rol spelen machtigingen bij de beveiliging van bronnen ? Geef een gedetailleerd overzicht van het \textit{algemeen} (op alle windows objecten toegepast) mechanisme van \textit{machtigingen}. } {
+			\begin{itemize}
+				\item Bij elke bron moet er bepaald worden wie er toegang heeft tot welke gegevens, en wat die er mee kan doen. Elk object in Active Directory, elk object van een NTFS volume, elke registersleutel, elk proces en ook elke service heeft een security descriptor. Deze bevat:
+				\begin{itemize}
+					\item een machtigingsset = Access Control List,
+					\item de System Access Control List definieert welke acties van welke gebruikers door het auditing systeem gelogd worden,
+					\item een identificatie (de SID) van de eigenaar van het object. De eigenaar of een beheerder beheert het installen van de ACL op het object.
+					\item de primaire groep van de maker van het object. Deze identificatie is enkel van belang voor compatibiliteit met POSIX toepassingen.
+				\end{itemize}
+				De ACL is een verzameling machtigingen die gelden voor bepaalde gebruikers of groepen. Elke machtiging in de ACL wordt een Access Control Entry genoemd. Voor elke gebruiker of groep kan er een ACE zijn die een machtiging ontzegt of een machtiging toekent. Alle ACEs vormen samen de ACL. Eerst worden alle ACEs die machtigingen ontzeggen behandeld, vervolgens pas de ACEs die machtigingen toekennen. Van zodra een specifieke machtiging in een ACE ontzegt is, wordt een eventuele toekenning van de machtiging via een andere ACE genegeerd. Indien een gebruiker tot meerdere groepen behoort, worden alle machtigingen van die groep toegepast op de gebruiker. 
+
+				Er bestaan twee soorten machtigingen:
+				\begin{itemize}
+					\item Expliciete machtigingen worden rechtstreeks aan een object gekoppeld.
+					\item Overgenomen machtigingen worden doorgegeven door een bovenliggend object in de hiërarchie. 
+				\end{itemize}
+				De expliciete machtigingen hebben steeds voorrang op overgenomen machtigingen, zelfs op machtigingen die ontkent worden.
+			\end{itemize}
+
+		}
 		
-		\vraag { Bespreek hoe het mechanisme van machtigingen \textit{specifiek} (en op diverse niveaus) \textit{toegepast} wordt op \textit{bestandstoegang}. Geef de verschillende soorten machtigingen, hun onderlinge relaties, en hoe deze kunnen \textit{geanalyseerd} en \textit{ingesteld} worden. Toon hierbij aan dat je zelf met deze configuratietools geëxperimenteerd hebt. } { \todo{Oplossen}}
+		\vraag { Bespreek hoe het mechanisme van machtigingen \textit{specifiek} (en op diverse niveaus) \textit{toegepast} wordt op \textit{bestandstoegang}. Geef de verschillende soorten machtigingen, hun onderlinge relaties, en hoe deze kunnen \textit{geanalyseerd} en \textit{ingesteld} worden. Toon hierbij aan dat je zelf met deze configuratietools geëxperimenteerd hebt. } { 
+			\begin{itemize}
+				\item Voor bestandstoegang kunnen zowel machtigingen ingesteld worden op share niveau als op NTFS niveau. Verzoeken van gebruikers kunnen onafhankelijk van de NTFS machtigingen door de share machtiging geweigerd worden. 
+				\item \textbf{Share niveau}
+				
+				Bestandstoegang op share niveau vormt de eerste beveiligingslaag. Elke share heeft toegewezen machtigingen. Om die te bekijken of wijzigen moet de Permissions Editor opgestart worden, bv door \texttt{compmgmt.msc} op te starten, de properties opvragen van een share, de tabpagina Sharing selecteren en de Advanced Sharing en Permissions knoppen te selecteren.
+
+				Op share niveau kunnen er drie machtigingen gedefinieerd worden:
+				\begin{itemize}
+					\item \textbf{Full Control}: Een gebruiker of groep kan alle bewerkingen uitvoeren op alle bestanden en mappen, en op de share zelf. 
+					\item \textbf{Read}: Dit laat om om de volledige structuur van de share te zien, om mappen en bestanden te lezen, en om toepassingen in die maphiërarchie uit te voeren.
+					\item \textbf{Change}: Dit laat ook toe om bestanden te wijzigen en te verwijderen, en er de bestandskenmerken van te wijzigen. De share zelf en NTFS machtigingen kunnen niet gewijzigd worden.
+				\end{itemize}
+				\item \textbf{NTFS niveau}:
+				
+				NTFS machtigingen bieden een tweede (beveiliging op mappen) en derde (beveiliging op bestanden) beveiligingslaag aan. Op NTFS niveau bestaan er twee subniveaus:
+				\begin{itemize}
+					\item \textbf{De atomaire machtigingen}: Deze 13 machtigingen vormen de bouwstenen voor het hogere niveau. De atomaire machtigingen zijn de kleinst mogelijke machtigingen die je kan instellen, en bieden de mogelijkheid om zeer nauwkeurig het toegangsniveau te bepalen. \accentuate{de 13 opties op p85 moet je niet kennen, enkel mechanisme uitleggen. }
+					\item \textbf{De moleculaire machtigingen}: Dit niveau omvat zes veel gebruikte combinaties van atomaire machtigingen. \accentuate{ ook hier moeten de opties niet gekend zijn.}
+				\end{itemize}
+
+				NTFS machtigingen kunnen ingesteld worden met de ACL editor, die kan opgeroepen worden via de Security tabpagina van een wilekeurige map of bestand. De security tabpagina bevat een lijst van gebruikers of groepen waarop een ACL gedefinieerd is voor het geselecteerde object. Op een gebruiker of groep klikken geeft de overeenkomstige moleculaire machtigingen in een andere lijst. Grijze selectievakjes duiden overgeërfde machtigingen aan. De knop advanced geeft een nieuw venster met 3 tabbladen:
+				\begin{itemize}
+					\item \textbf{Permissions}: Dit tabblad geeft opnieuw de lijst van gebruikers of groepen. Er kunnen gebruikers of groepen toegevoegd, verwijderd, of geinspecteerd worden. Door een gebruiker of groep te selecteren en vervolgens op View te klikken, komen terug de 6 moleculaire machtigingen tevoorschijn. Om de atomaire machtigingen te zien klik je op Show Advanced Permissions.
+					\item \textbf{Auditing}: Dit laat toe om de SACL in te stellen voor het specifieke object. Elke atomaire machtiging kan ingesteld worden, en ook of dat de machtiging gelukt of gefaald is.
+					\item \textbf{Effective Access}: Dit tabblad laat toe om de machtigingen van een bepaalde gebruiker of groep te bekijken via hetzelfde algoritme dat de Security Reference Monitor hanteert om de uiteindelijke machtigingen op een object na te gaan.
+				\end{itemize}
+			\end{itemize}
+		}
 		
-		\vraag { Wat gebeurt er met de machtigingen bij het \textit{verplaatsen} van een bestand ? Wat gebeurt er met de machtigingen bij het \textit{kopiëren} van een bestand ? } { \todo{Oplossen}}
+		\vraag { Wat gebeurt er met de machtigingen bij het \textit{verplaatsen} van een bestand ? Wat gebeurt er met de machtigingen bij het \textit{kopiëren} van een bestand ? } { 
+			\begin{itemize}
+				\item In beide gevallen wordt de gebruiker die de verplaats- of kopieeropdracht uitvoert, automatisch de eigenaar van de objecten. 
+				\item \textbf{Verplaatsen}: Een bestand of map verplaatsen naar een container binnen hetzelfde volume heeft geen impact op de explicitie machtigingen die zijn toegewezen aan het object, en blijfen dus behouden. Indien deze verplaatst worden naar een andere container binnen een ander volume, dan krijgen de objecten dezelfde machtigingen als hun doelcontainer.
+				\item \textbf{Kopiëren}: Een bestand of map kopiëren naar een container op hetzelfde of een ander volume, vervallen de expliciete machtigingen, en worden de machtigingen van de doelcontainer overgenomen.
+			\end{itemize}
+		}
 		
-		\vraag { Op welke \textit{andere objecten} zijn machtigingen van toepassing ? } { \todo{Oplossen}}
+		\vraag { Op welke \textit{andere objecten} zijn machtigingen van toepassing ? } { 
+			\begin{itemize}
+				\item Op elk object in Active Directory, elke registersleutel, elk proces en elke service.
+			\end{itemize}
+		}
 		
 		\vraag { Wie is \textit{in principe} verantwoordelijk voor het configureren van machtigingen ? Door welke instelling is dit zo vastgelegd ? Hoe kan ervoor gezorgd worden dat enkel \textit{administrators} verantwoordelijk gesteld worden voor het configureren van machtigingen ? } { \todo{Oplossen}}
 		

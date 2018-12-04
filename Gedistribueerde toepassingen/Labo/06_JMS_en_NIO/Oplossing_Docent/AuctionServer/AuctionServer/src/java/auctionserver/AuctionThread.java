@@ -125,6 +125,7 @@ public class AuctionThread implements Runnable {
             // store a new StringBuffer as the Key's attachment for holding partially read messages
             clientChannel.configureBlocking(false);
             clientChannel.register(inputSelector, SelectionKey.OP_READ, new StringBuffer());
+            
         } catch (IOException ex) {
             Logger.getLogger(AuctionThread.class.getName()).log(Level.SEVERE, "new client problems ", ex);
         }
@@ -180,7 +181,7 @@ public class AuctionThread implements Runnable {
                     if (line.startsWith("REGISTER")) {
                         String[] tokens = line.split(" ");
                         name.append(tokens[1].trim());
-                        sendMessage(messageOffer(offer.getItem()).toString(), channel);                        
+                        sendMessage(messageOffer(offer.getItem()).toString(), channel);
                         sendMessage("CURRENT OFFER " + offer.getCurrentOffer(), channel);
                     } else {
                         sendMessage("REGISTER FIRST ", channel);
@@ -316,7 +317,6 @@ public class AuctionThread implements Runnable {
         try {
             Message message = context.createTextMessage("ITEM " + offer.getItem().getId()
                     + " SOLD BY " + offer.getClient() + " FOR " + offer.getCurrentOffer());
-
             message.setBooleanProperty("SOLD", true);
             context.createProducer().send(queue, message);
         } catch (JMSException ex) {
