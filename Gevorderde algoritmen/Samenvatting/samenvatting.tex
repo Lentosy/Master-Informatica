@@ -6,36 +6,38 @@
 	\tableofcontents
 	\part{Gegevensstructuren II}
 	\chapter{Efficiënte zoekbomen}
-	Vooraleer efficiënte zoekbomen behandeld kunnen worden moet er eerst een fundamentele operatie besproken worden: \textbf{rotaties}. Rotaties wijzigen de vorm van de boom, maar behouden de inorder volgorde van de sleutels. Dit is nodig omdat de eigenschap van een binaire zoekboom steeds voldaan moet zijn, namelijk dat het linkerkind kleiner is, en het rechterkind groter, dan de ouder. Een rotatie is $O(1)$ omdat enkel pointers verplaatst moet worden.
-	
-	\begin{adjustbox}{valign=t}
-		\begin{forest}
-			for tree = {draw, circle, node options = {minimum width = 5ex}}
-			[p
+	Rotaties wijzigen de vorm van de boom, maar behouden de inorder volgorde van de sleutels. Dit is nodig omdat de eigenschap van een binaire zoekboom steeds voldaan moet zijn, namelijk dat het linkerkind kleiner is, en het rechterkind groter, dan de ouder. Een rotatie is $O(1)$ omdat enkel pointers verplaatst moet worden.
+	\begin{figure}[ht]
+		\centering
+		\begin{adjustbox}{valign=t}
+			
+			\begin{forest}
+				for tree = {draw, circle, node options = {minimum width = 5ex}}
+				[p
+					[l
+						[$\alpha$, rectangle]
+						[$\beta$, rectangle]
+					]
+					[$\gamma$, rectangle]
+				]	
+			\end{forest}
+		\end{adjustbox}\qquad
+		\begin{adjustbox}{valign=c}
+		$\Leftrightarrow$
+		\end{adjustbox}\qquad
+		\begin{adjustbox}{valign=t}
+			\begin{forest}
+				for tree = {draw, circle, node options = {minimum width = 5ex}}
 				[l
 					[$\alpha$, rectangle]
-					[$\beta$, rectangle]
-				]
-				[$\gamma$, rectangle]
-			]	
-		\end{forest}
-	\end{adjustbox}\qquad
-	\begin{adjustbox}{valign=c}
-	$\Leftrightarrow$
-	\end{adjustbox}\qquad
-	\begin{adjustbox}{valign=t}
-		\begin{forest}
-			for tree = {draw, circle, node options = {minimum width = 5ex}}
-			[l
-				[$\alpha$, rectangle]
-				[p
-					[$\beta$, rectangle]
-					[$\gamma$, rectangle]	
-				]
-			]	
-		\end{forest}
-	\end{adjustbox}
-	
+					[p
+						[$\beta$, rectangle]
+						[$\gamma$, rectangle]	
+					]
+				]	
+			\end{forest}
+		\end{adjustbox}
+	\end{figure}
 	
 
 
@@ -111,9 +113,26 @@
 			\end{itemize}
 	\end{itemize}
 	\subsection{Performantie}
-	\todo{dit is niet belangrijk voor de test.}
+	= Aantonen dat elke reeks van $m$ operaties met maximaal $n$ knopen een performantie van $O(m\lg n$) heeft, waaruit volgt dat er een geamortiseerde efficiëntie van $O(\lg n)$ is per operatie.
+
+	Gebruik een potentiaalfunctie $\Phi_i$, die aangeeft hoe goed de vorm van de splayboom is na een operatie $i$. Hoe hoger het potentiaal, des te beter de vorm van de splayboom. Elke knoop krijgt ook een gewicht $s_i = $ het aantal knopen in de deelboom waarvan hij wortel is. Vaak stelt men de potentiaalfunctie in als de som van de logaritmen van al deze gewichten:
+	$$\Phi = \sum_{i = 1}^{n} \lg s_i$$
+
+	Stel nu $t_i$ de werkelijke tijd van de $i$-de operatie, $a_i$ de geamortiseerde tijd, en $\Phi_i$ de potentiaal na deze operatie, dan is $a_i = t_i + \Phi_i - \Phi_{i - 1}$. De geamortiseerde tijd van een reeks van $m$ operaties is dan de som van de individuele geamortiseerde tijden:
+	$$\sum_{i = 1}^{m} a_i = \sum_{i = 1}^{m} (t_i + \Phi_i - \Phi_{i - 1})$$
+	In de som komen de meeste potentialen met tegengestelde tekens voor.
+	$$\sum_{i = 1}^{m} a_i = \sum_{i = 1}^{m} t_i + \Phi_m - \Phi_0$$
+
+	Stel nu $c$, de knoop die we zoeken, $r_w$ de rang van de wortel en $r_c$ de rang van knoop $c$ in de originele boom.
+	\begin{itemize}
+		\item \underline{$c$ is de wortel}: Er zijn geen rotaties nodig en de potentiaal blijft ongewijzigd. Deze operatie is dan ook $O(1)$.
+		\item \underline{$c$ is niet de wortel}: \todo{moeten we dit eigenlijk kennen?}
+	\end{itemize}
+
+
+
 	\section{Randomized Search Trees}
-	\accentuate{kans is klein dat hij dit vraagt}
+	\accentuate{kans is klein dat hij dit vraagt. is vrij easy ook: gewoon per knoop een prioriteit genereren (met randomgenerator), en steek die knoop in treap op basis van prioriteit. Een treap = heap + tree, een boom waarbij de prioriteit van de knopen aan de heapvoorwaarde voldoen. }
 	\chapter{Toepassingen van dynamisch programmeren}
 	\section{Langste gemeenschappelijke deelsequentie}
  Voor twee strings $X = \langle x_0, x_1, ... x_{n - 1} \rangle$ en $Y = \langle y_0, y_1, ... y_{m - 1} \rangle$ waarbij $x_i$ en $y_i$ individuele karakters zijn, kan men de langste gemeenschappelijke deelsequentie bepalen door een stringelementen weg te laten, zodat beide strings gelijk zijn. Dit probleem heeft een optimale deelstructuur: de deelproblemen zijn paren prefixen van de twee strings. Stel $X_i$ de prefix met lengte i en $X_0$ de ledige prefix. Analoog geldt hetzelfde voor $Y$. Beschouw nu $Z = \langle z_0, z_1, ..., z_{k - 1} \rangle$, dan zijn er drie mogelijkheden:
@@ -320,7 +339,6 @@ Een eulercircuit is een gesloten omloop in een graaf die alle verbindingen één
 Dit algoritme werkt voor verbindingen met negatieve gewichten, iets wat het algoritme van Dijkstra niet kon. Het algoritme is dan natuurlijk ook trager. \accentuate{(Dijkstra gebruikt het feit dat indien een pad naar A $\rightarrow$ C bestaat, er geen korter pad A $\rightarrow$ B $\rightarrow$ C kan zijn, daarom is het algoritme performant, maar er mogen dus geen negatieve verbindingen zijn. Indien B negatief zou zijn dan klopt Dijkstra niet.)}.
 
 
-
 Het algoritme berust op een belangrijke eigenschap: Indien een graaf geen negatieve lussen heeft, zullen de kortste wegen evenmin lussen hebben en hoogstens $n - 1$ verbindingen bevatten. Hieruit kan een recursief verband opgesteld worden tussen de kortste wegen met maximaal $k$ verbindingen en de kortste wegen met maximaal $k - 1$ verbindingen.
 $$d_i(k) = \min(d_i(k - 1), \min\limits_{j \in V} (d_j(k - 1) + g_{ij}))$$
 met
@@ -331,17 +349,17 @@ met
 \end{itemize}
 
 Er bestaan \underline{twee goede implementaties}:
-\begin{itemize}
+\begin{enumerate}
 	\item \begin{itemize}
-		\item Niet nodig om in elke iteratie alle verbindingen te onderzoeken. Als een iteratie de voorlopige kortste afstand tot een knoop niet aanpast, is het zinloos om bij de volgende iteratie de verbindingen vanuit die knoop te onderzoeken.
-		\item Plaats enkel de knopen waarvan de afstand door de huidige iteratie gewijzigd werd in een wachtrij.
-		\item Enkel de buren van deze knopen worden in de volgende iteratie getest.
-		\item Elke buur moet, indien hij getest wordt en nog niet in de wachtrij zit, ook in de wachtrij gezet worden.
-		\item ! Zal niet stoppen indien er een negatieve lus in de graaf zit. 
+		\item [\info] Niet nodig om in elke iteratie alle verbindingen te onderzoeken. Als een iteratie de voorlopige kortste afstand tot een knoop niet aanpast, is het zinloos om bij de volgende iteratie de verbindingen vanuit die knoop te onderzoeken.
+		\item [\info] Plaats enkel de knopen waarvan de afstand door de huidige iteratie gewijzigd werd in een wachtrij.
+		\item [\info] Enkel de buren van deze knopen worden in de volgende iteratie getest.
+		\item [\info] Elke buur moet, indien hij getest wordt en nog niet in de wachtrij zit, ook in de wachtrij gezet worden.
+		\item [\alert] Zal niet stoppen indien er een negatieve lus in de graaf zit. 
 	\end{itemize}
 	\item \todo{p69}
 
-\end{itemize}
+\end{enumerate}
 
 
 \chapter{Stroomnetwerken}
@@ -355,12 +373,12 @@ Er bestaan \underline{twee goede implementaties}:
 \section{Maximalestroomprobleem}
 = zoveel mogelijk materiaal van producent naar verbruiker laten stromen, zonder de capaciteit van de verbinding te overschrijden.
 \begin{itemize}
-	\item Methode van \textbf{Ford-Fulkerson} \accentuate{('methode' aangezien manier om vergrotende paden te zoeken ontbreekt).}
-	\item Iteratieve methode. Bij elke iteratie neemt netstroom vanuit producent toe.
-	\item Stel de verzameling van knopen $K$, dan is de totale nettostroom $f$ uit de producent $p$ \accentuate{(De som van het materiaal dat toekomt min het materiaal dat toekomt voor elke knoop)}. 
+	\item [\info] Methode van \textbf{Ford-Fulkerson} \accentuate{('methode' aangezien manier om vergrotende paden te zoeken ontbreekt).}
+	\item [\info] Iteratieve methode. Bij elke iteratie neemt netstroom vanuit producent toe.
+	\item [\info] Stel de verzameling van knopen $K$, dan is de totale nettostroom $f$ uit de producent $p$ \accentuate{(De som van het materiaal dat toekomt min het materiaal dat weggaat voor elke knoop)}. 
 		$$f = \sum_{j \in K} (s(p, j) - s(j, p))$$
-	\item De stroomverdeling is het geheel van alle stromen voor alle mogelijke knopenparen. 
-	\item Het restnetwerk is een nieuw netwerk dat verkregen wordt door uit de huidige stroomverdeling een overzicht op te stellen van de mogelijke stroomtoename tussen elk paar knopen. Het restnetwerk bevat dezelfde knopen, maar niet noodzakelijk dezelfde verbindingen en capaciteit.
+	\item [\info] De stroomverdeling is het geheel van alle stromen voor alle mogelijke knopenparen. 
+	\item [\info] Het restnetwerk is een nieuw netwerk dat verkregen wordt door uit de huidige stroomverdeling een overzicht op te stellen van de mogelijke stroomtoename tussen elk paar knopen. Het restnetwerk bevat dezelfde knopen, maar niet noodzakelijk dezelfde verbindingen en capaciteit.
 \end{itemize}
 Het algoritme verloopt als volgt:
 \begin{enumerate}
@@ -471,11 +489,29 @@ Deze zijn compleet analoog zoals gewone zoekbomen, op één verschil na: de juis
 
 De boom overlopen in \textbf{inorder} geeft de sleutels niet noodzakelijk in volgorde. De hoogte van de boom wordt beperkt tot het aantal bits van de grootste sleutel. Voor een groot aantal sleutels met relatief kleine bitlengte is de performantie in het slechtste geval veel beter dan die van een gewone binaire zoekboom, en vergelijkbaar met die van een rood-zwarte boom. In het gemiddelde geval is de kans op een volgend nul- of éénbit steeds gelijk, zodat er gemiddeld evenveel sleutels links als rechts komen. Daardoor is de gemiddelde hoogte van de boom $O(\lg n)$. De woordenboekoperaties zijn ook $O(\lg n)$.
 
-De dikwijls beperkende voorwaarde is een efficiënte toegang tot de bits van de sleutels. Bovendien zijn er enkel woordenboekoperaties mogelijk.
+\alert{}   De dikwijls beperkende voorwaarde is een efficiënte toegang tot de bits van de sleutels. Bovendien zijn er enkel woordenboekoperaties mogelijk.
 
 \section{Tries}
-Deze boom behoudt wel de sleutels in volgorde opslaat.
+Deze familie bomen behouden wel de sleutels in volgorde.
 \subsection{Binaire tries}
+\begin{itemize}
+	\item[\info] Zoekweg wordt bepaald door de opeenvolgende bits van de zoeksleutel.
+	\item[\info] De sleutels worden enkel opgeslagen in de bladeren, en niet in inwendige knopen.
+	\item[\good] Deze boom inorder overlopen geeft wel de sleutels gerangschikt.
+	\item[\good] De zoeksleutel moet niet vergeleken worden met elke knoop op de zoekweg, maar met de opeenvolgende bits.  
+	\item[\info] Komen we bij een ledige deelboom terecht (nullwijzer), dan bevat de boom de zoeksleutel niet, en kan dan op deze plaatst toegevoegd worden.
+	\item[\info] Komen we niet bij een ledig deelboom terecht, dan bevat het blad de enige sleutel in die boom die gelijk kan zijn aan de zoeksleutel, aangezien ze dezelfde beginbits hebben.
+	\item[\alert] Wanneer opgeslagen sleutels veel gelijke beginbits hebben ziujn er veel knopen met slechts één kind.
+	\item[\alert] De bits van een sleutel mogen geen prefix zijn van een andere sleutel. 
+	\item[\good] De structuur is onafhankelijk van de toevoegvolgorde, zodat er slechts één unieke trie is voor elke verzameling sleutels.
+	\item[\info] Een trie opgebouwd uit $n$ gelijkmatige verdeelde sleutels vraagt voor zoeken of toevoegen $O(\lg n)$ bitoperaties. 
+\end{itemize}
+
+
+\subsection{Meerwegtries}
+
+
+\section{Variabelelengtecodering}
 
 
 
@@ -706,6 +742,75 @@ zolang j < t
 	j++
 	\end{lstlisting}
 \end{enumerate}
+
+\chapter{Indexeren van vaste tekst}
+\begin{itemize}
+	\item[\info] Voorbereidend werk op de tekst, zodat zoeken in tekst tot $O(p)$ kan gereduceerd worden.
+	\item[\info] Opslaan van de \underline{suffixen} van de tekst in een bepaalde gegevensstructuur.
+	\item[\info] Als het patroon in de tekst voorkomt, moet het een \underline{prefix} zijn van één van die suffixen.
+	\item[\info] Om te vermijden dat een suffix een prefix vaneen ander suffix zou zijn, sluiten we de tekst af met een speciaal karakter.
+	\item[\info] $suff_i = $ suffix dat begint op lokatie $i$.   
+
+\end{itemize}
+\section{Suffixbomen}
+\begin{itemize}
+	\item[\alert] Gebruik geen meerwegstrie. De zoektijd zou wel beperkt worden door sleutellengte $p$, maar toevoegen is $O(t^2)$ en het neemt onnodig veel geheugen in beslag. 
+	\item[\info] De suffixboom bevat alle suffixen van dezelfde tekst.
+	\item[\info] Het is verwant met de patriciatrie, maar met volgende wijzigingen:
+		\begin{itemize}
+			\item[\info] In plaats van \emph{suff}$_i$ op te slagen, volstaat de beginindex $i$. De tekst moet wel bijgehouden worden.
+			\item[\info]  \todo{dunno}
+			\item[\info] Er wordt een staartpointer opgenomen in elke inwendige knoop, die constructie en sommige toepassingen veel sneller maakt. 
+		\end{itemize}
+	\item[\info] $staart(abcd) = bcd$. De staart van een string is de string bekomen door het eerste karakter te verwijderen.
+	\item[\info] We starten met een lege suffixboom en voegen elke keer één karakter van $T$ toe, zodat we na $k$ iteraties suffixen hebben van de string $T[0] ... T[k - 1]$, zonder afsluitteken.
+
+	Na $k$ iteraties is er een kleinste index $i$, die gelijk is aan $k$, zodanig dat het incomplete \emph{suff}$_i$ een prefix is van een vorig suffix. Dan geldt:
+
+	\begin{enumerate}
+		\item Alle suffixen \emph{suff}$_j$ waarvoor $j < i$ zijn geen prefix en worden aangeduid als een blad.
+		\item Alle suffixen \emph{suff}$_j$ met $j\geq i$ zijn een prefix van een andere string en zijn niet zichtbaar in de suffixboom. \emph{suff}$_i$ noemen we het actieve suffix.
+	\end{enumerate}
+
+	\underline{Wat als we $T[k]$ toevoegen?} Alle strings in de suffixboom moet met dit karakter verlengd worden en het karakter $T[k]$ moet toegevoegd worden in de boom, tenzij dit karakter al eerder in de string zat, want dan is deze string een prefix dat we niet te zien krijgen.
+	\begin{enumerate}
+		\item Voor suffixen die aangeduid worden door een blad moeten we niets doen.
+		\item Overloop de strings af die een prefix waren, in orde van dalende lengte. Er zijn er nul of meer die door dit extra karakter geen prefix meer zijn. Die moeten een blad krijgen, waarna we naar het volgende suffix gaan.
+	\end{enumerate}
+
+	\item[\info] De toevoegoperatie van hierboven voegt steeds een blad toe, en springt verder naar de volgende impliciet aanwezige suffix, zodat de toevoegoperatie $O(t)$ is. 
+
+	Om dit te bereiken houden we een pointer bij naar de laatst toegevoegde inwendige knoop en een pointer naar het actieve punt.
+	
+	Het actieve punt is de laatste explicite inwendige knoop die we tegenkomen als we het actieve suffix zouden zoeken in de suffixboom.
+
+
+	\item[\info] \underline{Toepassingen van een suffixboom}:
+	\begin{itemize}
+		\item[\info] Het deelstringprobleem (Geef alle beginposities van $P$ in $T$). 
+
+		Construeer de suffixboom voor $T$, en zoek dan de knoop die overeenkomt met $P$.
+		\begin{enumerate}
+			\item Bestaat de knoop niet, dan komt $P$ niet in $T$ voor. 
+			\item Bestaat de knoop wel, dan zijn de gezochte beginposities de indices bij alle bladeren die opvolgers zijn van deze knoop. 
+		\end{enumerate}
+
+		Als $P$ $k$ maal voorkomt, kan die gevonden worden in $O(p + k)$ want elke deelboom heeft hoogstens $k - 1$ inwendige knopen.
+		\item[\info] Langste gemeenschappelijke deelstring (Gegeven een verzameling van $k$ verschillende strings $S = \{s_1, s_2, ..., s_k\}$, met totale lengte $t$. Gezocht de langste gemeenschappelijke deelstring van al die strings.)
+
+		Construeer een veralgemeende suffixboom, die al de suffixen bevat van al de strings uit deze verzameling. De bladeren bevatten niet enkel de beginpositie van de suffix, maar ook de string waartoe die behoort. De constructietijd voor een verzameling strings met totale lengte $t$ is $O(t)$.
+
+		De boom wordt systematisch overlopen om de lengte van alle prefixen en het aantal verschillende strings te bepalen waarin ze voorkomen, en dus meteen ook het langste prefix dat in alle strings voorkomt. 
+
+		Voorzie voor elke string in $S$ een verschillend afsluitkarakter, op die manier kunnen we zien tot welke string deze behoort, en behoort elk blad maar tot één string.
+
+
+	\end{itemize}
+	
+
+\end{itemize}
+\section{Suffixtabellen}
+\section{Tekstzoekmachines}
 
 \part{Hardnekkige problemen}
 \chapter{NP}
