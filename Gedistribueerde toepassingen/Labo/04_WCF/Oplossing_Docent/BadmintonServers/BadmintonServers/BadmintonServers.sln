@@ -1,0 +1,58 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.26730.16
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BadmintonServiceLibrary", "BadmintonServiceLibrary\BadmintonServiceLibrary.csproj", "{EE3EF789-7151-433A-9AE1-06C003B8B255}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BadmintonService", "BadmintonService\BadmintonService.csproj", "{B69E8DE2-9B05-49D7-964A-2064D776F1BF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BadmintonClientConsole", "BadmintonClientConsole\BadmintonClientConsole.csproj", "{F27F6AA9-7552-44BE-A5F2-54EE58C0A939}"
+	ProjectSection(ProjectDependencies) = postProject
+		{B69E8DE2-9B05-49D7-964A-2064D776F1BF} = {B69E8DE2-9B05-49D7-964A-2064D776F1BF}
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BadmintonServerConsole", "BadmintonServerConsole\BadmintonServerConsole.csproj", "{29D0015E-A742-4D15-A827-166E6E3833BA}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BadmintonWebClient", "BadmintonWebClient\BadmintonWebClient.csproj", "{0F71FABE-D7BD-4D54-B315-63CA1F442C04}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestConsoleServer", "TestConsoleServer\TestConsoleServer.csproj", "{470B0831-C082-494C-8BB9-C63AF702E356}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{EE3EF789-7151-433A-9AE1-06C003B8B255}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE3EF789-7151-433A-9AE1-06C003B8B255}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE3EF789-7151-433A-9AE1-06C003B8B255}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE3EF789-7151-433A-9AE1-06C003B8B255}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B69E8DE2-9B05-49D7-964A-2064D776F1BF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B69E8DE2-9B05-49D7-964A-2064D776F1BF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B69E8DE2-9B05-49D7-964A-2064D776F1BF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B69E8DE2-9B05-49D7-964A-2064D776F1BF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F27F6AA9-7552-44BE-A5F2-54EE58C0A939}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F27F6AA9-7552-44BE-A5F2-54EE58C0A939}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F27F6AA9-7552-44BE-A5F2-54EE58C0A939}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F27F6AA9-7552-44BE-A5F2-54EE58C0A939}.Release|Any CPU.Build.0 = Release|Any CPU
+		{29D0015E-A742-4D15-A827-166E6E3833BA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{29D0015E-A742-4D15-A827-166E6E3833BA}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{29D0015E-A742-4D15-A827-166E6E3833BA}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{29D0015E-A742-4D15-A827-166E6E3833BA}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0F71FABE-D7BD-4D54-B315-63CA1F442C04}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0F71FABE-D7BD-4D54-B315-63CA1F442C04}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0F71FABE-D7BD-4D54-B315-63CA1F442C04}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0F71FABE-D7BD-4D54-B315-63CA1F442C04}.Release|Any CPU.Build.0 = Release|Any CPU
+		{470B0831-C082-494C-8BB9-C63AF702E356}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{470B0831-C082-494C-8BB9-C63AF702E356}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{470B0831-C082-494C-8BB9-C63AF702E356}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{470B0831-C082-494C-8BB9-C63AF702E356}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {7F6C9BDD-F4B2-400B-ABA9-266CB03533DE}
+	EndGlobalSection
+EndGlobal

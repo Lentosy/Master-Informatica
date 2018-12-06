@@ -1,0 +1,69 @@
+default gateway opnieuw instellen in nieuwe vm, en dns service (resolv.conf) (mx record toevoegen en serieel nummer++)
+, en andere netwerkinstellingen
+
+yum remove firewalld + reboot!
+
+cat /etc/selinux/config		int midden moet staan SELINUX=disabled
+
+groep XX nog invullen in die dingen da we van hun moetne downloaden
+
+sendmail.mc kopieren naar home directory
+
+om da te gebruiken;  yum install sendmail m4 sendmail-cf mailx
+
+journalctl -f --unit=sendmail.service	foutboodschappen tonen
+
+aje nieuwe vm maakt zeker in vm settings bij netwerkadapters da in bridged met lan1 zetten
+dan zelf ifcfg-enp0s3 aanmaken en dingen inzetten
+
+
+ mx record toevoegen en dns herstarten
+
+ moet in /etc/mail/ staan in da mail configuratie bestand
+MASQUERADE_AS(groep20.iii.hogent.be)dnl
+GENERICS_DOMAIN('groep20.iii.hogent.be')dnl
+
+etc/mail/local-host-names  al die namen van computers kan je afhandelen ofzoiets
+ comp1.groep20.iii.hogent.be
+ groep20.iii.hogent.be
+ FEATURE('use_cw_file')
+ 
+ 
+ mail sturen 	echo "bodytext" | sendmail -v tiwi1		
+ komt terecht in /var/mail/tiwi1
+ 
+ kunt ook    sendmail -vt < mail.txt     doen
+ met erin 
+ To: tiwi1@hilbertVM 
+ Subject: titel
+ from: tiwi1@ivoryVM 
+ [lege lijn]
+ hey
+ 
+ 
+ aliassen
+ /etc/aliases
+ toevoegen:
+ xandro.vermeulen@groep20.iii.hogent.be:	tiwi1@ivoryVM
+ b.d.s@groep20.iii.hogent.be:	tiwi2@hilbertVM
+ 
+ newaliases  typen erna
+ 
+ 
+ service dovecot start
+ 
+ 
+ thunderbird opstarten: linksboven application menu: run program : thunderbird
+ s/mime:
+ certificaat aanmaken via godfather
+ exporteren van firefox (backup)
+ importeren in thunderbird
+ ca certificaat -> edit trust -> alles vertrouwen
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

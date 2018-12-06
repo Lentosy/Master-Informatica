@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+ <definitions 
+ xmlns="http://schemas.xmlsoap.org/wsdl/" 
+ xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" 
+ xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" name="PlantService" targetNamespace="http://plant/" xmlns:tns="http://plant/" xmlns:wsp="http://www.w3.org/ns/ws-policy" xmlns:wsu="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd" xmlns:fi="http://java.sun.com/xml/ns/wsit/2006/09/policy/fastinfoset/service" xmlns:tcp="http://java.sun.com/xml/ns/wsit/2006/09/policy/soaptcp/service" xmlns:sp="http://docs.oasis-open.org/ws-sx/ws-securitypolicy/200702" 
+ >
+    <message name="getPlanten"/>
+    <message name="getPlantenResponse"/>
+    <message name="voegPlantToe"/>
+    <message name="voegPlantToeResponse"/>
+    <portType name="NewWebService">
+        <operation name="getPlanten">
+            <input message="tns:getPlanten"/>
+            <output message="tns:getPlantenResponse"/>
+        </operation>
+        <operation name="voegPlantToe">
+            <input message="tns:voegPlantToe"/>
+            <output message="tns:voegPlantToeResponse"/>
+        </operation>
+    </portType>
+    <binding name="NewWebServicePortBinding" type="tns:NewWebService">
+        <wsp:PolicyReference URI="#NewWebServicePortBindingPolicy"/>
+        <operation name="getPlanten">
+            <input/>
+            <output/>
+        </operation>
+        <operation name="voegPlantToe">
+            <input/>
+            <output/>
+        </operation>
+    </binding>
+    <service name="PlantService">
+        <port name="NewWebServicePort" binding="tns:NewWebServicePortBinding"/>
+    </service>
+    <wsp:Policy wsu:Id="NewWebServicePortBindingPolicy">
+        <wsp:ExactlyOne>
+            <wsp:All/>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    <wsp:Policy wsu:Id="NewWebServicePortBinding_voegPlantToe_Input_Policy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:EncryptedParts>
+                    <sp:Body/>
+                </sp:EncryptedParts>
+                <sp:SignedParts>
+                    <sp:Body/>
+                </sp:SignedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    <wsp:Policy wsu:Id="NewWebServicePortBinding_voegPlantToe_Output_Policy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:EncryptedParts>
+                    <sp:Body/>
+                </sp:EncryptedParts>
+                <sp:SignedParts>
+                    <sp:Body/>
+                </sp:SignedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    <wsp:Policy wsu:Id="NewWebServicePortBinding_getPlanten_Input_Policy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:EncryptedParts>
+                    <sp:Body/>
+                </sp:EncryptedParts>
+                <sp:SignedParts>
+                    <sp:Body/>
+                </sp:SignedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+    <wsp:Policy wsu:Id="NewWebServicePortBinding_getPlanten_Output_Policy">
+        <wsp:ExactlyOne>
+            <wsp:All>
+                <sp:EncryptedParts>
+                    <sp:Body/>
+                </sp:EncryptedParts>
+                <sp:SignedParts>
+                    <sp:Body/>
+                </sp:SignedParts>
+            </wsp:All>
+        </wsp:ExactlyOne>
+    </wsp:Policy>
+</definitions>

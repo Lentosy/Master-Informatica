@@ -1,0 +1,94 @@
+alles in script schrijven
+
+/etc/services	als je alle services / poortnummers waaran da verbonden kan worden wilt zien 
+
+bij firewalls zowel udp als tcp voorzien (bij bv poort 53)
+
+:::chains:::
+iptables -L -t raw	 (2 tables)
+iptables -L -t nat   (4tables)
+iptables -L -t mangle (4 tables)
+iptables -L   (3 tables)
+
+
+iptables:  raw, mangle, nat, filter
+
+nat:  (bekijk iptables_flow) tekeningen voor labo firewalls
+1. SNAT: instellen postrouting chain
+2. DNAT: instellen prerouting chain     (1 ip adres en ge wilt 4 verschillene fysieke machines op hebben en verschillende services op draaien)
+
+
+
+iptables   ofwel (insert) -I (vooraan)	of achteraan toevoegen (append) -A
+dan op welke chain  OUTPUT of INPUT	afhankelijk op welk je wilt filteren
+
+-p 	voor (transport)protocol	tcp, udp, icmp 
+
+(ping) icmp poort bestaat niet.   op test dus niet schrijven "ping is op icmp poort"
+
+-s source	-d destination
+als je ze kent:		--sport   source port		--dport	destination port
+
+dan -j  ACCEPT/DROP/REJECT		kernel zal het dan ofwel droppen of accepten	
+bij reject: bericht terug naar source   bv. ICMP PORT UNREACHABLE	en bij drop stuurt hij niks terug
+
+iptables -I INPUT -p tcp  -s 10.0.0.1/8 -d 192.168.16.47 -- sport 37 --dport 80 -j DROP
+
+iptables -L		die regel nu bekijken
+
+iptables -F		flush. alle regels wegschrijven
+
+met -j
+default policy accept. dus regels toevoegen die droppen
+in 2de deel labo;	default policy instellen op drop en dan zeggen wat je wilt accepten 
+in 2 richtingen denken: inkomend verkeer EN antwoord ook doorlaten! 
+
+ftp: bij active mode: altijd poort 21 , data socket op poort 20   in passive mode  random poort > 1024
+in active mode dus gewoon 20/21 en niet een hele range openzetten
+
+
+eerst dingen installeren en 
+ftp server 
+systemctl start pure-ftpd
+
+
+nmap: kijken welke poorten open staat op een machines
+
+nmap -O --oscan-guess www.ibm.com
+
+cat /etc/services | grep www
+
+
+
+deel 2:
+alles op drop instellen:
+iptables -P INPUT DROP
+iptables -P FORWARD DROP
+iptables -P OUTPUT DROP
+
+dns poort:  | grep domain  ==> 53
+
+dig www.ugent.be 157.193.43.50
+
+nice -n <NUMMER> <COMMANDO ..>		hoe hoger nummer hoe meer hij cpu overlaat voor anderen
+
+
+
+
+
+kwart voor 10  aan S10  sterre
+
+test: schriftelijk: 10 a 15 vragen.  stel aantal firewalls regels op, .. doordenk vragen zoda ze zien daje alles goed begrijpt
+	ge hebt pc voor man pages in alle pdf'en uit voorbereiding. je mag wel niets uittesten op de pc.  grep/cat van een bestand mag wel
+	maar geen config wijzigen. 
+	moet niets memoriseren dus je mag 1 cheat sheet meenemen (enkel voorkant, normaal lettertype). (probably niet nodig ma dan hebje de zekerheid
+	daje niks vanbuiten moet leren)
+	
+	labo firewalls inhaalweek: vanaf 0; 2 gateways; firewalls maken; dmz zone maken. 
+
+
+
+
+
+
+
