@@ -350,18 +350,51 @@ Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
 
 \section{Reflectiemodellen \accentuate{(§5.2, behalve §5.2.1.2 en §5.2.1.3) }}
 \begin{enumerate}
-	\vraag{Waarom zijn reflectiemodellen noodzakelijk ?}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
+	\vraag{Waarom zijn reflectiemodellen noodzakelijk ?}{
+		\begin{itemize} 
+			\item De precieze fracties geabsoerbeerd, doorgelaten, diffuus teruggekaatst en spiegelend teruggekaatst licht hangen af van zeer veel factoren: ondermeer de invalshoek, kleur en intensiteit van de invallend lichtstraal, de gladheid van het oppervlak, en de samenstelling, temperatuur, kleur en transparantie van het objecten spelen een belangrijke rol. Deze fysische verschijnselen moeten benaderd worden door een mathematisch model, wat men het reflectiemodel noemt. Hoe meer gesofisticeerd dit reflectiemodel is, hoe realistischer de uiteindelijk weergegeven figuur er zal uitzien, maar ook hoe complexer en langduriger de vereiste berekeningen zijn.
+		\end{itemize}
+		}
 			
-	\vraag{Omschrijf het lokale reflectiemodel (Phong-model). Geef ondermeer de}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
-	berekenings-voorschriften, de betekenis van de parameters, en de nadelen.
+	\vraag{Omschrijf het lokale reflectiemodel (Phong-model). Geef ondermeer de berekenings-voorschriften, de betekenis van de parameters, en de nadelen.}{
+		\begin{itemize} 
+			\item Een lokaal reflectiemodel houdt enkel rekening met de interactie tussen een aantal puntvormige lichtbronnen, het reflecterend oppervlak en het oogpunt. Met licht dat teruggekaatst of gebroken wordt door andere objecten wordt geen rekening gehouden. In het Phong-model berekent men voor elke RGB-component de intensiteit, uitgestuurd in de richting $V$ van het oogpunt, als een som van drie bijdragen:
+			\begin{equation*}
+				\begin{split}
+					I_{V, \hbox{rood}} & = I_{D, \hbox{rood}} + I_{S, \hbox{rood}} + I_{G, \hbox{rood}} \\ 
+					I_{V, \hbox{groen}} & = I_{D, \hbox{groen}} + I_{S, \hbox{groen}} + I_{G, \hbox{groen}} \\ 
+					I_{V, \hbox{blauw}} & = I_{D, \hbox{blauw}} + I_{S, \hbox{blauw}} + I_{G, \hbox{blauw}} \\ 
+				\end{split}
+			\end{equation*}
+			\begin{itemize}
+				\item \textbf{$I_D$} = Diffuse intensiteit.
+				
+					Deze bijdrage veronderstelt een ideaal mat oppervlak, en is bijgevolg enkel afhankelijk van de invallende lichtintensiteit $I_L$, de afstand $R$ van het oogpunt tot het oppervlak, en de hoek $\theta$ tussen de invallende lichtstraal $L$ en de normaal $N$ op het oppervlak.
+
+				\item \textbf{$I_S$} = Spiegelende intensiteit.
+
+					Deze bijdrage geeft een teruggekaatste lichtstraal in de veronderstelling van een perfect reflecterend oppervlak. 
+
+				\item \textbf{$I_G$} = Intensiteit ten gevolge van omgevingslicht. Dit wordt berekend als het product van $K_O \cdot I_O$ waarbij $I_O$ een constante van de volledige figuur is, en $K_O$ een materiaal afhankelijke coëfficiënt voorstelt.
+				
+
+
+			\end{itemize}
+			Vooral ten gevolge van de triviale benadering voor het omgevingslicht zijn lokale reflectiemodellen niet in staat om schaduwen weer te geven, en zien alle objecten er eerder als plastiek uit.
+		\end{itemize}
+		}
+	
 			 
-	\vraag{Geef en omschrijf (in het bijzonder de nadelen) van de drie mogelijke benaderingen voor de berekening van de \textit{lichtintensiteit van zichtbare punten}, indien men het object beschrijft aan de hand van een verzameling \textit{vlakke veelhoeken}.}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
+	\vraag{Geef en omschrijf (in het bijzonder de nadelen) van de drie mogelijke benaderingen voor de berekening van de \textit{lichtintensiteit van zichtbare punten}, indien men het object beschrijft aan de hand van een verzameling \textit{vlakke veelhoeken}.}{\begin{itemize} \item \todo{P130 5.2.2} \end{itemize}}
 			
 \end{enumerate}
 
 \section{1D Wavelet transformaties}
 \begin{enumerate}
-	\vraag{Bespreek met behulp van \textit{Multi-Resolutie-Analyse} de algemene concepten van wavelet transformaties. \accentuate{(§3.5.2)}}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
+	\vraag{Bespreek met behulp van \textit{Multi-Resolutie-Analyse} de algemene concepten van wavelet transformaties. \accentuate{(§3.5.2)}}{
+		\begin{itemize} 
+			\item \todo{oplossen} 
+		\end{itemize}}
 			
 	\vraag{Vertaal deze algemene concepten in het bijzonder geval van de \textit{Haar-wavelet} transformatie. \accentuate{(§3.5.1 \& §3.5.2)}}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
 	
@@ -425,7 +458,7 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 			\sum_{\substack{i_n = 1 \\ i_n \not\in \{i_1, ... i_{n}\}}}^{m}
 			P[{u_i}_1, {u_i}_2, ..., {u_i}_n] \bigg/ \binom{m}{n}
 			$$
-			Een verhoging van de graad kan eenvoudig uitgevoerd worden met een matrix, waarin de coëfficiënten van Pascal instaan. Hier uitgewerkt om een Bézier kromme van graad 4 te verhogen naar graad 7, in één enkele stap:
+			Een verhoging van de graad kan eenvoudig uitgevoerd worden met een matrix, waarin de coëfficiënten van Pascal instaan. Hier uitgewerkt om een Bézier kromme van graad 3 te verhogen naar graad 6, in één enkele stap:
 			$$
 			\begin{pmatrix}
 				1 & 0 & 0  & 0  \\ 
@@ -460,13 +493,13 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 			Deze matrix kan nu eenvoudig vermenigvuldigt worden met de kolommatrix van de punten:
 			$$
 			\begin{pmatrix}
-				Q_{000000} (=Q_1) \\
-				Q_{000001} (=Q_2)\\
-				Q_{000011} (=Q_3)\\
-				Q_{000111} (=Q_4)\\
-				Q_{001111} (=Q_5)\\
-				Q_{011111} (=Q_6)\\
-				Q_{111111} (=Q_7)\\
+				Q_{000000} (=Q_0) \\
+				Q_{000001} (=Q_1)\\
+				Q_{000011} (=Q_2)\\
+				Q_{000111} (=Q_3)\\
+				Q_{001111} (=Q_4)\\
+				Q_{011111} (=Q_5)\\
+				Q_{111111} (=Q_6)\\
 			\end{pmatrix}
 			= 
 			\begin{pmatrix}
@@ -480,22 +513,22 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 			\end{pmatrix}
 			\cdot 
 			\begin{pmatrix}
-				P_{000} \\
-				P_{001} \\
-				P_{011} \\
-				P_{111} \\
+				P_{000} (=P_0)\\
+				P_{001} (=P_1)\\
+				P_{011} (=P_2)\\
+				P_{111} (=P_3)\\
 			\end{pmatrix}
 			$$
 			Elke kolom stelt één van de originele 4 punten voor. Een punt $P_i$ kan hieruit afgeleidt worden door op de $i$-de rij, de som van 
-			de producten van het originele punt met de factor voor die kolom te berekenen, en deze som te delen door $\binom{m}{n}$. In dit geval is $m = 7$ en $n = 4$, zodat $\binom{7}{4} = \frac{7!}{4! 3!} = 35$. De zeven punten worden dus:
+			de producten van het originele punt met de factor voor die kolom te berekenen, en deze som te delen door $\binom{m}{n}$. In dit geval is $m = 6$ en $n = 3$, zodat $\binom{6}{3} = \frac{6!}{3! 3!} = 20$. De zeven punten worden dus:
 			\begin{itemize}
-				\item $P_0 = \frac{1}{35} (20P_0 + 0P_1  + 0P_2  + 0P_3) = \frac{4}{7}P_0$ \todo{klopt niet, zou gewoon $P_0$ moeten zijn...}
-				\item $P_1 = \frac{1}{35}(10P_0 + 10P_1 + 0P_2  + 0P_3) = \frac{2}{7}[P_0 + P_1]$ 
-				\item $P_2 = \frac{1}{35}(4P_0  + 12P_1 + 4P_2  + 0P_3) = \frac{1}{35}(4P_0  + 12P_1 + 4P_2)$
-				\item $P_3 = \frac{1}{35}(1P_0  + 9P_1 + 9P_2  + 1P_3) = \frac{1}{35}(P_1  + 9P_2 + P_3)$
-				\item $P_4 = \frac{1}{35}(0P_0  + 4P_1 + 12P_2  + 4P_3) = \frac{1}{35}(4P_1  + 12P_2 + 4P_3)$
-				\item $P_5 = \frac{1}{35}(0P_0  + 0P_1 + 10P_2  + 10P_3) = \frac{2}{7}(P_2 + P_3)$
-				\item $P_6 = \frac{1}{35}(0P_0  + 0P_1 + 0P_2  + 20P_3) = \frac{4}{7}(P_3)$
+				\item $Q_0 = \frac{1}{20} (20P_0 + 0P_1  + 0P_2  + 0P_3) = P_0$
+				\item $Q_1 = \frac{1}{20}(10P_0 + 10P_1 + 0P_2  + 0P_3) = \frac{1}{2}(P_0 + P_1)$ 
+				\item $Q_2 = \frac{1}{20}(4P_0  + 12P_1 + 4P_2  + 0P_3) = \frac{1}{5}(P_0  + 3P_1 + P_2)$
+				\item $Q_3 = \frac{1}{20}(1P_0  + 9P_1 + 9P_2  + 1P_3) = \frac{1}{20}(P_0 + 9P_1  + 9P_2 + P_3)$
+				\item $Q_4 = \frac{1}{20}(0P_0  + 4P_1 + 12P_2  + 4P_3) = \frac{1}{5}(P_1  + 3P_2 + P_3)$
+				\item $Q_5 = \frac{1}{20}(0P_0  + 0P_1 + 10P_2  + 10P_3) = \frac{1}{2}(P_2 + P_3)$
+				\item $Q_6 = \frac{1}{20}(0P_0  + 0P_1 + 0P_2  + 20P_3) = P_3$
 			\end{itemize}		
 		\end{itemize}}
 	\vraag{\accentuate{(2)} verhoging van de graad van Bézier splines (\textit{stapsgewijs}: één graad verhogen per stap)}{
@@ -518,7 +551,70 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 	\vraag{\accentuate{(9-10,14-16)} constructie van de \textit{kromtecirkel} in een punt van een Bézier kromme}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
 	\vraag{\accentuate{(5-7,9-11)} constructie van de \textit{Bézier representatie} van een (polynomiale) NURBS}{
 		\begin{itemize}
-			 \item 
+			\item De knooppunten van de B-spline worden datapunten van de Bézier-representatie. Deze vraag wordt opgelost met het voorbeeld op figuur \ref{fig:bezier_repr_polynomiale_nurbs_1}.
+			\begin{figure}[ht]
+				\centering
+				\includegraphics[width=0.5\textwidth]{bezier_repr_polynomiale_nurbs_1}	
+				\caption{Fase 1 bézier representatie van een polynomiale NURBS}
+				\label{fig:bezier_repr_polynomiale_nurbs_1}
+			\end{figure}
+
+			De knopenvector wordt gegeven: $(-1, 0, 1 ; 2, 3, 3, 4, 5, 6, 7, 7, 7, 8, 9 ; 9, 9, 9)$. Wat meteen opvalt is dat er 7 (waarvan sommige hogere multipliciteit) reële knooppunten zijn, wat betekent dat de resulterende bézier spline 6 segmenten zal bevatten. Schrijf eerst de blossomnotatie van elk knooppunt, zoals weergegeven op figuur \ref {fig:bezier_repr_polynomiale_nurbs_2}.
+			\begin{figure}[ht]
+				\centering
+				\includegraphics[width=0.5\textwidth]{bezier_repr_polynomiale_nurbs_2}	
+				\caption{Fase 2 bézier representatie van een polynomiale NURBS}
+				\label{fig:bezier_repr_polynomiale_nurbs_2}
+			\end{figure}
+
+			Via de multilineariteit eigenschap kan men nieuwe punten introduceren. (\accentuate{herhaling op figuur \ref{fig:multilineariteit}})
+			\begin{figure}[ht]
+				\centering
+				\begin{tikzpicture}
+					\node (x) at (0, 0) {$P[u_1,...,v_k,...,u_n]$};
+					\node (z) at (1.5, 2) {$P[u_1,...,u_k,...,u_n]$};
+					\node (y)at (3, 0) {$P[u_1,...,w_k,...,u_n]$};
+
+					\draw[->] (x) -- node[xshift=-0.6cm]{$\frac{w_k - u_k}{w_k - v_k}$} (z);
+					\draw[->] (y) -- node[xshift=0.6cm]{$\frac{u_k - v_k}{w_k - v_k}$} (z);
+				\end{tikzpicture}
+				\caption{multilineariteit.}
+				\label{fig:multilineariteit}
+			\end{figure}	
+
+			Bijvoorbeeld: tussen punt 012 en 123 moeten nog twee hulppunten komen: 112 en 122. Stel in het diagram $u_k = 1, v_k = 0$ en $w_k = 2$. dan krijgen we
+			$$P[1,1,2] = \frac{2}{3}P[0,1,2] + \frac{1}{3}P[1,2,3]$$
+			of anders gezegd: het punt 112 ligt op $t = 1/3$ voor het lijnstuk $[P[0,1,2]P[1,2,3]]$.
+			Analoog voor $u_k = 2, v_k = 0$ en $w_k = 2$, dan krijgen we
+			$$P[1,2,2] = \frac{1}{3}P[0,1,2] + \frac{2}{3}P[1,2,3]$$
+			of anders gezegd: het punt 122 ligt op $t = 2/3$ voor het lijnstuk  $[P[0,1,2]P[1,2,3]]$.
+			Als je dit zou doen voor punten 123 en 233, dan zou je 
+			$$P[2, 2, 3] = \frac{1}{2}P[1,2,3] + \frac{1}{2}P[2,3,3]$$
+			krijgen, zodat het punt 223 mooi in het midden van het lijnstuk $[P[1,2,3]P[2,3,3]]$ ligt. Een leuke eigenschap is, dat als de knopenvector geen gaten vertoond, dat het lijnstuk altijd mooi opgesplitst wordt. Als je op een lijnstuk dan 2 hulppunten moet introduceren, zal het eerste punt op $1/3$ van het lijnstuk liggen, en het tweede punt op $2/3$. Als je 3 hulppunten moet introduceren, zal het eerste punt op $1/4$ van het lijnstuk liggen, enz... Een voorbeeld van een knopenvector met gaten, waardoor je dus best manueel uitrekend, is $(0, 1, 3 ; 4, 6 ; 7, 9, 10)$. Alle nieuwe hulppunten kunnen zo berekend worden, en is te zien op figuur \ref{fig:bezier_repr_polynomiale_nurbs_3}.
+			\begin{figure}[ht]
+				\centering
+				\includegraphics[width=0.5\textwidth]{bezier_repr_polynomiale_nurbs_3}	
+				\caption{Fase 3 bézier representatie van een polynomiale NURBS}
+				\label{fig:bezier_repr_polynomiale_nurbs_3}
+			\end{figure}
+
+			Punten waarvan slechts 1 argument van de blossomnotatie verschillen, kunnen geïnterpoleerd worden. Teken een lijnstuk door elk paar punten waarvoor dit van toepassing is. Op figuur \ref{fig:bezier_repr_polynomiale_nurbs_4} wordt dit uitgewerkt, samen met het introduceren van de nieuwe hulppunten.
+			\begin{figure}[ht]
+				\centering
+				\includegraphics[width=0.5\textwidth]{bezier_repr_polynomiale_nurbs_4}	
+				\caption{Fase 4 bézier representatie van een polynomiale NURBS}
+				\label{fig:bezier_repr_polynomiale_nurbs_4}
+			\end{figure}
+
+			Tot slot moeten nog enkel de punten verbonden worden waarvan de blossomnotatie bestaat uit een herhaling van slechts één argument. In dit voorbeeld zijn dat de punten 222, 333, 444, 555, 666, 777, 888 en 999. Zoek eerst in de knopenvector op of er knooppunten zijn met een hogere multipliciteit. \accentuate{De continuïteit in een knooppunt horend bij een knoop met multipliciteit $\mu$ wordt gegeven door $C^{k - 1 - \mu}$}.
+			
+			Het knooppunt 3 heeft een multipliciteit van 2, zodat slechts $C^{4 - 1 - 2} = C^1$ continuïteit voldaan is. Het knooppunt 7 heeft een multipliciteit van 3, zodat daar slechts $C^0$ voldaan is. Dit is belangrijk bij het tekenen van de kromme, zoals te zien op figuur \ref{fig:bezier_repr_polynomiale_nurbs_5}.
+			\begin{figure}[ht]
+				\centering
+				\includegraphics[width=0.5\textwidth]{bezier_repr_polynomiale_nurbs_5}	
+				\caption{Fase 5 bézier representatie van een polynomiale NURBS}
+				\label{fig:bezier_repr_polynomiale_nurbs_5}
+			\end{figure}
 		\end{itemize}}
 	\vraag{\accentuate{(6-10)} constructie van controlepunten na toevoeging van één of meerdere \textit{reële} knopen in de knopenvector van een (polynomiale) NURBS (zonder over te gaan op de Bézier representatie)}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
 	\vraag{\accentuate{(10)} constructie van controlepunten na toevoeging van één of meerdere \textit{virtuele} knopen in de knopenvector van een (polynomiale) NURBS (zonder over te gaan op de Bézier representatie)}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
@@ -529,8 +625,8 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 	\vraag{\accentuate{(13-16)} vaststellen van de continuïteit in de knooppunten van Bézier splines (\textit{stelling van Stärk})}{
 		\begin{itemize} 
 		\item \textbf{Stelling van Stärk:} Men bereikt $C^k$ continuïteit indien de blossomargumenten voor elk van de $2k$ naburige controlepunten hetzelfde punt in de ruimte oplevert, of men nu de argumenten evalueert in de blossompolynoom van het ene segment, of in de blossompolynoom van het andere segment. 
-		\item Stel een linkersegment met data- en controlepunten $P[a, a, a], P[a, a, b], P[a, b, b]$ en $P[b, b, b]$, en een rechtersegment, bepaald door $Q[b, b, b], Q[b, b, c], Q[b, c, c]$ en $Q[c, c, c]$.
-			\todo{afwerken P56}
+		\item Stel een linkersegment met data- en controlepunten $P[a, a, a], P[a, a, b], P[a, b, b]$ en $P[b, b, b]$, en een rechtersegment, bepaald door $Q[b, b, b], Q[b, b, c], Q[b, c, c]$ en $Q[c, c, c]$ met gemeenschappelijk punt $P[b, b, b] \equiv Q[b, b, b]$. Aangezien we dit gemeenschappelijk punt hebben is $C^0$ continuïteit voldaan. Om $C^1$ continuïteit te bereiken moet, indien men de argumenten van controlepunt $P[a, b, b]$ van het linkersegment evalueert in de blossom van het rechtersegment, dit een punt $Q[a, b, b]$ oplevern dat samenvalt met $P[a, b, b]$
+			
 		\end{itemize}}
 	\vraag{\accentuate{(17)} constructie van de controlepunten van de \textit{uniforme} Lagrange representatie van een Lagrange geïnterpoleerde kromme met \textit{niet-uniforme} knopenvector; schematisch aantonen hoe de berekening van de Bézier representatie van deze kromme zou kunnen uitgevoerd worden (ondermeer opstellen van de \textit{inverse} van de Bézier basismatrix).}{
 		\begin{itemize} 
@@ -705,7 +801,7 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 		\begin{itemize} 
 			\item \accentuate{Het veralgmeend algoritme van Neville laat toe om de rekenregels van Hermite interpolatie op te stellen, aangezien Hermite interpolatie ook nog gebruik maakt van richtingsvectoren en eventueel krommingen, die gedefinieerd worden op hetzelfde punt, zodat het punt een hogere multipliciteit krijgt. Hermite interpolatie gebruikt slechts twee datapunten $P_0$ en $P_1$, waarvoor men meestal respectievelijk $t=0$ en $t=1$ neemt}. Bij het veralgemeend algoritme van Neville zijn er twee mogelijkheden:
 				\begin{enumerate}
-					\item Indien er minstens twee verschillende indicies in $P_{pqr...wxy}(t)$ optreden, dan blijft de traditionele versie van het algoritme onveranderd geldig:
+					\item Indien er minstens twee verschillende indices in $P_{pqr...wxy}(t)$ optreden, dan blijft de traditionele versie van het algoritme onveranderd geldig:
 					\begin{figure}[ht]
 						\centering
 						\begin{tikzpicture}
