@@ -72,6 +72,25 @@
     <None Include="AngelasChristmas">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="19" />
+    <None Include="18" />
+    <None Include="17" />
+    <None Include="16" />
+    <None Include="15" />
+    <None Include="14" />
+    <None Include="13" />
+    <None Include="12" />
+    <None Include="11" />
+    <None Include="10" />
+    <None Include="8" />
+    <None Include="9" />
+    <None Include="7" />
+    <None Include="6" />
+    <None Include="5" />
+    <None Include="4" />
+    <None Include="2" />
+    <None Include="1" />
+    <None Include="3" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="suffixboom.h">
@@ -85,10 +104,5 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="test.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
   </ItemGroup>
 </Project>

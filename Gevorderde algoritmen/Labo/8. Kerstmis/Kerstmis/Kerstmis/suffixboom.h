@@ -137,6 +137,12 @@ public:
 	//int diepte: de lengte van het prefix tot aan knoop die deze functie oproept.
 	//              (eigenlijk overbodig, volgt uit startp en eindp)
 	//gezocht: Bitpatroon met enen dat de complete gezochte verzameling aanduidt
+
+	// string& uit = huidige beste LGD zodat nieuwe knopen kunnen vergelijken (grotere size)
+	// const Bitpatroon& gezocht = welke teksten zijn relevante 
+	// const vector<Bipatroon> &sluitmap = weten wat de afsluitingstekens zijn (VOOR DE BLADEREN)
+	// Bitpatroon& knoopverzameling = zodat padstring gewijzigd kan worden (VOOR DE INWENDIGE KNOPEN)
+
 	virtual void geefLGDrec(const vector<Bitpatroon> &sluitmap, Bitpatroon&  knoopverzameling,
 		string& uit, int diepte, const Bitpatroon& gezocht,
 		const string& hooiberg) = 0;
@@ -155,7 +161,7 @@ public:
 	virtual bool isBlad();
 	virtual void geefLGDrec(const vector<Bitpatroon> &sluitmap, Bitpatroon&  knoopverzameling,
 		string& uit, int diepte, const Bitpatroon& gezocht,
-		const string& hooiberg){ }
+		const string& hooiberg);
 };
 
 
@@ -168,7 +174,7 @@ public:
 	virtual bool isBlad();
 	virtual void geefLGDrec(const vector<Bitpatroon> &sluitmap, Bitpatroon&  knoopverzameling,
 		string& uit, int diepte, const Bitpatroon& gezocht,
-		const string& hooiberg){ }
+		const string& hooiberg);
 protected:
 	//datavelden
 	Kindtab kind;
@@ -281,6 +287,54 @@ Sknoop::Sknoop() :startc(eindc) {}
 
 bool Blad::isBlad() { return true; }
 
+void Blad::geefLGDrec(const vector<Bitpatroon> &sluitmap, Bitpatroon&  knoopverzameling,
+	string& uit, int diepte, const Bitpatroon& gezocht,
+	const string& hooiberg) {
+
+	//std::cout << knoopverzameling << " -> ";
+	Bitpatroon b = sluitmap[static_cast<uchar>(hooiberg[eindp - 1])];
+	if (b.en(gezocht)) {
+		knoopverzameling |= b;
+	}
+	//std::cout << knoopverzameling << "\n";
+	// kijken of in de gezochte tekst zet aan de hand van karakter
+	// zoja, voeg jezelf toe aan knoopverzameling, door bit op 1 te zetten (afsluitkarakter)
+	// zonee, doe niets
+}
+
+
+//BUG: zal langste gemeenschappelijke deelstring in ZELFDe tekst pakken indien die bestaat
+void InwendigeKnoop::geefLGDrec(const vector<Bitpatroon> &sluitmap, Bitpatroon&  knoopverzameling,
+	string& uit, int diepte, const Bitpatroon& gezocht,
+	const string& hooiberg) {
+	// bits knoopverzamelingen EN bits gezocht == bits knoopverzameling
+	// dan weten we dat je deelstring bent van de twee gezochte teksten.
+	// uitkomst aanvullen met hooiberg[startp] tot hooiberg[eindp - 1] 
+	Kindtype::const_iterator it = kind.begin();
+	knoopverzameling = Bitpatroon();
+	while (it != kind.end()) {
+		// recursie start
+		
+		it->second->geefLGDrec(sluitmap, knoopverzameling, uit, diepte, gezocht, hooiberg);
+		// recursie stop
+		it++;
+	}
+
+	if ((knoopverzameling & gezocht).bits == gezocht.bits && uit.size() < eindp - startp) {
+		std::string temp;
+		for (int i = startp; i < eindp; i++) {
+			temp += hooiberg[i];
+		}
+		if (temp == " the pavement below, a") {
+			std::cout << "fout";
+			std::cout << knoopverzameling << "\n" << gezocht << "\n";
+		}
+		uit = temp ;
+	} else {
+		
+	}
+}
+
 bool InwendigeKnoop::isBlad() { return false; }
 
 InwendigeKnoop::InwendigeKnoop() :Sknoop(), staart(0) {}
@@ -335,32 +389,37 @@ Sboom::Sboom() :wortel(make_unique<InwendigeKnoop>()) {
 void Sboom::print(std::ostream& out) {
 	Kindtype::const_iterator it = wortel->kind.begin();
 	while (it != wortel->kind.end()) {
-		std::cout << it->first << " " <<  it->second->isBlad() ? "blad" : "inwendig";
+		std::cout << it->first << " " << it->second->isBlad() ? "blad" : "inwendig";
 		std::cout << "\n";
 		it++;
 	}
 	std::cout << "\n";	std::cout << "\n";	std::cout << "\n";
 	InwendigeKnoop* staart = wortel->staart;
 	it = staart->kind.begin();
-		while (it != wortel->kind.end()) {
-			std::cout << it->first << " " << it->second->isBlad() ? "blad" : "inwendig";
-			std::cout << "\n";
-			it++;
-		}
+	while (it != wortel->kind.end()) {
+		std::cout << it->first << " " << it->second->isBlad() ? "blad" : "inwendig";
+		std::cout << "\n";
+		it++;
+	}
 
-	
+
 }
 
 string Sboom::geefLGD(const vector<char>& sluit) const {
 	string uit;
 	assert(sluit.size() <= patroonlengte);
 	Bitpatroon knoopverzameling;//verzameling waar suffix inzit
-	vector<Bitpatroon> sluitmap(256);
-	Bitpatroon gezocht;
+	vector<Bitpatroon> sluitmap(256); // beeldt afsluitkarakters af op een bitpatroon met een 1 op de juiste plaats 
+	Bitpatroon gezocht; // 1111...00   aantal 1 = hoeveel karakters in sluit =  bitpatroon dat de complete gezochte verzameling aanduidt (welke teksten je wilt zoeken)
 	for (int i = 0; i < sluit.size(); i++) {
 		sluitmap[static_cast<uchar>(sluit[i])] = Bitpatroon::eenbit(i);
 		gezocht |= Bitpatroon::eenbit(i);
 	}
+
+	//sluitmap[255] = 1000000000000000000000000000000000....
+	//sluitmap[254] = 0100000000000000000000000000000000....
+	//...
+	//sluitmap[195] = 00000.....1
 	wortel->geefLGDrec(sluitmap, knoopverzameling, uit, 0, gezocht, hooiberg);
 	return uit;
 }
@@ -375,8 +434,8 @@ void Sboom::voegtoe(const string& tekst, char afsluiter) {
 	for (int i = oudelengte; i < lengte; i++) {
 		InwendigeKnoop* staartUpdate = 0;//wijst eventueel naar knoop met nog in te vullen staartpointer
 //eyecandy voor grote teksten
-		if (i % 1000 == 1)
-			cerr << "*";
+		//if (i % 1000 == 1)
+		//	cerr << "*";
 		actief.maakCanoniek(i, hooiberg);
 		Presuffix laatstestaart = actief;//verwijst naar de laatste knoop op het pad van het actief suffix
 									//dat zeker een ingevulde staart heeft.
@@ -393,14 +452,15 @@ void Sboom::voegtoe(const string& tekst, char afsluiter) {
 				nieuw->eindc = nieuw->startc + overschot - 1;
 				nieuw->startp = actief.plaatsInHooiberg;
 				nieuw->eindp = i;
-			
-				std::cout << "\ninwendige knoop toevoegen: ";
-				for (int j = volgend->startc; j < nieuw->eindc; j++) {
-					std::cout << hooiberg[j];
-				}
-				std::cout << "\n";
-				std::cout << "startc " << volgend->startc << "  eindc " << nieuw->eindc;
-				std::cout << "\n";
+				/*
+					std::cout << "\ninwendige knoop toevoegen: ";
+					for (int j = volgend->startc; j < nieuw->eindc; j++) {
+						std::cout << hooiberg[j];
+					}
+					std::cout << "\n";
+					std::cout << "startc " << volgend->startc << "  eindc " << nieuw->eindc;
+					std::cout << "\n";
+					*/
 
 				if (staartUpdate != 0) {
 					staartUpdate->staart = nieuw.get();
@@ -425,7 +485,7 @@ void Sboom::voegtoe(const string& tekst, char afsluiter) {
 			blad->eindp = lengte;
 			blad->startc = i;
 			blad->eindc = lengte;
-
+			/*
 			std::cout << "\nblad toevoegen: ";
 			for (int j = i; j < lengte; j++) {
 				std::cout << hooiberg[j];
@@ -433,6 +493,7 @@ void Sboom::voegtoe(const string& tekst, char afsluiter) {
 			std::cout << "\n";
 			std::cout << "startc " << i << "  eindc " << lengte;
 			std::cout << "\n";
+			*/
 			assert(actief.expliciet);
 			actief.expliciet->kind.set(hooiberg[i], move(blad));
 			//verzet actief punt
