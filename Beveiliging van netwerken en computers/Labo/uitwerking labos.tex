@@ -914,6 +914,121 @@ sshd ; * ; pam1 | pam2 ; MoFr0000-2400
 	\item \textbf{Wat gebeurt er indien iemand zich aanmeldt via een service die niet voorkomt in de directory \texttt{/etc/pam.d}?}
 \end{enumerate}
 
+\chapter{iptables}
+Tijdens dit labo werk je alleen aan een toestel. Dit labo voer je volledig uit op je \textbf{virtuele machine}, voer dus geen commando's uit op de gateway of op client1. Plaats eventueel bij het begin van dit labo een backup van je virtuele disk terug. Vergeet niet om firewalld te verwijderen mocht dit nog geïnstalleerd zijn (\texttt{yum remove firewalld}).
+
+Zorg er voor dat je \textbf{NIET} bent ingelogd als gewone gebruiker maar als \emph{root} (dus ook geen \texttt{su - }!!).
+\section{Vooraf} 
+Implementeer volgende firewallregels met behulp van het \texttt{iptables}-commando. Informatie over de poorten kan je vinden in \texttt{/etc/services}.
+Test uit op je eigen machine en ook via je buren. Vergeet niet dat je telkens de instellingen kan nakijken met de list-vlag van het \texttt{iptables}-commando.
+
+Hou ook rekening met volgende opmerkingen:
+\begin{itemize}
+	\item Het is zeer handig en \textbf{tijdbesparend} als je alle regels opslaat in een script!! Dit laat ook toe om voor bepaalde dns-namen of ip-adressen een variabele (inderdaad: een shell-variabele!) te gebruiken die je in het begin van het script initialiseert.
+    \item Je kan in de opgestelde regels zowel ip-adressen als dns-namen gebruiken. Het gebruik van ip-adressen geniet de voorkeur, omdat op die manier je firewall blijft functioneren los van het feit of de nameserver werkt/bereikbaar is of niet.
+\end{itemize}
+    
+
+Om na te gaan welke poorten er op een toestel open staan, kan je gebruikmaken van de nmap-tool. Meer informatie over het gebruik van het commando \texttt{nmap} kan je vinden in de man-pages.
+
+Via iptables kan je zowel stateless als stateful regels toevoegen. Voor dit labo mag je \textbf{alle regels stateless} toevoegen, tijdens het labo firewalls (inhaalweek) zullen we ook met stateful regels werken. 
+
+Belangrijk: Indien je om \textbf{10u45} nog niet aan vraag 8 bent gekomen, begin je op dat moment zeker bij 8 (Opgave deel 2). Ben je klaar met de tweede reeks voor het einde van het labo, dan werk je de eerste reeks opgaven verder af. 
+
+\section{DEEL1 - Default policy ACCEPT}
+Bij de volgende 9 opgaven is het de bedoeling dat je de standaard ingestelde \textbf{policy (ACCEPT)} niet verandert.
+
+Zorg er ook voor dat bij het toevoegen van een nieuwe regel alle tevoren ingestelde regels blijven gelden !!
+\begin{enumerate}
+	\item     Zorg er voor dat je een ftp-connectie kan leggen met je machine. Installeer indien nodig een ftp server op je virtuele machine (\texttt{yum install pure-ftpd}).
+    De service starten kan via \texttt{systemctl start pure-ftpd}. Merk op dat je op de ftp-server enkel kan inloggen als niet-root gebruiker.
+	Stel regels op die er voor zorgen dat geen enkele computer een ftp-verbinding kan maken met jouw virtuele machine.
+	\begin{lstlisting}[escapeinside={(*}{*)}]
+iptables -A INPUT -p tcp (*$--$*)dport 20 -j DROP
+iptables -A INPUT -p udp (*$--$*)dport 20 -j DROP
+iptables -A INPUT -p tcp (*$--$*)dport 21 -j DROP
+iptables -A INPUT -p udp (*$--$*)dport 21 -j DROP
+	\end{lstlisting}
+	\item     Laat nadien selectief alleen ftp vanaf je eigen vm naar jezelf toe. Test zeer kritisch: gebruik zowel localhost, de naam, het ip-adres als de loopback van je machine.
+	\begin{lstlisting}[escapeinside={(*}{*)}]
+iptables -I INPUT -p tcp -s 127.0.0.1 (*$--$*)dport 20 -j DROP
+iptables -I INPUT -p udp -s 127.0.0.1 (*$--$*)dport 20 -j DROP
+iptables -I INPUT -p tcp -s 127.0.0.1 (*$--$*)dport 21 -j DROP
+iptables -I INPUT -p udp -s 127.0.0.1 (*$--$*)dport 21 -j DROP
+	\end{lstlisting}
+	\item     Zorg er nu voor dat je een telnet-connectie kan leggen met je virtuele machine. Installeer hiervoor xinetd (\texttt{yum install xinetd}) en telnet-server (\texttt{yum install telnet-server}). Maak bovendien een configuratiefile \texttt{telnet} aan in \texttt{/etc/xinetd.d}. De inhoud van dit bestand vind je hier.
+   
+	Zorg ook dat er op jouw virtuele machine een webserver draait.
+
+	Stel nadien dezelfde twee regels in (cfr. 1 en 2) voor de protocols www en telnet.
+	\begin{lstlisting}[escapeinside={(*}{*)}]
+iptables -A INPUT -p tcp (*$--$*)dport 80 -j DROP
+iptables -A INPUT -p udp (*$--$*)dport 80 -j DROP
+iptables -A INPUT -p tcp (*$--$*)dport 23 -j DROP
+iptables -A INPUT -p udp (*$--$*)dport 23 -j DROP
+iptables -I INPUT -p tcp -s 127.0.0.1 (*$--$*)dport 80 -j DROP
+iptables -I INPUT -p udp -s 127.0.0.1 (*$--$*)dport 80 -j DROP
+iptables -I INPUT -p tcp -s 127.0.0.1 (*$--$*)dport 23 -j DROP
+iptables -I INPUT -p udp -s 127.0.0.1 (*$--$*)dport 23 -j DROP
+	\end{lstlisting}
+
+	\item     Maak nu gebruik van de optie \texttt{multiport} om al de vorige regels te groeperen. Meer informatie over deze optie vind je in de man-pages van \texttt{iptables-extensions}.
+
+	\item     Ga voor het telnet-protocol na wat de effectverschillen zijn tussen de opties \texttt{DROP} en \texttt{REJECT} bij het instellen van de regels.
+    Bij REJECT kan je ook zelf kiezen uit een aantal \texttt{icmp-type 3} foutboodschappen. Test uit.
+
+	\item     Zorg ervoor dat er op geen enkele poort boven 1024 informatie kan verstuurd worden naar moore.iii.hogent.be.
+    Test bijvoorbeeld dat http wel werkt, maar dat de tomcat-server op poort 8080 niet te bereiken is.
+
+	\item     Maak dat je eigen machine niet kan ge\emph{ping}d worden. Dit kan je verwezenlijken op verschillende manieren: langs ingangszijde geen aanvragen toelaten, langs uitgangszijde geen antwoord sturen. Probeer beide mogelijkheden uit.
+
+\end{enumerate}
+
+
+\section{DEEL2 - Default policy DROP}
+
+Aan dit gedeelte start je ten laatste om 10u45. Het oplossen van deze reeks opgaven is belangrijk als voorbereiding voor de volgende sessies van het labo firewalls.
+
+Bij de volgende opgaven is het de bedoeling dat je de standaard ingestelde policy verandert in DROP.
+Controleer op meerdere manieren of dit het gewenste effect heeft !!
+\begin{enumerate}
+	\item[8.]    Zorg er in eerste instantie voor dat je eigen machine in staat is om DNS-namen op te vragen. Controleer met dig (vb. dig a www.google.be).
+	\begin{lstlisting}[escapeinside={(*}{*)}]
+iptables -I OUTPUT -p udp (*$--$*)dport 53 -j ACCEPT
+iptables -I INPUT  -p udp (*$--$*)dport 53 -j ACCEPT
+iptables -I OUTPUT -p udp (*$--$*)sport 53 -j ACCEPT
+iptables -I INPUT  -p udp (*$--$*)sport 53 -j ACCEPT
+	\end{lstlisting}
+	\item[9.]  Natuurlijk moet je van op je eigen machine ook nog de webpagina's van http(s)://www.ugent.be kunnen opvragen. Pas je firewall aan en test eventueel uit met behulp van het commando curl of wget.
+	\begin{lstlisting}[escapeinside={(*}{*)}]
+iptables -I OUTPUT -p tcp -d 157.193.43.50 (*$--$*)port 80 -j ACCEPT
+iptables -I INPUT  -p tcp -d 157.193.43.50 (*$--$*)dport 80 -j ACCEPT
+iptables -I OUTPUT -p tcp -d 157.193.43.50 (*$--$*)dport 80 -j ACCEPT
+iptables -I INPUT  -p tcp -d 157.193.43.50 (*$--$*)dport 80 -j ACCEPT
+	\end{lstlisting}
+	\item[10.]    Stel nu een regel op die het mogelijk maakt om je eigen machine als webserver te gebruiken. Laat dit controleren door een van je buren.
+
+	\item[11.]    Stel nu regels op die het mogelijk maken om je eigen machine als FTP-server te kunnen laten gebruiken: je machine moet door een ftp-client bij je buur kunnen gebruikt worden om er bestanden van op te halen en er op te plaatsen; gebruik hiervoor een van de gewone tiwi-gebruikers.
+    In welke mode moet het ftp-commando een connectie leggen opdat de firewallinstellingen effect zouden hebben? Waarom?
+
+    Opmerking: Om FTP in active mode te gebruiken geef je de optie -A mee: ftp -A hostname.
+
+    Ga na of je effectief ook bestanden kan uitwisselen.
+	\item[12.]     Tracht alle (normaal 6) regels die je hebt ingesteld in de twee vorige punten 10 en 11 te combineren tot twee regels.
+
+	\item[13.]    Vanuit je machine moet je in staat zijn om naar andere toestellen te pingen. Zorg er bovendien voor dat je eigen machine niet reageert op ping-aanvragen van andere machines.
+\end{enumerate}
+
+
+
+
+
+
+
+
+
+
+
 
 \end{document}
 
