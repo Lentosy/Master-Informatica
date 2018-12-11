@@ -297,32 +297,52 @@ De belangrijke samenvoegbare heaps zijn: \underline{Binomial queues} en \underli
 \chapter{Toepassingen van diepte-eerst zoeken}
 \section{Enkelvoudige samenhang van grafen}
 \subsection{Samenhangende componenten van een ongerichte graaf}
-Een \textbf{samenhangende ongerichte graaf} is een graaf waarbij er een weg bestaat tussen elk paar knopen. Een \textbf{niet samenhangende ongerichte graaf} bestaat dan uit zo groot mogelijke samenhangende componenten.
+\begin{itemize}
+	\item[\info] Een \textbf{samenhangende ongerichte graaf} is een graaf waarbij er een weg bestaat tussen elk paar knopen.
+	\item[\info] Een \textbf{niet samenhangende ongerichte graaf} bestaat dan uit zo groot mogelijke samenhangende componenten.
+\end{itemize}
 
 \subsection{Sterk samenhangende componenten van een gerichte graaf}
-Een \textbf{sterk samenhangende gerichte graaf} is een graaf waarbij er een weg tussen elk paar knopen in beide richtingen bestaat. Een \textbf{zwak samenhangende gerichte graaf} is een graaf die niet sterk, maar toch samenhangend is indien de richtingen buiten beschouwing gelaten worden. Een graaf die niet sterk samenhangend is, bestaat uit zo groot mogelijke sterk samenhangende componenten. 
+\begin{itemize}
+	\item[\info] Een \textbf{sterk samenhangende gerichte graaf} is een graaf waarbij er een weg tussen elk paar knopen in beide richtingen (niet perse dezelfde verbindingen) bestaat (cfr. figuur \ref{fig:sterk_samenhangende_graaf}).
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=0.5\textwidth]{img/sterk_samenhangende_graaf}
+		\caption{Een sterk samenhangende graaf.}
+		\label{fig:sterk_samenhangende_graaf}
+	\end{figure}
+				
+	\item[\info] Een \textbf{zwak samenhangende gerichte graaf} is een graaf die niet sterk, maar toch samenhangend is indien de richtingen buiten beschouwing gelaten worden. Een graaf die niet sterk samenhangend is, bestaat uit zo groot mogelijke sterk samenhangende componenten. 
+	\item[\info] Sommige algoritmen gaan ervan uit de een graaf sterk samenhangend is. Men moet dus eerst deze componenten bepalen, meestal via een \textbf{componentengraaf} die:
+	\begin{itemize}
+		\item[\info] een knoop heeft voor elk sterk samenhangend component,
+		\item[\info] en een verbinding van knoop $a$ naar knoop $b$ indien er in de originele graaf een verbinding van één van de knopen van $a$ naar één van de knopen van $b$ is. 
+	\end{itemize}
+	\item[\alert] De componentgraaf bevat geen lussen, anders wil dit zeggen dat die knoop zelf nog opgesplitst zou kunnen worden in twee sterk samenhangende componenten.
+	\item[\info] De sterk samenhangende componenten kunnen bekomen worden met behulp van diepte-eerst zoeken (Kosaraju's Algorithm):
+	\begin{enumerate}
+		\item Stel de omgekeerde graaf op, door de richting van elke verbinding om te keren.
+		\item Pas diepte-eerst zoeken toe op deze omgekeerde graaf, waarbij de knopen in postorder genummered worden.
+		\item Pas diepte-eerst zoeken toe op de originele graaf, met als startknoop de resterende knoop met het hoogste postordernummer. Het resultaat is een diepte-eerst bos, waarvan de bomen sterk samenhangende componenten zijn.
+	\end{enumerate}
+	\item[\info] Diepte-eerst zoeken is $\Theta(n + m)$ voor ijle en $\Theta(n^2)$ voor dichte grafen. Het omkeren van de graaf is ook $\Theta(n + m)$ voor ijle en $\Theta(n^2)$ voor dichte grafen.
+\end{itemize}
 
-Sommige algoritmen gaan ervan uit de een graaf sterk samenhangend is. Men moet dus eerst deze componenten bepalen, meestal via een \textbf{componentengraaf}, die een knoop heeft voor elk sterk samenhangend component, en een verbinding van knoop $a$ naar knoop $b$ indien er in de originele graaf een verbinding van één van de knopen van $a$ naar één van de knopen van $b$ is. 
 
-De sterk samenhangende componenten kunnen bekomen worden met behulp van diepte-eerst zoeken:
-\begin{enumerate}
-	\item Stel de omgekeerde graaf op, door de richting van elke verbinding om te keren.
-	\item Pas diepte-eerst zoeken toe op deze omgekeerde graaf, waarbij de knopen in postorder genummered worden.
-	\item Pas diepte-eerst zoeken toe op de originele graaf, met als startknoop de resterende knoop met het hoogste postordernummer. Het resultaat is een diepte-eerst bos, waarvan de bomen sterk samenhangende componenten zijn.
-\end{enumerate}
-Diepte-eerst zoeken is $\Theta(n + m)$ voor ijle en $\Theta(n^2)$ voor dichte grafen. Het omkeren van de graaf is ook $\Theta(n + m)$ voor ijle en $\Theta(n^2)$ voor dichte grafen.
+
+
 \section{Dubbele samenhang van ongerichte grafen}
 Twee definities:
 \begin{itemize}
-	\item \textbf{Brug.} Een brug is een verbinding dat, indien deze wordt weggenomen, de graaf in twee deelgrafen opsplitst. Een graaf zonder bruggen noemt men \underline{dubbel lijnsamenhangend}; als er tussen elk paar knopen minstens twee onafhankelijke wegen bestaan, dan is een graaf zeker dubbel lijnsamenhangend.
-	\item \textbf{Scharnierpunt.} Een scharnierpunt is een knoop dat, indien deze wordt weggenomen, de graaf in ten minste twee deelgrafen opsplitst. Een graaf zonder scharnierpunten noemt men \underline{dubbel knoopsamenhangend} (of dubbel samenhangend). Een graaf met scharnierpunten kan onderverdeeld worden in dubbel knoopsamenhangende componenten. Als er tussen elk paar knopen twee onafhankelijke wegen bestaan, dan is de graaf dubbel knoopsamenhangend.
+	\item[\info] \textbf{Brug.} Een brug is een verbinding dat, indien deze wordt weggenomen, de graaf in twee deelgrafen opsplitst. Een graaf zonder bruggen noemt men \underline{dubbel lijnsamenhangend}; als er tussen elk paar knopen minstens twee onafhankelijke wegen bestaan, dan is een graaf zeker dubbel lijnsamenhangend.
+	\item[\info] \textbf{Scharnierpunt.} Een scharnierpunt is een knoop dat, indien deze wordt weggenomen, de graaf in ten minste twee deelgrafen opsplitst. Een graaf zonder scharnierpunten noemt men \underline{dubbel knoopsamenhangend} (of dubbel samenhangend). Een graaf met scharnierpunten kan onderverdeeld worden in dubbel knoopsamenhangende componenten. Als er tussen elk paar knopen twee onafhankelijke wegen bestaan, dan is de graaf dubbel knoopsamenhangend.
 \end{itemize}
 
-Scharnierpunten, dubbel knoopsamenhangende componenten, bruggen en lijnsamenhangende componenten kunnen opnieuw via diepte-eerst zoeken gevonden worden:
+Scharnierpunten, dubbel knoopsamenhangende componenten, bruggen en dubbel lijnsamenhangende componenten kunnen opnieuw via diepte-eerst zoeken gevonden worden:
 \begin{enumerate}
 	\item Stel de diepte-eerst boom op, waarbij de knopen in postorder genummerd worden. 
 	\item Bepaal voor elke knoop $u$ de laagst genummerde knoop die vanuit $u$ kan bereikt worden via een weg bestaande uit nul of meer dalende boomtakken gevolgd door één terugverbinding. 
-	\item Indien alle kinderen van een knoop op die manier een knoop kunnen bereiken die hoger in de boom ligt dan hemzelf, dan is de knoop zeker niet samenhangend. De wortel is een scharnierpunt indien hij meer dan één kind in heeft.
+	\item Indien alle kinderen van een knoop op die manier een knoop kunnen bereiken die hoger in de boom ligt dan hemzelf, dan is de knoop zeker niet samenhangend. De wortel is een scharnierpunt indien hij meer dan één kind in heeft. \todo{hoe bruggen vinden?}
 \end{enumerate}
 Diepte-eerst zoeken is $\Theta(n + m)$ voor ijle en $\Theta(n^2)$ voor dichte grafen.
 \section{Eulergraaf}
@@ -338,46 +358,112 @@ Een eulercircuit is een gesloten omloop in een graaf die alle verbindingen één
 \subsection{Algoritme van Bellman-Ford}
 Dit algoritme werkt voor verbindingen met negatieve gewichten, iets wat het algoritme van Dijkstra niet kon. Het algoritme is dan natuurlijk ook trager. \accentuate{(Dijkstra gebruikt het feit dat indien een pad naar A $\rightarrow$ C bestaat, er geen korter pad A $\rightarrow$ B $\rightarrow$ C kan zijn, daarom is het algoritme performant, maar er mogen dus geen negatieve verbindingen zijn. Indien B negatief zou zijn dan klopt Dijkstra niet.)}.
 
+\begin{itemize}
+	\item [\good] Werkt voor negatieve verbindingen.
+	\item [\good] Geen globale kennis nodig van heel het netwerk, zoals bij Dijkstra, maar slechts enkel de buren van een bepaalde knoop. Daarom gebruiken routers Bellman-Ford (distance vector protocol).
+	\item [\alert] Zal niet stoppen indien er een negatieve lus in de graaf zit, aangezien het pad dan zal blijven dalen tot $-\infty$. 
+\end{itemize}
 
-<<<<<<< HEAD
-
-=======
->>>>>>> e0a834a1089a178d044438d9f8cfdda6f8cca6b1
 Het algoritme berust op een belangrijke eigenschap: Indien een graaf geen negatieve lussen heeft, zullen de kortste wegen evenmin lussen hebben en hoogstens $n - 1$ verbindingen bevatten. Hieruit kan een recursief verband opgesteld worden tussen de kortste wegen met maximaal $k$ verbindingen en de kortste wegen met maximaal $k - 1$ verbindingen.
 $$d_i(k) = \min(d_i(k - 1), \min\limits_{j \in V} (d_j(k - 1) + g_{ij}))$$
 met
 \begin{itemize}
-	\item $d_i(k)$ het gewicht van de kortste weg met maximaal $k - 1$ verbindingen vanuit de startknoop naar knoop $i$,
+	\item $d_i(k)$ het gewicht van de kortste weg met maximaal $k$ verbindingen vanuit de startknoop naar knoop $i$,
 	\item $g_{ij}$ het gewicht van de verbinding $(j, i)$,
 	\item $j \in V$ elke buur $j$ van $i$.
 \end{itemize}
 
-Er bestaan \underline{twee goede implementaties}:
-<<<<<<< HEAD
-\begin{itemize}
-	\item \begin{itemize}
-		\item Niet nodig om in elke iteratie alle verbindingen te onderzoeken. Als een iteratie de voorlopige kortste afstand tot een knoop niet aanpast, is het zinloos om bij de volgende iteratie de verbindingen vanuit die knoop te onderzoeken.
-		\item Plaats enkel de knopen waarvan de afstand door de huidige iteratie gewijzigd werd in een wachtrij.
-		\item Enkel de buren van deze knopen worden in de volgende iteratie getest.
-		\item Elke buur moet, indien hij getest wordt en nog niet in de wachtrij zit, ook in de wachtrij gezet worden.
-		\item ! Zal niet stoppen indien er een negatieve lus in de graaf zit. 
-	\end{itemize}
-	\item \todo{p69}
 
-\end{itemize}
-=======
+
+
+Er bestaan \underline{twee goede implementaties}:
 \begin{enumerate}
 	\item \begin{itemize}
 		\item [\info] Niet nodig om in elke iteratie alle verbindingen te onderzoeken. Als een iteratie de voorlopige kortste afstand tot een knoop niet aanpast, is het zinloos om bij de volgende iteratie de verbindingen vanuit die knoop te onderzoeken.
 		\item [\info] Plaats enkel de knopen waarvan de afstand door de huidige iteratie gewijzigd werd in een wachtrij.
 		\item [\info] Enkel de buren van deze knopen worden in de volgende iteratie getest.
 		\item [\info] Elke buur moet, indien hij getest wordt en nog niet in de wachtrij zit, ook in de wachtrij gezet worden.
-		\item [\alert] Zal niet stoppen indien er een negatieve lus in de graaf zit. 
 	\end{itemize}
-	\item \todo{p69}
+	\item \begin{itemize}
+		\item[\info] Gebruik een deque in plaats van een wachtrij.
+		\item[\info] Als de afstand van een knoop wordt aangepast, en als die knoop reeds vroeger in de deque zat, dant voegt men vooraan toe, anders achteraan.
+		\item[\alert] Kan in bepaalde gevallen zeer inefficiënt uitvallen.
+	\end{itemize}
 
 \end{enumerate}
->>>>>>> e0a834a1089a178d044438d9f8cfdda6f8cca6b1
+
+\section{Kortste afstanden tussen alle knopenparen}
+\begin{itemize}
+	\item[\info] Voor dichte grafen $\rightarrow$ Floyd-Warshall (Algoritmen I).
+	\item[\info] Voor ijle grafen $\rightarrow$ Johnson.
+\end{itemize}
+\subsection{Het algoritme van Johnson}
+\begin{itemize}
+	\item[\info] Maakt gebruik van Bellman-Ford en Dijkstra.
+	\item[\info] Omdat we Dijkstra gebruiken, moet elk gewicht positief worden. 
+	\begin{enumerate}
+		\item Breidt de graaf uit met een nieuwe knoop $s$, die verbindingen van gewicht nul krijgt met elke andere knoop.
+		\item Voer Bellman-Ford uit op de nieuwe graaf om vanuit $s$ de kortste afstand $d_i$ te bepalen tot elke originele knoop $i$.
+		\item Het nieuwe gewicht $\hat{g}_{ij}$ van een oorspronkelijke verbinding $g_{ij}$ wordt gegeven door: 
+		$$\hat{g}_{ij} = g_{ij} + d_i - d_j$$ 
+	\end{enumerate}
+	\item[\info] Het algoritme van Dijkstra kan nu worden toegepast op elke originele knoop, die alle \underline{kortste wegen} zullen vinden. Om de \underline{kortste afstanden} te bepalen moeten de originele gewichten opgeteld worden op deze wegen.
+	\item[\info] Dit algoritme is $O(n(n + m)\lg n)$ want:
+	\begin{itemize}
+		\item[\info] Graaf uitbreiden is $\Theta(n)$.
+		\item[\info] Bellman-Ford is $O(nm)$.
+		\item[\info] De gewichten aanpassen is $\Theta(m)$.
+		\item[\alert] $n$ maal Dijkstra is $O(n(n + m)\lg n)$. Dit is de belangrijkste term, al de andere termen mogen verwaarloosd worden.
+	\end{itemize}
+\end{itemize}
+
+\section{Transitieve sluiting}
+\underline{Sluiting} = algemene methode om één of meerdere verzamelingen op te bouwen. ('als een verzameling deze gegevens bevat, dan moet ze ook de volgende gegevens bevatten').
+
+\begin{itemize}
+	\item[\info] \textbf{Fixed point}:  Een sluiting wordt fixed point genoemd omdat op een bepaald moment verdere toepassing niets meer verandert, $f(x) = x$.
+	\item[\info] \textbf{Least fixed point}: De kleinste $x$ zoeken zodat $f(x) = x$ voldaan wordt.
+\end{itemize}
+
+\underline{Transitieve sluiting} = 'Als $(a, b)$ en $(b, c)$ aanwezig zijn dan moet ook $(a, c)$ aanwezig zijn.'
+
+\begin{itemize}
+	\item[\info] Transitieve sluiting van een gerichte graaf is opnieuw een gerichte graaf, maar:
+	\begin{itemize}
+		\item[\info] er wordt een nieuwe verbinding van $i$ naar $j$ toegevoegd indien er een weg bestaat van $i$ naar $j$ in de oorspronkelijke graaf.
+	\end{itemize}
+	\item \underline{3 algoritmen:}
+	\begin{enumerate}
+		\item \textbf{Diepte-of breedte-eerst zoeken}: 
+				\begin{itemize}
+					\item[\info] Spoor alle knopen op die vanuit een startknoop bereikbaar zijn en herhaal dit met elke knoop.
+					\item[\good] Voor ijle grafen $\rightarrow \Theta(n(n + m))$.
+					\item[\alert] Voor dichte grafen $\rightarrow \Theta(n^3)$.
+				\end{itemize}
+		\item \textbf{Met de componentengraaf}:
+				\begin{itemize}
+					\item[\info] Interessant wanneer men verwacht dat de transitieve sluiting een dichte graaf zal zijn, want dan zijn veel knopen onderling bereikbaar, zodat er veel sterk samenhangende componenten zijn. Die kunnen in $\Theta(n + m)$ bepaald worden.
+					\item[\info] Maak dan de componentengraaf (kan in $O(n + m))$.
+					\item[\info] Als nu blijkt dat component $j$ beschikbaar is vanuit component $i$, dan zijn alle knopen van $j$ beruikbaar vanuit knopen van $i$.
+				\end{itemize}
+		\item \textbf{Het algoritme van Warshall}:
+				\begin{itemize}
+					\item[\info] Maak een reeks opeenvolgende $n \times n$ matrices $T^{(0)},T^{(1)},...,T^{(n)}$ die logische waarden bevat.
+					\item[\info] Element $t_{ij}^{(k)}$ duidt aan of er een weg tussen $i$ en $j$ met mogelijke intermediaire knopen $1, 2, ..., k$ bestaat.
+					\item[\info] Bepalen opeenvolgende matrices:
+					$$t_{ij}^{(0)} = 
+					\begin{cases}
+						\hbox{onwaar} & \hbox{als } i \neq j \hbox{ en } g_{ij} = \infty\\
+						\hbox{waar}   & \hbox{als } i = j \hbox{ of } g_{ij} < \infty
+					\end{cases}$$
+					en
+					$$
+						t_{ij}^{(k)} = t_{ij}^{(k - 1)} \hbox{ OF } \big(t_{ik}^{(k - 1)} \hbox{ EN } t_{kj}^{(k - 1)}\big) \qquad \hbox{voor } 1 \leq k \leq n
+					$$
+				\end{itemize}
+				$T^{(n)}$ is de gezochte burenmatrix.
+	\end{enumerate}
+\end{itemize}
 
 
 \chapter{Stroomnetwerken}
@@ -393,7 +479,7 @@ Er bestaan \underline{twee goede implementaties}:
 \begin{itemize}
 	\item [\info] Methode van \textbf{Ford-Fulkerson} \accentuate{('methode' aangezien manier om vergrotende paden te zoeken ontbreekt).}
 	\item [\info] Iteratieve methode. Bij elke iteratie neemt netstroom vanuit producent toe.
-	\item [\info] Stel de verzameling van knopen $K$, dan is de totale nettostroom $f$ uit de producent $p$ \accentuate{(De som van het materiaal dat toekomt min het materiaal dat weggaat voor elke knoop)}. 
+	\item [\info] Stel de verzameling van knopen $K$, dan is de totale nettostroom $f$ uit de producent $p$ \accentuate{(De som van het materiaal dat toekomt min het materiaal dat weggaat van elke knoop)}. 
 		$$f = \sum_{j \in K} (s(p, j) - s(j, p))$$
 	\item [\info] De stroomverdeling is het geheel van alle stromen voor alle mogelijke knopenparen. 
 	\item [\info] Het restnetwerk is een nieuw netwerk dat verkregen wordt door uit de huidige stroomverdeling een overzicht op te stellen van de mogelijke stroomtoename tussen elk paar knopen. Het restnetwerk bevat dezelfde knopen, maar niet noodzakelijk dezelfde verbindingen en capaciteit.
@@ -403,7 +489,7 @@ Het algoritme verloopt als volgt:
 	\item Initiële stroomverdeling is nul. Het restnetwerk is initieël de volledige graaf.
 	\item Bij elke iteratie wordt de huidige stroomverdeling en de verschillende capaciteiten gebruikt om een restnetwerk op te stellen.
 	\item In dit restnetwerk wordt een vergrotend pad gezocht: een weg van producent naar verbruiker die nog meer stroom tussen beide toelaat.
-	\item Als er geen vergrotende paden kunnen gevonden worden, stopt de iteratir, en zal de netwerkstroom maximaal zijn.
+	\item Als er geen vergrotende paden kunnen gevonden worden, stopt de iteratie, en zal de netwerkstroom maximaal zijn.
 \end{enumerate}
 https://www.youtube.com/watch?v=Tl90tNtKvxs
 
@@ -503,11 +589,14 @@ Tweeledige graaf (of bipartiete graaf) = een ongerichte graaf waarbij de knopen 
 \part{Strings}
 \chapter{Gegevensstructuren voor strings}
 \section{Digitale zoekbomen}
-Deze zijn compleet analoog zoals gewone zoekbomen, op één verschil na: de juiste deelboom wordt niet bepaald door de zoeksleutel te vergelijken met de sleutel in de knoop, maar enkel door het volgende element van de zoeksleutel (van links naar rechts). Bij de wortel gebruiken we het eerst esleutelelement, een niveau dieper het tweede sleutelelement, enz...
+\begin{itemize}
+	\item[\info] Analoog met gewone zoekbomen, met één verschil: de juiste deelboom wordt niet bepaald door de zoeksleutel te vergelijken met de sleutel in de knoop, maar enkel door het volgende element van de zoeksleutel (van links naar rechts). Bij de wortel gebruiken we het eerste sleutelelement, een niveau dieper het tweede sleutelelement, enz...
+	\item[\info] De boom overlopen in \textbf{inorder} geeft de sleutels niet noodzakelijk in volgorde. De hoogte van de boom wordt beperkt tot het aantal bits van de grootste sleutel. Voor een groot aantal sleutels met relatief kleine bitlengte is de performantie in het slechtste geval veel beter dan die van een gewone binaire zoekboom, en vergelijkbaar met die van een rood-zwarte boom. In het gemiddelde geval is de kans op een volgend nul- of éénbit steeds gelijk, zodat er gemiddeld evenveel sleutels links als rechts komen. Daardoor is de gemiddelde hoogte van de boom $O(\lg n)$. De woordenboekoperaties zijn ook $O(\lg n)$.
+	\item[\alert] De dikwijls beperkende voorwaarde is een efficiënte toegang tot de bits van de sleutels. Bovendien zijn er enkel woordenboekoperaties mogelijk.
+\end{itemize}
 
-De boom overlopen in \textbf{inorder} geeft de sleutels niet noodzakelijk in volgorde. De hoogte van de boom wordt beperkt tot het aantal bits van de grootste sleutel. Voor een groot aantal sleutels met relatief kleine bitlengte is de performantie in het slechtste geval veel beter dan die van een gewone binaire zoekboom, en vergelijkbaar met die van een rood-zwarte boom. In het gemiddelde geval is de kans op een volgend nul- of éénbit steeds gelijk, zodat er gemiddeld evenveel sleutels links als rechts komen. Daardoor is de gemiddelde hoogte van de boom $O(\lg n)$. De woordenboekoperaties zijn ook $O(\lg n)$.
 
-\alert{}   De dikwijls beperkende voorwaarde is een efficiënte toegang tot de bits van de sleutels. Bovendien zijn er enkel woordenboekoperaties mogelijk.
+
 
 \section{Tries}
 Deze familie bomen behouden wel de sleutels in volgorde.
@@ -517,7 +606,7 @@ Deze familie bomen behouden wel de sleutels in volgorde.
 	\item[\info] De sleutels worden enkel opgeslagen in de bladeren, en niet in inwendige knopen.
 	\item[\good] Deze boom inorder overlopen geeft wel de sleutels gerangschikt.
 	\item[\good] De zoeksleutel moet niet vergeleken worden met elke knoop op de zoekweg, maar met de opeenvolgende bits.  
-	\item[\info] Komen we bij een ledige deelboom terecht (nullwijzer), dan bevat de boom de zoeksleutel niet, en kan dan op deze plaatst toegevoegd worden.
+	\item[\info] Komen we bij een ledige deelboom terecht (nullwijzer), dan bevat de boom de zoeksleutel niet, en kan dan op deze plaats toegevoegd worden.
 	\item[\info] Komen we niet bij een ledig deelboom terecht, dan bevat het blad de enige sleutel in die boom die gelijk kan zijn aan de zoeksleutel, aangezien ze dezelfde beginbits hebben.
 	\item[\alert] Wanneer opgeslagen sleutels veel gelijke beginbits hebben ziujn er veel knopen met slechts één kind.
 	\item[\alert] De bits van een sleutel mogen geen prefix zijn van een andere sleutel. 
