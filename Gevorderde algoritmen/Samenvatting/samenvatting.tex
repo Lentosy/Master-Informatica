@@ -587,7 +587,9 @@ Tweeledige graaf (of bipartiete graaf) = een ongerichte graaf waarbij de knopen 
 
 
 \part{Strings}
+
 \chapter{Gegevensstructuren voor strings}
+\info{} \underline{Veronderstelling:} elke sleutel heeft een ander bitpatroon. Dit wil ook zeggen dat geen enkele sleutel een prefix is van een ander.
 \section{Digitale zoekbomen}
 \begin{itemize}
 	\item[\info] Analoog met gewone zoekbomen, met één verschil: de juiste deelboom wordt niet bepaald door de zoeksleutel te vergelijken met de sleutel in de knoop, maar enkel door het volgende element van de zoeksleutel (van links naar rechts). Bij de wortel gebruiken we het eerste sleutelelement, een niveau dieper het tweede sleutelelement, enz...
@@ -601,6 +603,13 @@ Tweeledige graaf (of bipartiete graaf) = een ongerichte graaf waarbij de knopen 
 \section{Tries}
 Deze familie bomen behouden wel de sleutels in volgorde.
 \subsection{Binaire tries}
+Cfr. figuur \ref{fig:binary_trie}
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.5\textwidth]{binary_trie}
+	\caption{Een binaire trie. De letters worden voorgesteld door een bepaald bitpatroon, die hier niet overeenkomt met het werkelijk bitpatroon voor deze letter, maar een willekeurig gegenereerd bitpatroon.}
+	\label{fig:binary_trie}
+\end{figure}
 \begin{itemize}
 	\item[\info] Zoekweg wordt bepaald door de opeenvolgende bits van de zoeksleutel.
 	\item[\info] De sleutels worden enkel opgeslagen in de bladeren, en niet in inwendige knopen.
@@ -608,14 +617,37 @@ Deze familie bomen behouden wel de sleutels in volgorde.
 	\item[\good] De zoeksleutel moet niet vergeleken worden met elke knoop op de zoekweg, maar met de opeenvolgende bits.  
 	\item[\info] Komen we bij een ledige deelboom terecht (nullwijzer), dan bevat de boom de zoeksleutel niet, en kan dan op deze plaats toegevoegd worden.
 	\item[\info] Komen we niet bij een ledig deelboom terecht, dan bevat het blad de enige sleutel in die boom die gelijk kan zijn aan de zoeksleutel, aangezien ze dezelfde beginbits hebben.
-	\item[\alert] Wanneer opgeslagen sleutels veel gelijke beginbits hebben ziujn er veel knopen met slechts één kind.
+	\item[\alert] Wanneer opgeslagen sleutels veel gelijke beginbits hebben zijn er veel knopen met slechts één kind.
 	\item[\alert] De bits van een sleutel mogen geen prefix zijn van een andere sleutel. 
 	\item[\good] De structuur is onafhankelijk van de toevoegvolgorde, zodat er slechts één unieke trie is voor elke verzameling sleutels.
 	\item[\info] Een trie opgebouwd uit $n$ gelijkmatige verdeelde sleutels vraagt voor zoeken of toevoegen $O(\lg n)$ bitoperaties. 
 \end{itemize}
-
-
 \subsection{Meerwegtries}
+Cfr. figuur \ref{fig:meerwegstrie}
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.5\textwidth]{meerwegstrie}
+	\caption{Een meerwegstrie.}
+	\label{fig:meerwegstrie}
+\end{figure}
+\begin{itemize}
+	\item[\good] Beperken hoogte van een trie.
+	\item[\info] Elke inwendige knoop krijgt potentiaal $m$ kinderen ($m$ = aantal verschillende waarden voor een sleutel).
+	\item[\info] \underline{Zoeken} en \underline{toevoegen} is analoog aan binaire trie.
+	\item[\good] Kinderen zijn alfabetisch gesorteerd.
+	\item[\info] Wijzers bijhouden naar de kinderen, die dan gesorteerd in tabel zitten.
+	\item[\info] Performantie is gelijkaardig aan binaire tries: $O(log_m n)$.
+	\item[\alert] Wat als we nu veronderstellen dat sleutels toch prefixen mogen zijn van andere sleutels (zie begin dit hoofdstuk).
+	\begin{itemize}
+		\item[\alert] Hoe moet men aanduiden dat de bits van een kortere sleutel op een langere zoekweg opgebruikt zijn?
+		\item[$\rightarrow$ ] Door elke sleutel af te sluiten met een speciaal sleutelelement, dat in geen enkele andere voorkomt.
+	\end{itemize}
+	\item[\alert] Meerwegstries gebruiken veel geheugen. \underline{Twee verbeteringen:}
+	\begin{enumerate}
+		\item k
+		\item o
+	\end{enumerate}
+\end{itemize}
 
 
 \section{Variabelelengtecodering}
@@ -988,7 +1020,45 @@ Er is hier nog een uitbreiding op, waarbij elke uitspraak slechts 3 atomaire var
 \subsubsection{Vertex Cover}
 \todo{les 06 december}
 
+\chapter{Metaheuristieken}
+= vuistregels bij het zoeken naar een oplossing, maar geen garantie dat een oplossing gevonden wordt. Ze versnellen meestal de zoektocht ernaar.
+\section{Combinatorische optimisatie}
+\begin{itemize}
+	\item[=] Beste (hier het kleinste) element uit een verzameling $S$ vinden via \underline{evaluatiefunctie $f$}. De verzameling $S$ is:
+	\begin{itemize}
+		\item een eindige verzameling van strings over een eindig alfabet,
+		\item niet gekarakteriseerd door een opsomming, maar door voorwaarden.
+	\end{itemize}
+	\item[\info] Voorbeeld Travelling Salesman Problem:
+	\begin{itemize}
+		\item Alfbet = verzameling verbindingen.
+		\item $S$ = reeks verbindingen zodat elke verbinding vertrekt uit het eindpunt van de vorige, en zo dat alle steden bezocht worden.
+		\item Het beste individu is die met de kortse lengte.
+	\end{itemize}
+	\item[\info] Soms zijn alle strings in $S$ even lang, dan kan men de elementen beschrijven met variabelen $s \in S$. Voorbeeld lessenroosterprobleem:
+	\begin{itemize}
+		\item \underline{Beschrijving}: Een lessenrooster is goed wanner deze weinig negatieve elementen heeft (springuren, onevenwichtige verdelingen, \accentuate{zelf te kiezen wat 'negatief' is}).
+		\item Elke string in $S$ beschrijft een lessenrooster zonder conflicten door aan elke les een lokaal en tijdsslot toe te kennen.
+		\item $S$ heeft dus twee letters voor elke les: de eerste duidt de tijdsslot aan en de tweede het lokaal.
+	\end{itemize}
+	\item[\info] Voor elk individu wordt de $f-$waarde berekend, en het beste wordt natuurlijk bijgehouden.
+	\item[\info] De metaheuristiek stopt bij een bepaalde stopvoorwaarde, meestal is dit een aantal iteraties, tijd of de gevonden oplossing is benaderend goed genoeg.
+	\item[\info] Zeer groot aantal metaheuristieken
+\end{itemize}
+\section{Vooronderstellingen}
+\begin{itemize}
+	\item[=] De voorwaarden die voldaan moeten zijn zodat de methodieken in de cursus werken.
+	\begin{enumerate}
+		\item Het moet zinvol zijn om op zoek te gaan naar betere individuen in de buurt van een gegeven individu. 
+		\item Soms is het niet zinvol om, bij het opbouwen nieuwe individuen van $S$, uit te gaan van de reeds gevonden individuen. 
+	\end{enumerate}
+	\item[\info] Als men een nieuw element van de grond opbouwt zijn er twee belangrijke mogelijkheden:
+	\begin{enumerate}
+		\item \underline{Constructie}: een individu wordt opgebouwd uit componenten. Een component komt overeen met letters van $S$. (Niet alle uitbreidingen bekijken zoals bij backtracking, maar één at random kiezen).
+		\item Individuen worden rechtstreeks aangemaakt.
+	\end{enumerate}
 
+\end{itemize}
 
 \end{document}
 
