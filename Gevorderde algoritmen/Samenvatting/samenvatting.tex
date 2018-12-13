@@ -42,6 +42,9 @@
 
 
 	\section{Rood-zwarte bomen}
+
+	$\overline{x_i}$
+
 	Een rood-zwarte boom is een \textbf{binaire zoekboom} waarbij bovendien:
 	\begin{itemize}
 		\item Elke knoop rood of zwart gekleurd is.
@@ -881,9 +884,6 @@ zolang j < t
 	j++
 	\end{lstlisting}
 \end{enumerate}
-
-<<<<<<< HEAD
-=======
 \chapter{Indexeren van vaste tekst}
 \begin{itemize}
 	\item[\info] Voorbereidend werk op de tekst, zodat zoeken in tekst tot $O(p)$ kan gereduceerd worden.
@@ -952,8 +952,6 @@ zolang j < t
 \end{itemize}
 \section{Suffixtabellen}
 \section{Tekstzoekmachines}
-
->>>>>>> e0a834a1089a178d044438d9f8cfdda6f8cca6b1
 \part{Hardnekkige problemen}
 \chapter{NP}
 \section{Complexiteit: P en NP}
@@ -996,11 +994,12 @@ Als je kan bewijzen dat een bepaald probleem NP-compleet is, weet je dat je niet
 	\item Maak gebruik van efficiënte heuritische methoden. Deze geven vaak niet de optimale oplossing, maar wel vaak een goede, maar het kan ook de slechtste oplossing zijn.
 \end{itemize}
 
+
 \section{NP-complete problemen}
 \subsection{Het basisprobleem: SAT (en 3SAT)}
 Gegeven een verzameling logische variabelen $\chi = \{x_1, ..., x_n\}$ en een collectie logische uitspraken $\mathcal{F} = \{F_1, ..., F_m \}$
 Elke uitspraak $F_j$ bestaat uit atomaire uitspraken $x_i$ of de inverse $\overline{x_i}$ samengevoegd met ofoperaties zoals:
-$$F_1 = x_2 \vee \overline{x_5} \vee x_7 \vee x_8 \vee x_9$$.
+$$F_1 = x_2 \vee \overline{x_5} \vee x_7 \vee x_8 \vee x_9$$
 De vraag is nu: \underline{kan men waarden toekennen aan de variabelen, zodat elke uitspraak $F_j$ waar is?} 
 
 Dit is natuurlijk eenvoudig op te lossen met backtracking, door incrementeel waarden toe te kennen.
@@ -1018,13 +1017,114 @@ Er is hier nog een uitbreiding op, waarbij elke uitspraak slechts 3 atomaire var
 
 \subsection{Graafproblemen}
 \subsubsection{Vertex Cover}
-\todo{les 06 december}
+\begin{itemize}
+	\item[\info] \underline{Gegeven:} Een ongerichte graaf.
+	\item[\info] \underline{Gevraagd:} De kleinste groep knopen die minstens één eindknoop van elke verbinding bevat.
+	\item[\info] Reductie 3SAT tot vertex cover:
+	\begin{itemize}
+		\item Voor elke logische variabele $x_i$, maken we twee knopen. De knoop $x_i$ en zijn negatie $\overline{x_i}$. Deze twee zijn verbonden met elkaar.
+		\item Voor elke uitspraak maken we drie knopen, één voor elk atoom, en worden met elkaar verbonden.
+	\end{itemize}
+	\item[\info] Voor een probleem met twee uitspraken:
+	\begin{equation*}
+		\begin{split}
+			U_1 & = \overline{x_1} \vee x_2 \vee x_3 \\
+			U_2 & = x_2 \vee \overline{x_3} \vee x_4
+		\end{split}
+	\end{equation*}
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=0.5\textwidth]{vertex_cover}
+	\end{figure}
 
+\end{itemize}
+
+\subsubsection{Dominating set}
+\begin{itemize}
+	\item[\info] \underline{Gegeven:} Een ongerichte graaf.
+	\item[\info] \underline{Gevraagd:} De kleinste groep knopen zodat elke andere knoop met minstens één van de knopen uit de groep verbonden is.
+\end{itemize}
+\subsubsection{Graph Coloring}
+\begin{itemize}
+	\item \textbf{Vertex coloring:}
+	\begin{itemize}
+		\item[\info] \underline{Gegeven:} Een ongerichte graaf.
+		\item[\info] \underline{Gevraagd:} Kleur de knopen met een minimum aantal kleuren, zodat de eindknopen van elke verbinding een verschillende kleur hebben.
+		\item[\info] Enkel oplosbaar via backtracking of via heuristische methoden.
+	\end{itemize}
+	\item \textbf{Edge coloring:}
+	\begin{itemize}
+		\item[\info] \underline{Gegeven:} Een ongerichte graaf.
+		\item[\info] \underline{Gevraagd:} Kleur de verbindingen met een minimum aantal kleuren, zodat verbindingen met een gemeenschappelijke eindknoop een verschillende kleur hebben.
+		\item[\info] Benaderend $O(n^2)$ algoritme van Vizing gebruikt hoogstens één kleur teveel.
+	\end{itemize}
+\end{itemize}
+\subsubsection{Clique}
+\begin{itemize}
+	\item[\info] \underline{Gegeven:} Een ongerichte graaf.
+	\item[\info] \underline{Gevraagd:} De grootste groep knopen die allemaal met elkaar verbonden zijn.
+	\item[\info] Enkel oplosbaar via backtracking of heuristische methoden (bv simulated annealing).
+	\item[\info] SAT herleiden tot clique:
+	\begin{itemize}
+		\item Voor elk voorkomen van een atoom in een uitspraak maken we de bijbehorende knopen $(F_i, x_j)$ en $(F_i, \overline{x_j})$.
+		\item Leg verbindingen tussen knopen horende bij verschillende uitspraken ($i \leq j)$
+		\begin{itemize}
+			\item $(F_i, x_k)$ met $(F_j, x_l)$ voor alle $k$ en $l$.
+			\item $(F_i, \overline{x_k})$ met $(F_j, \overline{x_l})$ voor alle $k$ en $l$.
+			\item $(F_i, x_k)$ met $(F_j, \overline{x_l})$ als $k \neq l$.
+		\end{itemize}
+	\end{itemize}
+\end{itemize}
+
+\subsubsection{Independent set}
+\begin{itemize}
+	\item[\info] \underline{Gegeven:} Een ongerichte graaf
+	\item[\info] \underline{Gevraagd:} De grootste groep knopen zonder onderlinge verbindingen.
+\end{itemize}
+
+\subsubsection{Hamiltoninan circuit/path}
+\begin{itemize}
+	\item[\info] \underline{Gegeven:} Een ongerichte of gerichte graaf.
+	\item[\info] \underline{Gevraagd:} Bestaat er een circuit dat elke knoop éénmaal bevat?
+	\item[\info] Kan enkel opgelost worden met backtracking. Het is NP-compleet.
+\end{itemize}
+\subsection{Problemen bij verzamelingen}
+\subsubsection{Minimum cover}
+\begin{itemize}
+	\item[\info] \underline{Gegeven:} Een verzameling $S$ en een collectie deelverzamelingen $C$ van $S$.
+	\item[\info] \underline{Gevraagd:} De kleinste deelverzameling $C'$ van $C$ zodat elk element van $S$ tot minstens één van de deelverzamelingen uit $C'$ behoort.
+	\item[\info] Kan efficiënt opgelost worden wanneer de deelverzamelingen in $C$ niet meer dan twee elementen bevatten.
+	\item[\info] SAT herleiden tot minimum cover:
+	\begin{itemize}
+		\item Stel $S = \mathcal{F} \cup \mathcal{X}$
+		\item Voor elke logische variabele $x_i$ zijn er twee elementen van $C$:
+		\begin{equation*}
+			\begin{split}
+				C_{x_i} & = \{x_i\} \cup \{F \in \mathcal{F} : x_i \in F\} \\
+				C_{\overline{x_i}} & = \{x_i\} \cup \{F \in \mathcal{F} : \overline{x_i} \in F\}
+			\end{split}
+		\end{equation*}
+		\item Het SAT-probleem heeft een oplossing als er een minimum cover is van grootte $|\mathcal{X}|$.
+	\end{itemize}
+\end{itemize}
+\subsubsection{Subset sum}
+\begin{itemize}
+	\item[\info] \underline{Gegeven:} Een verzameling elementen, elk met een positieve gehele grootte, en een positief geheel getal $k$.
+	\item[\info] \underline{Gevraagd:} Bestaat er een deelverzameling van die elementen, zodat de som van hun grootten gelijk is aan $k$?
+	\item[\info] Oplosbaar met dynamisch programmeren.
+\end{itemize}
+\subsubsection{Partition}
+\begin{itemize}
+	\item[\info] \underline{Gegeven:} Een zak van positieve getallen.
+	\item[\info] \underline{Gevraagd:} Kan de zak opgesplitst worden in twee deelverzamelingen, zodat de som van de grootten van de ene gelijk is aan de som van de grootten van de andere?
+	\item[\info] Oplosbaar met dynamisch programmeren.
+
+\end{itemize}
 \chapter{Metaheuristieken}
 = vuistregels bij het zoeken naar een oplossing, maar geen garantie dat een oplossing gevonden wordt. Ze versnellen meestal de zoektocht ernaar.
 \section{Combinatorische optimisatie}
 \begin{itemize}
-	\item[=] Beste (hier het kleinste) element uit een verzameling $S$ vinden via \underline{evaluatiefunctie $f$}. De verzameling $S$ is:
+	\item[=] Beste (hier het kleinste) element uit een verzameling $\mathcal{S}$ vinden via \underline{evaluatiefunctie $f$}. De verzameling $\mathcal{S}$ is:
 	\begin{itemize}
 		\item een eindige verzameling van strings over een eindig alfabet,
 		\item niet gekarakteriseerd door een opsomming, maar door voorwaarden.
@@ -1035,11 +1135,11 @@ Er is hier nog een uitbreiding op, waarbij elke uitspraak slechts 3 atomaire var
 		\item $S$ = reeks verbindingen zodat elke verbinding vertrekt uit het eindpunt van de vorige, en zo dat alle steden bezocht worden.
 		\item Het beste individu is die met de kortse lengte.
 	\end{itemize}
-	\item[\info] Soms zijn alle strings in $S$ even lang, dan kan men de elementen beschrijven met variabelen $s \in S$. Voorbeeld lessenroosterprobleem:
+	\item[\info] Soms zijn alle strings in $\mathcal{S}$ even lang, dan kan men de elementen beschrijven met variabelen $s \in \mathcal{S}$. Voorbeeld lessenroosterprobleem:
 	\begin{itemize}
 		\item \underline{Beschrijving}: Een lessenrooster is goed wanner deze weinig negatieve elementen heeft (springuren, onevenwichtige verdelingen, \accentuate{zelf te kiezen wat 'negatief' is}).
-		\item Elke string in $S$ beschrijft een lessenrooster zonder conflicten door aan elke les een lokaal en tijdsslot toe te kennen.
-		\item $S$ heeft dus twee letters voor elke les: de eerste duidt de tijdsslot aan en de tweede het lokaal.
+		\item Elke string in $\mathcal{S}$ beschrijft een lessenrooster zonder conflicten door aan elke les een lokaal en tijdsslot toe te kennen.
+		\item $\mathcal{S}$ heeft dus twee letters voor elke les: de eerste duidt de tijdsslot aan en de tweede het lokaal.
 	\end{itemize}
 	\item[\info] Voor elk individu wordt de $f-$waarde berekend, en het beste wordt natuurlijk bijgehouden.
 	\item[\info] De metaheuristiek stopt bij een bepaalde stopvoorwaarde, meestal is dit een aantal iteraties, tijd of de gevonden oplossing is benaderend goed genoeg.
@@ -1050,13 +1150,35 @@ Er is hier nog een uitbreiding op, waarbij elke uitspraak slechts 3 atomaire var
 	\item[=] De voorwaarden die voldaan moeten zijn zodat de methodieken in de cursus werken.
 	\begin{enumerate}
 		\item Het moet zinvol zijn om op zoek te gaan naar betere individuen in de buurt van een gegeven individu. 
-		\item Soms is het niet zinvol om, bij het opbouwen nieuwe individuen van $S$, uit te gaan van de reeds gevonden individuen. 
+		\item Soms is het niet zinvol om, bij het opbouwen nieuwe individuen van $\mathcal{S}$, uit te gaan van de reeds gevonden individuen. 
 	\end{enumerate}
 	\item[\info] Als men een nieuw element van de grond opbouwt zijn er twee belangrijke mogelijkheden:
 	\begin{enumerate}
-		\item \underline{Constructie}: een individu wordt opgebouwd uit componenten. Een component komt overeen met letters van $S$. (Niet alle uitbreidingen bekijken zoals bij backtracking, maar één at random kiezen).
+		\item \underline{Constructie}: een individu wordt opgebouwd uit componenten. Een component komt overeen met letters van $\mathcal{S}$ (Niet alle uitbreidingen bekijken zoals bij backtracking, maar één at random kiezen).
 		\item Individuen worden rechtstreeks aangemaakt.
 	\end{enumerate}
+	\item[\info] Twee manieren om kandidaten te nemen, \underline{indien ze opgebouwd worden uit componenten}:
+	\begin{enumerate}
+		\item \underline{Shortlisting}. Neem de beste kandidaten en kies hieruit at random.
+		\item \underline{Gewogen keuze}. Elke keuze krijgt gewicht $w_i$. De kans $p(i)$ op die keuze wordt dan:
+		$$p(i) = \frac{w_i}{\sum_j w_j}$$
+
+	\end{enumerate}
+	\item[\info] Drie manieren om een nieuw individu te kiezen uit $S$, uitgaande van andere individuen die men reeds bekeken heeft:
+	\begin{enumerate}
+		\item Kleine wijzigingen aanbrengen in één reeds bekeken individu $s$ van $S$.
+		\item Kruisen van twee al bekeken individuen.
+		\item Het vermengen van grote hoeveelheden al bekeken individuen.
+		$$p(i) = \frac{w_i}{\sum_j w_j}$$
+	\end{enumerate}
+\section{Lokaal versus globaal zoeken}
+\begin{itemize}
+	\item[\info] Lokaal wijzigen: een kleine wijziging (bv één of twee letters van het individu $s$ veranderen).
+	\item[\info] Voor elke $s \in \mathcal{S}$, is $\mathcal{N}(s)$ de omgeving die bestaat uit $s$ zelf en alle strings uit $\mathcal{S}$ die door één kleine wijziging uit $s$ bekomen kunnen worden.
+	\item[\info] Van $s$ naar $s'$ door willekeurige aaneenschakeling van wijzigingen.
+	\item[\info] Vaak zit in de omgevingen van een goed individu, andere goede individuen.
+	\item[\info] Iteratief toepassen: rij $s_0, s_1,...,s_n \in \mathcal{S}$ construeren zodanig dat voor elk individu in die rij in de omgeving zit van $s_0$, en waarbij $f(s_{i + 1}) < f(s_i)$. Deze rij vinden heet \underline{lokale optimalisatie}.
+\end{itemize}
 
 \end{itemize}
 
