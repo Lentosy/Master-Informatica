@@ -42,6 +42,9 @@
 
 
 	\section{Rood-zwarte bomen}
+
+	$\overline{x_i}$
+
 	Een rood-zwarte boom is een \textbf{binaire zoekboom} waarbij bovendien:
 	\begin{itemize}
 		\item Elke knoop rood of zwart gekleurd is.
@@ -297,32 +300,52 @@ De belangrijke samenvoegbare heaps zijn: \underline{Binomial queues} en \underli
 \chapter{Toepassingen van diepte-eerst zoeken}
 \section{Enkelvoudige samenhang van grafen}
 \subsection{Samenhangende componenten van een ongerichte graaf}
-Een \textbf{samenhangende ongerichte graaf} is een graaf waarbij er een weg bestaat tussen elk paar knopen. Een \textbf{niet samenhangende ongerichte graaf} bestaat dan uit zo groot mogelijke samenhangende componenten.
+\begin{itemize}
+	\item[\info] Een \textbf{samenhangende ongerichte graaf} is een graaf waarbij er een weg bestaat tussen elk paar knopen.
+	\item[\info] Een \textbf{niet samenhangende ongerichte graaf} bestaat dan uit zo groot mogelijke samenhangende componenten.
+\end{itemize}
 
 \subsection{Sterk samenhangende componenten van een gerichte graaf}
-Een \textbf{sterk samenhangende gerichte graaf} is een graaf waarbij er een weg tussen elk paar knopen in beide richtingen bestaat. Een \textbf{zwak samenhangende gerichte graaf} is een graaf die niet sterk, maar toch samenhangend is indien de richtingen buiten beschouwing gelaten worden. Een graaf die niet sterk samenhangend is, bestaat uit zo groot mogelijke sterk samenhangende componenten. 
+\begin{itemize}
+	\item[\info] Een \textbf{sterk samenhangende gerichte graaf} is een graaf waarbij er een weg tussen elk paar knopen in beide richtingen (niet perse dezelfde verbindingen) bestaat (cfr. figuur \ref{fig:sterk_samenhangende_graaf}).
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=0.5\textwidth]{img/sterk_samenhangende_graaf}
+		\caption{Een sterk samenhangende graaf.}
+		\label{fig:sterk_samenhangende_graaf}
+	\end{figure}
+				
+	\item[\info] Een \textbf{zwak samenhangende gerichte graaf} is een graaf die niet sterk, maar toch samenhangend is indien de richtingen buiten beschouwing gelaten worden. Een graaf die niet sterk samenhangend is, bestaat uit zo groot mogelijke sterk samenhangende componenten. 
+	\item[\info] Sommige algoritmen gaan ervan uit de een graaf sterk samenhangend is. Men moet dus eerst deze componenten bepalen, meestal via een \textbf{componentengraaf} die:
+	\begin{itemize}
+		\item[\info] een knoop heeft voor elk sterk samenhangend component,
+		\item[\info] en een verbinding van knoop $a$ naar knoop $b$ indien er in de originele graaf een verbinding van één van de knopen van $a$ naar één van de knopen van $b$ is. 
+	\end{itemize}
+	\item[\alert] De componentgraaf bevat geen lussen, anders wil dit zeggen dat die knoop zelf nog opgesplitst zou kunnen worden in twee sterk samenhangende componenten.
+	\item[\info] De sterk samenhangende componenten kunnen bekomen worden met behulp van diepte-eerst zoeken (Kosaraju's Algorithm):
+	\begin{enumerate}
+		\item Stel de omgekeerde graaf op, door de richting van elke verbinding om te keren.
+		\item Pas diepte-eerst zoeken toe op deze omgekeerde graaf, waarbij de knopen in postorder genummered worden.
+		\item Pas diepte-eerst zoeken toe op de originele graaf, met als startknoop de resterende knoop met het hoogste postordernummer. Het resultaat is een diepte-eerst bos, waarvan de bomen sterk samenhangende componenten zijn.
+	\end{enumerate}
+	\item[\info] Diepte-eerst zoeken is $\Theta(n + m)$ voor ijle en $\Theta(n^2)$ voor dichte grafen. Het omkeren van de graaf is ook $\Theta(n + m)$ voor ijle en $\Theta(n^2)$ voor dichte grafen.
+\end{itemize}
 
-Sommige algoritmen gaan ervan uit de een graaf sterk samenhangend is. Men moet dus eerst deze componenten bepalen, meestal via een \textbf{componentengraaf}, die een knoop heeft voor elk sterk samenhangend component, en een verbinding van knoop $a$ naar knoop $b$ indien er in de originele graaf een verbinding van één van de knopen van $a$ naar één van de knopen van $b$ is. 
 
-De sterk samenhangende componenten kunnen bekomen worden met behulp van diepte-eerst zoeken:
-\begin{enumerate}
-	\item Stel de omgekeerde graaf op, door de richting van elke verbinding om te keren.
-	\item Pas diepte-eerst zoeken toe op deze omgekeerde graaf, waarbij de knopen in postorder genummered worden.
-	\item Pas diepte-eerst zoeken toe op de originele graaf, met als startknoop de resterende knoop met het hoogste postordernummer. Het resultaat is een diepte-eerst bos, waarvan de bomen sterk samenhangende componenten zijn.
-\end{enumerate}
-Diepte-eerst zoeken is $\Theta(n + m)$ voor ijle en $\Theta(n^2)$ voor dichte grafen. Het omkeren van de graaf is ook $\Theta(n + m)$ voor ijle en $\Theta(n^2)$ voor dichte grafen.
+
+
 \section{Dubbele samenhang van ongerichte grafen}
 Twee definities:
 \begin{itemize}
-	\item \textbf{Brug.} Een brug is een verbinding dat, indien deze wordt weggenomen, de graaf in twee deelgrafen opsplitst. Een graaf zonder bruggen noemt men \underline{dubbel lijnsamenhangend}; als er tussen elk paar knopen minstens twee onafhankelijke wegen bestaan, dan is een graaf zeker dubbel lijnsamenhangend.
-	\item \textbf{Scharnierpunt.} Een scharnierpunt is een knoop dat, indien deze wordt weggenomen, de graaf in ten minste twee deelgrafen opsplitst. Een graaf zonder scharnierpunten noemt men \underline{dubbel knoopsamenhangend} (of dubbel samenhangend). Een graaf met scharnierpunten kan onderverdeeld worden in dubbel knoopsamenhangende componenten. Als er tussen elk paar knopen twee onafhankelijke wegen bestaan, dan is de graaf dubbel knoopsamenhangend.
+	\item[\info] \textbf{Brug.} Een brug is een verbinding dat, indien deze wordt weggenomen, de graaf in twee deelgrafen opsplitst. Een graaf zonder bruggen noemt men \underline{dubbel lijnsamenhangend}; als er tussen elk paar knopen minstens twee onafhankelijke wegen bestaan, dan is een graaf zeker dubbel lijnsamenhangend.
+	\item[\info] \textbf{Scharnierpunt.} Een scharnierpunt is een knoop dat, indien deze wordt weggenomen, de graaf in ten minste twee deelgrafen opsplitst. Een graaf zonder scharnierpunten noemt men \underline{dubbel knoopsamenhangend} (of dubbel samenhangend). Een graaf met scharnierpunten kan onderverdeeld worden in dubbel knoopsamenhangende componenten. Als er tussen elk paar knopen twee onafhankelijke wegen bestaan, dan is de graaf dubbel knoopsamenhangend.
 \end{itemize}
 
-Scharnierpunten, dubbel knoopsamenhangende componenten, bruggen en lijnsamenhangende componenten kunnen opnieuw via diepte-eerst zoeken gevonden worden:
+Scharnierpunten, dubbel knoopsamenhangende componenten, bruggen en dubbel lijnsamenhangende componenten kunnen opnieuw via diepte-eerst zoeken gevonden worden:
 \begin{enumerate}
 	\item Stel de diepte-eerst boom op, waarbij de knopen in postorder genummerd worden. 
 	\item Bepaal voor elke knoop $u$ de laagst genummerde knoop die vanuit $u$ kan bereikt worden via een weg bestaande uit nul of meer dalende boomtakken gevolgd door één terugverbinding. 
-	\item Indien alle kinderen van een knoop op die manier een knoop kunnen bereiken die hoger in de boom ligt dan hemzelf, dan is de knoop zeker niet samenhangend. De wortel is een scharnierpunt indien hij meer dan één kind in heeft.
+	\item Indien alle kinderen van een knoop op die manier een knoop kunnen bereiken die hoger in de boom ligt dan hemzelf, dan is de knoop zeker niet samenhangend. De wortel is een scharnierpunt indien hij meer dan één kind in heeft. \todo{hoe bruggen vinden?}
 \end{enumerate}
 Diepte-eerst zoeken is $\Theta(n + m)$ voor ijle en $\Theta(n^2)$ voor dichte grafen.
 \section{Eulergraaf}
@@ -338,46 +361,112 @@ Een eulercircuit is een gesloten omloop in een graaf die alle verbindingen één
 \subsection{Algoritme van Bellman-Ford}
 Dit algoritme werkt voor verbindingen met negatieve gewichten, iets wat het algoritme van Dijkstra niet kon. Het algoritme is dan natuurlijk ook trager. \accentuate{(Dijkstra gebruikt het feit dat indien een pad naar A $\rightarrow$ C bestaat, er geen korter pad A $\rightarrow$ B $\rightarrow$ C kan zijn, daarom is het algoritme performant, maar er mogen dus geen negatieve verbindingen zijn. Indien B negatief zou zijn dan klopt Dijkstra niet.)}.
 
+\begin{itemize}
+	\item [\good] Werkt voor negatieve verbindingen.
+	\item [\good] Geen globale kennis nodig van heel het netwerk, zoals bij Dijkstra, maar slechts enkel de buren van een bepaalde knoop. Daarom gebruiken routers Bellman-Ford (distance vector protocol).
+	\item [\alert] Zal niet stoppen indien er een negatieve lus in de graaf zit, aangezien het pad dan zal blijven dalen tot $-\infty$. 
+\end{itemize}
 
-<<<<<<< HEAD
-
-=======
->>>>>>> e0a834a1089a178d044438d9f8cfdda6f8cca6b1
 Het algoritme berust op een belangrijke eigenschap: Indien een graaf geen negatieve lussen heeft, zullen de kortste wegen evenmin lussen hebben en hoogstens $n - 1$ verbindingen bevatten. Hieruit kan een recursief verband opgesteld worden tussen de kortste wegen met maximaal $k$ verbindingen en de kortste wegen met maximaal $k - 1$ verbindingen.
 $$d_i(k) = \min(d_i(k - 1), \min\limits_{j \in V} (d_j(k - 1) + g_{ij}))$$
 met
 \begin{itemize}
-	\item $d_i(k)$ het gewicht van de kortste weg met maximaal $k - 1$ verbindingen vanuit de startknoop naar knoop $i$,
+	\item $d_i(k)$ het gewicht van de kortste weg met maximaal $k$ verbindingen vanuit de startknoop naar knoop $i$,
 	\item $g_{ij}$ het gewicht van de verbinding $(j, i)$,
 	\item $j \in V$ elke buur $j$ van $i$.
 \end{itemize}
 
-Er bestaan \underline{twee goede implementaties}:
-<<<<<<< HEAD
-\begin{itemize}
-	\item \begin{itemize}
-		\item Niet nodig om in elke iteratie alle verbindingen te onderzoeken. Als een iteratie de voorlopige kortste afstand tot een knoop niet aanpast, is het zinloos om bij de volgende iteratie de verbindingen vanuit die knoop te onderzoeken.
-		\item Plaats enkel de knopen waarvan de afstand door de huidige iteratie gewijzigd werd in een wachtrij.
-		\item Enkel de buren van deze knopen worden in de volgende iteratie getest.
-		\item Elke buur moet, indien hij getest wordt en nog niet in de wachtrij zit, ook in de wachtrij gezet worden.
-		\item ! Zal niet stoppen indien er een negatieve lus in de graaf zit. 
-	\end{itemize}
-	\item \todo{p69}
 
-\end{itemize}
-=======
+
+
+Er bestaan \underline{twee goede implementaties}:
 \begin{enumerate}
 	\item \begin{itemize}
 		\item [\info] Niet nodig om in elke iteratie alle verbindingen te onderzoeken. Als een iteratie de voorlopige kortste afstand tot een knoop niet aanpast, is het zinloos om bij de volgende iteratie de verbindingen vanuit die knoop te onderzoeken.
 		\item [\info] Plaats enkel de knopen waarvan de afstand door de huidige iteratie gewijzigd werd in een wachtrij.
 		\item [\info] Enkel de buren van deze knopen worden in de volgende iteratie getest.
 		\item [\info] Elke buur moet, indien hij getest wordt en nog niet in de wachtrij zit, ook in de wachtrij gezet worden.
-		\item [\alert] Zal niet stoppen indien er een negatieve lus in de graaf zit. 
 	\end{itemize}
-	\item \todo{p69}
+	\item \begin{itemize}
+		\item[\info] Gebruik een deque in plaats van een wachtrij.
+		\item[\info] Als de afstand van een knoop wordt aangepast, en als die knoop reeds vroeger in de deque zat, dant voegt men vooraan toe, anders achteraan.
+		\item[\alert] Kan in bepaalde gevallen zeer inefficiënt uitvallen.
+	\end{itemize}
 
 \end{enumerate}
->>>>>>> e0a834a1089a178d044438d9f8cfdda6f8cca6b1
+
+\section{Kortste afstanden tussen alle knopenparen}
+\begin{itemize}
+	\item[\info] Voor dichte grafen $\rightarrow$ Floyd-Warshall (Algoritmen I).
+	\item[\info] Voor ijle grafen $\rightarrow$ Johnson.
+\end{itemize}
+\subsection{Het algoritme van Johnson}
+\begin{itemize}
+	\item[\info] Maakt gebruik van Bellman-Ford en Dijkstra.
+	\item[\info] Omdat we Dijkstra gebruiken, moet elk gewicht positief worden. 
+	\begin{enumerate}
+		\item Breidt de graaf uit met een nieuwe knoop $s$, die verbindingen van gewicht nul krijgt met elke andere knoop.
+		\item Voer Bellman-Ford uit op de nieuwe graaf om vanuit $s$ de kortste afstand $d_i$ te bepalen tot elke originele knoop $i$.
+		\item Het nieuwe gewicht $\hat{g}_{ij}$ van een oorspronkelijke verbinding $g_{ij}$ wordt gegeven door: 
+		$$\hat{g}_{ij} = g_{ij} + d_i - d_j$$ 
+	\end{enumerate}
+	\item[\info] Het algoritme van Dijkstra kan nu worden toegepast op elke originele knoop, die alle \underline{kortste wegen} zullen vinden. Om de \underline{kortste afstanden} te bepalen moeten de originele gewichten opgeteld worden op deze wegen.
+	\item[\info] Dit algoritme is $O(n(n + m)\lg n)$ want:
+	\begin{itemize}
+		\item[\info] Graaf uitbreiden is $\Theta(n)$.
+		\item[\info] Bellman-Ford is $O(nm)$.
+		\item[\info] De gewichten aanpassen is $\Theta(m)$.
+		\item[\alert] $n$ maal Dijkstra is $O(n(n + m)\lg n)$. Dit is de belangrijkste term, al de andere termen mogen verwaarloosd worden.
+	\end{itemize}
+\end{itemize}
+
+\section{Transitieve sluiting}
+\underline{Sluiting} = algemene methode om één of meerdere verzamelingen op te bouwen. ('als een verzameling deze gegevens bevat, dan moet ze ook de volgende gegevens bevatten').
+
+\begin{itemize}
+	\item[\info] \textbf{Fixed point}:  Een sluiting wordt fixed point genoemd omdat op een bepaald moment verdere toepassing niets meer verandert, $f(x) = x$.
+	\item[\info] \textbf{Least fixed point}: De kleinste $x$ zoeken zodat $f(x) = x$ voldaan wordt.
+\end{itemize}
+
+\underline{Transitieve sluiting} = 'Als $(a, b)$ en $(b, c)$ aanwezig zijn dan moet ook $(a, c)$ aanwezig zijn.'
+
+\begin{itemize}
+	\item[\info] Transitieve sluiting van een gerichte graaf is opnieuw een gerichte graaf, maar:
+	\begin{itemize}
+		\item[\info] er wordt een nieuwe verbinding van $i$ naar $j$ toegevoegd indien er een weg bestaat van $i$ naar $j$ in de oorspronkelijke graaf.
+	\end{itemize}
+	\item \underline{3 algoritmen:}
+	\begin{enumerate}
+		\item \textbf{Diepte-of breedte-eerst zoeken}: 
+				\begin{itemize}
+					\item[\info] Spoor alle knopen op die vanuit een startknoop bereikbaar zijn en herhaal dit met elke knoop.
+					\item[\good] Voor ijle grafen $\rightarrow \Theta(n(n + m))$.
+					\item[\alert] Voor dichte grafen $\rightarrow \Theta(n^3)$.
+				\end{itemize}
+		\item \textbf{Met de componentengraaf}:
+				\begin{itemize}
+					\item[\info] Interessant wanneer men verwacht dat de transitieve sluiting een dichte graaf zal zijn, want dan zijn veel knopen onderling bereikbaar, zodat er veel sterk samenhangende componenten zijn. Die kunnen in $\Theta(n + m)$ bepaald worden.
+					\item[\info] Maak dan de componentengraaf (kan in $O(n + m))$.
+					\item[\info] Als nu blijkt dat component $j$ beschikbaar is vanuit component $i$, dan zijn alle knopen van $j$ beruikbaar vanuit knopen van $i$.
+				\end{itemize}
+		\item \textbf{Het algoritme van Warshall}:
+				\begin{itemize}
+					\item[\info] Maak een reeks opeenvolgende $n \times n$ matrices $T^{(0)},T^{(1)},...,T^{(n)}$ die logische waarden bevat.
+					\item[\info] Element $t_{ij}^{(k)}$ duidt aan of er een weg tussen $i$ en $j$ met mogelijke intermediaire knopen $1, 2, ..., k$ bestaat.
+					\item[\info] Bepalen opeenvolgende matrices:
+					$$t_{ij}^{(0)} = 
+					\begin{cases}
+						\hbox{onwaar} & \hbox{als } i \neq j \hbox{ en } g_{ij} = \infty\\
+						\hbox{waar}   & \hbox{als } i = j \hbox{ of } g_{ij} < \infty
+					\end{cases}$$
+					en
+					$$
+						t_{ij}^{(k)} = t_{ij}^{(k - 1)} \hbox{ OF } \big(t_{ik}^{(k - 1)} \hbox{ EN } t_{kj}^{(k - 1)}\big) \qquad \hbox{voor } 1 \leq k \leq n
+					$$
+				\end{itemize}
+				$T^{(n)}$ is de gezochte burenmatrix.
+	\end{enumerate}
+\end{itemize}
 
 
 \chapter{Stroomnetwerken}
@@ -393,7 +482,7 @@ Er bestaan \underline{twee goede implementaties}:
 \begin{itemize}
 	\item [\info] Methode van \textbf{Ford-Fulkerson} \accentuate{('methode' aangezien manier om vergrotende paden te zoeken ontbreekt).}
 	\item [\info] Iteratieve methode. Bij elke iteratie neemt netstroom vanuit producent toe.
-	\item [\info] Stel de verzameling van knopen $K$, dan is de totale nettostroom $f$ uit de producent $p$ \accentuate{(De som van het materiaal dat toekomt min het materiaal dat weggaat voor elke knoop)}. 
+	\item [\info] Stel de verzameling van knopen $K$, dan is de totale nettostroom $f$ uit de producent $p$ \accentuate{(De som van het materiaal dat toekomt min het materiaal dat weggaat van elke knoop)}. 
 		$$f = \sum_{j \in K} (s(p, j) - s(j, p))$$
 	\item [\info] De stroomverdeling is het geheel van alle stromen voor alle mogelijke knopenparen. 
 	\item [\info] Het restnetwerk is een nieuw netwerk dat verkregen wordt door uit de huidige stroomverdeling een overzicht op te stellen van de mogelijke stroomtoename tussen elk paar knopen. Het restnetwerk bevat dezelfde knopen, maar niet noodzakelijk dezelfde verbindingen en capaciteit.
@@ -403,7 +492,7 @@ Het algoritme verloopt als volgt:
 	\item Initiële stroomverdeling is nul. Het restnetwerk is initieël de volledige graaf.
 	\item Bij elke iteratie wordt de huidige stroomverdeling en de verschillende capaciteiten gebruikt om een restnetwerk op te stellen.
 	\item In dit restnetwerk wordt een vergrotend pad gezocht: een weg van producent naar verbruiker die nog meer stroom tussen beide toelaat.
-	\item Als er geen vergrotende paden kunnen gevonden worden, stopt de iteratir, en zal de netwerkstroom maximaal zijn.
+	\item Als er geen vergrotende paden kunnen gevonden worden, stopt de iteratie, en zal de netwerkstroom maximaal zijn.
 \end{enumerate}
 https://www.youtube.com/watch?v=Tl90tNtKvxs
 
@@ -501,32 +590,67 @@ Tweeledige graaf (of bipartiete graaf) = een ongerichte graaf waarbij de knopen 
 
 
 \part{Strings}
+
 \chapter{Gegevensstructuren voor strings}
+\info{} \underline{Veronderstelling:} elke sleutel heeft een ander bitpatroon. Dit wil ook zeggen dat geen enkele sleutel een prefix is van een ander.
 \section{Digitale zoekbomen}
-Deze zijn compleet analoog zoals gewone zoekbomen, op één verschil na: de juiste deelboom wordt niet bepaald door de zoeksleutel te vergelijken met de sleutel in de knoop, maar enkel door het volgende element van de zoeksleutel (van links naar rechts). Bij de wortel gebruiken we het eerst esleutelelement, een niveau dieper het tweede sleutelelement, enz...
+\begin{itemize}
+	\item[\info] Analoog met gewone zoekbomen, met één verschil: de juiste deelboom wordt niet bepaald door de zoeksleutel te vergelijken met de sleutel in de knoop, maar enkel door het volgende element van de zoeksleutel (van links naar rechts). Bij de wortel gebruiken we het eerste sleutelelement, een niveau dieper het tweede sleutelelement, enz...
+	\item[\info] De boom overlopen in \textbf{inorder} geeft de sleutels niet noodzakelijk in volgorde. De hoogte van de boom wordt beperkt tot het aantal bits van de grootste sleutel. Voor een groot aantal sleutels met relatief kleine bitlengte is de performantie in het slechtste geval veel beter dan die van een gewone binaire zoekboom, en vergelijkbaar met die van een rood-zwarte boom. In het gemiddelde geval is de kans op een volgend nul- of éénbit steeds gelijk, zodat er gemiddeld evenveel sleutels links als rechts komen. Daardoor is de gemiddelde hoogte van de boom $O(\lg n)$. De woordenboekoperaties zijn ook $O(\lg n)$.
+	\item[\alert] De dikwijls beperkende voorwaarde is een efficiënte toegang tot de bits van de sleutels. Bovendien zijn er enkel woordenboekoperaties mogelijk.
+\end{itemize}
 
-De boom overlopen in \textbf{inorder} geeft de sleutels niet noodzakelijk in volgorde. De hoogte van de boom wordt beperkt tot het aantal bits van de grootste sleutel. Voor een groot aantal sleutels met relatief kleine bitlengte is de performantie in het slechtste geval veel beter dan die van een gewone binaire zoekboom, en vergelijkbaar met die van een rood-zwarte boom. In het gemiddelde geval is de kans op een volgend nul- of éénbit steeds gelijk, zodat er gemiddeld evenveel sleutels links als rechts komen. Daardoor is de gemiddelde hoogte van de boom $O(\lg n)$. De woordenboekoperaties zijn ook $O(\lg n)$.
 
-\alert{}   De dikwijls beperkende voorwaarde is een efficiënte toegang tot de bits van de sleutels. Bovendien zijn er enkel woordenboekoperaties mogelijk.
+
 
 \section{Tries}
 Deze familie bomen behouden wel de sleutels in volgorde.
 \subsection{Binaire tries}
+Cfr. figuur \ref{fig:binary_trie}
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.5\textwidth]{binary_trie}
+	\caption{Een binaire trie. De letters worden voorgesteld door een bepaald bitpatroon, die hier niet overeenkomt met het werkelijk bitpatroon voor deze letter, maar een willekeurig gegenereerd bitpatroon.}
+	\label{fig:binary_trie}
+\end{figure}
 \begin{itemize}
 	\item[\info] Zoekweg wordt bepaald door de opeenvolgende bits van de zoeksleutel.
 	\item[\info] De sleutels worden enkel opgeslagen in de bladeren, en niet in inwendige knopen.
 	\item[\good] Deze boom inorder overlopen geeft wel de sleutels gerangschikt.
 	\item[\good] De zoeksleutel moet niet vergeleken worden met elke knoop op de zoekweg, maar met de opeenvolgende bits.  
-	\item[\info] Komen we bij een ledige deelboom terecht (nullwijzer), dan bevat de boom de zoeksleutel niet, en kan dan op deze plaatst toegevoegd worden.
+	\item[\info] Komen we bij een ledige deelboom terecht (nullwijzer), dan bevat de boom de zoeksleutel niet, en kan dan op deze plaats toegevoegd worden.
 	\item[\info] Komen we niet bij een ledig deelboom terecht, dan bevat het blad de enige sleutel in die boom die gelijk kan zijn aan de zoeksleutel, aangezien ze dezelfde beginbits hebben.
-	\item[\alert] Wanneer opgeslagen sleutels veel gelijke beginbits hebben ziujn er veel knopen met slechts één kind.
+	\item[\alert] Wanneer opgeslagen sleutels veel gelijke beginbits hebben zijn er veel knopen met slechts één kind.
 	\item[\alert] De bits van een sleutel mogen geen prefix zijn van een andere sleutel. 
 	\item[\good] De structuur is onafhankelijk van de toevoegvolgorde, zodat er slechts één unieke trie is voor elke verzameling sleutels.
 	\item[\info] Een trie opgebouwd uit $n$ gelijkmatige verdeelde sleutels vraagt voor zoeken of toevoegen $O(\lg n)$ bitoperaties. 
 \end{itemize}
-
-
 \subsection{Meerwegtries}
+Cfr. figuur \ref{fig:meerwegstrie}
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.5\textwidth]{meerwegstrie}
+	\caption{Een meerwegstrie.}
+	\label{fig:meerwegstrie}
+\end{figure}
+\begin{itemize}
+	\item[\good] Beperken hoogte van een trie.
+	\item[\info] Elke inwendige knoop krijgt potentiaal $m$ kinderen ($m$ = aantal verschillende waarden voor een sleutel).
+	\item[\info] \underline{Zoeken} en \underline{toevoegen} is analoog aan binaire trie.
+	\item[\good] Kinderen zijn alfabetisch gesorteerd.
+	\item[\info] Wijzers bijhouden naar de kinderen, die dan gesorteerd in tabel zitten.
+	\item[\info] Performantie is gelijkaardig aan binaire tries: $O(log_m n)$.
+	\item[\alert] Wat als we nu veronderstellen dat sleutels toch prefixen mogen zijn van andere sleutels (zie begin dit hoofdstuk).
+	\begin{itemize}
+		\item[\alert] Hoe moet men aanduiden dat de bits van een kortere sleutel op een langere zoekweg opgebruikt zijn?
+		\item[$\rightarrow$ ] Door elke sleutel af te sluiten met een speciaal sleutelelement, dat in geen enkele andere voorkomt.
+	\end{itemize}
+	\item[\alert] Meerwegstries gebruiken veel geheugen. \underline{Twee verbeteringen:}
+	\begin{enumerate}
+		\item k
+		\item o
+	\end{enumerate}
+\end{itemize}
 
 
 \section{Variabelelengtecodering}
@@ -760,9 +884,6 @@ zolang j < t
 	j++
 	\end{lstlisting}
 \end{enumerate}
-
-<<<<<<< HEAD
-=======
 \chapter{Indexeren van vaste tekst}
 \begin{itemize}
 	\item[\info] Voorbereidend werk op de tekst, zodat zoeken in tekst tot $O(p)$ kan gereduceerd worden.
@@ -831,8 +952,6 @@ zolang j < t
 \end{itemize}
 \section{Suffixtabellen}
 \section{Tekstzoekmachines}
-
->>>>>>> e0a834a1089a178d044438d9f8cfdda6f8cca6b1
 \part{Hardnekkige problemen}
 \chapter{NP}
 \section{Complexiteit: P en NP}
@@ -875,11 +994,12 @@ Als je kan bewijzen dat een bepaald probleem NP-compleet is, weet je dat je niet
 	\item Maak gebruik van efficiënte heuritische methoden. Deze geven vaak niet de optimale oplossing, maar wel vaak een goede, maar het kan ook de slechtste oplossing zijn.
 \end{itemize}
 
+
 \section{NP-complete problemen}
 \subsection{Het basisprobleem: SAT (en 3SAT)}
 Gegeven een verzameling logische variabelen $\chi = \{x_1, ..., x_n\}$ en een collectie logische uitspraken $\mathcal{F} = \{F_1, ..., F_m \}$
 Elke uitspraak $F_j$ bestaat uit atomaire uitspraken $x_i$ of de inverse $\overline{x_i}$ samengevoegd met ofoperaties zoals:
-$$F_1 = x_2 \vee \overline{x_5} \vee x_7 \vee x_8 \vee x_9$$.
+$$F_1 = x_2 \vee \overline{x_5} \vee x_7 \vee x_8 \vee x_9$$
 De vraag is nu: \underline{kan men waarden toekennen aan de variabelen, zodat elke uitspraak $F_j$ waar is?} 
 
 Dit is natuurlijk eenvoudig op te lossen met backtracking, door incrementeel waarden toe te kennen.
@@ -897,9 +1017,170 @@ Er is hier nog een uitbreiding op, waarbij elke uitspraak slechts 3 atomaire var
 
 \subsection{Graafproblemen}
 \subsubsection{Vertex Cover}
-\todo{les 06 december}
+\begin{itemize}
+	\item[\info] \underline{Gegeven:} Een ongerichte graaf.
+	\item[\info] \underline{Gevraagd:} De kleinste groep knopen die minstens één eindknoop van elke verbinding bevat.
+	\item[\info] Reductie 3SAT tot vertex cover:
+	\begin{itemize}
+		\item Voor elke logische variabele $x_i$, maken we twee knopen. De knoop $x_i$ en zijn negatie $\overline{x_i}$. Deze twee zijn verbonden met elkaar.
+		\item Voor elke uitspraak maken we drie knopen, één voor elk atoom, en worden met elkaar verbonden.
+	\end{itemize}
+	\item[\info] Voor een probleem met twee uitspraken:
+	\begin{equation*}
+		\begin{split}
+			U_1 & = \overline{x_1} \vee x_2 \vee x_3 \\
+			U_2 & = x_2 \vee \overline{x_3} \vee x_4
+		\end{split}
+	\end{equation*}
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=0.5\textwidth]{vertex_cover}
+	\end{figure}
 
+\end{itemize}
 
+\subsubsection{Dominating set}
+\begin{itemize}
+	\item[\info] \underline{Gegeven:} Een ongerichte graaf.
+	\item[\info] \underline{Gevraagd:} De kleinste groep knopen zodat elke andere knoop met minstens één van de knopen uit de groep verbonden is.
+\end{itemize}
+\subsubsection{Graph Coloring}
+\begin{itemize}
+	\item \textbf{Vertex coloring:}
+	\begin{itemize}
+		\item[\info] \underline{Gegeven:} Een ongerichte graaf.
+		\item[\info] \underline{Gevraagd:} Kleur de knopen met een minimum aantal kleuren, zodat de eindknopen van elke verbinding een verschillende kleur hebben.
+		\item[\info] Enkel oplosbaar via backtracking of via heuristische methoden.
+	\end{itemize}
+	\item \textbf{Edge coloring:}
+	\begin{itemize}
+		\item[\info] \underline{Gegeven:} Een ongerichte graaf.
+		\item[\info] \underline{Gevraagd:} Kleur de verbindingen met een minimum aantal kleuren, zodat verbindingen met een gemeenschappelijke eindknoop een verschillende kleur hebben.
+		\item[\info] Benaderend $O(n^2)$ algoritme van Vizing gebruikt hoogstens één kleur teveel.
+	\end{itemize}
+\end{itemize}
+\subsubsection{Clique}
+\begin{itemize}
+	\item[\info] \underline{Gegeven:} Een ongerichte graaf.
+	\item[\info] \underline{Gevraagd:} De grootste groep knopen die allemaal met elkaar verbonden zijn.
+	\item[\info] Enkel oplosbaar via backtracking of heuristische methoden (bv simulated annealing).
+	\item[\info] SAT herleiden tot clique:
+	\begin{itemize}
+		\item Voor elk voorkomen van een atoom in een uitspraak maken we de bijbehorende knopen $(F_i, x_j)$ en $(F_i, \overline{x_j})$.
+		\item Leg verbindingen tussen knopen horende bij verschillende uitspraken ($i \leq j)$
+		\begin{itemize}
+			\item $(F_i, x_k)$ met $(F_j, x_l)$ voor alle $k$ en $l$.
+			\item $(F_i, \overline{x_k})$ met $(F_j, \overline{x_l})$ voor alle $k$ en $l$.
+			\item $(F_i, x_k)$ met $(F_j, \overline{x_l})$ als $k \neq l$.
+		\end{itemize}
+	\end{itemize}
+\end{itemize}
+
+\subsubsection{Independent set}
+\begin{itemize}
+	\item[\info] \underline{Gegeven:} Een ongerichte graaf
+	\item[\info] \underline{Gevraagd:} De grootste groep knopen zonder onderlinge verbindingen.
+\end{itemize}
+
+\subsubsection{Hamiltoninan circuit/path}
+\begin{itemize}
+	\item[\info] \underline{Gegeven:} Een ongerichte of gerichte graaf.
+	\item[\info] \underline{Gevraagd:} Bestaat er een circuit dat elke knoop éénmaal bevat?
+	\item[\info] Kan enkel opgelost worden met backtracking. Het is NP-compleet.
+\end{itemize}
+\subsection{Problemen bij verzamelingen}
+\subsubsection{Minimum cover}
+\begin{itemize}
+	\item[\info] \underline{Gegeven:} Een verzameling $S$ en een collectie deelverzamelingen $C$ van $S$.
+	\item[\info] \underline{Gevraagd:} De kleinste deelverzameling $C'$ van $C$ zodat elk element van $S$ tot minstens één van de deelverzamelingen uit $C'$ behoort.
+	\item[\info] Kan efficiënt opgelost worden wanneer de deelverzamelingen in $C$ niet meer dan twee elementen bevatten.
+	\item[\info] SAT herleiden tot minimum cover:
+	\begin{itemize}
+		\item Stel $S = \mathcal{F} \cup \mathcal{X}$
+		\item Voor elke logische variabele $x_i$ zijn er twee elementen van $C$:
+		\begin{equation*}
+			\begin{split}
+				C_{x_i} & = \{x_i\} \cup \{F \in \mathcal{F} : x_i \in F\} \\
+				C_{\overline{x_i}} & = \{x_i\} \cup \{F \in \mathcal{F} : \overline{x_i} \in F\}
+			\end{split}
+		\end{equation*}
+		\item Het SAT-probleem heeft een oplossing als er een minimum cover is van grootte $|\mathcal{X}|$.
+	\end{itemize}
+\end{itemize}
+\subsubsection{Subset sum}
+\begin{itemize}
+	\item[\info] \underline{Gegeven:} Een verzameling elementen, elk met een positieve gehele grootte, en een positief geheel getal $k$.
+	\item[\info] \underline{Gevraagd:} Bestaat er een deelverzameling van die elementen, zodat de som van hun grootten gelijk is aan $k$?
+	\item[\info] Oplosbaar met dynamisch programmeren.
+\end{itemize}
+\subsubsection{Partition}
+\begin{itemize}
+	\item[\info] \underline{Gegeven:} Een zak van positieve getallen.
+	\item[\info] \underline{Gevraagd:} Kan de zak opgesplitst worden in twee deelverzamelingen, zodat de som van de grootten van de ene gelijk is aan de som van de grootten van de andere?
+	\item[\info] Oplosbaar met dynamisch programmeren.
+
+\end{itemize}
+\chapter{Metaheuristieken}
+= vuistregels bij het zoeken naar een oplossing, maar geen garantie dat een oplossing gevonden wordt. Ze versnellen meestal de zoektocht ernaar.
+\section{Combinatorische optimisatie}
+\begin{itemize}
+	\item[=] Beste (hier het kleinste) element uit een verzameling $\mathcal{S}$ vinden via \underline{evaluatiefunctie $f$}. De verzameling $\mathcal{S}$ is:
+	\begin{itemize}
+		\item een eindige verzameling van strings over een eindig alfabet,
+		\item niet gekarakteriseerd door een opsomming, maar door voorwaarden.
+	\end{itemize}
+	\item[\info] Voorbeeld Travelling Salesman Problem:
+	\begin{itemize}
+		\item Alfbet = verzameling verbindingen.
+		\item $S$ = reeks verbindingen zodat elke verbinding vertrekt uit het eindpunt van de vorige, en zo dat alle steden bezocht worden.
+		\item Het beste individu is die met de kortse lengte.
+	\end{itemize}
+	\item[\info] Soms zijn alle strings in $\mathcal{S}$ even lang, dan kan men de elementen beschrijven met variabelen $s \in \mathcal{S}$. Voorbeeld lessenroosterprobleem:
+	\begin{itemize}
+		\item \underline{Beschrijving}: Een lessenrooster is goed wanner deze weinig negatieve elementen heeft (springuren, onevenwichtige verdelingen, \accentuate{zelf te kiezen wat 'negatief' is}).
+		\item Elke string in $\mathcal{S}$ beschrijft een lessenrooster zonder conflicten door aan elke les een lokaal en tijdsslot toe te kennen.
+		\item $\mathcal{S}$ heeft dus twee letters voor elke les: de eerste duidt de tijdsslot aan en de tweede het lokaal.
+	\end{itemize}
+	\item[\info] Voor elk individu wordt de $f-$waarde berekend, en het beste wordt natuurlijk bijgehouden.
+	\item[\info] De metaheuristiek stopt bij een bepaalde stopvoorwaarde, meestal is dit een aantal iteraties, tijd of de gevonden oplossing is benaderend goed genoeg.
+	\item[\info] Zeer groot aantal metaheuristieken
+\end{itemize}
+\section{Vooronderstellingen}
+\begin{itemize}
+	\item[=] De voorwaarden die voldaan moeten zijn zodat de methodieken in de cursus werken.
+	\begin{enumerate}
+		\item Het moet zinvol zijn om op zoek te gaan naar betere individuen in de buurt van een gegeven individu. 
+		\item Soms is het niet zinvol om, bij het opbouwen nieuwe individuen van $\mathcal{S}$, uit te gaan van de reeds gevonden individuen. 
+	\end{enumerate}
+	\item[\info] Als men een nieuw element van de grond opbouwt zijn er twee belangrijke mogelijkheden:
+	\begin{enumerate}
+		\item \underline{Constructie}: een individu wordt opgebouwd uit componenten. Een component komt overeen met letters van $\mathcal{S}$ (Niet alle uitbreidingen bekijken zoals bij backtracking, maar één at random kiezen).
+		\item Individuen worden rechtstreeks aangemaakt.
+	\end{enumerate}
+	\item[\info] Twee manieren om kandidaten te nemen, \underline{indien ze opgebouwd worden uit componenten}:
+	\begin{enumerate}
+		\item \underline{Shortlisting}. Neem de beste kandidaten en kies hieruit at random.
+		\item \underline{Gewogen keuze}. Elke keuze krijgt gewicht $w_i$. De kans $p(i)$ op die keuze wordt dan:
+		$$p(i) = \frac{w_i}{\sum_j w_j}$$
+
+	\end{enumerate}
+	\item[\info] Drie manieren om een nieuw individu te kiezen uit $S$, uitgaande van andere individuen die men reeds bekeken heeft:
+	\begin{enumerate}
+		\item Kleine wijzigingen aanbrengen in één reeds bekeken individu $s$ van $S$.
+		\item Kruisen van twee al bekeken individuen.
+		\item Het vermengen van grote hoeveelheden al bekeken individuen.
+		$$p(i) = \frac{w_i}{\sum_j w_j}$$
+	\end{enumerate}
+\section{Lokaal versus globaal zoeken}
+\begin{itemize}
+	\item[\info] Lokaal wijzigen: een kleine wijziging (bv één of twee letters van het individu $s$ veranderen).
+	\item[\info] Voor elke $s \in \mathcal{S}$, is $\mathcal{N}(s)$ de omgeving die bestaat uit $s$ zelf en alle strings uit $\mathcal{S}$ die door één kleine wijziging uit $s$ bekomen kunnen worden.
+	\item[\info] Van $s$ naar $s'$ door willekeurige aaneenschakeling van wijzigingen.
+	\item[\info] Vaak zit in de omgevingen van een goed individu, andere goede individuen.
+	\item[\info] Iteratief toepassen: rij $s_0, s_1,...,s_n \in \mathcal{S}$ construeren zodanig dat voor elk individu in die rij in de omgeving zit van $s_0$, en waarbij $f(s_{i + 1}) < f(s_i)$. Deze rij vinden heet \underline{lokale optimalisatie}.
+\end{itemize}
+
+\end{itemize}
 
 \end{document}
 

@@ -1,0 +1,61 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{color}
+\usepackage{listings}
+
+\def\warning#1{\color{red} #1 \color{black}}
+\def\note#1{\color{cyan} #1 \color{black}}
+
+\begin{document}
+\pagenumbering{gobble}
+\title{Test Beveiliging van netwerken en computers}
+\date{11 december 2018}
+\author{}
+\maketitle
+\begin{enumerate}
+    \item \note{10pt.} Gegeven bovenstaande opstelling, zorg ervoor dat de ipconfiguratie op de gateway persistent is door gebruik te maken van ifcfg-*** bestanden. Vermeld welke bestanden je aanmaakt (het volledige pad) en de inhoud van deze bestanden.
+    \item \note{15pt.} TOESTEL A $\rightarrow$ GATEWAY $\rightarrow$ (intern netwerk) $\rightarrow$ TOESTEL B
+
+        //toestel b draait webserver op poort 8080. Je bent fysiek ingelogd op de gateway. Hoe kan je ervoor zorgen (met SSH) dat gebruikers die zich fysiek inloggen op toestel A de webserver kunnen bereiken?
+
+        Via welke url kunnen gebruikers op toestel a aan de webserver?
+    \item \note{10pt.} Deze vraagt is het vervolg van vorige vraag. Hoe moet de firewall aangepast worden zodat 
+    \item \note{5pt.} Tijdens het labo iptables merkte je op dat je niet zomaar kon inloggen als root via telnet. Hoe komt dit? Hoe kan je dit oplossen?
+    \item \note{5pt.} Je encrypteerd een bestand met PGP. De bestemmelingen van dit bestand zijn John Doe en Jane Doe. Verklaar waarom Jane Doe dit bestand kan decrypteren met haar private sleutel, zonder kennis te hebben van de private sleutel van John Doe. Leg ook het encryptiemechanisme van PGP uit.
+    \item \note{15pt.} Bekijk volgende twee lijnen:
+    \begin{lstlisting}
+iptables -A INPUT -i lan1 \! DROP -d 192.168.0.0/24
+iptables -A FORWARD -i lan1 \! DROP -d 192.168.0.0/24
+    \end{lstlisting}
+    \begin{enumerate}
+        \item Wat doen deze lijnen en wat voor soort aanvallen houden ze tegen?
+        \item Geef de commando's met bijhorende opties zodat ook de andere interfaces beschermd zijn. 
+    \end{enumerate}
+
+    \item // veilige IPsec verbinding opstellen van x-range naar y-range
+    \item 
+    
+    
+    // aantal firewall regels opstellen bij een gegeven netwerk: INTERN NETWERK $\rightarrow$ GATEWAY $\rightarrow$ BEPAALD TOESTEL
+    
+    // van intern netwerk enkel ssh naar bepaald toestel
+                                                                      // van intern netwerk elk toestel kunnen pingen met zowel ipadres als hostnaam
+    \item \note{15pt.}  \begin{enumerate}
+                \item Een primaire DNS-server verwittigd de secundaire DNS-servers bij een wijziging. Hoe weet de primaire DNS-server welk adressen deze secundaire DNS-servers hebben?
+                \item Tijdens de labos maakten jullie gebruik van het forwardsmechanisme bij DNS-servers. Wat zijn de voordelen van dit mechanisme,en leg het verschil uit tussen de klassieke manier van DNS. 
+            \end{enumerate}
+    \item \note{5pt.} // perfecte opstelling sendmail
+
+                      // gebruik heeft enkel sendmail applicatie op host oculus.ugent.be
+
+                      // iemand stuurt mail naar gebruiker@oculus.ugent.be en gebruiker@ugent.be
+
+                      // enkel eerste mail komt toe, waarom? Hoe los je dit op?
+
+\end{enumerate}
+
+
+	
+    
+\end{document}

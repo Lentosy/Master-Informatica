@@ -26,6 +26,40 @@ template <class Sleutel, class Data>
 class BinomiaalBos : public std::vector<BinomiaalBoom<Sleutel, Data>> {
 public:
     void voegsamen(BinomiaalBos<Sleutel, Data>&& andere){
-        // GEVRAAGD
+
+        // er zijn twee oplossingen mogelijk:
+        //      1) met de += operator
+        //      2) dunno
+
+        //methode 2
+        for(int i = 0; i < ander.size(); i++){
+            if(andere[i]){ // moet ook nog operator[] implementeren dan? volgens mij geeft dit de i-de binomiaalboom terug
+                Boom& carry = andere[i];
+            }
+            int j = i;
+            while(j < this->size() && (*this)[j]){
+                carry += (*this)[j++];
+            }
+            if(j < this->size()){
+                (*this)[j] = move(carry);
+            } else {
+                this->emplace_back(move(carry));
+            }
+        }
+
+        ander.resize(0);
+
     }
+
+    // methode 1
+    Boom& operator+=(Boom&& andere){
+        if((*this)->sleutel > andere->sleutel){
+            swap(*this, andere);
+        }
+        ander->broer = move((*this)->linkerkind);
+        (*this)->linkerkind = move(andere);
+        return *this;
+
+    } 
+
 }
