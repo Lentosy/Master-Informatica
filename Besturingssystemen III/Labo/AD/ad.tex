@@ -1,0 +1,38 @@
+\documentclass{report}
+\usepackage{ugentstyle}
+
+\begin{document}
+\maketitle{Besturingssystemen III - Active Directory}
+\lstset{language=perl, showstringspaces=false}
+\begin{itemize}
+    \item Importeren type library:
+    \begin{lstlisting}
+use Win32::OLE::Const 'Active DS Type Library';
+    \end{lstlisting}
+    \item Binden van een object:
+    \begin{lstlisting}
+my $parameter = shift;
+my $moniker, my $obj;
+if(uc $ENV{USERDOMAIN} eq "III){
+  $moniker = uc substr $paramater, 0, 7 eq "LDAP://" ? "" : "LDAP://");
+  $moniker .= $parameter;
+  $obj = Win32::OLE->GetObject($moniker);
+}
+    \end{lstlisting}
+
+    \item Verschillende contexts:
+    \begin{itemize}
+        \item DefaultNamingContext
+        \item ConfigurationNamingContext
+        \item SchemaNamingContext
+    \end{itemize}
+
+    \item Belangrijke functies:
+    \begin{itemize}
+        \item \$Object$\rightarrow$Get()
+        \item \$Object$\rightarrow$GetEx()
+        \item \$Object$\rightarrow$GetInfo()
+        \item \$Object$\rightarrow$GetInfoEx()
+    \end{itemize}
+\end{itemize}
+\end{document}

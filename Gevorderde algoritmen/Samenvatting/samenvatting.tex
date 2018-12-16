@@ -471,11 +471,11 @@ Er bestaan \underline{twee goede implementaties}:
 
 \chapter{Stroomnetwerken}
 \begin{itemize}
-	\item Gerichte graaf met twee speciale knopen: \underline{producent} en \underline{verbruiker}.
-	\item Producent levert een bepaald materiaal aan verbruiker via de gerichte verbindingen van de graaf.
-	\item Elke verbinding heeft een capaciteit $c(i, j)$ dat positief is, en de stroom $s(i, j)$ dat er door loopt ($0 \leq s(i, j) \leq c(i, j)$). 
-	\item Verbindingen die niet bestaan, worden toch voorgesteld als een verbinding, maar met $c = 0$, zodat er geen stroom kan doorlopen. Dit maakt implementaties eenvoudiger.
-	\item Een knoop bevat geen capaciteit, en kunnen hierdoor niets opslaan.
+	\item [\info]  Gerichte graaf met twee speciale knopen: \underline{producent} en \underline{verbruiker}.
+	\item [\info]  Producent levert een bepaald materiaal aan verbruiker via de gerichte verbindingen van de graaf.
+	\item [\info]  Elke verbinding heeft een capaciteit $c(i, j)$ dat positief is, en de stroom $s(i, j)$ dat er door loopt ($0 \leq s(i, j) \leq c(i, j)$). 
+	\item [\info]  Verbindingen die niet bestaan, worden toch voorgesteld als een verbinding, maar met $c = 0$, zodat er geen stroom kan doorlopen. Dit maakt implementaties eenvoudiger.
+	\item [\info] Een knoop bevat geen capaciteit, en kunnen hierdoor niets opslaan.
 \end{itemize}
 \section{Maximalestroomprobleem}
 = zoveel mogelijk materiaal van producent naar verbruiker laten stromen, zonder de capaciteit van de verbinding te overschrijden.
@@ -511,6 +511,13 @@ Hoe gaan we vergrotende weg zoeken?
 		Deze methode is enkel \underline{interessant wanneer $C$ groot is}. Als de vergrotende weg steeds het minimum aantal verbindingen heeft, dan kan men aantonen \accentuate{(zonder bewijs)} dat de lengte van de vergrotende wegen na hoogsten $m$ iteraties stijg, en aangezien de maximale lengte $n - 1$ is, volstaan $O(nm)$ iteraties. Deze iteratiestep gebruikt ook breedte-eerst zoeken en is $O(m)$, zodat de totale performantie $O(nm^2)$ wordt.
 \end{itemize}
 \todo{tododo}
+\section{Verwante problemen}
+\accentuate{onbelangrijk}
+\section{Meervoudige samenhang in grafen}
+\begin{itemize}
+	\item[\info] \underline{Knoopsamenhang:} indien er tussen elk paar knopen van een graaf $k$ onafhankelijke wegen bestaan, zonder gemeenschappelijke knopen, dan is de graaf $k-$voudig knoopsamenhangend.
+	\item[\info] \underline{Lijnsamenhang:} indien er tussen elk paar knopen van een graaf $k$ onafhankelijke wegen bestaan, zonder gemeenschappelijke verbindingen, dan is de graaf $k-$voudig lijnsamenhangend.
+\end{itemize}
 
 \chapter{Koppelen}
 = een deelverzameling van de verbindingen waarin elke knoop hoogstens eenmaal voorkomt. Een maximale koppeling is een koppeling met het grootste aantal verbindingen. Soms hebben verbindingen ook een gewicht.
@@ -592,7 +599,7 @@ Tweeledige graaf (of bipartiete graaf) = een ongerichte graaf waarbij de knopen 
 \part{Strings}
 
 \chapter{Gegevensstructuren voor strings}
-\info{} \underline{Veronderstelling:} elke sleutel heeft een ander bitpatroon. Dit wil ook zeggen dat geen enkele sleutel een prefix is van een ander.
+\info{} \underline{Veronderstelling:} elke sleutel heeft een ander bitpatroon. Dit impliceert dat geen enkele sleutel een prefix is van een ander.
 \section{Digitale zoekbomen}
 \begin{itemize}
 	\item[\info] Analoog met gewone zoekbomen, met één verschil: de juiste deelboom wordt niet bepaald door de zoeksleutel te vergelijken met de sleutel in de knoop, maar enkel door het volgende element van de zoeksleutel (van links naar rechts). Bij de wortel gebruiken we het eerste sleutelelement, een niveau dieper het tweede sleutelelement, enz...
@@ -635,7 +642,7 @@ Cfr. figuur \ref{fig:meerwegstrie}
 \end{figure}
 \begin{itemize}
 	\item[\good] Beperken hoogte van een trie.
-	\item[\info] Elke inwendige knoop krijgt potentiaal $m$ kinderen ($m$ = aantal verschillende waarden voor een sleutel).
+	\item[\info] Elke inwendige knoop krijgt potentiaal $m$ kinderen ($m$ = aantal verschillende waarden voor een sleutelelement).
 	\item[\info] \underline{Zoeken} en \underline{toevoegen} is analoog aan binaire trie.
 	\item[\good] Kinderen zijn alfabetisch gesorteerd.
 	\item[\info] Wijzers bijhouden naar de kinderen, die dan gesorteerd in tabel zitten.
@@ -647,15 +654,164 @@ Cfr. figuur \ref{fig:meerwegstrie}
 	\end{itemize}
 	\item[\alert] Meerwegstries gebruiken veel geheugen. \underline{Twee verbeteringen:}
 	\begin{enumerate}
-		\item k
-		\item o
+		\item Kindwijzers in gelinkte lijst voorstellen, ten koste van snelheidsverlies.
+		\item Gebruik enkel trie voor eerste aantal niveaus, en schakel dan over naar korte lijsten.
 	\end{enumerate}
 \end{itemize}
 
 
+
 \section{Variabelelengtecodering}
+\underline{Twee belangrijke redenen om variabele lengte te voorzien:}
+\begin{enumerate}
+	\item Verhoogde flexibiliteit
+	\item Compressie
+\end{enumerate}
 
+\begin{itemize}
+	\item[\info] In beide gevallen een alfabet waarbij we niet elke letter door evenveel bits voorstellen.
+	\item[\alert] \underline{Nadeel}: een heel blok gegevens moet gedecodeerd worden om te weten waar elk getal begint.
+	\item[\info] Bij decoderen hebben we \underline{prefixcode} nodig (= codering waarbij codewoord nooit het prefix van een ander codewoord kan zijn).
+	\begin{itemize}
+		\item[\good] Hierdoor weten we dat we het einde van een codewoord bereikt hebben, zonder het volgende codewoord te moeten analyseren.
+	\end{itemize}
+	\item[\info] \underline{Prefixcode natuurlijk getal}: Schrijf het in het 128-delig stelsel en sla elk cijfer op in een aparte byte. Tel bij het laatste cijfer 128 op.
+	\item[\info] \underline{Prefixcode voor strings}: Elk woord gevolgd door een leesteken.
+\end{itemize}
+\section{De Eliascodes en de Fibonaccicode}
+= universele codes die onafhankelijk zijn van de gekozen brontekst.
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{| l | l | l | l |}
+		\hline
+		& Elias' gammacode & Elias' deltacode & Fibonaccicode \\
+		\hline
+		1   & 1            & 1           & 11 \\
+		2   & 0 10         & 010 0		 & 011\\
+		3   & 0 11         & 010 1		 & 0011\\
+		4   & 00 100       & 011 00		 & 1011\\
+		5   & 00 101       & 011 01		 & 00011\\
+		6   & 00 110       & 011 10		 & 10011\\
+		7   & 00 111       & 011 11		 & 01011\\
+		8   & 000 1000     & 0010 000    & 000011\\
+		9   & 000 1001     & 0010 001    & 100011\\
+		... &              & 			 & \\
+		23  & 0000 10111   & 00101 0111  & 01000011\\
+		45  & 00000 101101 & 00110 01101 & 001010011\\
+		... &              & 			 & \\
+		\hline
+	\end{tabular}
+	\caption{Verschillende coderingen voor natuurlijke getallen.}
+	\label{table:universal_codes}
+\end{table}
+\begin{itemize}
+	\item[\info] Tabel \ref{table:universal_codes} toont drie verschillende universele codes:
+	\begin{enumerate}
+		\item \textbf{Elias' gammacode}: Stel de bitrepresentatie van het getal $n$ op (dat $k$ bits bevat), en laat dit voorafgaan door $k - 1$ nulbits. Aan dit aantal nulbits weet het decodeerprogramma hoeveel bittekens er daarna nog zullen volgen.
+		\item \textbf{Elias' deltacode}: Gebruik de laatste $k - 1$ bits van het getal, en laat dit voorafgaan door de Elias' gammacode voor $k$.
+		\item \textbf{Fibonaccicode}: Stel de reeks van Fibonacci:
+		$$1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233, 377, 610, ...$$
+		De rij heeft als eigenschap dat elk getal $n$ als de som van verschillende Fibonaccigetallen kan geschreven worden, zodanig dat elke term geen onmiddelijke buur is van elkaar.
 
+		De Fibonaccicode gebruikt dus het overeenkomstig bitpatroon waarbij de gebruikte termen het bit op $1$ staan hebben. Bv voor $n = 7$:
+		$$1\;2\;3\;5$$
+		$$0\;1\;0\;1$$
+		Aan dit bitpatroon wordt aan het einde nog een $1$ toegevoegd, zodat we $01011$ krijgen.
+	\end{enumerate}
+\end{itemize}
+
+\section{Huffmancodering}
+= Minder bittekens gebruiken voor letters die veel voorkomen, zodat de totale lengte ingekort kan worden.
+\subsection{Opstellen decoderingsboom}
+\begin{itemize}
+	\item[\info] Prefixcode waarbij elk letter een apart codewoord heeft, dat over het hele bericht dezelfde blijft.
+	\item[\info] Optimale prefixcode kan enkel gevonden worden indien de frequentie van elk codewoord gekend is.
+	\item[\info] Bestand met alfabet $\sum = \{s_i | i = 0, ..., d - 1\}$ levert reeks frequenties $f_i$. 
+	\item[\info] Binaire trie gebruiken met $d$ bladeren, elk met een letter uit $\sum$.
+	\item[\info] Ken aan elke knoop een gewicht toe:
+	\begin{itemize}
+		\item[\info] \underline{Blad}: de frequentie van de overeenkomstige letter.
+		\item[\info] \underline{Inwendige knoop}: De som van de gewichten van zijn kinderen (dit is dan ook het aantal keer dat deze knoop bezocht wordt).
+	\end{itemize}
+	\item[\info] Aantal bits in het gecodeerde bestand is de som van de gewichten van alle knopen samen, met uitzondering van de wortel. De trie met een minimaal gewicht geeft de optimale code en bevat $n$ bladeren.
+	\item[\info] \underline{ Hoe optimale trie vinden?} Stel knoop $k$ met gewicht $w_k$ en knoop $l$ met gewicht $w_l$, zodanig dat $k$ niet onder $l$ hangt of $l$ niet onder $k$ hangt. Is het nuttig om deze twee knopen van plaats te verwisselen?
+	\begin{itemize}
+		\item Elke knoop boven $k$ (aantal knopen boven $k$ = $d_k$) verliest gewicht $w_k$ en krijgen gewicht $w_l$.
+		\item Elke knoop boven $l$ (aantal knopen boven $l$ = $d_l$) verliest gewicht $w_l$ en krijgen gewicht $w_k$.
+		\item De gewichtsverandering is $$(d_k - d_l)(w_l - w_k)$$
+		\item Als $l$ een groter gewicht heeft en dieper zit dan $k$, dan is er een betere trie door $k$ en $l$ om te wisselen.
+	\end{itemize}
+	\item[\info] \underline{Opbouw boom} (cfr. Figuur \ref{fig:huffman_coding}). Op elk ogenblijk hebben we een bos van deelbomen die we aan elkaar moeten hangen:
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{huffman_coding}
+		\caption{Illustratie van de Huffmancodering.}
+		\label{fig:huffman_coding}
+	\end{figure}
+	\begin{enumerate}
+		\item Het bos bestaat eerst uit alle bladeren. Dit wordt bekomen door eerst het hele bericht in te lezen, en de frequentie van elke letter te tellen.
+		\item Neem de twee bladeren met de minste frequentie (bv met priorityqueue), en maak ze de kinderen van een nieuwe ouderknoop, die als gewicht de som van deze frequenties bevat. Het rechterkind van deze ouderknoop moet deze zijn met het grootste gewicht. Bij gelijk gewicht maakt het niet uit. De resulterende boom steken we terug in het bos.
+		\item Blijf dit proces herhalen door telkens 2 bladeren, 2 deeltries, of 1 blad en 1 deeltrie (telkens de twee met het minste gewicht) samen te voegen tot dat er één enkele trie in het bos zit. Dit is de gezochte trie.
+		\item De codering voor elke letter kan dan eenvoudig bepaald worden door alle bladeren te zoeken.
+	\end{enumerate}
+\end{itemize} 
+\subsection{Patriciatries}
+\begin{itemize}
+	\item[\alert] Veel trieknopen hebben maar één kind. Bovendien zijn er twee soorten knopen: bladeren en inwendige knopen.
+	\item[\good] Patriciatries vermijden deze problemen door enkel knopen met meer dan één kind te behouden.
+	\item[\info] Stel een normale $m$-wegtrie. Indien een knoop maar één kind heeft, kan in plaats van naar dit kind te wijzen, naar het kind van dit kind wijzen. Op die manier wordt er minder geheugen gespendeerd aan het aantal knopen. Er zijn hier wel twee gevolgen:
+	\begin{enumerate}
+		\item Elke knoop moet nu bijhouden hoeveel voorouders er ontbreken. Als eenvoud wordt de index van het te testen karakter, het \underline{testkarakter} bijgehouden.
+		\item Omdat nu een karakter niet getest wordt, kan het zijn dat dit karakter niet overeenkomt met het karakter in het blad.
+	\end{enumerate}
+	\item[\info] Een expliciete knoop is een knoop die nog in de resulterende boom zit. Een impliciete knoop is een knoop die wordt aangegeven door een indexpsrong.
+	\item[\info] \textbf{Zoeken:} 
+		\begin{itemize}
+			\item Daal in boom en gebruik het testkarakter van een knoop om de zoekweg te bepalen.
+			\item Bij nulpointer $\rightarrow$ dan zit string niet in de trie.
+			\item Bij blad $\rightarrow$ met onzekerheid dat dit het juiste blad is. De strings moeten nog eens vergeleken worden (elk blad moet dus de volledige string bevatten).
+		\end{itemize}
+	\item[\info] \textbf{Toevoegen:}
+		\begin{itemize}
+			\item Bij blad $\rightarrow$ string zit al in de trie.
+			\item Bij nulpointer $\rightarrow$ voeg blad toe. Maar het kan zijn dat deze moet toegevoegd worden aan een impliciete knoop. Daarom wordt het \underline{verschilindex} berekend, die de eerste plaats aanduidt waar de nieuwe string verschilt van de meest gelijkende string in de trie. Bij een lege trie is deze index nul.
+			\item \underline{Drie mogelijkheden}:
+			\begin{enumerate}
+				\item Zoeken eindigt in een explicite knoop waarbij testindex $=$ verschilindex, maar die geen kind heeft voor het karakter in de string aangeduid door de verschilindex. Voeg een blad toe voor de string.
+				\item Zoeken eindigt in een explicite knoop waarbij testindex $>$ verschilindex, maar die geen kind heeft voor het karakter in de string aangeduid door de verschilindex. Voeg nieuwe expliciete knoop toe met als testindex de verschilindex. De knoop krijgt twee kinderen: de oude explicite knoop en het nieuwe blad.
+				\item Zoeken eindigt in een blad.
+			\end{enumerate}
+		\end{itemize}
+\end{itemize}
+\subsubsection{Binaire patriciatrie}
+\begin{itemize}
+	\item[\info] Elke expliciete inwendige knoop heeft twee kinderen.
+\end{itemize}
+\section{Ternaire zoekbomen}
+\begin{figure}
+	\centering
+	\includegraphics[width=0.8\textwidth]{ternary_searchtree}
+	\caption{Een ternaire zoekboom. Stel dat we het woord "Worst" zoeken. $W > H$, dus we dalen af naar het rechterkind. $W = W$, dus we dalen af naar het middelste kind en vergelijken het volgende zoekelement $o$. Dezelfde procedure gebeurd voor $o$ en $r$. Dan is $s > m$, dus we dalen af naar het rechterkind. $s = s$ en $t=t$ zodat het woord gevonden wordt.}
+	\label{fig:ternary_searchtree}
+\end{figure}
+\begin{itemize}
+	\item[\alert] $m$-wegstrie gebruikt tabel met $m$ kindwijzers in elke knoop $\rightarrow$ te veel geheugen.
+	\item[\info] Ternaire zoekboom bevat sleutelelement, en drie pointers naar knopen.
+	\item[\info] Is het zoeksleutelelement kleiner/groter, dan zoeken we verder in de linkse/rechtse deelboom met hetzelfde zoeksleutelelement.
+	\item[\info] Is het element gelijk, dan zoeken we verder in de middelste deelboom, met het volgende element.
+	\item[\info] Een zoeksleutel wordt gevonden wanneer we met zijn afsluitelement bij een knoop met datzelfde element terechtkomen (de cijfers van de blauwe knopen in figuur \ref{fig:ternary_searchtree}).
+	\item[\info] \underline{3 voordelen}:
+	\begin{itemize}
+		\item[\good] Past zich goed aan bij onregelmatige zoeksleutels.
+		\item[\good] Zoeken naar afwezige sleutels is efficiënt. Er worden slechts enkele sleutelelementen vergeleken, en volgen slechts enkele wijzers.
+		\item[\good] Het laat meer complexe zoekoperaties toe: zoeken naar sleutels waarvan bepaalde elementen niet gespecificeerd zijn of alle sleutels opsporen die in niet meer dan één element verschillen van de zoeksleutel.
+	\end{itemize}
+	\item[\info] \underline{2 mogelijke verbeteringen}:
+	\begin{enumerate}
+		\item Beperken aantal knopen door sleutels in bladeren op te slaan (zoals bij tries), en door inwendige knopen met slechts één kind te elimineren (zoals patriciatries).  De zoektijd wordt dan onafhankelijk van de sleutellengte.
+		\item Vervang de wortel door een meerwegstrieknoop, zodat we een tabel van ternaire zoekbomen hebben.
+	\end{enumerate}
+\end{itemize}
 
 \chapter{Zoeken in strings}
 Symbolen die gebruikt worden:
@@ -700,7 +856,7 @@ $$\langle \textbf{S} \rangle \Rightarrow  \langle \textbf{CD} \rangle  \Rightarr
 \Rightarrow  cc\langle \textbf{CD} \rangle dd \Rightarrow  ccc\langle \textbf{CD} \rangle ddd \Rightarrow  cccddd$$
 
 \subsection{Reguliere uitdrukkingen}
-(reguliere uitdrukking = regexp) = een string over het alfabet $\sum = \{\sigma_0, \sigma_1, ..., .\sigma_{d - 1}\}$ aangevuld met de symbolen $\emptyset$, $\epsilon$, $*$, $($, $)$ en $\underline{|}$ gedefinieerd door
+(reguliere uitdrukking = regexp) = een string over het alfabet $\sum = \{\sigma_0, \sigma_1, ..., .\sigma_{d - 1}\}$ aangevuld met de symbolen $\emptyset$, $\epsilon$, $*$, $($, $)$ en $\underline{|}$ gedefinieerd door tabel \ref{table:regexp}.
 \begin{table}[ht]
 	\centering
 	\begin{tabular}{l l l}
@@ -711,13 +867,20 @@ $$\langle \textbf{S} \rangle \Rightarrow  \langle \textbf{CD} \rangle  \Rightarr
 		$\langle \textbf{of} \rangle $ & $::=$ & $(\langle \textbf{Regexp} \rangle \underline{|} \langle \textbf{Regexp} \rangle)$ \\
 		$\langle \textbf{ster} \rangle $ & $::=$ & $(\langle \textbf{Regexp} \rangle)*$
 	\end{tabular}
+	\caption{Definitie reguliere expressie.}
+	\label{table:regexp}
 \end{table}
-Een taal die door een regexp gedefinieerd kan worden heet een reguliere taal. 
-\begin{enumerate}
-	\item $\emptyset$ is een regexp, met als taal de lege verzameling.
-	\item De lege string, voorgesteld als $\epsilon$, is een regexp met als taal Taal($\epsilon$) = \{$\epsilon$\}.
-	\item Voor elke $a \in \sum$ is \textquotedblleft a\textquotedblright een regexp, met als taal Taal(\textquotedblleft a\textquotedblright ) = \{\textquotedblleft a\textquotedblright\}.
-\end{enumerate}
+\begin{itemize}
+	\item[\info] Een taal die door een regexp gedefinieerd kan worden heet een reguliere taal. 
+	\item[\info] De formele taal die een regexp $R$ definieert, noteren we Taal($R$).
+	\item[\info]
+	\begin{enumerate}
+		\item $\emptyset$ is een regexp, met als taal de lege verzameling.
+		\item De lege string, voorgesteld als $\epsilon$, is een regexp met als taal Taal($\epsilon$) = \{$\epsilon$\}.
+		\item Voor elke $a \in \sum$ is \textquotedblleft a\textquotedblright$\;$een regexp, met als taal Taal(\textquotedblleft a\textquotedblright ) = \{\textquotedblleft a\textquotedblright\}.
+	\end{enumerate}
+\end{itemize}
+
 Regexps kunnen gecombineerd worden:
 \begin{table}[h]
 	\centering
@@ -732,12 +895,14 @@ Regexps kunnen gecombineerd worden:
 	\end{tabular}
 \end{table}
 
+\todo{p112 + 113 + 114}
+
 \section{Variabele tekst}
-Zoeken van een patroon $P$ in een tekst $T$ kan op veel manieren. Wij zien volgende methoden:
+Zoeken van een patroon $P$ met lengte $p$ in een tekst $T$ met lengte $t$ kan op veel manieren. Wij zien volgende methoden:
 \begin{itemize}
 	\item Knuth-Morris-Pratt
 	\item Boyer-Moore
-	\item Karp-Rabinal
+	\item Karp-Rabin
 	\item Zoeken met automaten
 	\item De Shift-AND-methode
 \end{itemize}
@@ -745,7 +910,8 @@ Zoeken van een patroon $P$ in een tekst $T$ kan op veel manieren. Wij zien volge
 Zie ook het bestand \texttt{Extra/zoeken\_in\_strings.pdf} voor meer methoden en uitleg.
 
 \subsection{Eenvoudige methode}
-= Voor elke positie $j$ nagaan of $P$ in $T$ voorkomt startend vanaf positie $j$, en de opeenvolgende $p$ posities. \accentuate{brol}
+= Voor elke positie $0 <= j <= t - p$ nagaan of $P$ in $T$ voorkomt startend vanaf positie $j$, en de opeenvolgende $p$ posities. \accentuate{brol}
+
 
 \subsection{Knuth-Morris-Pratt}
 Eerst de definitie van een \textbf{deelstring} bepalen.
@@ -757,6 +923,7 @@ Eerst de definitie van een \textbf{deelstring} bepalen.
 
 Een deelstring $(T[i], T[j])$ begint op positie $i$ en eindigt op positie $j$. Let op dat net zoals bij iterator, de positie $j$ wijst naar het element dat niet meer behoort tot de deelstring. Op het voorbeeld is de deelstring $(T[2], T[7])$ gelijk aan \texttt{CDEFG}.
 
+\subsubsection{De prefixfunctie}
 De \underline{prefixfunctie} $q()$ van een string $P$ bepaalt voor elke stringpositie $i$, $1 \leq i \leq p$, de lengte van het langste prefix van $P$ met lengte kleiner dan $i$ dat we voor $i$ kunnen leggen. \accentuate{Online ga je hier vaak een andere definitie voor terugvinden, waarbij $0 \leq i \leq p$ en dus $q(0) = 0$.} 
 
 Hieruit volgt:
@@ -775,7 +942,7 @@ Hieruit volgt:
 	\item Als er geen enkele prefix bestaat dat we voor $i$ kunnen leggen kan verlengd worden. Dan is $q(i + 1) = 0$.
 \end{itemize}
 
-Volgende code toont de werking van de prefixfunctie.
+\underline{Pseudocode prefixfunctie:}
 \begin{lstlisting}
 q[0] = -1
 q[1] = 0
@@ -793,11 +960,13 @@ for(i = 2; i <= p; i++){
 
 Gegeven een string Q = \texttt{ANOANAANOANO}. De prefixfunctie van $Q$ komt overeen met:
 \begin{lstlisting}
-i = 0 1 2 3 4 5 6 7 8 9 10 11 12 
-Q = A N O A N A A N O A  N  O
-q = - 0 0 0 1 2 1 1 2 3  4  5  3
+                        1 1 1 
+i = 0 1 2 3 4 5 6 7 8 9 0 1 2 
+Q = A N O A N A A N O A N O
+q = - 0 0 0 1 2 1 1 2 3 4 5 3
 \end{lstlisting}
 
+\subsubsection{Eenvoudig linear zoekalgoritme}
 Met de prefixfunctie kan eerst een \underline{eenvoudig linear zoekalgoritme} bedacht worden:
 \begin{enumerate}
 	\item Stel een string samen bestaande uit $P$, gevolgd door $T$, gescheiden door een speciaal karakter $k$ dat in geen van beide voorkomt.
@@ -810,20 +979,93 @@ Met de prefixfunctie kan eerst een \underline{eenvoudig linear zoekalgoritme} be
 	\item Wanneer de prefixwaarde van een positie $i$ in deze string gelijk is aan $p$, werd $P$ gevonden, beginnend bij index $i - p$ in $T$.
 
 \end{enumerate}
-
+\subsubsection{Knuth-Morris-Pratt}
 Een beter algoritme is echter dat van \underline{Knuth-Morris-Pratt}.
-\begin{enumerate}
-	\item 
-\end{enumerate}
+\begin{itemize}
+	\item[\info] Stel dat $P$ op een bepaalde positie vergeleken wordt met $T$, en dat er geen overeenkomst is tussen $P[i]$ en $T[j]$.
+	\item[\info] Bij foutpositie $i = 0$ wordt $P$ één naar rechts geschoven.
+	\item[\info] Anders werd er een prefix van lengte $i$ gevonden. $P$ kan $s = i - q(i)$ stappen opgeschoven worden.
+	\item[\info] 
+\end{itemize}
 
 
 
 \subsection{Boyer-Moore}
 
-\subsection{Karp-Rabinal}
 
-\subsection{zoeken met automaten}
+\subsection{Karp-Rabin}
+= Herleiden van het vergelijken van strings tot het vergelijken van getallen.
+\begin{itemize}
+	\item[\info] Elke string met lengte $p$ wordt gehasht. $P$ wordt zelf ook gehasht.
+	\item[\info] Een string dat gelijk is aan $P$ zal zeker dezelfde hashwaarde hebben als $P$, maar het is niet met zekerheid te zeggen dat twee dezelfde getallen van dezelfde string komen (hash collisions).
+	\item[\alert] Men laat dus toe om af en toe zich te vergissen, om het algoritme snel te houden.
+	\item[\info] \underline{Hoe hashfunctie bepalen?} Er zijn een aantal vereisten:
+	\begin{itemize}
+		\item[\info] De hashfunctie moet voor elke deelstring in $O(1)$ berekend worden. 
+		\item[\info] Dit kan gerealiseerd worden door de hashfunctie $H(j + 1)$ af te leiden door de waarde van $H(j)$.
+		\item[\info] De hashfunctie voor de eerste positie mag gerust langer duren.
+	\end{itemize}
+	\item[\info] Beschouw een string als een verzameling elementen die elk $d$ waarden kan aannemen. Elk element kan dan voorgesteld worden als een getal gelegen tussen 0 en $d - 1$ (inbegrepen.)
+	\item[\info] Het getal dat $P$ dan voorstelt:
+	$$H(P) = \sum_{i = 0}^{p-1} P[i]\cdot d^{p - i - 1}$$
+	\item[\info] Om de hashwaarde ('fingerprint') van $P$ te bepalen, wordt er een getal $r (0 < r \leq 2^w)$ (wordt  later uitgelegd, $w$ is breedte van processorwoord) gebruikt:
+	$$H_r(P) = H(P)\mod r$$
+	\item[\info] $H(P)$ kan heel groot worden, maar je kan gebruik maken van deze eigenschap, die ook geldt voor verschil en product:
+	$$(a + b) \mod r = (a \mod r + b \mod r) \mod r$$
+	\item[\info] Om nu in $O(1)$ de opeenvolgende fingerprints voor $T_{j + 1}$ te bepalen, kunnen we gebruik maken van de fingerprint $T_{j}$:
+	$$H_r(T_{j + 1}) = ((H(T_j) - T[j]d^{p - i})d + T[j + p]) \mod r$$
+	\item[\info] Eenmalig $T_0$ bepalen in $\Theta(p)$ (exact hetzelfde als bepalen $H_r(P)$):
+	$$H_r(T_0) = \bigg(\sum_{i = 0}^{p-1} P[i]\cdot d^{p - i - 1}\bigg)\mod r$$
+	\item[\info] Als nu blijkt dat de hashwaarde van $T_{j} = P$, dan moet enkel nog de posities $T[j], T[j + 1], ..., T[j + p]$ vergeleken worden, om al dan niet te besluiten dat de strings gelijk zijn.
+	\item[\info] \underline{Hoe $r$ kiezen?}
+	\begin{itemize}
+		\item \textbf{Vaste $r$}: kies een zo groot mogelijk priemgetal, zodat $rd < 2^w$
 
+		De berekening van $H_r(T_{j + 1})$ wordt licht aangepast:
+		$$H_r(T_{j + 1}) = \bigg(\big((H(T_j) + r(d - 1) - T[j](d^{p - i} \mod r))\mod r \big)d + T[j + p] \bigg) \mod r$$
+
+		\item \textbf{Random $r$}: Kies een willekeurig priemgetal $r$ uit een bepaald bereik. \todo{snap ik nie zo goe}
+
+	\end{itemize}
+\end{itemize}
+\subsection{Zoeken met automaten}
+Een aantal begrippen:
+\begin{itemize}
+	\item[\info] \underline{Geheugen}: Elk mechanisme dat de toestand van een eenheid verandert.
+	\item[\info] \underline{Staat}: Bij een determinitisch automaat is dit een synoniem voor de toestand van een eenheid. Een geheugenmodule van 32 KB bevat $256^{32000}$ staten.
+	\item[\info] \underline{Invoerkanaal}: Op elk discreet tijdstip is een zoeker invoer beschikbaar. De eindige verzameling van alle mogelijke invoerwaarden noemt het invoeralfabet. Bij mensen is het invoeralfabet de combinatie van alle zintuigen, inclusief zenuwsignalen.
+	\item[\info] \underline{Hooiberg}: de reeks symbolen die de automaat als invoer krijgt.
+\end{itemize}
+\subsubsection{Deterministische automaten (DA)}
+= Een abstract model voor een schakeling die of een programma dat zich in één van een aantal toestanden kan bevinden, in elke toestand een symbool invoert, en eventueel de toestand kan veranderen.
+
+\underline{Formeel bestaat een DA uit:}
+\begin{itemize}
+	\item[\info] een eindige verzameling invoersymbolen $\sum$,
+	\item[\info] een eindige verzameling toestanden $S$,
+	\item[\info] een begintoestand $s_0$ behorend tot $S$,
+	\item[\info] een verzameling eindtoestanden $F$, die een deelverzameling is van $S$,
+	\item[\info] een overgangsfunctie $p(t, a)$ die de nieuwe toestand geeft wanneer de automaat in toestand $t$ symbool $a$ ontvangt. Dit kan dus voorgesteld worden als een geëtiketteerde multigraaf $G$ \underline{overgangsgraaf}.
+\end{itemize}
+
+Wanneer een DA zich na het invoeren van een string (opeenvolging van $s_i$) in een eindtoestand bevindt, zegt men dat de string herkend werd door de DA.
+
+\begin{itemize}
+	\item[\info] Een taal die herkend wordt door een DA is regulier. De taal is namelijk een verzameling etiketten van $P_G(\{s_0\}, F)$
+\end{itemize}
+
+
+\subsubsection{Niet-deterministische automaten (NA)}
+= deterministisch mechanisme waarin toeval geen enkele rol speelt. Het heeft geen staat, maar wel statenbits.
+\begin{itemize}
+	\item[\info] De statenbits duiden aan in welke staat een NA zich bevindt. De beginbit, een speciale statenbit, duidt $s_0$ aan. De eindbits, duiden dan alle bits aan die ervoor zorgen dat de NA zich in een eindtoestand bevindt (1 of meerdere eindbits moeten aan staan).
+	\item[\info] De overgang naar een volgende staat werkt bit per bit. Een statenbit die één of meerdere signalen krijgt, zet zichzelf aan, terwijl een statenbit die geen signalen krijgt, zichzelf uitdooft. De functie $s(i, a)$ geeft letter $a$ aan statenbit $i$.
+	\item[\info] Een $\epsilon$-overgang van statenbit $i$ naar statenbit $j$, zal ervoor zorgen dat indien $i$ een signaal krijgt met $a = \epsilon$, deze ook naar $j$ wordt doorgestuurd zonder vertraging, zodat ze beide aanstaan.
+	\item[\info] Een NA herkent een string indien op het einde van de string de NA één of meerdere eindbits heeft aanstaan.
+\end{itemize}
+
+\subsubsection{De deelverzamelingconstructie}
+= Het omzetten van een NA naar het DA-formalisme met expliciete staten.
 \subsection{De Shift-AND-methode}
 = bitgeoriënteerde methode, die zeer efficiënt werkt voor kleine patronen, en eenvoudig kan uitgebreid worden om patronen te zoeken waarin fouten zitten.
 
@@ -951,6 +1193,29 @@ zolang j < t
 
 \end{itemize}
 \section{Suffixtabellen}
+\begin{itemize}
+	\item[\good] Ondersteunt dezelfde operaties, met dezelfde performantie, maar met minder geheugen dan een suffixboom.
+	\item[\info] Gesorteerde tabel van de suffixen van tekst $T$. Elke index in de tabel komt overeen met de beginpositie van de gesorteerde suffixen.
+	Voor de tekst \texttt{banaan} stelt tabel \ref{table:suffixtable} in de eerste twee kolommen de beginpositie $i$ voor elke suffix, gesorteerd op beginpositie. De twee volgende kolommen bevat dezelfde informatie, maar gesorteerd op beginpositie $j$. De suffixtabel bevat voor elke beginpositie $i$, de overeenkomstige beginpositie $j$, zodat de suffixtabel $\{6, 4, 3, 1, 0, 5, 2\}$ wordt.
+	\begin{table}[ht]
+		\centering
+		\begin{tabular}{| l | l || l | l |}
+			\hline 
+			suffix & i & suffix & i \\
+			\hline 
+			banaan\$ & 0 & \$ 		& 6 \\
+			anaan\$  & 1 & an\$ 	& 4 \\
+			naan\$   & 2 & aan\$  	& 3 \\
+			aan\$    & 3 & anaan\$  & 1 \\
+			an\$     & 4 & banaan\$ & 0 \\
+			n\$      & 5 & n\$ 	    & 5 \\
+			\$       & 6 & naan\$   & 2 \\
+			\hline
+		\end{tabular}
+		\caption{Constructie van de suffixtabel voor \texttt{banaan}.}
+		\label{table:suffixtable}
+	\end{table}
+\end{itemize}
 \section{Tekstzoekmachines}
 \part{Hardnekkige problemen}
 \chapter{NP}
