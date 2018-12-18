@@ -68,15 +68,15 @@ void testVoorbeeld() {
 	gr.voegVerbindingToe(6, 3, 2);
 	gr.voegVerbindingToe(6, 4, 8);
 	Stroomnetwerk<int> sn(gr, 1, 4);
-	tekenStroomnetwerk(sn, "sn", false);
+	//tekenStroomnetwerk(sn, "sn", false);
 
 	Stroomnetwerk<int> oplossing = sn.geefStroom();
-	tekenStroomnetwerk(oplossing, "oplossing", true);
+	//tekenStroomnetwerk(oplossing, "oplossing", true);
 	std::cout << oplossing.geefCapaciteit();
 	assert(oplossing.geefCapaciteit() == 13);
 }
 
 int main() {
-	losFietsnetwerkOp();
+	testVoorbeeld();
 	return 0;
 }

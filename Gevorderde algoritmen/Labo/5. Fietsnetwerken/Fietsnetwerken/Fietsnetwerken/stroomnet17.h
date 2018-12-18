@@ -51,63 +51,67 @@ template <class T>
 class Vergrotendpadzoeker {
 public:
 	Vergrotendpadzoeker(const Stroomnetwerk<T>& stroomnetwerk) :
-		q(stroomnetwerk), v(stroomnetwerk.van), v2(stroomnetwerk.naar),
-		l(q.aantalKnopen()), m(q.aantalKnopen(), false) {
+		stroomnetwerk(stroomnetwerk), producent(stroomnetwerk.van), verbruiker(stroomnetwerk.naar),
+		gebruikteBuren(stroomnetwerk.aantalKnopen()), aanwezigheidslijst(stroomnetwerk.aantalKnopen(), false) {
 	};
 	Pad<T> geefVergrotendPad();
 protected:
-	virtual void foo(int t, int x, Pad<T>& p);
-	const Stroomnetwerk<T>& q;
-	vector<int> l;
-	vector<bool> m;
-	int v, v2;
+	virtual void geefVergrotendPad(int t, int x, Pad<T>& p);
+	const Stroomnetwerk<T>& stroomnetwerk;
+	// elke index stelt een knoop voor
+	// de waarde die bij die index hoort is het knoopnummer dat we gebruikt hebben om tot de knoop 
+	// bijhorend tot de knoop met het indexnummer te komen
+	vector<int> gebruikteBuren; 
+	vector<bool> aanwezigheidslijst; // lijst van knopen die in het vergrotend pad zitten
+	int producent, verbruiker;
 };
 
 
 template <class T>
 Pad<T>Vergrotendpadzoeker<T>::geefVergrotendPad() {
-	for (int i = 0; i < m.size(); i++) {
-		m[i] = false;
+	for (int i = 0; i < aanwezigheidslijst.size(); i++) {
+		aanwezigheidslijst[i] = false;
 	}
-	Pad<T> p;
-	assert(v != v2);
-	foo(v, 0, p);
-	assert(p.size() != 1);
-	if (p.size() > 1) {
-		T g = *q.geefTakdata(p[0], p[1]);
-		for (int i = 2; i < p.size(); i++) {
-			T ychg = *q.geefTakdata(p[i - 1], p[i]);
-			if (ychg < g)
-				g = ychg;
+	Pad<T> pad;
+	assert(producent != verbruiker);
+	geefVergrotendPad(producent, 0, pad);
+	assert(pad.size() != 1);
+
+	// de bottleneck van het pad bepalen = de verbinding met de kleinste capaciteit
+	if (pad.size() > 1) {
+		T bottleneck = *stroomnetwerk.geefTakdata(pad[0], pad[1]);
+		for (int i = 2; i < pad.size(); i++) {
+			T vergelijkBottleneck = *stroomnetwerk.geefTakdata(pad[i - 1], pad[i]);
+			if (vergelijkBottleneck < bottleneck)
+				bottleneck = vergelijkBottleneck;
 		}
-		p.zetCapaciteit(g);
+		pad.zetCapaciteit(bottleneck);
 	}
-	return p;
+	return pad;
 }
 
 
 template <class T>
-void Vergrotendpadzoeker<T>::foo(int t, int x, Pad<T>& p) {
-	m[t] = true;
-	const typename GraafMetTakdata<GERICHT, T>::Burenlijst& a = q[t];
-	int ychx = x + 1;
-	for (typename GraafMetTakdata<GERICHT, T>::Burenlijst::const_iterator it = a.begin();
-		it != a.end(); it++) {
-		int u = it->first;
-		if (*q.geefTakdata(t, u) > 0) {
-			if (it->first == v2 && ychx + 1 > p.size()) {
-				l[v2] = t;
-				p.resize(ychx + 1);
-				int ychf = v2;
-				int i = ychx;
-				while (ychf != v) {
-					p[i--] = ychf;
-					ychf = l[ychf];
+void Vergrotendpadzoeker<T>::geefVergrotendPad(int huidigeKnoop, int x, Pad<T>& pad) {
+	aanwezigheidslijst[huidigeKnoop] = true;
+	const typename GraafMetTakdata<GERICHT, T>::Burenlijst& buren = stroomnetwerk[huidigeKnoop];
+	int padLengte = x + 1;
+	for (typename GraafMetTakdata<GERICHT, T>::Burenlijst::const_iterator it = buren.begin(); it != buren.end(); it++) {
+		int buur = it->first;
+		if (*stroomnetwerk.geefTakdata(huidigeKnoop, buur) > 0) {
+			if (buur == verbruiker && padLengte + 1 > pad.size()) {
+				gebruikteBuren[verbruiker] = huidigeKnoop;
+				pad.resize(padLengte + 1);
+				int padKnoop = verbruiker;
+				int i = padLengte;
+				while (padKnoop != producent) {
+					pad[i--] = padKnoop;
+					padKnoop = gebruikteBuren[padKnoop];
 				}
-				p[0] = ychf;
-			} else if (u != v2 && !m[u]) {
-				l[u] = t;
-				foo(u, ychx, p);
+				pad[0] = padKnoop;
+			} else if (buur != verbruiker && !aanwezigheidslijst[buur]) {
+				gebruikteBuren[buur] = huidigeKnoop;
+				geefVergrotendPad(buur, padLengte, pad);
 			}
 		}
 	}
@@ -152,14 +156,10 @@ public:
 		Pad<T> vergrotendpad = vg.geefVergrotendPad();
 
 		while (vergrotendpad.size() != 0) {
-			restnetwerk -= vergrotendpad; 
-			oplossing += vergrotendpad;   
+			restnetwerk -= vergrotendpad;
+			oplossing += vergrotendpad;
 			vergrotendpad = vg.geefVergrotendPad();
 		}
-
-		restnetwerk.teken("restnetwerk_oplossing.dot");
-		system("dot -Tpng restnetwerk_oplossing.dot -o restnetwerk_oplossing.jpg");
-		system("restnetwerk_oplossing.jpg");
 
 		return oplossing;
 	}
@@ -176,7 +176,7 @@ public:
 
 	Stroomnetwerk<T>& operator+=(const Pad<T>& pad) {
 		for (int i = 0; i < pad.size() - 1; i++) {
-			this->vergrootTak(pad[i], pad[i +1], pad.geefCapaciteit());
+			this->vergrootTak(pad[i], pad[i + 1], pad.geefCapaciteit());
 		}
 		return *this;
 	}

@@ -127,7 +127,7 @@ void TiXmlBase::ConvertUTF32ToUTF8(unsigned long input, char* output, int* lengt
 
 /*static*/ int TiXmlBase::IsAlpha(unsigned char anyByte, TiXmlEncoding /*encoding*/) {
 	// This will only work for low-ascii, everything else is assumed to be a valid
-	// letter. I'm not sure this is the best approach, but it is quite tricky trying
+	// letter. I'aanwezigheidslijst not sure this is the best approach, but it is quite tricky trying
 	// to figure out alhabetical vs. not across encoding. So take a very 
 	// conservative approach.
 
@@ -147,7 +147,7 @@ void TiXmlBase::ConvertUTF32ToUTF8(unsigned long input, char* output, int* lengt
 
 /*static*/ int TiXmlBase::IsAlphaNum(unsigned char anyByte, TiXmlEncoding /*encoding*/) {
 	// This will only work for low-ascii, everything else is assumed to be a valid
-	// letter. I'm not sure this is the best approach, but it is quite tricky trying
+	// letter. I'aanwezigheidslijst not sure this is the best approach, but it is quite tricky trying
 	// to figure out alhabetical vs. not across encoding. So take a very 
 	// conservative approach.
 

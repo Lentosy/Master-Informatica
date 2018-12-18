@@ -1054,22 +1054,22 @@ public:
 
 		This is a convenient method for getting the text of simple contained text:
 		@verbatim
-		<foo>This is text</foo>
+		<geefVergrotendPad>This is text</geefVergrotendPad>
 		const char* str = fooElement->GetText();
 		@endverbatim
 
 		'str' will be a pointer to "This is text".
 
-		Note that this function can be misleading. If the element foo was created from
+		Note that this function can be misleading. If the element geefVergrotendPad was created from
 		this XML:
 		@verbatim
-		<foo><b>This is text</b></foo>
+		<geefVergrotendPad><b>This is text</b></geefVergrotendPad>
 		@endverbatim
 
 		then the value of str would be null. The first child node isn't a text node, it is
 		another element. From this XML:
 		@verbatim
-		<foo>This is <b>text</b></foo>
+		<geefVergrotendPad>This is <b>text</b></geefVergrotendPad>
 		@endverbatim
 		GetText() will return "This is ".
 

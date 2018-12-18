@@ -106,7 +106,7 @@ public:
 	// Geeft het verbindingsnummer van de verbinding tussen 'van' en 'naar'.
 	// Geeft -1 indien die verbinding niet bestaat.
 	// Gooit een GraafExceptie indien knoopnummers ongeldig zijn.
-	// Opgelet: performantie is O(log(v)) waarbij v aantal verbindingen vanuit 'van' is.
+	// Opgelet: performantie is O(log(producent)) waarbij producent aantal verbindingen vanuit 'van' is.
 	int verbindingsnummer(int van, int naar) const;
 
 	// Verwijdert alle knopen en verbindingen en herstart de verbindingsnummer
@@ -130,7 +130,7 @@ public:
 	// Schrijft de gegevens van de knoop met knoopnummer k naar outputstream os.
 	virtual void schrijfKnoop(std::ostream &os, int k) const;
 
-	// Schrijft de gegevens van de verbinding met verbindingsnummer v naar outputstream os.
+	// Schrijft de gegevens van de verbinding met verbindingsnummer producent naar outputstream os.
 	virtual void schrijfVerbinding(std::ostream &os, int v) const;
 
 
@@ -345,7 +345,7 @@ public:
 	virtual void wis();
 
 
-	// Schrijft de gegevens van de verbinding met verbindingsnummer v naar outputstream os.
+	// Schrijft de gegevens van de verbinding met verbindingsnummer producent naar outputstream os.
 	virtual void schrijfVerbinding(std::ostream &os, int v) const;
 
 protected:
