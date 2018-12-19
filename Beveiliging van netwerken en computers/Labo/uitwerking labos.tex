@@ -1085,69 +1085,82 @@ Zorg er in eerste instantie voor dat de routing correct werkt:
 \end{itemize}
 
 
-De externe router is verbonden met een extern netwerk dat zal fungeren als het internet.
+De \textbf{externe router} is verbonden met een extern netwerk dat zal fungeren als het \emph{internet}.
 Dit is het netwerk waar alle computers zijn op aangesloten die niet in de testopstelling zijn betrokken, zo ook intranet.iii.hogent.be en moore.iii.hogent.be (192.168.16.8).
-Het internet op de externe router moet je aansluiten op lan0, dus op de interface waarmee de machine in de normale toestand met het net is verbonden.
-Om de route naar de DMZ te verspreiden naar alle andere externe routers, alsook naar moore.iii.hogent.be, zal de externe router gebruikmaken van een RIPv2-router (via Quagga).
-Belangrijk: voor een correcte werking is het noodzakelijk dat je elk toestel gebruikt voor de functie zoals aangegeven in de figuur voor 2.031 of 2.035.
+Het internet op de externe router moet je aansluiten op \textbf{lan0}, dus op de interface waarmee de machine in de normale toestand met het net is verbonden.
+Om de route naar de DMZ te verspreiden naar alle andere externe routers, alsook naar moore.iii.hogent.be, zal de externe router gebruikmaken van een \textbf{RIPv2}-router (via Quagga).
 
-De bastion host bevindt zich in de DMZ.
+De \textbf{bastion host} bevindt zich in de DMZ.
 De bastion host fungeert als bridge, zodat hij in de DMZ ook verbonden is met zowel de interne als met de externe router.
 Hij zal ook dienst doen als nameserver, als webserver, en als proxyserver voor HTTP en HTTPS (zie verder).
 
-De interne router verbindt het interne netwerk met de DMZ. Op het interne netwerk is één pc aangesloten die dienst doet als testclient (CL).
+De \textbf{interne router} verbindt het interne netwerk met de DMZ. Op het interne netwerk is één pc aangesloten die dienst doet als testclient (CL).
 
-De DMZ is rechtstreeks bereikbaar van overal op het "internet" maar maskeert het interne netwerk.
+De DMZ is rechtstreeks bereikbaar van overal op het ''internet'' maar maskeert het interne netwerk.
 Dat betekent dat geen enkele computer op het interne netwerk (o.a. de testclient CL) bereikbaar is van buiten, ook niet vanaf de DMZ.
 Het private netwerk 10.0.0.0/8 moet dus gemaskeerd worden met behulp van NAT.
 Voor de configuratie van NAT maak je gebruik van iptables.
 
-Opgelet:
+\textbf{Opgelet:}
 Op moore.iii.hogent.be (192.168.16.8) worden de routes naar alle gedemilitariseerde zones door Quagga verzameld.
 Je zal 192.168.16.8 dus moeten instellen als default gateway!
 
-Indien nodig kan je voor de toestellen binnen je netwerk tijdelijk 192.168.16.8 instellen als DNS-server.
-Wanneer je opstelling volledig geconfigureerd is, zou je dan vanaf elk toestel (dus ook de interne client) moeten kunnen surfen op het Internet.
-Begin niet aan een volgende onderdeel zolang de routing nog niet volledig werkt!
+Indien nodig kan je voor de toestellen binnen je netwerk \textbf{tijdelijk} 192.168.16.8 instellen als DNS-server.
+Wanneer je opstelling volledig geconfigureerd is, zou je dan vanaf \textbf{elk toestel} (dus ook de interne client) moeten kunnen surfen op het Internet.
+
+\textbf{Begin niet aan een volgende onderdeel zolang de routing nog niet volledig werkt!}
 \section{DNS, web- en proxyserver}
 
-Configureer de bastion host zodat hij dienst doet als nameserver, webserver en proxyserver voor HTTP/HTTPS:
-
-    De nameserver is de primaire (en enige) nameserver voor je eigen zone.
+Configureer de \textbf{bastion host} zodat hij dienst doet als nameserver, webserver en proxyserver voor HTTP/HTTPS:
+\begin{itemize}
+    \item De \textbf{nameserver} is de primaire (en enige) nameserver voor je eigen zone.
     Hij moet zowel kunnen antwoorden op forward als op reverse DNS query's.
     Voor de toestellen binnen jouw zone maak je gebruik van de oorspronkelijke computernamen (bv. archimedes.groep19.iii.hogent.be).
     Vragen die de nameserver zelf niet kan beantwoorden stuurt hij door (via een forwarder) naar 192.168.16.8.
-    Voor de configuratie van de webserver maak je gebruik van apache (httpd).
+    \item Voor de configuratie van de webserver maak je gebruik van apache (httpd).
     De website is vanaf het interne netwerk bereikbaar op poort 80.
     Het is niet nodig om HTTPS te configureren.
-    Voor de proxyserver maak je eveneens gebruik van apache (httpd).
+    \item Voor de \textbf{proxyserver} maak je eveneens gebruik van apache (httpd).
     De proxy-server zal alle HTTP en HTTPS requests op poort 8080 doorsturen naar de remote proxyserver op 192.168.16.8:8080.
+\end{itemize}
+
 
 Eenmaal je DNS-configuratie in orde is, is het de bedoeling dat elk toestel binnen jouw groep je eigen DNS-server gebruikt (en dus niet 192.168.16.8).
-Bovendien configureer je de browser van de interne client zodat deze de proxyserver van jouw BH gebruikt voor alle HTTP/HTTPS aanvragen, behalve deze naar je eigen website.
+Bovendien configureer je de browser van de interne client zodat deze de proxyserver van jouw BH gebruikt voor \textbf{alle} HTTP/HTTPS aanvragen, behalve deze naar je eigen website.
 Als je configuratie correct is zou je vanaf de interne client nog steeds moeten kunnen surfen op het Internet (maar dus nu via de proxyserver).
-Test je opstelling grondig vooraleer je begint met de configuratie van de firewallregels!
+
+\textbf{Test je opstelling grondig vooraleer je begint met de configuratie van de firewallregels!}
 \section{Firewall}
 
-Nu is het de bedoeling dat je de nodige firewallregels toevoegt op zowel de externe router als de interne router.
+Nu is het de bedoeling dat je de nodige \textbf{firewallregels} toevoegt op zowel de \textbf{externe router} als de \textbf{interne router}.
 In tegenstelling tot het vorige labo (iptables) gebruik je tijdens dit labo statefull firewallregels waar mogelijk.
-Schrijf bovendien de firewall regels zo strikt mogelijk.
+Schrijf bovendien de firewall regels zo \textbf{strikt} mogelijk.
 
-Zorg ook voor de nodige firewallregels zodat:
-
-    De interne router HTTP, DNS, SSH en proxyverkeer doorlaat van het private netwerk naar de bastion host, en speciaal voor dit labo de client ook toelaat om te pingen naar alle computers binnen de DMZ maar niet verder.
-    De externe router DNS, SSH en proxyverkeer doorlaat van de bastion host naar het publieke netwerk (het internet).
+Zorg ook voor de nodige \textbf{firewallregels} zodat:
+\begin{itemize}
+    \item De \textbf{interne router} HTTP, DNS, SSH en proxyverkeer doorlaat van het private netwerk naar de bastion host, en speciaal voor dit labo de client ook toelaat om te pingen naar alle computers binnen de DMZ maar niet verder.
+    \item  De \textbf{externe router} DNS, SSH en proxyverkeer doorlaat van de bastion host naar het publieke netwerk (het internet).
     Bovendien moet de DNS-informatie op de bastion host van buiten je DMZ (internet) bereikbaar zijn.
     De website op de bastion host mag echter enkel intern bereikbaar zijn.
     Zorg er bovendien voor dat je van een extern toestel naar de bastion host (enkel dit toestel!) kunt pingen.
     De externe router draait RIP via Quagga, alle inkomende en uitgaande berichten die te maken hebben met RIPv2 moeten dus ook worden toegelaten.
+\end{itemize}
+
 
 Vooraleer je de opstelling weer mag afbreken, moet ze geëvalueerd worden door één van de docenten.
-Alvorens een docent te vragen om je opstelling na te kijken, kan je zelf controleren of alles correct werkt via deze checklist.
-Algemene richtlijnen:
+Alvorens een docent te vragen om je opstelling na te kijken, kan je zelf controleren of alles correct werkt via de checklist op figuur \ref{fig:checklist}.
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{9_checklist}
+	\caption{De checklist.}
+	\label{fig:checklist}
+\end{figure}
+
+\section{Algemene richtlijnen}
+
 
 Om deze opstelling te verwezenlijken moet de bestaande netwerkbekabeling worden aangepast.
-Bedenk dat op het einde van de labosessie de oorspronkelijke toestand moet hersteld worden in een werkende staat.
+Bedenk dat op het einde van de labosessie de oorspronkelijke toestand moet hersteld worden in een \textbf{werkende} staat.
 Bij groepen die dit verzuimen zal de quotering worden aangepast!
 Noteer dus alles goed vooraleer je iets verandert en test of de teruggeplaatste instellingen functioneren.
 
@@ -1155,7 +1168,7 @@ Bovendien moet je er rekening mee houden dat van elk paar UTP-netwerkcontactdoze
 Ook is het van belang om van de twee (of meer) netwerkinterfaces in de pc's opnieuw de juiste te verbinden!
 
 Bedenk ook dat eens het netwerk is onderbroken, het publieke internet en dus ook Minerva (tijdelijk) niet meer van op elke machine bereikbaar zijn.
-Enkel de externe router blijft aangesloten op het "internet" met zijn origineel IP-adres. 
+Enkel de \textbf{externe router} blijft aangesloten op het "internet" met zijn origineel IP-adres. 
 
 
 
