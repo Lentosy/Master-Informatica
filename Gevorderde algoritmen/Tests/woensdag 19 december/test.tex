@@ -1,0 +1,27 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{color}
+\usepackage{listings}
+
+\def\warning#1{\color{red} #1 \color{black}}
+\def\note#1{\color{cyan} #1 \color{black}}
+
+\begin{document}
+\pagenumbering{gobble}
+\title{Test Algoritmen II}
+\date{13 december 2018}
+\author{}
+\maketitle
+
+\section{Vraag 1}
+    In het bestand \textbf{graaf.h} staat de klassedefinitie die een \textit{ongerichte} graaf beschrijft. Implementeer de methode 
+    $$\texttt{std::vector<int> bepaal\_scharnierpunten() const;}$$
+    die een vector teruggeeft met de knoopnummers die scharnierpunten zijn.
+\section{Vraag 2}
+    Het bestand \textbf{tboom.h} wordt een ternaire zoekboom beschreven. Implementeer de methode
+    $$\texttt{void voegtoe(const std::string\&)}$$
+    die een string toevoegt aan de ternaire zoekboom. Je mag veronderstellen dat \texttt{Tboom::afsluitkarakter} niet in de string zal voorkomen. De gebruiker moet niets afweten van dit afsluitkarakter, met als gevolg dat de meegegeven string dit afsluitkarakter ook niet zal bevatten.
+	
+    
+\end{document}

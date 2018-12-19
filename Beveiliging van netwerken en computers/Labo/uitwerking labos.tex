@@ -1,7 +1,6 @@
 \documentclass{report}
 
 \usepackage{ugentstyle}
-
 \begin{document}
 	\maketitle{Beveiliging van netwerken en computers}
 	\tableofcontents
@@ -1060,22 +1059,31 @@ De bedoeling van dit labo is een firewall op te zetten met een gedemilitariseerd
 Deze opdracht wordt uitgevoerd in groepen van 4, de indeling van de groepen vind je hier.
 
 Elke groep maakt een opstelling met 4 PC's: een externe router (RE), een interne router (RI), een bastion host (BH) en een client in het interne netwerk (CL).
-Deze figuur toont de volledige opstelling voor één groep.
+Figuur \ref{fig:9_opstelling} toont de volledige opstelling voor één groep.
+\begin{figure}[ht]
+	\includegraphics[width=\textwidth]{9_opstelling}
+	\caption{Opstelling voor één groep.}
+	\label{fig:9_opstelling}
+\end{figure}
 Let in elk geval ook op de manier waarop de toestellen met elkaar zijn verbonden.
 
 Welk toestel binnen jouw groep zal fungeren als RE, BH, RI en CL kan je hier vinden per lokaal: 2.031 en 2.035.
-Een overzicht van alle IP-adressen voor jouw groep vind je op figuur 
-\begin{figure}
+Een overzicht van alle IP-adressen voor jouw groep vind je op figuur \ref{fig:9_ipaddr}.
+\begin{figure}[ht]
 	\includegraphics[width=\textwidth]{9_ipaddr}
+	\caption{IP-adressen voor elke opstelling.}
+	\label{fig:9_ipaddr}
 \end{figure}
 \section{Routing}
 
 Zorg er in eerste instantie voor dat de routing correct werkt:
+\begin{itemize}
+    \item Sluit de nodige netwerkkabels aan, en maak overal gebruik van statische IP-adressen, bij voorkeur via ifcfg-bestanden.
+    \item Om de route naar de DMZ te verspreiden, zal de externe \textbf{router (RE)} gebruikmaken van een RIPv2-router (via Quagga).
+    \item De \textbf{bastion host (BH)} fungeert als bridge, zodat hij in de DMZ verbonden is met zowel de interne als externe router.
+    \item De \textbf{interne router (RI)} maakt gebruik van NAT om het interne netwerk te maskeren.
+\end{itemize}
 
-    Sluit de nodige netwerkkabels aan, en maak overal gebruik van statische IP-adressen, bij voorkeur via ifcfg-bestanden.
-    Om de route naar de DMZ te verspreiden, zal de externe router (RE) gebruikmaken van een RIPv2-router (via Quagga).
-    De bastion host (BH) fungeert als bridge, zodat hij in de DMZ verbonden is met zowel de interne als externe router.
-    De interne router (RI) maakt gebruik van NAT om het interne netwerk te maskeren.
 
 De externe router is verbonden met een extern netwerk dat zal fungeren als het internet.
 Dit is het netwerk waar alle computers zijn op aangesloten die niet in de testopstelling zijn betrokken, zo ook intranet.iii.hogent.be en moore.iii.hogent.be (192.168.16.8).
