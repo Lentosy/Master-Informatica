@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="generator" content="intranetr/0.10.0">
+<title>OEFENINGEN: Rood-zwarte bomen | iii intranet</title>    
+    <link rel="stylesheet" type="text/css" media="print" href="opgave_files/print.css">
+    <link rel="stylesheet" type="text/css" media="screen,handheld" href="opgave_files/default_002.css">
+    <script type="text/javascript" async="" src="opgave_files/ga.js"></script><script type="text/javascript" src="opgave_files/0d6197553acf19ea859c96f7caf7d8fa6c6519b8.js"></script>
+<!--[if lt IE 8]>
+<link rel="stylesheet" type="text/css" href="/css/ie.css">
+<![endif]-->
+    <script type="text/javascript">
+    (function() {
+        var month = 12;
+        iii.semester = month == 1 ? 1
+            : month <= 6 ? 2
+            : month <= 9 ? 0 : 1;
+        if (iii.semester > 0) {
+            var hideOtherSemester = function() {
+                var other = iii.semester == 1 ? 2 : 1;
+                $('#breadcrumbs li.group-sem'
+                        + other
+                        + ':not(.group-sem'
+                        + iii.semester + '):not(.active)')
+                    .hide();
+            };
+            $(document)
+                .ready(hideOtherSemester)
+                .on("contentUpdate.iii", hideOtherSemester);
+        }
+    })();
+    </script>
+</head>
+
+<body>
+<div id="content" class="">
+<p><strong>ROOD-ZWARTE BOMEN</strong></p>
+<p>27 september<br></p>
+<p><strong>Rood-zwarte bomen</strong> zijn altijd <em>nogal</em>
+evenwichtig. Je betaalt er wel een prijs voor: toevoegen en
+verwijderen is ingewikkeld. Voor we ze implementeren zijn hier een
+paar toepassingen om <em>op papier</em> op te lossen.</p>
+<p>We vertrekken van zeer scheve boom:</p>
+<img src="opgave_files/rzwgroot.gif" width="750"><br>
+<p>als <em>l</em> de diepte aan de linkerkant is, en <em>r</em> de
+diepte aan de rechterkant, dan is</p>
+<em>r=2l+1.</em><br>
+<p>Slechter kan niet bij een rood-zwarte boom, en elke bewerking
+zal de situatie verbeteren. Probeer maar:</p>
+<ul>
+<li>sleutels -6, -1 en -3 bottom-up toevoegen.</li>
+<li>sleutel 36 bottom-up toevoegen.</li>
+</ul>
+<strong>Implementatie.</strong>
+<p>Als je dit alles implementeert moet je een rood-zwarteboomklasse
+hebben. Je zou denken dat je eenvoudig kan overerven van een gewoneF
+binaire boom, maar dat blijkt niet erg goed te lukken. Omdat elke
+knoop een kleur heeft moet er dan in elke knoop een attribuut
+bijkomen. Die interactie tussen boom en knoop leidt tot problemen,
+zodat er niet veel meer overblijft dan de lelijke weg: je kopieert
+gewoon de code van een zoekboom en verandert overal
+<tt>Zoekboom</tt> door <tt>RZWBoom</tt>. Dat is niet flexibel --als
+je verbeteringen aanbrengt aan de Zoekboomcode wordt die niet
+meegenomen naar de RZWBoom, maar het werkt wel. Je krijgt van ons
+het bestand <a href="opgave_files/rzwboom14.h">rzwboom14.h</a> met relevante
+code voor een binaire boom, zoals een repOK-functie voor een
+binaire boom en een rotatiefunctie.</p>
+<p>Ook voor deze nieuwe klasse ga je eerst een
+<tt>repOK()</tt>-functie schrijven. Zoals gebruikelijk bij
+overerving (al is deze hier puur formeel) is de
+<tt>repOK()</tt>-functie van de bovenklasse een deel van die voor
+de onderklasse.</p>
+<p>Daarna schrijf je een bottom-up toevoegmethode. De voorbeeldjes
+op de tekeningen leveren handige stof voor tests. Daar zit je met
+een probleem: hoe zorg je ervoor dat je een rood-zwarte boom krijgt
+met de structuur vanop de tekeningen?</p>
+<p><strong>Programmeertip:</strong> elke knoop is de wortel van een
+(deel)boom. Het is handig als je een functie <tt>geefKleur()</tt>
+maakt die geen lid is van de Knoopklasse maar van de Boomklasse.
+Waarom is dat?</p>
+<h3>Testen</h3>
+Als je code schrijft moet je die ook <em>testen</em>. Dat is meer
+dan alleen maar nagaan of je code compileert en niet crasht op één
+klein voorbeeldje. Vaak is het zo dat je meer testcode hebt dan
+code die getest moet worden. Dat lijkt veel werk met weinig
+opbrengst, maar dat is het niet: alleen zo kan je zeker zijn dat je
+code werkt zoals het hoort.
+<p>Kleine boompjes kan je inspecteren met een uitschrijfoperatie.
+Die is voorzien in de code. Wie liever een <a href="http://users.ugent.be/~marsaele/voorbeeld.png">tekening</a> heeft
+kan gebruik maken van het <a href="http://graphviz.org/">dot-pakket</a> (op labo-computers download
+je best de zip-versie). Een scriptje om .dot-bestanden om te zetten
+naar een afbeelding vind je in <a href="opgave_files/genereer-dot.sh">genereer-dot.sh</a> (je kan de dot-code ook
+online een grafiek laten genereren via <a href="http://webgraphviz.com/">http://webgraphviz.com/</a>).</p>
+<p>234-boom (de bijbehorende lidfuncties heten
+<tt>tekenAlsBinaireBoom(...)</tt> en
+<tt>tekenAls234boom(...)</tt>.</p>
+<p>Een belangrijk concept bij testen is de <em>rep-invariant</em>.
+Dit staat voor representatie-invariant. Het is het geheel van
+voorwaarden waaraan de representatie in het geheugen van een object
+moet voldoen om de een geldig object voor te stellen. Voor een
+binaire zoekboom zijn de in het oog springende voorwaarden:</p>
+<ol>
+<li>Het moet een geldige binaire boom zijn.</li>
+<li>De sleutels moeten in volgorde staan.</li>
+</ol>
+Het eerste aspect houdt in dat alle pointers oké moeten zijn. Nu
+werken we met <tt>unique_ptr</tt>s. Bij normaal gebruik staat een
+<tt>unique_ptr</tt> op nul ofwel wijst hij naar een object terwijl
+hij de enige <tt>unique_ptr</tt> is die naar dat object wijst. Als
+dat om een of andere reden niet het geval is merken we dat meestal
+gauw genoeg, zodat we dat in dit geval niet moeten testen. (Er kan
+soms een probleem zijn met een circuit van <tt>unique_ptr</tt>s,
+maar zo'n circuit hangt dan per definitie nergens meer aan. Het
+leidt dan wel tot een geheugenlek, maar niet tot een verbreking van
+de rep-invariant). Onze binaire boom heeft ook ouderpointers. Dit
+zijn gewone pointers en het behoort natuurlijk tot de rep-invariant
+dat deze pointers naar de juiste knopen wijzen.
+<p>De rep-invariant van alle betrokken objecten maakt deel uit van
+pre- en postconditie van alle publiek toegankelijke functies
+(interne functies kunnen soms de rep-invariant doorbreken of een
+gebroken rep-invariant herstellen). Bij testen moet je hem dus
+regelmatig controleren. Het is gebruikelijk een te testen klasse
+een lidfunctie <tt>bool repOK()</tt> te geven. Deze gaat na of de
+rep-invariant voldaan is. Het eerste punt van de bovenstaande
+opdracht is dus het schrijven van de <tt>repOK()</tt>-functie voor
+de rood-zwarteboomklasse die de bovenstaande voorwaarden
+controleert. Tip: dit kan in O(<em>n</em>).</p>
+<p>Als volgende punt moet je kunnen nagaan of de operaties die je
+programmeert wel degelijk doen wat ze moeten doen. Eén element
+daarbij is dat de operaties niets mogen veranderen aan de
+sleutelverzameling. Hiervoor is het nodig dat je</p>
+<ol>
+<li>Een kopie kan nemen van de begintoestand voor het uitvoeren van
+de operatie. Noteer dat dit alleen maar mogelijk is als sleutels en
+data kopieerbaar zijn (is dat eigenlijk een voorwaarde die moet
+altijd moet voldaan zijn als je een zoekboom wil gebruiken?)</li>
+<li>Van twee zoekbomen kan nagaan of ze dezelfde sleutelverzameling
+hebben en dezelfde data bij de gelijke sleutels. Nu heeft de
+zoekboom een <tt>inorder</tt>-functie die gemakkelijk kan gebruikt
+kan worden met λ-functies. Zijn er alternatieve manieren om een
+boom te doorlopen? Welke is het meest geschikt bij dit
+probleem?</li>
+</ol>
+<p>De rotatie-operatie kan je nu gemakkelijk testen op kleine
+voorbeeldjes door middel van de uitschrijfoperatie. Zorg er zeker
+voor dat je alle speciale gevallen bekijkt:</p>
+<ul>
+<li>Roteer zowel deelbomen als basisbomen.</li>
+<li>Probeer alle mogelijke combinatie van aan- en afwezige
+kinderen. Als p de ouderknoop is van de knoop c en c moet geroteerd
+worden met p, dan kan p al of niet een tweede kind hebben en c kan
+geen of twee kinderen hebben, of alleen een linker- en een
+rechterkind.</li>
+<li>Roteer zowel naar links als naar rechts.</li>
+<li>Combineer de bovenstaande mogelijkheden.</li>
+</ul>
+<img src="opgave_files/rzwklein.gif" width="400"><br>
+<h3>Opdrachten</h3>
+<ol>
+<li>Schrijf code die de twee tekeningen hierboven (min of meer)
+reproduceert. Kijk dan ook eens naar de vorm als je hem als
+234-boom tekent.</li>
+<li>Schrijf een <tt>RepOK()</tt>-functie. Maak daarbij gebruik van
+de bijgeleverde <tt>RepOKZoekboom()</tt>-functie.</li>
+</ol>
+<ul>
+<li>Test nu je rotaties. Deze laten de representatie-invariant van
+de zoekboom ongemoeid, maar je boom is geen rood-zwarte boom
+meer.</li>
+<li>Bij beide gegeven bomen is er echter 1 rotatie die je kan
+uitvoeren waarbij je de rood-zwarte voorwaarden kan herstellen
+<em>door alleen de geroteerde knopen te herkleuren</em>. Voer deze
+rotaties uit, met de herkleuring en kijk of alles oké is. Kijk
+daarbij ook naar de 234-boomtekeningen. Wat gebeurt er daar?</li>
+<li>Schrijf en test een toevoegfunctie. Ga meteen na of je het met
+de hand toevoegen van het begin juist hebt gedaan.</li>
+<li>Testen moet grondig gebeuren: zorg ervoor dat alle 6 speciale
+gevallen uit de cursus zeker voorkomen in je testsuite (dat heet
+whiteboxtesten: elke lijn uit je code moet aan bod komen).</li>
+<li>Laat toevoegen nu eens lopen met twee extreme gevallen: de
+getallen van 1 tot 1000 in random volgorde (wat goed zou moeten
+werken bij een gewone zoekboom) en dezelfde getallen in natuurlijke
+volgorde (wat een ramp is voor een gewone boom). Kijk ook hier naar
+de bijbehorende tekeningen. </li>
+</ul>
+
+        <div id="page-content-end"></div>
+    </div>
+
+<div id="footer-end"></div>
+</div>
+</div>
+
+<!-- 40 ms / 473 KB -->
+</div>
+
+
+
+
+
+<div id="popout"><div id="popout-panel"><div id="popout-grow" class="popout-button"></div><div id="popout-shrink" class="popout-button"></div><div id="popout-close" class="popout-button"></div><div id="popout-contents"></div></div></div><img src="opgave_files/throbber.gif" style="position: absolute; left: 50%; top: 50%;margin: -15px 0 0 -15px; z-index: 100; display: none;"></body></html>
+<!-- 18 ms / 480 KB -->

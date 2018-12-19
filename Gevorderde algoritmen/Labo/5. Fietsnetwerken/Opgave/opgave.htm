@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="generator" content="intranetr/0.10.0">
+<title>OEFENINGEN: Fietsnetwerk | iii intranet</title>
+<!--[if lt IE 8]>
+<link rel="stylesheet" type="text/css" href="/css/ie.css">
+<![endif]-->
+  
+</head>
+
+<body>
+<p>Zwitserland heeft nu ook het systeem van een
+fietsknooppuntennetwerk ontdekt. Een fietsknooppuntennetwerk
+bestaat uit een aantal fietsknooppunten op interessante plaatsen
+zoals bergtoppen en kruispunten met daartussen een aantal
+bewegwijzerde routes. Een voorbeeld van zo'n netwerk:</p>
+<p><img src="opgave_files/fietsgraaf.gif"></p>
+<p>Merk op dat wegen mekaar kunnen kruisen zonder dat je van de ene
+weg op de andere kan: in de bergen zijn er tunnels. De gegevens van
+dit netwerk vind je in <a href="opgave_files/fietsgraaf.xml">fietsgraaf.xml</a>.
+Afstanden zijn in kilometer, hoogtes in meter t.o.v. het
+Vierwoudstedenmeer. Je mag veronderstellen dat een route tussen
+twee knooppunten ofwel stijgend is, ofwel dalend.</p>
+<p>Je wil een grote fietsdag organiseren. Bedoeling is dat je een
+start- en een eindknooppunt opgeeft, zodat mensen een fietstocht
+kunnen organiseren. Ze mogen echter zelf een traject kiezen: alleen
+start- en eindpunt zijn vast opgegeven. Zo kunnen onervaren
+fietsers een gemakkelijke korte route kiezen met weinig
+hoogteverschillen en goedgetrainde wielertoeristen een lange
+bergachtige route.</p>
+<p>Je wil wel voor bevoorrading zorgen: op elke route die kan
+gereden worden moet minstens één bevoorradingspunt liggen. Om
+praktische redenen ligt zo'n bevoorradingspunt steeds tussen twee
+knooppunten en nooit op een knoop. Je wil dat start en einde zo
+gekozen zijn dat het aantal nodige bevoorradingspunten zo klein
+mogelijk is. Verdeel de verzameling knooppunten in twee stukken
+zodat je weet dat je, als je start en einde uit verschillende
+stukken neemt, alleen maar dit minimum nodig hebt. Zo heb je nog
+keuze.</p>
+<p>Wat moet je aan het programma veranderen als plots blijkt dat je
+bevoorradingsposten beter op een knooppunt liggen dan tussen twee
+knooppunten?</p>
+<p>Om XML in te lezen kan je gebruik maken van TinyXML. Enige
+opmerking: je kan voor het gebruik de <a href="https://intranet.tiwi.ugent.be/Algoritmen-II/labo06/tinyxml/docs/index.html">documentatie</a> volgen, en tinyxml als
+bibliotheek compileren. De andere methode is om gewoon 6 bestanden
+af te halen:</p>
+<ul>
+<li><a href="opgave_files/tinystr.h">tinystr.h</a></li>
+<li><a href="opgave_files/tinyxml.h">tinyxml.h</a></li>
+<li><a href="opgave_files/tinyxml.cpp">tinyxml.cpp</a></li>
+<li><a href="opgave_files/tinystr.cpp">tinystr.cpp</a></li>
+<li><a href="opgave_files/tinyxmlerror.cpp">tinyxmlerror.cpp</a></li>
+<li><a href="opgave_files/tinyxmlparser.cpp">tinyxmlparser.cpp</a></li>
+</ul>
+en de laatste 5 met <tt>include</tt>-statements mee te nemen in je
+eigen broncode, zoals gebeurd is in <a href="opgave_files/leesfiets.cpp">leesfiets.cpp</a>. Het alternatief is om het
+<tt>.xml</tt>-bestand "met de hand" te parsen: de structuur is vrij
+eenvoudig.
+<h4>Opdracht 1</h4>
+Je krijgt een aantal bouwstenen van ons. In <a href="opgave_files/stroomnet17.h">stroomnet17.h</a> is een klasse van paden
+geïmplementeerd. Er zit ook een klasse Vergrotendpadzoeker in.
+Bovendien krijg je al de basiscode voor het zoeken van maximale
+stroomnetwerken in de klasse Stroomnetwerk. Vul deze code aan en
+test ze uit met het testprogrammaatje <a href="opgave_files/stroomnet17.cpp">stroomnet17.cpp</a>. Je hebt ook grafen nodig, te
+vinden in <a href="opgave_files/graaf.h">graaf.h</a>.
+<h4>Opdracht 2</h4>
+Bepaal hoeveel bevoorradingsposten je nodig hebt voor het netwerk
+uit fietsgraaf.xml.
+<h4>Opdracht 3</h4>
+De knopen van een k-samenhangende graaf kunnen gepartionneerd
+worden. Hierbij zijn twee knopen binnen een partitie minstens
+(k+1)-samenhangend met elkaar. Als je niet alleen wil weten hoeveel
+bevoorradingsposten je nodig hebt, maar ook welke keuzes van start-
+en eindpunten je hebt, moet je deze partite kennen.
+<tt>fietsgraaf.xml</tt> heeft maar twee equivalentieklassen. Een
+meer boeiende graaf in dat opzicht is <a href="opgave_files/fietsgraafklein.xml">fietsgraafklein.xml</a> (tekening hieronder).
+Deze heeft 27 klassen waarvan er 5 meer dan een knoop bevatten.
+Bepaal de partitie. Als hulpje krijg je van ons <a href="opgave_files/partitie.h">de klasse Partitie</a>.
+<p><img src="opgave_files/fietsgraafklein.gif"></p>
+
+     
+</div>
+</div>
+</div>
+
+
+
+
+
+<div id="popout"><div id="popout-panel"><div id="popout-grow" class="popout-button"></div><div id="popout-shrink" class="popout-button"></div><div id="popout-close" class="popout-button"></div><div id="popout-contents"></div></div></div><img src="opgave_files/throbber.gif" style="position: absolute; left: 50%; top: 50%;margin: -15px 0 0 -15px; z-index: 100; display: none;"></body></html>
+<!-- 27 ms / 529 KB -->
