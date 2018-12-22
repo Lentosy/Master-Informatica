@@ -890,32 +890,35 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 
 	De 16 vereiste iteratiesleutels worden in het begin van het algoritme aangemaakt. Eerst en vooral wordt de 56 bit sleutel gepermuteerd, afhankelijk van het gekozen permutatieschema, op Figuur \ref{fig:DES} permutatieschema 1 genoemd. Een permutatieschema mapt een bit van de oorspronkelijke sleutel op een bit van de gepermuteerde sleutel, zodat er $2^{64}$ mogelijke schemas bestaan. De gepermuteerde sleutel wordt hierna beschouwd als twee resultaatsleutels $C_n$ en $D_n$, met $n$ het huidig rondenummer, van elk 28 bits groot. Beide resultaatsleutels worden onafhankelijk van elkaar verwerkt door een circulaire left shift van 1 of 2 bits, afhankelijk van de vorige ronde, dat eenvoudig door de conditionele operator kan beschreven worden: $(n - 1)\;\%\;2 == 0\;?\;2\;:\;1$. Indien $C_2$ en $D_2$ de resultaatsleutels zijn van ronde 2, dan zijn $C_3$ en $D_3$ de resultaatsleutels van ronde 3 door respectievelijk $C_2$ en $D_2$ 2 bits naar links te permuteren. Voor elke iteratiesleutel $K_i$, wordt er een tweede permutatieschema, op Figuur \ref{fig:DES} permutatieschema 2 genoemd, toegepast op $C_nD_n$, waarbij de 8 meest significante bits van $C_n$ genegeert worden. Het eindresultaat zijn 16 verschillende iteratiesleutels, die zullen toegepast worden bij elke DES ronde. 
 
-	Vooraleer het iteratieproces plaatsvindt is er eerst een initiële permutatie van het hele 64-bit blok. Deze permutatie wordt uitgevoerd met behulp van een permutatieschema, zoals bij de sleutelgeneratie. Het gepermuteerde blok wordt hierna opgedeeld in de blokken $L_n$ en $R_n$ waarbij de 32 meest significante bits in $L_n$ komen, en de 32 minst significante bits in $R_n$, en kan ronde 1 van start gaan. Bij elke iteratie wordt de functie $F$ gebruikt, die twee blokken manipuleert: $R_{n-1}$ en de sleutel van 48-bit groot, die op voorhand al gegenereerd werd. Omdat de functie $F$ bij elke iteratie wordt gebruikt wordt het ook wel de iteratiefunctie genoemd. De uiteindelijke uitvoer van de iteratiefunctie is een blok 32 bits. $L$ en $R$ kan voor een volgende iteratie berekent worden als:
+	Vooraleer het iteratieproces plaatsvindt is er eerst een initiële permutatie van het hele 64-bit blok. Deze permutatie wordt uitgevoerd met behulp van een permutatieschema, zoals bij de sleutelgeneratie. Het gepermuteerde blok wordt hierna opgedeeld in de blokken $L_1$ en $R_1$ waarbij de 32 meest significante bits in $L_1$ komen, en de 32 minst significante bits in $R_1$, en kan ronde 1 van start gaan. Bij elke iteratie wordt de functie $F$ gebruikt, die twee blokken manipuleert: $R_{n-1}$ en de sleutel van 48-bit groot, die op voorhand al gegenereerd werd. Omdat de functie $F$ bij elke iteratie wordt gebruikt wordt het ook wel de iteratiefunctie genoemd. De uiteindelijke uitvoer van de iteratiefunctie is een blok 32 bits. $L$ en $R$ kan voor een volgende iteratie berekent worden als:
 	\begin{equation}
 		\begin{split}
 			L_{n + 1} & = R_{n} \\
-			R_{n + 1} & = L_{n} \mathbin{\oplus} F(R_{n}, K_{n + 1})
+			R_{n + 1} & = L_{n} \mathbin{\oplus} F\big(R_{n}, K_{n}\big)
 		\end{split}
 		\label{formula:DES}
 	\end{equation}
 
-	Hoe werkt de iteratiefunctie? Eerst moet het blok $R_n$ uitgebreidt worden via een selectietabel. Het gebruik van deze selectietabel wordt hier voorgesteld als de functie $E(R_n)$, die als input een blok van 32-bit en zal als output een blok van 48-bit genereren waarbij de bits gegroepeerd per 6 zitten. Sommige bits van $R_n$ worden zullen dus meerdere keren gemapt moeten worden. Na deze uitbreiding wordt het resultaat van $E(R_n)$ en de sleutel $K_n$ met een XOR operatie bewerkt (XOR geeft 0 indien beide bits gelijk zijn, en 1 als ze verschillend zijn). Elke groep van 6 bits stelt een adres voor in een welbepaalde substitutie tabel $S_i$, voor de $i$-de groep van 6 bits: er zijn dus 8 substitutietabellen. Elk adres wijst naar een 4-bit getal, dat de originele 6 bits zal vervangen, zodat het eindresultaat terug een blok van 32 bits is. Hoe worden deze 4 bits bepaald? De substitutietabel neemt een blok van 6 bits $B$ als input, de bits $b_5b_4b_3b_2b_1b_0$ van $B$ doen het volgende:
-	\begin{itemize}
+	Hoe werkt de iteratiefunctie? Eerst moet het blok $R_n$ uitgebreidt worden via een selectietabel. Het gebruik van deze selectietabel wordt hier voorgesteld als de functie $E(R_n)$, die als input een blok van 32-bit heeft en zal als output een blok van 48-bit genereren waarbij de bits gegroepeerd per 6 zitten. Sommige bits van $R_n$ worden zullen dus meerdere keren gemapt moeten worden. Na deze uitbreiding wordt het resultaat van $E(R_n)$ en de sleutel $K_n$ met een XOR operatie bewerkt (XOR geeft 0 indien beide bits gelijk zijn, en 1 als ze verschillend zijn). Elke groep van 6 bits stelt een adres voor in een welbepaalde substitutietabel $S_i$, voor de $i$-de groep van 6 bits: er zijn dus 8 substitutietabellen. Elk adres wijst naar een 4-bit getal, dat de originele 6 bits zal vervangen, zodat het eindresultaat terug een blok van 32 bits is. Hoe worden deze 4 bits bepaald? De substitutietabel neemt een blok van 6 bits $b_5b_4b_3b_2b_1b_0$ van $B$ als input en voert volgende procedure uit:
+	\begin{enumerate}
 		\item $b_5$ en $b_0$ representeren tesamen een getal van 0 tot en met 3. Stel dit getal gelijk aan $i$. 
 		\item De tussenliggende bits representeren tesamen een getal van 0 tot en met 15. Stel dit getal gelijk aan $j$.
 		\item Zoek in de tabel het getal op de $i$-de rij en $j$-de kolom. Dit getal heeft een waarde tussen 0 en 15, en bevat dus slechts 4 bits. Deze bitrepresentatie van dat getal vervangt de 6 bits.
-	\end{itemize}
-	Tot slot moet er nog een permutatie $P$ uitgevoerd worden op de 32 bits verkregen van de substitutiestap. Met behulp van de iteratiefunctie worden opeenvolgende $L_i$ en $R_i$ bepaalt (formule \ref{formula:DES}).
+	\end{enumerate}
+	Tot slot moet er nog een permutatie $P$ uitgevoerd worden op de 32 bits verkregen van de substitutiestap, zodat enkel nog de XOR operatie moet gedaan worden met $L_n$ om zo $R_{n + 1}$ te bepalen. De iteratiefunctie kort genoteerd:
+	$$F(R_n, K_n) = P\bigg(S\big(E(R_n) \mathbin{\oplus} K_n \big)\bigg)$$
 
 	\subsubsection{Block cipher modi}
 	Er zijn verschillende implementaties van het DES-algoritme, en deze hangen dan weer af van de gebruikte block cipher modus. Verschillende mogelijkheden zijn:
 	\begin{itemize}
-		\item \textbf{ECB (Electronic Code Book).} Elk 64-bit blok van oorspronkelijke informatie wordt individueel geëncrypteerd
-		\item \textbf{CBC (Chain Block Chaning).} Elk cipherblok is nu afhankelijk van elkaar, door een initiële XOR-operatie uit te voeren met het vorige geëncrypteerde blok, en het te encrypteren blok.
+		\item \textbf{ECB (Electronic Code Book).} Elk 64-bit blok van de oorspronkelijke informatie wordt individueel geëncrypteerd
+		\item \textbf{CBC (Cipher Block Chaning).} Elk cipherblok is nu afhankelijk van elkaar, door een initiële XOR-operatie uit te voeren met het vorige geëncrypteerde blok, en het te encrypteren blok. Maakt ook gebruik van een initialisatievector en moet gekend zijn voor de zender en ontvanger.
 		\item \textbf{CFB (Cipher Feedback).} Gelijkaardig aan CBC, maar \todo{wat?}
+		\item \textbf{OFB (Output Feedback)} \todo{ik vind dit maar raar uitgelegd}
+		\item \textbf{CTR (Counter)}
 	\end{itemize}
-	\todo{rest van block cipher mody en 3-DES}
-
+	\subsubsection{3-DES}
+	Omdat de opgelegde sleutelgrootte van \textbf{56 bits} voor DES onvoldoende is, gaan we DES drie maal na elkaar uit te voeren. De sleutelgrootte bedraagt nu \textbf{168 bits}. Dit is natuurlijk nog trager dan DES, wat al behoorlijk traag is. De sleutel van 168 bits wordt nu opgedeeld in 3 sleutels van elk 56 bits, $K_1, K_2$ en $K_3$. De plaintext wordt eerst in geëncrypteerd met DES en sleutel $K_1$, de ciphertext hiervan wordt gedecrypteerd met DES en sleutel $K_2$, de plaintext hiervan wordt terug geëncrypteerd maar met sleutel $K_3$. 3DES is nog altijd nutteloos, en wordt aangezien als een zwak encryptiealgoritme. 
 	\subsection{AES}
 	\todo{no clue what w[x, y] wil zeggen + DECRYPTIE (SLIDE 96)}
 	\begin{figure}[ht]
@@ -948,10 +951,50 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 		\label{fig:AES}
 	\end{figure}
 
-	Het \textbf{AES (Advanced Encryption Standard)} algoritme maakt is ook een symmetrisch encryptiealgoritme waarbij de \textbf{blokgrootte 128 bits} en \textbf{sleutelgrootte 128, 192 of 256 bits} bedraagt. Het werd speciaal ontworpen om cryptoanalyse moeilijk te maken en is zelfs sneller dan 3DES op 32-bit toestellen. Op Figuur \ref{fig:AES} wordt het schema getoond voor een blokgrootte van 128 en een sleutelgrootte van 128 bits. Het schema is gelijkaardig voor een sleutelgrootte van 192 of 256 bits, maar hebben dan respectievelijk 12 en 14 iteraties. Het algoritme is ongeveer 2,5 maal sneller dan het DES algoritme (200 Mbit/s versus 80 Mbit/s) en werkt uitsluitend voor CBC of CTR block cipher modi. Bovendien is het heel goed \textbf{paralleliseerbaar}.
+	Het \textbf{AES (Advanced Encryption Standard)} algoritme is ook een symmetrisch encryptiealgoritme waarbij de \textbf{blokgrootte 128 bits} en \textbf{sleutelgrootte 128, 192 of 256 bits} bedraagt. Het werd speciaal ontworpen om cryptoanalyse moeilijk te maken en is zelfs sneller dan 3DES op 32-bit toestellen. Op Figuur \ref{fig:AES} wordt het schema getoond voor een blokgrootte van 128 en een sleutelgrootte van 128 bits. Het schema is gelijkaardig voor een sleutelgrootte van 192 of 256 bits, maar hebben dan respectievelijk 12 en 14 iteraties (voor 128 bits zijn er 10 iteraties). Het algoritme is ongeveer 2,5 maal sneller dan het DES algoritme (200 Mbit/s versus 80 Mbit/s) en werkt uitsluitend voor CBC of CTR block cipher modi. Bovendien is het heel goed \textbf{paralleliseerbaar}.
+	\subsection{Andere symmetrische algoritmen}
+	\begin{itemize}
+		\item[\info] Blowfish / twofish.
+		\item[\info] RC5
+		\item[\info] CAST5 
+		\item[\info]...
+	\end{itemize}
 
 	\section{Asymmetrische algoritmen}
+	\subsection{RSA}
+	\textbf{Rivest-Shamir-Adleman (RSA)} is een asymmetrisch encryptiealgoritme waarbij de sleutelgrootte typisch \textbf{512, 1024, 2048 of 4096} bits bedraagt. Het encryptie- en decryptieproces voeren dezelfde wiskundige operaties uit. De veiligheid van het algoritme ligt aan het feit dat het ontbinden in factoren van het product van 2 priemgetallen $p$ en $q$ moeilijk is. De sleutel genereren begint van twee priemgetallen $p$ en $q$, waarvan het product $n = p\cdot q$ wordt berekend. De priemgetallen $p$ en $q$ zijn \textbf{privaat}, het getal $n$ is \textbf{publiek}. Op $n$ wordt de Eulers totiënt functie losgelaten. Aangezien dat $p$ en $q$ beiden priemgetallen zijn is dit eenvoudig: $$\phi(n) = (p - 1) \cdot (q - 1)$$ \accentuate{($\phi(n)$ geeft het aantal getallen terug in het bereik $[1, n]$ die relatief priem (grootst gemene deler = 1) zijn ten opzichte van $n$. Bij een priemgetal zal elk positief getal, kleiner dan het priemgetal, de grootst gemene deler altijd 1 zijn)}
 	
+	De berekende waarde $\phi(n)$ is \textbf{privaat}. Verder wordt een getal $e$, dat ook \textbf{publiek} is, gekozen zodat $$gcd(\phi(n), e) = 1 \;\hbox{en}\; 1 < e < \phi(n)$$ Tot slot wordt een getal $d$, dat \textbf{privaat} is berekend als: 
+	$$d = e^{-1} \mod \phi(n)$$
+
+	De publieke sleutel bestaat dan uit $e$ en $n$: $KU=\langle e, n \rangle$
+
+	De private sleutel bestaat uit $d$ en $n$: $KR=\langle d, n \rangle$
+
+	\underline{Voorbeeld}
+
+	Stel $p = 13$ en $q = 19$. Het product wordt dan $p \cdot q = 247 = n$.
+
+	$\phi(n) = (13 - 1) \cdot (19 - 1) = 12 \cdot 18 = 216$
+
+	Stel nu $e = 5$ want $gcd(\phi(n), e) = gcd(216, 5) = 1$ en $1 \leq e \leq \phi(n)$
+
+	$d = 5^{-1} \mod 216 = = 173$
+
+	$KU = \langle 5, 247 \rangle$
+
+	$KR = \langle 173, 247 \rangle$
+
+	Gegeven een bericht $M = 71$
+
+	Encryptie: $C = 71^5 \mod 247 = 67$
+
+	Decryptie: $M = 67^{173} \mod 247 = 71$
+
+	Er kan ook een handtekening gemaakt worden met de private sleutel: $S = M^{d} \mod n$. De handtekening verifiëren gebeurd dan met de publieke sleutel: $M = S^{e} \mod n$.
+
+	\subsection{Andere asymmetrische algoritmen}
+
 	
 	\chapter{Software- en systeembeveiliging}
 	\section{Veilige applicaties}
