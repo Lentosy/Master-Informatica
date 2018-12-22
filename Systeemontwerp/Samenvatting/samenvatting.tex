@@ -4,51 +4,141 @@
 \begin{document}
 	\maketitle{Systeemontwerp}
 	\tableofcontents
-	
+	\chapter{Inleiding}
+	\begin{itemize}
+		\item[\info] \underline{Systeemontwerp} = het ontwerpen van een infrastructuur waarbij verschillende componenten met elkaar kunnen interageren.
+		\item[\info] Typische high level architectuurblokken: 
+			\begin{itemize}
+				\item[\info] \underline{transactiebehandeling}: requests behandelen van gebruikers.
+				\item[\info] \underline{business intelligence}: geproduceerde data analyseren.
+			\end{itemize}  
+	\end{itemize}
+	\section{Softwarearchitectuur}
+	\subsection{Systeemrequirements}
+	\begin{itemize}
+		\item[\info] \underline{functionele requirements}: specificatie wat een systeem moet \textbf{doen}.
+		\item[\info] \underline{niet-functionele requirements}: specificatie wat een systeem moet \textbf{zijn} (kwaliteitseisen).
+	\end{itemize}
+
+	\subsection{4+1 view model}
+	\begin{itemize}
+		\item[\info] Logical view:
+			\begin{itemize}
+				\item[\info] Bevat de klassen, packages, relaties tussen klassen, associaties tussen de klassen (\accentuate{domain class diagram en entity-relationship diagram})
+			\end{itemize}
+		\item[\info] Implementation view:
+			\begin{itemize}
+				\item[\info] Bevat de output van het build systeem, zoals de verschillende modules (bv JARs) en componenten (executables, WARS).
+				\item[\info] Beschrijft de onderliggende relaties tussen alle modules en componenten (import, use, merge, ...)
+			\end{itemize}
+		\item[\info] Process view:
+			\begin{itemize}
+				\item[\info] Bevat de beschrijving van de werking van verschillende processen (een proces kan een hele module zijn) (\accentuate{activity diagram}).
+				\item[\info] Een proces kan beheerd worden: starten, pauzeren, configureren, stoppen.
+				\item[\info] Heeft als doel om \underline{deadlocks} en \underline{netwerkvertragingen} te voorkomen en \underline{consistentie} te bereiken. 
+			\end{itemize}
+		\item[\info] Deployment view:
+			\begin{itemize}
+				\item[\info] Beschrijft op welke toestellen de processen moeten gedeployed worden, hoeveel toestellen er gebruikt worden.
+				\item[\info] Verschillende deploymentconfiguraties mogelijk per klant of geografisch gebied, maar ook of dat het een productie of ontwikkelomgeving is.
+			\end{itemize}
+		\item[\info] \accentuate{+1} Use Cases/Scenarios:
+			\begin{itemize}
+				\item[\info] Een use case beschrijft, binnen een view, hoe dat de componenten binnen die view met elkaar interageren voor een bepaalde situatie.
+				\item[\info] Is eigenlijk redundant omdat andere 4 views deze informatie ook al bevatten, maar \underline{use cases zijn toch nuttig}:
+				\begin{itemize}
+					\item[\good] Het valideert het ontwerp.
+					\item[\good] Het kan nieuwe systeemelementen ontdekken.
+				\end{itemize}
+			\end{itemize}
+	\end{itemize}
+	\section{Reactive manifesto}
+	\underline{4 kenmerken:}
+	\begin{itemize}
+		\item[\info] Message Driven: asynchrone communicatie tussen componenten. Maakt gebruik van een wachtrij om de berichten te beheren. Dit heeft \underline{drie voordelen}:
+		\begin{itemize}
+			\item[\good] Zwakke koppeling: de verschillende componenten moeten enkel een protocol afspreken voor het bericht. 
+			\item[\good] Loskoppelen van de tijd: Zender en ontvanger moeten niet wachten op elkaar.
+			\item[\good] Loskoppelen van locatie: De zender en ontvanger moeten niet in hetzelfde proces beschikbaar zijn, enkel de locator (\accentuate{analogie met gsm-nummer, ik kan eender waar naar iemand bellen, onafhankelijk van zijn locatie}) moet bekend zijn.
+		\end{itemize}
+		\item[\info] Responsief:
+			\begin{itemize}
+				\item[\info] Lazy loading
+				\item[\info] Toon progressbar
+				\item[\info] Een trage service mag andere services niet beïnvloeden.
+			\end{itemize}
+		\item[\info] Elastisch:
+			\begin{itemize}
+				\item[\info] Predictieve en reactieve schaling
+				\item[\info] Resources moeten voor elk individueel component instelbaar zijn
+				\item[\info] Systeem moet responsief blijven
+			\end{itemize}
+		\item[\info] Foutbestendig:
+			\begin{itemize}
+				\item[\info] Systeem moet zichzelf kunnen herstellen
+				\item[\info] Fouten moeten snel opgespoord kunnen worden via monitoring
+				\item[\info] Voorzie fallback services
+			\end{itemize}
+	\end{itemize}
+
 	\part{Microservices}
-	\chapter{Architectuur}
-	\section{Gelaagde stijl}
-	Een bekende architectuur is het drie-lagenmodel waarbij drie belangrijke lagen aanwezig zijn: de \textbf{persistentielaag}, die de logica zal bevatten waarmee met een databank kan gecommuniceerd worden om gegevens persistent te maken, de \textbf{businesslaag} die de regels gedefinieerd  door de use-cases bevat  en de \textbf{presentatielaag.} behandelt de logica om met client applicaties te communiceren. Het drielagenmodel kent een aantal \textbf{voordelen}.
+	\chapter{Architectuurstijlen}
 	\begin{itemize}
-		\item Het reflecteert de structuur van vele organisaties.
-		\item Het is eenvoudig om mockups te gebruiken tijdens het testen van applicaties. Zo kan de hele databanklaag een mockup.
-		\item Wordt ondersteund door vele frameworks zoals Microsoft .NET en Java EE.
+		\item[\info] Gelaagde stijl:
+		\begin{itemize}
+			\item[\info] Kan toegepast worden op elk view model.
+			\item[\info] 3 lagen in het \textbf{logische view}: persistentie, presentatie en domeinlogica.
+			\item[\good] Robust systeem.
+			\item[\good] Eenvoudig om te ontwikkelen (veel frameworks ondersteunen dit: Java EE, .NET, ...).
+			\item[\good] De verschillende lagen kunnen gemockt worden om eenvoudig testen uit te voeren.
+			\item[\alert] Slechts één presentatielaag, maar er kunnen verschillende cliënts zijn (desktop, mobile, tablet, ...).
+			\item[\alert] Slechts één persistentielaag, maar er kunnen verschillende databasetechnologiën gebruikt worden.
+			\item[\alert] De domeinlogicalaag definieert repositories, maar de persistentielaag implementeert deze. De dependency is dus omgekeerd.
+		\end{itemize}
+		\item[\info] Hexagonale stijl:
+		\begin{itemize}
+			\item[\info] Maakt gebruik van adapters. Deze adapters zijn interfaces en kunnen opgesplitst worden:
+			\begin{itemize}
+				\item[\info] \textbf{Inbound adapter}: Dit is API dat de domeinlogica openstelt, zodat deze kan aangeroepen worden door externen. Elke cliënt kan nu onafhankelijk van elkaar ontwikkeld worden. Ze moeten enkel maar de API aanroepen.
+				\item[\info] \textbf{Outbound adapter}: Dit is de API die de domeinlogica kan gebruiken (repository interface, payment interface).
+			\end{itemize}
+			\item[\good] presentatie-, persistentie- en domeinlogicalaag zijn losgekoppeld.
+		\end{itemize}
+		\item[\info] Monolithische stijl:
+		\begin{itemize}
+			\item[\info] Een monolitische applicatie bevat de drie lagen van de gelaagde stijl, en verpakt dit in één executable.
+			\item[\good] Makkelijk te ontwikkelen met een IDE.
+			\item[\good] Eenvoudig om wijzigingen door te voeren: edit $\rightarrow$ build $\rightarrow$ deploy.
+			\item[\good] Eenvoudig te testen.
+			\item[\good] Eenvoudig om te deployen.
+			\item[\alert] Voor grote codebases wordt het moeilijk om elk detail van de codebase te kennen.
+			\item[\alert] Een kleine wijziging resulteert in het rebuilden van de hele applicatie.
+			\item[\alert] Een bug kan het hele systeem onbereikbaar maken.
+			\item[\alert] Replicatie is haast onmogelijk. 
+		\end{itemize}
+		\item[\info] \textbf{Microservices}:
+		\begin{itemize}
+			\item[\info] Decomposeerd een applicatie in kleine, zwak gekoppelde services, die individueel kunnen gedeployed worden.
+			\item[\info] Services communiceren met elkaar via APIs.
+			\item[\info] Wordt geïmplementeerd in de implementatie view. Elke service heeft zijn eigen logische view.
+			\item[\info] \underline{Wat is een service?}
+			\begin{itemize}
+				\item[\info] Een individueel component dat een bepaalde functionaliteit aanbiedt.
+				\item[\info] Deze functionaliteit wordt via een API beschikbaar gesteld. 
+			\end{itemize}
+			\item[\info] \underline{Wat is een service?}
+			\begin{itemize}
+				\item[\info] Een service dat goed gedefinieerd is in functie van de business.
+				\item[\info] Voert een eenvoudige functie uit, en kan door een klein ontwikkelteam beheerd worden.
+			\end{itemize}
+			\item[\alert] De juiste services vinden is moeilijk.
+			\item[\alert] Foute decompositie leidt tot een gedistribueerd monolitisch systeem.
+			\item[\alert] Gedistribueerde systemen zijn complex. (bv geen IDE die dit ondersteund).
+			\item[\alert] Communicatie tussen services (over een netwerk) is traag.
+			\item[\alert] Vele verschillende services kunnen op hetzelfde moment aan het draaien zijn. 
+		\end{itemize}
 	\end{itemize}
-	Er bestaan echter ook \textbf{nadelen}:
-	\begin{itemize}
-		\item Er is slechts één enkele presentatielaag, maar er kunnen meerdere types zijn zoals een webapplicatie of een mobiele applicatie. 
-		\item Er is ook maar één enkele persistentielaag. Bepaalde informatie geniet een voorkeur bij een ander soort databank (relationeel, grafen, document based, ...).
-		\item Vaak wordt de dependency tussen de business en persistentielaag omgewisseld. De businesslaag zal repositoryinterfaces declareren die geïmplementeerd worden door de persistentielaag.
-	\end{itemize}
-	\section{Hexagonale stijl}
-	Bij deze stijl bestaat er nog altijd de algemene businesslaag. Deze laag zal nu verschillende \textbf{interfaces} bevatten zoals een repositoryinterface of een betalinginterface. Deze interfaces kunnen door externe applicaties aangesproken worden. De implementatie van zo een interface is afhankelijk van de technologie dat gebruikt wordt. Deze technologiën worden via een \textbf{adapter} omgezet zodat ze gebruikt kunnen worden in de businesslaag.
 	
-	Het voordeel is dat componenten nu zwak gekoppeld zijn aan elkaar en daardoor gemakkelijker te testen zijn. Deze structuur wordt doorgaans meer gebruikt bij moderne applicaties.
-	
-	\section{Monolitische stijl}
-	Deze stijl zet een project om tot een enkelvoudig uitvoerbare unit. Een Java EE project kan verpakt worden in een \textit{WAR} of \textit{JAR} bestand. De \textbf{voordelen} zijn:
-	\begin{itemize}
-		\item Eenvoudig om te ontwikkelen. \textit{IDE}'s zijn gemaakt om enkelvoudige applicaties te ontwikkelen.
-		\item Eenvoudig om veranderingen toe te passen. 
-		\item Eenvoudig te testen aangezien de applicatie enkel moet draaien en dan de bijhorende testen moet uitvoeren.
-		\item Eenvoudig om te deployen. Een WAR bestand functioneert onmiddelijk indien deze geplaatst wordt op een server met Tomcat geïnstalleerd.
-	\end{itemize}
-	Er zijn ook echter een aantal \textbf{nadelen} aan verbonden. Een codebase die zodanig groot wordt dat een ontwikkelaar niet alles meer kan begrijpen geeft aanleiding tot tragere compileertijden, destructieve bugs en tragere testen aangezien deze heel de testsuite moeten uitvoeren.
-	
-	\section{Microservices}
-	Een microservice is een stijl dat een applicatie opdeelt in kleinere services. Deze services kunnen onafhankelijk van elkaar gebouwd worden. De services communiceren enkel via een API. Elke service heeft ook zijn eigen databank. De API bestaat uit een aantal \textbf{commands}. Deze commando's wijzigen de databank van een service. \textbf{Queries} daarentegen, vragen enkel gegevens op. Deze twee types operaties worden aangesproken door een client die gebruik wenst te maken van de API. Verder bevat een service ook nog \textbf{events}. Clients worden geinformeerd bij het gebeuren van een specifiek event. Een voorbeeld van zo een event is een confirmatie dat een bestelling gelukt is. Een microservice zal een kleine taak op zich nemen. Meestal is dit een groep van use-cases die nauw aan elkaar verbonden zijn. Het voordeel is dat er slechts kleine groepen van ontwikkelaars nodig zijn om elke individueel service to bouwen. De \textbf{Voordelen} van microservices zijn:
-	\begin{itemize}
-		\item Zwakke koppeling tussen microservices. Een verandering in een service mag geen invloed hebben op andere services. Hierdoor zijn API's heel belangrijk.
-		\item Er kunnen verschillende technologiën gebruikt worden in elke individuele miicroservice.
-		\item Elke microservice kan zijn eigen database schema gebruiken.
-	\end{itemize}
-	Enkele \textbf{nadelen} zijn:
-	\begin{itemize}
-		\item Een \textbf{incorrecte decompositie} (zie volgend hoofdstuk) zal leiden tot een gidistribueerde monolith.
-		\item Microservices \textbf{communiceren} met elkaar over een netwerk. Dit is over het algemeen \textbf{trager} dan een lokale connectie. Juist hierom moet de API zo ontworpen zijn dat er minimaal verkeer moet zijn tussen de verschillende microservices. 
-		\item Een \textit{IDE} bevat minder tools om microservices te testen en te ontwikkelen.
-		
-	\end{itemize}
 	\chapter{Decompositie van een applicatie}
 	Het proces om een applicatie in te delen in verschillende microservices noemt men \textbf{decompositie}. Dit \textbf{iteratief} proces is belangrijk aangezien een foutieve methode leidt tot ongewenste resultaten. Een dergerlijk proces kan opgedeeld worden in drie stappen.
 	\begin{enumerate}
@@ -59,13 +149,70 @@
 		\item \textbf{Identificatie van de service API's.} Deze laatste stap zal nagaan welke operaties van een microservice publiek moeten gesteld worden aan de buitenwereld via een API. 
 	\end{enumerate}
 	\chapter{Interactiestijlen tussen services}
-	Microservices moeten met elkaar kunnen interageren. Bij het zoeken van een oplossing moeten volgende vragen gesteld worden:
+	\begin{table}[ht]
+		\centering
+		\begin{tabular}{c | c | c}
+			& one-to-one & one-to-many \\
+			\hline
+			synchroon & request/response & / \\
+			\hline 
+		asynchroon & \hspace{2em} \begin{minipage}[c]{0.3\textwidth}request/async response \\ one way notifications\end{minipage} & \hspace{2em} \begin{minipage}[c]{0.3\textwidth}publish/subscribe \\ publish/async response\end{minipage}
+		\end{tabular}
+	\end{table}
 	\begin{itemize}
-		\item Hoe kan het aantal interacties tussen twee microservices geminimaliseerd worden?
-		\item Hoe wordt de communicatie geïmplementeerd?
-		\item Kan men zeker zijn dat een microservice zal antwoorden?
+		\item[\info] request/response: Een service stuurt een request en wacht op een response.
+		\item[\info] request/async response: Een service stuurt een request, maar wacht niet noodzakelijk op een response.
+		\item[\info] one way notifications: Een service stuurt een request en verwacht geen response.
+		\item[\info] publish/subscribe: Een service publiceerd een bericht en kan opgevangen worden door 0 of meerdere geïnteresseerden.
+		\item[\info] publish/async responses: Een service publiceerd een bericht en zal eventueel antwoorden opvangen van 0 of meerdere geïnteresseerden.
 	\end{itemize}
-	Een interactie kan op een \textbf{synchrone} manier gebeuren. Een client zal een aanvraag sturen naar een bepaalde service en zal wachten totdat er een antwoord terug ontvangen is. Tijdens de aanvraag en het antwoord zal de client blokkeren. Een \textbf{asynchrone} interactie daarentegen zal toelaten dat de client niet hoeft te wachten op het antwoord. Verder is er ook nog een opdeling mogelijk op vlak van het aantal microservices die een request behandelen. Een \textbf{one-to-one} geeft aan dat slechts één enkele microservice het request zal afhandelen. Een \textbf{one-to-many} interactie geeft aan dat meerdere microservices een request zullen afhandelen.
+	\section{Synchrone communicatie}
+	\underline{Voorbeelden van synchrone communicatie}: REST en gRPC.
+	\begin{itemize}
+		\item[\info] REST
+		\begin{itemize}
+			\item[\info] Vier levels:
+			\begin{enumerate}
+				\item[0]: Enkel HTTP POST mogelijk. Elke actie krijgt dan ook een ander endpoint toegewezen.
+				\item[1]: Maakt gebruik van resources zodat elk individuele resource een URI krijgt. Nog steeds enkel HTTP POST mogelijk.
+				\item[2]: GET, POST, PUT mogelijk. Een zelfde resource kan nu meerdere operaties ondersteunen.
+				\item[3]: HATEEOAS mogelijk: een GET request bevat, behalve het object, ook URLs die mogelijke acties op het object toelaten.
+			\end{enumerate}
+			\item[\good] HTTP wordt niet geblokkeerd door een firewall.
+			\item[\good] Implementeerd request/response interactie.
+			\item[\alert] Cliënts moeten de locatie (URL) kennen.
+			\item[\alert] Meerdere resources in één request opvragen is moeilijk. 
+			\item[\alert] Soms is het moeilijk om de HTTP werkwoorden te mappen op een operatie.
+		\end{itemize}
+		\item[\info] gRPC
+		\begin{itemize}
+			\item[\info] Google Remote Procedure Call.
+			\item[\info] API wordt gedefinieerd op basis van een Interface Definition File. Dit bestand bevat IDL (Interface Description Language) code.
+			\item[\info] Deze code wordt gecompileerd afhankelijk van de gekozen cliënt.
+			\item[\alert] Het valt niet op dat de communicatie nu over het netwerk gebeurd.
+		\end{itemize}
+	\end{itemize}
+	\underline{Hoe foutbestendig maken?}
+
+	\chapter{Saga}
+	=\underline{garanderen dat een transactie ofwel volledig, ofwel niet uitgevoerd wordt.}
+	\begin{itemize}
+		\item[\info] Traditioneel: 2-fasen-commit.
+		\begin{itemize}
+			\item[\info] Eerst wordt elke databank naarwaar geschreven moet worden, op de hoogte gebracht van de informatie die ze moeten schrijven.
+			\item[\info] De eerste fase zal aan elke databank vragen of zij klaar zijn om weg te schrijven (prepare-fase).
+			\item[\info] De tweede fase zal effectief een commit uitvoeren op elke databank (commit-fase).
+			\item[\info] Van zodra één databank 'nee' antwoord, wordt het hele proces gestopt.
+			\item[\alert] Synchroon
+			\item[\alert] Niet elke database implementeert het concept van transacties en locking.
+		\end{itemize}
+		\item[\info] \textbf{Saga}
+		\begin{itemize}
+			\item[\info] Een sequentie van lokale interacties tussen verschillende microservices.
+			\item[\info] Elke systeemoperatie moet een saga hebben.
+			\item[\info] 
+		\end{itemize}
+	\end{itemize}
 	
 	\part{Container deployment and orchestration}
 	\chapter{Productieomgeving}

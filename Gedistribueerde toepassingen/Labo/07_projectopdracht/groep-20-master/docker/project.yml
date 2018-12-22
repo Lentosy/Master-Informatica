@@ -1,0 +1,26 @@
+version: "2"
+services:
+  project-mariadb:
+    build: 
+      context: project-data/
+      dockerfile: Dockerfile
+    #ports:
+     #  - '3306:3306'
+    environment:
+      MYSQL_ROOT_PASSWORD: test
+      MYSQL_USER: groep20
+      #MYSQL_PASSWORD: test
+      MYSQL_DATABASE: PrisonersDilemma
+    container_name: group20-DB
+
+  frontend:
+    build: 
+      context: project-glassfish
+      dockerfile: Dockerfile
+    ports:
+      - '8084:8080'
+    container_name: group20-frontend
+    
+
+
+

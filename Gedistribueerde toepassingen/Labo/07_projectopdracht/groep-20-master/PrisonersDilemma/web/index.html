@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Prisoners Dilemma</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link href="public/css/reset.css" type="text/css" rel="stylesheet"/>
+        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" crossorigin="anonymous">
+        <link href="public/css/styles.css" type="text/css" rel="stylesheet"/>
+
+    </head>
+    <body>
+        <div class="container">
+
+
+            <div class="alert alert-success" role="alert" id="messageHolder">
+
+            </div>
+            <main class="text-center">
+                <div id="menu" hidden>
+                    <h1>Select an opponent!</h1>
+                    <input id="userinput" class="form-control" type="text" name="username" placeholder="username..."/>
+                    <div id="startButtons">
+                        <button class="btn" id="buttonStartVersusPlayer" data-against="player">Player</button>
+                        <button class="btn" id="buttonStartVersusComputer" data-against="computer">Computer</button>
+                    </div>
+                </div>
+
+                <div id="gameWindow" hidden>
+                    <h1>Round <span id="roundnumber"> 1</span></h1>
+                    <div id="gameButtons">
+                        <button class="btn" data-decision="0">Confess</button>
+                        <button class="btn" data-decision="1">Remain Silent</button>       
+                    </div>
+                </div>
+
+                <div id="gameresultWindow" hidden>
+                    <h1>Result of the game</h1>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Ronde</th>
+                                <th colspan="2" id="name_player_one"></th>
+                                <th colspan="2" id="name_player_two"></th>
+                            </tr>
+                        </thead>
+                        <tbody id="results">
+
+                        </tbody>
+                    </table>
+
+
+
+
+                </div>
+            </main>
+
+            <script src="public/javascript/connectie.js"></script>
+        </div>
+    </body>
+</html>

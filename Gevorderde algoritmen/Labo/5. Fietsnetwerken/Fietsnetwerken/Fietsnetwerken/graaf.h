@@ -1,8 +1,4 @@
-﻿#include <cassert>
-#include <fstream>
-#include <string>
-#include <sstream>
-#include <cstring>
+﻿
 //Deze header bevat de code voor de klassen:
 //
 //
@@ -46,7 +42,11 @@
 #ifndef __GRAAF_H
 #define __GRAAF_H
 
-
+#include <cassert>
+#include <fstream>
+#include <string>
+#include <sstream>
+#include <cstring>
 #include <stdexcept>
 #include <iostream>
 #include <sstream>

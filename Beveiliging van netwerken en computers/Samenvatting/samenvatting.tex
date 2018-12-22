@@ -123,7 +123,7 @@
 
 	\textbf{MAC} kent een gelijkenis met \textbf{symmetrische encryptie}. In beide gevallen moet de zender en ontvanger een geheime sleutel hebben zodat ze hetzelfde authenticatiemechanisme hebben. Het nadeel is natuurlijk dat de ontvanger ook deze sleutel moet hebben. MAC biedt wel geen confidentialiteit. Dit laat echter toe om beide functies op te splitsen. De authenticatie kan met een MAC gebeuren op een server, terwijl confidentialiteit de taak is van een werkstation, gebruik makend van encryptie. Gegeven de notatie \textbf{$MAC = C_k(M)$} met k de geheime sleutel en M het bericht. Een MAC moet aan volgende vereisten voldoen:
 	\begin{itemize}
-		\item Indien $M$ en $C_k(M)$ gekend zijn, moet het onmogelijk zijn om een bericht $M'$ te construeren zodat \textbf{$$C_k(M') = C_k(M)$$}. Dit is nodig voor data-integriteit
+		\item Indien $M$ en $C_k(M)$ gekend zijn, moet het onmogelijk zijn om een bericht $M'$ te construeren zodat \textbf{$$C_k(M') = C_k(M)$$} Dit is nodig voor data-integriteit
 		
 		\item De waarden die $C_k(M)$ kan aannemen met gelijk verspreidt worden over alle mogelijke waarden van de MAC. De kans dat twee berichten $M$ en $M'$ dezelfde MAC krijgen moet $\frac{1}{2^n}$ zijn.
 	\end{itemize}
@@ -131,6 +131,35 @@
 De ideale MAC is enkel kwetsbaar voor brute force aanvallen. 
 
 	\end{itemize}
+
+	\section{Testvragen}
+	\begin{enumerate}
+		\item \accentuate{Leg het verschil uit tussen confidentialiteit, authenticatie, authorisatie, data-integriteit, onweerlegbaarheid en beschikbaarheid.}
+
+		Zie deel 1.1
+		\item \accentuate{Waarom worden sequentienummers toegevoegd aan berichten? Is het een goed idee om een timestamp te gebruiken voor die reden?}
+
+		Een sequentienummer zorgt ervoor dat een bericht uniek is voor een bepaalde sessie. Een  ontvanger verwacht een bepaald sequentienummer van de verzender. Op die manier worden replay aanvallen voorkomen, omdat eens dat een sequentienummer door de ontvanger opgebruikt wordt, deze niet meer opnieuw kan gebruikt worden. Een timestamp kan een goed idee zijn, zodat ook de tijd in rekening gebracht wordt.
+		\item \accentuate{Welke maatregelen kunnen genomen worden tegen DoS en DDoS aanvallen?}
+		\item \accentuate{Geef vijf voorbeelden van actieve aanvallen die een netwerkprotocol kunnen comprimeren.}
+
+		\begin{enumerate}
+			\item Berichtmodificatie
+			\item Replay-aanvallen
+			\item Impersonatie
+			\item DoS
+			\item Hijacking
+		\end{enumerate}
+
+		\item \accentuate{Wat zijn de strong en weak collision requirements? Geef voorbeelden waarom deze belangrijk zijn.}
+
+		Weak collision requirement = Gegeven een hashwaarde $H(m) = h$, moet het onmogelijk zijn een bericht $n$ te vinden die dezelfde waarde $H(n) = h$ oplevert. Indien dit wel mogelijk zou zijn, dan kan een aanvaller andere berichten versturen, die toch dezelfde hash hebben als het legitieme bericht. De ontvanger kan dit onderscheidt dan ook niet maken zodat data-integriteit hier niet voldaan wordt. Data-origin wordt hier ook niet voldaan, omdat de ontvanger niet kan weten dat het van een andere ontvanger zou komen.
+
+		Strong collision requirement = Gegeven twee berichten $m$ en $n$, die verschillend zijn van elkaar, dan mogen $H(m)$ en $H(n)$ niet gelijk zijn aan elkaar. Is dit wel het geval, dan kan een aanvaller meerdere berichten $n_i$ zoeken die dezelfde hashwaarde heeft als $m$, zodat onweerlegbaarheid niet voldaan is. \accentuate{waarom?}
+		\item \accentuate{Wat is het hoofdzakelijk verschil tussen een digitale handtekening en een MAC.}
+
+		Een MAC werkt via een symmetrisch sleutelmechanisme, zodat enkel zenders en ontvangers moet dezelfde sleutel, kunnen verifiëren of dat het bericht ongewijzigd (integriteit) is of dat het bericht van de juiste zender komt (authenticatie). Een digitale handtekening werkt volgens een asymmetrisch sleutelmechanisme.  
+ 	\end{enumerate}
 
 
 	\chapter{Netwerk en communicatiebeveiliging}
@@ -185,7 +214,7 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 	\end{itemize}
 
 	\subsubsection{Connection Protocol}
-	Het connection protocol veronderstelt dat een beveiligide, geauthenticeerde verbinding tot stand gebracht is. Deze verbinding, \textbf{tunnel} genoemd, wordt gebruikt door het connection protocol om een aantal logische kanalen te multiplexen doorheen deze tunnel. Het connection protocol specifieert vier kanalen:
+	Het connection protocol veronderstelt dat een beveiligde, geauthenticeerde verbinding tot stand gebracht is. Deze verbinding, \textbf{tunnel} genoemd, wordt gebruikt door het connection protocol om een aantal logische kanalen te multiplexen doorheen deze tunnel. Het connection protocol specifieert vier kanalen:
 	\begin{enumerate}
 		\item \textbf{Session.} Dit kanaal refereert naar het remote uitvoeren van een programma zoals een shell, een applicatie zoals e-mail of een systeemcommando. 
 		\item \textbf{X11.} Het X Window System laat toe om applicaties te runnen op een server, maar dat ze eigenlijk op een desktop getoond worden.
@@ -208,19 +237,52 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 		\item {Remote forwarding.}
 	\end{itemize}
 
+	\subsection{Tekortkomingen van SSH}
+	\begin{itemize}
+		\item[\alert] Niet geschikt voor trage connecties.
+		\item[\alert] Niet geschikt voor onstabiele netwerken. 
+	\end{itemize}
+
+	\subsection{Testvragen}
+	\begin{enumerate}
+		\item \accentuate{Juist of fout: het SSH transportlaag protocol encrypteerd TCP packetten.}
+
+		\item \accentuate{Leg de functie van het SSH transportlaag protocol, SSH user authentication protocol en SSH connectieprotocol uit.}
+
+		\begin{itemize}
+			\item[\info] Het SSH transportlaag protocol zal proberen om een SSH connectie te leggen tussen de SSH cliënt en de SSH server. De cliënt en de server spreken onder andere af welke cryptografische algoritmen ze gaan gebruiken voor verschillende categoriën zoals: encryptie, compressie, mac en sleuteluitwisseling. Dit protocol is voltooid indien de cliënt één van de volgende protocollen oproept met het \texttt{SSH\_MSG\_SERVICE\_REQUEST} bericht. Op dit moment verloopt het verkeer tussen de cliënt en de server via SSH transportlaagpakketten verstuurd, die beschermd zijn met encryptie en een MAC.
+			
+			\item[\info] Het SSH user authentication protocol zal, nadat het transportlaag protocol voltooid is, de cliënt trachten te authenticeren. Er zijn drie mogelijke manieren:
+			\begin{itemize}
+				\item Host-based authentication: Enkel de host wordt geauthenticeerd, zodat er verondersteld moet worden dat de host zelf al de individuele gebruikers heeft geauthenticeerd. De gebruiker maakt gebruik van de host zijn private host key om een handtekening te maken. De server verifieerd deze handtekening, gebruik makend van de public host key van de host.
+				\item Password-based authentication: Bij elke nieuwe SSH connectie moet de gebruiker zijn paswoord meegeven. Dit paswoord is natuurlijk geëncrypteerd door het SSH transportlaag protocol.
+				\item Public key authentication: Een gebruiker moet een public-private sleutelpaar hebben. Bij een SSH connectie voor een gebruiker wordt er een speciale handtekening, gegenereerd met behulp van zijn geheime sleutel. De server controleert of de bijhorende publieke sleutel correct is, en authenticeerd al dan niet de gebruiker.
+			\end{itemize}
+		\end{itemize}
+		\item \accentuate{In welke gevallen is het aan te raden om een SSH sleutel\emph{her}uitwisseling te initialiseren? Waarom?}
+		\item \accentuate{Wat is het verschil tussen een SSH sessie en een SSH kanaal. Welke kanaaltypes worden ondersteund?}
+		                                    
+		\item \accentuate{Naar welk poortnummer luistert SSH in normale omstandigheden?}
+
+		Poort 22.
+		\item \accentuate{Leg het verschil uit tussen local en remote port forwarding.}
+
+
+	\end{enumerate}
+
 	\section{Sleuteluitwisselingen}
 	Gegeven twee partijen $A$ en $B$. Een sleuteluitwisseling kan op verschillende manieren gebeuren:
 	\begin{enumerate}
 		\item $A$ kan het fysiek afleveren aan $B$.
 		\item Een betrouwbare partij geeft de sleutel fysiek aan $A$ en $B$.
 		\item Als $A$ en $B$ vroeger al gecommuniceerd hebben, kunnen ze de vorige sleutel gebruiken om de nieuwe te encrypteren.
-		\item Als $A$ en $B$ een beveiligide verbinding hebben met een derde partij $C$, dan kan $C$ de sleutel doorverwijzen naar $A$ en $B$.
+		\item Als $A$ en $B$ een beveiligde verbinding hebben met een derde partij $C$, dan kan $C$ de sleutel doorverwijzen naar $A$ en $B$.
 	\end{enumerate}
 	\subsection{Out-of-band sleuteluitwisseling}
 	Sleutels niet-digitaal uitwisselen wordt out-of-band sleuteluitwisseling genoemd. Dit is toelaatbaar voor kleine organisaties maar voor grotere organisaties is dit niet voldoende.
 	\subsection{Diffie-Hellman}
-	Dit protocol was de eerste praktische methode om een gedeelde sleutel over een onbeveiligide verbinding te versturen, gebaseerd op discrete logaritmen. Het maakt gebruik van de eigenschap
-	$$(g^b\;mod\;p)^a\;mod\;p = (g^a\;mod\;p)^b\;mod\;p$$ indien $p$ een priemgetal en $g$ de primitieve wortel modula $p$ is. Een voorbeeld is $p = 7$ en $g = 3$. 
+	Dit protocol was de eerste praktische methode om een gedeelde sleutel over een onbeveiligde verbinding te versturen, gebaseerd op discrete logaritmen. Het maakt gebruik van de eigenschap
+	$$(g^b\;mod\;p)^a\;mod\;p = (g^a\;mod\;p)^b\;mod\;p$$ indien $p$ een priemgetal en $g$ de primitieve wortel modulo $p$ is. Een voorbeeld is $p = 7$ en $g = 3$. 
 	\begin{equation*}
 		\begin{split}
 			3^1 = 3 & = 3\;\hbox{mod}\;7\\
@@ -244,7 +306,18 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 
 	 Normaal wordt $p$ een priemgetal van ongeveer 300 cijfers genomen. De getallen $a$ en $b$ zijn dan weer minstens 100 cijfers lang. De geheime sleutel bepalen, indien $g$, $p$, $y_A$ en $y_B$ gekend zijn duurt quasi oneindig lang. 
 
-	\subsubsection{Nadelen Diffie-Hellman}
+	\subsubsection{Nadelen \emph{normale} Diffie-Hellman}
+	\begin{itemize}
+		\item[\alert] Dure operaties die kunnen gebruikt worden om een server plat te leggen.
+		\item[\alert] Man-in-the-middle aanval: Alice kan haar publieke sleutel naar Bob versturen, maar Carol ondermijnt dit bericht. Carol verstuurd nu de publieke sleutel van Alice naar Bob, waarop Bob antwoord met zijn publieke sleutel. Carol kan nu Bob zijn publieke sleutel naar Alice versturen. Op die manier hebben Alice en Carol, en Carol en Bob een gedeelde sleutel. Alice en Bob denken echter dat ze tegen elkaar praten, omdat Diffie-Helman geen authenticatie voorziet.
+	\end{itemize}
+	\subsubsection{Varianten}
+	\begin{itemize}
+		\item[\info] \textbf{ECDH}: Elliptic curve Diffie-Helman.
+		\item[\info] \textbf{Fixed Diffie-Hellman}: De publieke sleutels worden getekend door een CA.
+		\item[\info] \textbf{Anonieme Diffie-Hellman}: Normale Diffie-Hellman.
+		\item[\info] \textbf{Ephemeral Diffie-Hellman}: Publieke sleutels zijn nu tijdelijk, zodat ze enkel maar gelden voor één enkele sessie. Op die manier is er perfect forward privacy. 
+	\end{itemize}
 
 	\subsection{Sleuteldistributiecentrum}
 	Het sleuteldistributiecentrum vermijdt dat gebruikers zelf de sleutel moeten overhandigen. Elke gebruiker heeft een geheime sleutel die kan gebruikt worden om met het \textbf{KDC (Key Distribution Centre)} te communiceren. Er zijn twee soorten sleutels: de sessiesleutels zijn een tijdelijke sleutel die gebruikt worden voor één enkele sessie. Deze sessiesleutel wordt gebruikt om informatie te encrypteren tussen verschillende gebruikers. De ander sleutel is de mastersleutel. Deze wordt gebruikt om sessiesleutels te encrypteren en wordt gedeeld tussen een gebruiker en de KDC. De basiswerking van de KDC (figuur \ref{fig:basiswerkingKDC}) is als volgt:
@@ -272,7 +345,7 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 		\caption{Basiswerking KDC.}
 		\label{fig:basiswerkingKDC}
 	\end{figure}
-	Een aanvaller kan, indien hij $K_s$ bemachtigd, stap 3 herhalen, zodat de aanvaller nu de Bob zijn response kan beantwoorden. Bob is dan aan het praten met de aanvaller, terwijl hij denkt dat het Alice is.
+	Een aanvaller kan, indien hij $K_s$ bemachtigd, stap 3 herhalen, zodat de aanvaller nu Bob zijn response kan beantwoorden. Bob is dan aan het praten met de aanvaller, terwijl hij denkt dat het Alice is.
 	Een beter algoritme:
 	\begin{enumerate}
 		\item Alice informeert Bob dat ze wil communiceren.
@@ -302,7 +375,89 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 		\caption{Verbeterde werking KDC.}
 		\label{fig:beterewerkingKDC}
 	\end{figure}
-	\todo{PKI}
+	\subsection{Public key infrastructure}
+	Vier manieren om publieke sleutels uit te wisselen:
+	\begin{enumerate}
+		\item \textbf{Public Announcement}: Publieke sleutels worden gebroadcast naar een heel domein, of verstuurd naar specifieke gebruikers. Het nadeel hiervan is dat aanvallers zich kunnen voordoen als iemand anders.
+		\item \textbf{Public directory}: Alle publieke sleutels bevinden zich in een database in de vorm van $\langle$ naam, publieke sleutel $\rangle$ paren. Gebruikers die hun publieke sleutel op deze directory willen zetten, moeten zich eerst authenticeren. De beheerder van de directory moet een vertrouwd entiteit zijn.
+		\item \textbf{Public key authority}: Het sleutelbeheer wordt overgelaten aan een betrouwbare externe organisatie. Dit is gelijkaardig aan het sleuteluitwisselingscentrum.
+		\item \textbf{Public key infrastructure}: (dit hoofdstuk)
+	\end{enumerate}
+
+	\begin{itemize}
+		\item[\info] PKI = sleutels op een betrouwbare manier uitwisselen, gebruik makend van certificaten.
+		\item[\info] Een certificaat verbindt een identiteit met een publieke sleutel, waarvan de inhoud getekend wordt door een Certificate Authority (CA).
+		\item[\info] Alice verstuurd haar certificaat naar Bob. Bob kan dit certificaat controleren door gebruik te maken van de publieke sleutel van de CA die dit getekend heeft.
+	\end{itemize}
+
+	\underline{Drie} rollen bij PKI:
+	\begin{enumerate}
+		\item Certificate Authority: Tekent en geeft certificaten op basis van de publieke sleutel en de identiteit van de aanvrager. Er zijn verschillende providers zoals: VeriSign, Equifax, PGP (web of trust), ...
+		\item Registration Authority: Het doel is om minder werk te geven aan de CA. De RA moet de entiteiten die een certificaataanvraag doen authenticeren.
+		\item Validation Authority: De VA kan op basis van een entiteit, de attributen er uit halen die hem uniek identificeren. Op deze manier is de workload van de CA nog minder.
+	\end{enumerate}
+
+	Er blijft nog de vraag: \underline{Wie kunnen we vertrouwen?} 5 implementaties:
+	\begin{itemize}
+		\item[\info] \textbf{CA Hiërarchy}: De publieke sleutels van Alice en Bob kunnen door een CA getekend worden, waarvan de publieke sleutel door een hoger gelegen CA getekend werd, ...
+		\item[\info] \textbf{Web model}: Elke browser en operatingsysteem komt met een lijst van erkende root-certificaten. Het is dan ook hun taak om een nieuw certificaat te controleren, op basis van de CA hiërarchy.
+		\item[\info] \textbf{User-centrisch} (PGP): Elke gebruiker is zijn eigen root CA. Stel dat Alice en Bob elkaar vertrouwen, en dat nu Charlie met Alice wilt praten. Alice kent Charlie niet, maar Bob wel. Charlie vraagt aan Bob om zijn publieke sleutel te tekenen met Bob zijn geheime sleutel. Alice kan dit nu controleren, en door transitieve eigenschap, kent Alice nu ook Charlie. Op die manier wordt er een netwerk opgebouwd, maar is dus enkel handig wanneer veel mensen collaboreren.	
+		\item[\info] \textbf{Cross-certification}: \todo{dunno, lijkt me niet zo belangrijk ook}
+	\end{itemize}
+
+	Soms moet een certificaat teruggetrokken worden:
+	\begin{itemize}
+		\item[\info] Certificate Revocation List (CRL) mechanisme: Er wordt een lijst bijgehouden met certificaatidentifiers die teruggetrokken zijn. Bij het verifiëren van een certificaat wordt deze lijst overlopen en indien de identifier er in zit, wordt het certificaat niet goedgekeurd. \underline{Twee nadelen zijn}:
+		\begin{enumerate}
+			\item[\alert] De lijst kan heel lang worden, en de hele lijst moet altijd opgehaald worden.
+			\item[\alert] Er bestaat geen mechanisme dat een notificate stuurt wanneer een certificaat teruggetrokken wordt. Resultaten die gecached werden kunnen soms dus gebruikt worden, ook al zijn ze in werkelijkheid al teruggetrokken.
+		\end{enumerate}
+		\item[\info] Online Certificate Status Protocol: Deze uitbreiding op CRL laat toe om enkel de status van één enkel certificaat op te vragen, zodat real-time validatie mogelijk is. Ook hier zijn er \underline{vier nadelen}:
+		\begin{itemize}
+			\item[\alert] De CA moet een massa van real-time queries kunnen behandelen.
+			\item[\alert] De CA moet ervoor zorgen dat de service altijd bereikbaar is.
+			\item[\alert] Deze query is synchroon, zodat de cliënt moet wachten op een antwoord.
+			\item[\alert] Real-time requests kan de privacy van een gebruiker negeren, omdat da CA nu weet welke website bezocht wordt. 
+		\end{itemize}
+
+	\end{itemize}
+
+	\subsection{X.509 authentication}
+	= een gestandariseerd formaat voor certificaten.
+	\begin{itemize}
+		\item[\info] Wordt gebruikt door veel protocollen: TLS, PGP, IPsec, HTTPS, ...
+		\item[\info] Moet aangekocht worden (bestaat ook gratis alternatief: Lets Encrypt!) van een CA. Je kan ook zelf een eigen certificaatservice opstellen, en deze laten tekenen door een erkende CA.
+		\item[\info] Formaat van een X.509 certificaat op figuur \ref{fig:x509_certificaat}. 
+		\begin{figure}[ht]
+			\centering
+			\includegraphics[width=0.7\textwidth]{x509_certificaat}
+			\caption{De structuur van een X.509 certificaat.}
+			\label{fig:x509_certificaat}
+		\end{figure}
+	\end{itemize}
+
+	\subsubsection{V3 extensions}
+	\underline{Drie categorieën}:
+	\begin{itemize}
+		\item[\info] \textbf{Informatie over de sleutel en beveiligingspolicy}: Deze extensie bevat meer informatie over waar het certificaat gebruikt mag worden en de levensduur van een private sleutel
+		\item[\info] \textbf{Attributen van de subject en issuer}: Er kunnen extra attributen zoals het mailadres van de subject of IPsec gerelateerde attributen bijgehouden worden.
+		\item[\info] \textbf{Padconstraints}: Voorkomen dat een gebruiker zich zelf als een CA kan voordoen, de lengte van de het certificaatpad kan beperkt worden en men kan voorkomen dat een CA buiten zijn domein ook certificaten kan tekenen.
+	\end{itemize}
+
+	\subsubsection{Beperkingen X.509 certificaten}
+	\begin{itemize}
+		\item[\alert] X.509 is heel vaag in veel gebieden. Dit heeft als resultaat dat niemand nog te wachten staat op verbeteringen van deze standaard. 
+		\item[\alert] Het terugtrekken van certificaten gebeurd niet altijd zoals het moet; Er zit vaak een grote delay op het effectief terugtrekken van een certificaat, en het publiek maken van deze terugtrekking. 
+		\item[\alert] Authenticatie-en confidentialiteitscertificaten worden op dezelfde manier behandeld.
+		\item[\alert] Constant toevoegen van attributen zorgt ervoor dat er teveel overhead onstaat.
+		\item[\alert] Veel software is incompatibel met X.509 door bugs, foute extensies, verschillende interpretaties, ...
+		\item[\alert] Certificaten zijn gebaseerd op identiteiten, terwijl dit vaak onbelangrijk is. Een identiteit kan namelijk veranderen (email, paswoord, woonplaats, ...).
+		\item[\alert] Te veel attributen opnemen in een certificaat zorgt voor een toeneming van het heraanvragen van certificaten. Een enkel attribuut veranderen, slects 1 bit, leidt tot een heraanvraag van het certificaat. 
+	\end{itemize}
+
+	\subsection{Testvragen}
+
+
 
 	\section{Beveiligen van netwerkprotocollen}
 	\subsection{Beveiligen van de transportlaag}
@@ -585,7 +740,7 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 	\end{table}
 	waardoor er nu $26! \approx 4\cdot10^{26}$ mogelijkheden zijn. Deze manier is daarom niet meer secuur, aangezien de onderliggende frequentie van letters nog steeds dezelfde is. Een eenvoudige dencryptiemethode is om de relatieve frequenties van de ciphertekst te tellen, waardoor er statistisch kan achterhaald worden met welke gedecrypteerde letter elke geëncrypteerde letter overeenkomt. 
 
-	Een encryptiealgoritme wil ook de relatieve frequenties verbergen. Een methode dat dit implementeert is de \underline{Vigenère Cipher}. Deze bevat een sleutel $K = k_1k_2 ... k_d$ waarbij $k_i$ het $i$-de alfabet specifieert dat gebruikt moet worden. Na $d$ letters start ment terug vanaf $k_i$.
+	Een encryptiealgoritme wil ook de relatieve frequenties verbergen. Een methode dat dit implementeert is de \underline{Vigenère Cipher}. Deze bevat een sleutel $K = k_1k_2 ... k_d$ waarbij $k_i$ het $i$-de alfabet specifieert dat gebruikt moet worden. Na $d$ letters start men terug vanaf $k_1$.
 
 	Een laatste voorbeeld van een substitutiecipher is de \underline{Playfair cipher}. Hier wordt er een $5x5$ matrix opgesteld, waarbij eerst het sleutelwoord ingevuld wordt, gevolgd door de niet gebruikte letters in alfabetische volgorde. Dit wordt uitgewerkt met de sleutel \texttt{MONARCHY} in Tabel \ref{table:playfair}.
 	\begin{table}[ht]
@@ -661,10 +816,10 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 	\section{Symmetrische algoritmen}
 	Vooraleer er in detail kan ingegaan worden op symmetrische algoritmen, moet eerst de term \textbf{block cipher} besproken worden. Een block cipher wil zeggen dat informatie in blokken zullen verstuurd worden en kan best vergeleken worden met een substitutiecipher, maar dan toegepast op blokken. Een typische blokgrootte varieert van 8 tot 128 bytes en wordt door de meeste algoritmen gebruikt. De \textbf{Feistel Cipher encryptie} vormt de basis van moderne blockciphers en maakt gebruik van twee primitieve encryptieoperaties:
 	\begin{itemize}
-		\item Substitutie (de S-box)
-		\item Permutatie  (de P-box)
+		\item Substitutie of Diffusion (de S-box)
+		\item Permutatie of Confusion (de P-box)
 	\end{itemize}
-	Het Feistel encryptieschema maakt gebruik van $n$ ronden, een functie $F$ en de XOR operator. \todo{slide 36 uitleggen}
+	Het Feistel encryptieschema maakt gebruik van $n$ ronden, een functie $F$ en de sleutel voor ronde $i, K_i$. De data wordt opgesplitst in twee delen. Op het linkerdeel wordt altijd een substitutie uitgevoerd, gebaseerd op $F$. Bij de start van een volgende ronde worden beide delen van plaats verwisseld, zodat nu het rechterdeel de functie heeft als linkerdeel. Het decryptieschema werkt op exact dezelfde manier, maar beginnend van de geëncrypteerde data. De sleutels $K_i$ worden dan wel in omgekeerde volgorde behandeld.
 
 	\subsection{DES \& 3-DES}
 	\begin{figure}[ht]
@@ -719,10 +874,10 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 		\draw[->] (LCSx) -- (PC2x);
 		\draw[->] (LCS16) -- (PC216);
 
-		\draw[->] (PC21) -| node[xshift=0.5cm, yshift=0.5cm]{$K_1$} (it1);
-		\draw[->] (PC22) -| node[xshift=0.5cm, yshift=0.5cm]{$K_2$}  (it2);
-		\draw[->] (PC2x) -| node[xshift=0.5cm, yshift=0.5cm]{$K_n$}  (itx);
-		\draw[->] (PC216) -| node[xshift=0.5cm, yshift=0.5cm]{$K_{16}$}  (it16);
+		\draw[->] (PC21) -- node[yshift=0.5cm]{$K_1$} (it1);
+		\draw[->] (PC22) -- node[yshift=0.5cm]{$K_2$}  (it2);
+		\draw[->] (PC2x) -- node[yshift=0.5cm]{$K_n$}  (itx);
+		\draw[->] (PC216) -- node[yshift=0.5cm]{$K_{16}$}  (it16);
 
 	\end{tikzpicture}
 	\caption{DES schema.}
@@ -733,9 +888,9 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 	
 	Het algoritme maakt gebruik van 16 ronden in het Feistel schema. De 56 bit sleutel wordt gebruikt om iteratiesleutels $K_1, K_2, ... K_{16}$ te bepalen, die elk 48 bits groot zijn. Voor de eerste ronde en na de laatste ronde wordt er een extra permutatie uitgevoerd, waarbij de laatste permutatie het inverse is van de eerste permutatie. Het resultaat van dit algoritme is één van de $2^{64}$ uitvoermogelijkheden van de 64 bits. 
 
-	De 16 vereiste iteratiesleutels worden in het begin van het algoritme aangemaakt. Eerst en vooral wordt de 56 bit sleutel gepermuteerd, afhankelijk van het gekozen permutatieschema, op Figuur \ref{fig:DES} permutatieschema 1 genoemd. Een permutatieschema mapt een bit van de oorspronkelijke sleutel op een bit van de gepermuteerde sleutel, zodat er $2^{64}$ mogelijke schemas bestaan. De gepermuteerde sleutel wordt hierna beschouwd als twee resultaatsleutels $C_n$ en $D_n$, met $n$ het huidig rondenummer, van elk 28 bits groot. Beide resultaatsleutels worden onafhankelijk van elkaar verwerkt door een circulaire left shift van 1 of 2 bits, afhankelijk van de huidige ronde, dat eenvoudig door de conditionele operator kan beschreven worden: $n\;\% == 0\;?\;2\;:\;1$. Indien $C_2$ en $D_2$ de resultaatsleutels zijn van ronde 2, dan zijn $C_3$ en $D_3$ de resultaatsleutels van ronde 3 door respectievelijk $C_2$ en $D_2$ 2 bits naar links te permuteren. Voor elke ronde wordt er een iteratiesleutels $K_n$ gegenereerd, door een tweede permutatieschema, op Figuur \ref{fig:DES} permutatieschema 2 genoemd, toe te passen op $C_nD_n$, waarbij de 8 meest significante bits van $C_n$ genegeert worden. Het eindresultaat zijn 16 verschillende iteratiesleutels, die zullen toegepast worden bij elke DES ronde. 
+	De 16 vereiste iteratiesleutels worden in het begin van het algoritme aangemaakt. Eerst en vooral wordt de 56 bit sleutel gepermuteerd, afhankelijk van het gekozen permutatieschema, op Figuur \ref{fig:DES} permutatieschema 1 genoemd. Een permutatieschema mapt een bit van de oorspronkelijke sleutel op een bit van de gepermuteerde sleutel, zodat er $2^{64}$ mogelijke schemas bestaan. De gepermuteerde sleutel wordt hierna beschouwd als twee resultaatsleutels $C_n$ en $D_n$, met $n$ het huidig rondenummer, van elk 28 bits groot. Beide resultaatsleutels worden onafhankelijk van elkaar verwerkt door een circulaire left shift van 1 of 2 bits, afhankelijk van de vorige ronde, dat eenvoudig door de conditionele operator kan beschreven worden: $(n - 1)\;\%\;2 == 0\;?\;2\;:\;1$. Indien $C_2$ en $D_2$ de resultaatsleutels zijn van ronde 2, dan zijn $C_3$ en $D_3$ de resultaatsleutels van ronde 3 door respectievelijk $C_2$ en $D_2$ 2 bits naar links te permuteren. Voor elke iteratiesleutel $K_i$, wordt er een tweede permutatieschema, op Figuur \ref{fig:DES} permutatieschema 2 genoemd, toegepast op $C_nD_n$, waarbij de 8 meest significante bits van $C_n$ genegeert worden. Het eindresultaat zijn 16 verschillende iteratiesleutels, die zullen toegepast worden bij elke DES ronde. 
 
-	Bij elke ronde wordt het 64-bit blok opgedeeld in twee 32-bit blokken $L_n$ en $R_n$ waarbij de 32 meest significante bits in $L_n$ komen, en de 32 minst significante bits in $R_n$. Vooraleer dit proces plaatsvindt is er eerst een initiele permutatie van het hele 64-bit blok. Deze permutatie wordt uitgevoerd met behulp van een permutatieschema, zoals bij de sleutelgeneratie. Het gepermuteerde blok wordt hierna opgedeeld in de blokken $L_n$ en $R_n$, en kan ronde 1 van start gaan. Bij elke iteratie wordt de functie $F$ gebruikt, die twee blokken manipuleert: $R_{n-1}$ en de sleutel van 48-bit groot, die op voorhand al gegenereerd werd. Omdat hij elke iteratie wordt gebruikt wordt het ook wel de iteratiefunctie genoemt. De uiteindelijke uitvoer van de iteratiefunctie is een blok 32 bits. $L$ en $R$ kan voor een volgende iteratie berekent worden als:
+	Vooraleer het iteratieproces plaatsvindt is er eerst een initiële permutatie van het hele 64-bit blok. Deze permutatie wordt uitgevoerd met behulp van een permutatieschema, zoals bij de sleutelgeneratie. Het gepermuteerde blok wordt hierna opgedeeld in de blokken $L_n$ en $R_n$ waarbij de 32 meest significante bits in $L_n$ komen, en de 32 minst significante bits in $R_n$, en kan ronde 1 van start gaan. Bij elke iteratie wordt de functie $F$ gebruikt, die twee blokken manipuleert: $R_{n-1}$ en de sleutel van 48-bit groot, die op voorhand al gegenereerd werd. Omdat de functie $F$ bij elke iteratie wordt gebruikt wordt het ook wel de iteratiefunctie genoemd. De uiteindelijke uitvoer van de iteratiefunctie is een blok 32 bits. $L$ en $R$ kan voor een volgende iteratie berekent worden als:
 	\begin{equation}
 		\begin{split}
 			L_{n + 1} & = R_{n} \\

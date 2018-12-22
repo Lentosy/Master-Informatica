@@ -1,0 +1,203 @@
+\documentclass{report}
+\usepackage{ugentstyle}
+
+\begin{document}
+	\maketitle{Systeemontwerp}
+	\tableofcontents
+	\chapter{Inleiding}
+	\begin{itemize}
+		\item[\info] \underline{Systeemontwerp} = het ontwerpen van een infrastructuur waarbij verschillende componenten met elkaar kunnen interageren.
+		\item[\info] Typische high level architectuurblokken: 
+			\begin{itemize}
+				\item[\info] \underline{transactiebehandeling}: requests behandelen van gebruikers.
+				\item[\info] \underline{business intelligence}: geproduceerde data analyseren.
+			\end{itemize}  
+	\end{itemize}
+	\section{Softwarearchitectuur}
+	\subsection{Systeemrequirements}
+	\begin{itemize}
+		\item[\info] \underline{functionele requirements}: specificatie wat een systeem moet \textbf{doen}.
+		\item[\info] \underline{niet-functionele requirements}: specificatie wat een systeem moet \textbf{zijn} (kwaliteitseisen).
+	\end{itemize}
+
+	\subsection{4+1 view model}
+	\begin{itemize}
+		\item[\info] Logical view:
+			\begin{itemize}
+				\item[\info] Bevat de klassen, packages, relaties tussen klassen, associaties tussen de klassen (\accentuate{domain class diagram en entity-relationship diagram})
+			\end{itemize}
+		\item[\info] Implementation view:
+			\begin{itemize}
+				\item[\info] Bevat verschillende modules (bv JARs) en componenten (executables, WARS).
+				\item[\info] Beschrijft de onderliggende relaties tussen alle modules en componenten (import, use, merge, ...)
+			\end{itemize}
+		\item[\info] Process view:
+			\begin{itemize}
+				\item[\info] Bevat de beschrijving van de werking van verschillende processen (een proces kan een hele module zijn) (\accentuate{activity diagram}).
+				\item[\info] Een proces kan beheerd worden: starten, pauzeren, configureren, stoppen.
+				\item[\info] Heeft als doel om \underline{deadlocks} en \underline{netwerkvertragingen} te voorkomen en \underline{consistentie} te bereiken. 
+			\end{itemize}
+		\item[\info] Deployment view:
+			\begin{itemize}
+				\item[\info] Beschrijft op welke toestellen de processen moeten gedeployed worden, hoeveel toestellen er gebruikt worden.
+				\item[\info] Verschillende deploymentconfiguraties mogelijk per klant of geografisch gebied, maar ook of dat het een productie of ontwikkelomgeving is.
+			\end{itemize}
+		\item[\info] \accentuate{+1} Use Cases/Scenarios:
+		\begin{itemize}
+			\item[\info] Beschrijft op welke toestellen de processen moeten gedeployed worden, hoeveel toestellen er gebruikt worden.
+			\item[\info] Verschillende deploymentconfiguraties mogelijk per klant of geografisch gebied, maar ook of dat het een productie of ontwikkelomgeving is.
+		\end{itemize}
+	\end{itemize}
+
+	\part{Microservices}
+	\chapter{Architectuurstijlen}
+
+	
+	\chapter{Decompositie van een applicatie}
+	Het proces om een applicatie in te delen in verschillende microservices noemt men \textbf{decompositie}. Dit \textbf{iteratief} proces is belangrijk aangezien een foutieve methode leidt tot ongewenste resultaten. Een dergerlijk proces kan opgedeeld worden in drie stappen.
+	\begin{enumerate}
+		\item \textbf{Identificatie van de systeemoperaties.} Dit omvat het vertalen van de noden van één of meerdere gebruikers naar user stories en use-cases. Vaak wordt er hier overlegd met enkele domeinexperts. Het is belangrijk om te achterhalen wat belangrijke systeemoperaties zijn. Welke informatie moet er met een \textit{create}, \textit{update} of \textit{delete} gewijzigd worden? Welke informatie moet met een \textit{query} opgehaald worden? In deze fase worden er nog geen technische vaststellingen gedaan. De focus ligt namelijk op het vaststellen van de pre- en postcondities van de verschillende systeemoperaties.
+		
+		\item \textbf{Identificatie van de services.} Services specificeren handelingen dat een bedrijf kan doen. Voorbeelden voor een online webshop zijn: \textit{Sales}, \textit{Marketing}, \textit{Payment}, \textit{Order Shipping} en \textit{Order Tracking}. Deze services blijven lang stabiel en zullen haast nooit veranderen tenzij de business een shift van focus doen. Een obstakel dat zich kan voordoen zijn \textbf{godklassen}. Dit zijn klassen die te veel verantwoordelijkheid op zich dragen. Een oplossing hiervoor is om deze klasse in een centrale databank op te slaan en services die deze klasse nodig hebben kunnen die dan via de databank aanspreken. Dit is duidelijk een overtreding op de principes van de microservice architectuur. Er is nu een sterke koppeling tussen de microservices en de godklasse. Een betere oplossing is het opsplitsen van de klasse in verschillende klassen op basis van de bestaande services. Deze verschillende klassen kunnen in een microservice gestoken worden waarbij de definitie van de klasse sterk gedaald is (ze moet maar gelden binnen de microservice). Voorbeeld van een godklasse is een \textbf{Order} klasse voor pizza's. Denk aan de typische attributen: \textit{status}, \textit{requestedDeliveryTime}, \textit{prepareByTime}, \textit{deliveryTime}, \textit{paymentinfo}, \textit{deliveryAddress}, ... . Het opsplitsen van deze klassen kan bijvoorbeeld gebeuren door enkel informatie die relevant is voor de keuken, in een keukenserivce te steken en informatie die enkel relevant is voor het bezorgen van een bepaalde order in een deliveryservice. Op die manier worden godklassen vermeden.
+		
+		\item \textbf{Identificatie van de service API's.} Deze laatste stap zal nagaan welke operaties van een microservice publiek moeten gesteld worden aan de buitenwereld via een API. 
+	\end{enumerate}
+	\chapter{Interactiestijlen tussen services}
+	Microservices moeten met elkaar kunnen interageren. Bij het zoeken van een oplossing moeten volgende vragen gesteld worden:
+	\begin{itemize}
+		\item Hoe kan het aantal interacties tussen twee microservices geminimaliseerd worden?
+		\item Hoe wordt de communicatie geïmplementeerd?
+		\item Kan men zeker zijn dat een microservice zal antwoorden?
+	\end{itemize}
+	Een interactie kan op een \textbf{synchrone} manier gebeuren. Een client zal een aanvraag sturen naar een bepaalde service en zal wachten totdat er een antwoord terug ontvangen is. Tijdens de aanvraag en het antwoord zal de client blokkeren. Een \textbf{asynchrone} interactie daarentegen zal toelaten dat de client niet hoeft te wachten op het antwoord. Verder is er ook nog een opdeling mogelijk op vlak van het aantal microservices die een request behandelen. Een \textbf{one-to-one} geeft aan dat slechts één enkele microservice het request zal afhandelen. Een \textbf{one-to-many} interactie geeft aan dat meerdere microservices een request zullen afhandelen.
+	
+	\part{Container deployment and orchestration}
+	\chapter{Productieomgeving}
+	Een applicatie kan over een groot aantal services beschikken, die allemaal gebruik maken van verschillende technologiën. Een service kan eigenlijk beschouwd worden als een kleine applicatie, zodat er in plaats van één grote applicatie, meerdere kleinere applicaties in productie moeten draaien. Zo een productieomgeving moet vier functionaliteiten implementeren:
+	\begin{enumerate}
+		\item \textbf{Service management interface.} Het in staat zijn om services te creëren, configureren en updaten, vaak via een shell of GUI.
+		\item \textbf{Runtime service management.} De omgeving moet automatisch services kunnen herstarten indien deze gecrasht zijn. Ook als een fysieke server faalt, moet de omgeving een andere server aanspreken om de service op te draaien.
+		\item \textbf{Monitoring.} Informatie over elke service instance zoals logbestanden en metrieken voor die bepaalde service (aantal bezoekers per seconde, sucess rate, ...) moeten beschikbaar zijn voor de ontwikkelaars, en moeten ook gewaarschuwd worden indien een service niet aan de vooropgestelde criteria voldoet.  
+		\item \textbf{Request routing.} De requests dat users versturen moeten naar de juiste service doorverwezen worden.
+	\end{enumerate}
+
+	Volgende paragrafen bespreken hoe een aantal van deze zaken geïmplementeerd kunnen worden.
+
+	Een service heeft altijd een aantal configuratiegegevens (\textbf{environment variabelen} genoemd), die afhankelijk zijn van de omgeving waarin de service draait. Een service moet zo ontworpen zijn dat deze slechts éénmaal gecompileerd moet worden door de deployment pipeline, zodat deze meerdere malen in productie gezet kan worden. Het externalizeren van de configuratiegegevens betekent dat de configuratie van een service tijdens runtime bepaalt wordt. Hier zijn er twee modellen mogelijk:
+	\begin{itemize}
+		\item \textbf{Push model.} Bij dit model zal de service bij het opstarten configuratiegegevens verwachten, die door de deploymentomgeving meegegeven worden. Hoe deze configuratiegegevens gegeven worden (via bestand, of individuele parameters) maakt niet uit. De service en deploymentomgeving moeten wel onderling van elkaar weten hoe de structuur van de configuratiegegevens in elkaar zit. Het \underline{grootste nadeel} van deze methode is dat een service haast niet meer gewijzigd kan worden na het initialiseren van de service. Een ander \underline{nadeel} is dat de configuratiegegevens verspreidt over de services liggen.
+		\item \textbf{Pull model.} Het pull model heeft bijna enkel voordelen tegenover het push model. De deploymentomgeving geeft bij de creatie van de service enkel de URL mee van een zogenaamde \underline{configuratieserver}. Deze server bevat alle configuratiegegevens voor elke service. De service zelf zal dan deze server, met behulp van de URL, aanspreken om de juiste configuratiegegevens op te halen. Dit biedt een aantal \underline{voordelen}:
+		\begin{itemize}
+			\item Gecentraliseerde configuratie.
+			\item Een service kan de server pollen om na te gaan of de configuratiegegevens aangepast zijn, en deze dan eventueel op te halen. De service moet hiervoor niet herstart worden.
+			\item Sommige configuratiegegevens zijn gevoelig, zoals databaseinformatie. De server zal deze moeten encrypteren. De service wordt dan wel verwacht de publieke sleutel van de server te hebben zodat hij deze kan decrypteren. Sommige servers decrypteren de configuratiegegevens zelf.
+		\end{itemize}
+		Het \underline{grootste nadeel} is echter dat de configuratieserver opnieuw een infrastructuur is dat moet opgesteld en onderhouden worden.
+	\end{itemize}
+
+	Om \textbf{monitoring} te implementeren moeten services 'waarneembaar' gemaakt worden. Er moeten hiervoor extra APIs aangemaakt worden, die niet mogen interfereren met de werkelijke functionaliteit van de service. Hiervoor zijn er een aantal hulpmiddelen om een service waarneembaar te maken:
+	\begin{itemize}
+		\item \textbf{Health check API.} Een eenvoudige API dat de status van de service teruggeeft.
+		\item \textbf{Log aggregation.} Logbestanden zijn een goede manier om de werking van de service op te volgen. Deze logbestanden worden best geschreven naar een gecentraliseerde logserver, zodat \underline{zoeken} ondersteund kan worden. Het is ook enkel de verantwoordelijkheid van de logserver om ontwikkelaars te waarschuwen. Traditioneel logt een applicatie naar een welbepaald logbestand op het filesysteem. Dit is hier geen goede oplossing, omdat sommige services zelfs geen filesysteem zullen hebben. Hierom moet elke service loggen naar stdout. De deploymentomgeving zal dan beslissen wat hij wil doen met deze uitvoer. 
+		\item \textbf{Distributed tracing.} Het oproepen van een endpoint van de API kan meerdere interne calls maken. Het is vaak moeilijk te achterhalen waarom zo een query traag verloopt. Distributed tracing kent aan elke endpoint een ID toe, en bekijkt de call chain die overlopen wordt. Deze gegevens worden naar een gecentraliseerde server verstuurd waarop analyse kan uitgevoerdt worden. Een endpoint wordt gepresenteerd door een \underline{trace}. Zo een trace bestaat uit geneste \underline{spans}, die elk een call voorstellen. De endpoint is de top span, en zal elke andere span bevatten. 
+		\item \textbf{Audit logging.} Het doel van audit logging is om acties van gebruikers te verzamelen. Elke audit log entry heeft een ID dat een gebruiker voorstelt, de actie dat ze uitgevoerd hebben en het domeinobject. Voorbeelden zijn gefaalde loginpoging, toevoegen van items in het winkelmandje, maar uiteindelijk niet betalen. Zulke logs dienen vooral voor customer support en om vreemde activiteiten op te sporen.
+		\item \textbf{Application metrics.} Deze tak bestaat uit een metriekservice. Deze metriekservice vraagt gegevens op van de verschillende applicaties. Zulke gegevens zijn onder andere: CPU gebruik, geheugengebruik, schijfgebruik, aantal requests per seconde, request latency en domeinspecifieke gegevens. Een service moet ontworpen zijn zodat al deze gegevens naar de metriekservice kunnen verstuurd worden, en is afhankelijk van het gebruikte framework. De service kan ofwel zelf beslissen om zijn metrieken te versturen naar de metriekservice, of de metriekservice zal elke service pollen om de metrieken op te halen.
+	\end{itemize}
+	\chapter{Containers}
+	Verschillende microservices kunnen onderling elk gebruik maken van verschillende technologiën. Om deze verschillende microservices te deployen zouden al de verschillende dependencies van elke technologie op de server geconfigureerd moeten worden. Dit is natuurlijk niet haalbaar op grote schaal, daarom zou men in eerste instantie virtuele machines kunnen gebruiken waarbij elke verschillende virtuele machine geshickt is voor een specifieke technologiestack. Virtuele machines nemen echter te veel opslag in beslag. Ze nemen zoveel beslag in omdat elke virtuele machine zijn eigen besturingssysteem en kernel bevat. De hypervisor (of virtual machine monitor) geeft elke virtuele machine de illusie dat enkel hun machine toegang heeft tot de resources van het \underline{hosttoestel} (het toestel waarop de virtuele machines draaien). 
+	Er zijn twee types hypervisor:
+	\begin{itemize}
+		\item \textbf{Type 1.} Dit type hypervisor draait rechtstreeks op de hardware van de host en heeft geen behoefte aan een onderliggend besturingssysteem. 
+		\item \textbf{Type 2.} Dit type hypervisor heeft wel nood aan een besturingssysteem. Dit heeft als voordeel dat er ook applicaties op het hosttoestel kunnen draaien.
+	\end{itemize}
+	\underline{Containers} zijn een virtualisatietechniek op besturingssysteemniveau. Een populaire container technologie is Docker, dat gebruik maakt van de linux container functionaliteit.  
+	\begin{itemize}
+		\item \textbf{Linux Control Groups (cgroups).} Groeperen van taken, en privileges zetten op deze groepen.
+		\item \textbf{Linux namespaces.} Een geïsoleerde weergave van de systeemresources.
+		\item \textbf{Changing root (chroot).} Elk process de illusie geven dat ze vanuit de root-directory aangesproken worden.
+		\item \textbf{Veilige containers.} Mogelijkheden per process vastzetten.
+	\end{itemize}
+
+	\underline{Docker}:
+	\begin{itemize}
+		\item Automatisch verpakken en deployen van een applicatie.
+		\item Beschikbaar op Linux, MacOS, Windows.
+		\item Onafhankelijk. Minimale dependencies.
+		\item Grote flexibiliteit in wat er in de container moet.
+		\item Alle containers kunnen gestart en gestopt worden op dezelfde manier.
+		\item Lightweight. Meerdere containers per host mogelijk (nog meer dan virtuele machines).
+	\end{itemize}
+
+	\section{Docker Architecture}
+	
+
+ 
+	\part{Distributed Data Storage \& Processing}
+	\chapter{De uitdagingen van moderne data}
+	Data-intensieve applicaties moeten rekening houden met volgende vier categorieën:
+	\begin{itemize}
+		\item \textbf{Volume.} De hoeveelheid opslag die over verschillende plaatsen moeten opgeslagen worden.
+		\item \textbf{Velocity.} De snelheid waarop nieuwe informatie actueel wordt.
+		\item \textbf{Variety.} De verschillende soorten types van data die bestaan. 
+		\item \textbf{Veracity.} De betrouwbaarheid van de data. 
+	\end{itemize}
+	\chapter{Datamodellen}
+	\section{Het relationeel model}
+	\accentuate{zie cursus relationele gegevensbanken, belangrijk is om gewoon de nadelen te kennen zoals:}
+	\begin{itemize}
+		\item Er zou een brede tabel nodig zijn met honderden kolommen (waarvan de meeste dan NULL zijn) om bijvoorbeeld de producten van een winkel op te slaan. Elk product heeft diverse kenmerken die eigen zijn aan een bepaalde productcategorie.
+		\item Men zou dit kunnen oplossen door een nieuwe tabel te maken per productcategorie, maar dit introduceert veel tabellen en relaties (te vergelijken met het verhogen van de normaalvorm).
+	\end{itemize}
+	\section{Het document model}
+	Informatie in een document model wordt in een boomstructuur met one-to-many relaties opgeslagen, en is daarom dus perfect voor \underline{one-to-many relaties}. Een document wordt opgeslagen als één string, meestal in JSON of XML formaat, op deze manier volstaat één enkele query om een hele object, en zijn relaties op te vragen. 
+
+	Een extreem voordeel van het document model is dat het geen restricties oplegt aan de data. Er kunnen twee producten zijn die in het systeem herkent worden als "Product" maar een andere interne structuur hebben. Het \underline{document model} wordt dus best \underline{gekenmerkt door}:
+	\begin{itemize}
+		\item Flexibiliteit in het schemamodel. Dit wordt ook wel "schema-on-read" genoemd aangezien de cliënt niet op voorhand kan weten welke structuur het document zal hebben.
+		\item Data lokaliteit. Hiermee wordt bedoeld dat een document als één enkelvoudige string wordt opgeslagen, en alle informatie zit dan ook in die string. Er is geen nood aan het join-of indexeringmechanisme. Een document wordt altijd in zijn geheel ingelezen, dit kan een nadeel zijn indien slechts een beperkt aantal informatie van dat document nodig is.
+	\end{itemize}
+
+	\section{Het graaf model}
+	Het document model volstaat voor one-to-many relaties, maar is niet perfect voor \underline{many-to-many} of \underline{many-to-one relaties} want dan moeten er toch "joins" gedaan worden, maar dan op documenten. Het graaf model kent twee soorten:
+	\begin{enumerate}
+		\item Een normale graaf met knopen en verbindingen, die beiden attributen kunnen hebben.
+		\item Een drievoudig model waarbij alle informatie opgeslagen wordt als: \texttt{SUBJECT $\rightarrow$ PREDICATE $\rightarrow$ OBJECT}
+	\end{enumerate}
+	Gekende graafalgoritmen kunnen toegepast worden op dit model. Het \underline{graaf model} heeft een aantal \underline{use cases}:
+	\begin{itemize}
+		\item \textbf{Transportnetwerk.} Een graaf is de geschikte manier om een wegennet voor te stellen.
+		\item \textbf{Linkanalyse.} Het zoeken van objecten die gerelateerd zijn aan een ander object (bv vrienden van vrienden zoeken).
+	\end{itemize}
+
+	\section{Het kolomfamilie model}
+	\todo{xxx}
+
+	\chapter{Gedistribueerde informatie}
+	Waarom is het belangrijk dat informatie op verschillende nodes beschikbaar is?
+	\begin{itemize}
+		\item \textbf{Schaalbaarheid:} Een toestel heeft maar een maximum aantal geheugen, opslagplaats en schijfoperaties per seconde. Meerdere nodes betekent dat de belasting kan verdeeld worden tussen de nodes.
+		\item \textbf{Fouttolerantie:} Een reverse voorzien voor in het geval dat een andere node uitvalt.
+		\item \textbf{Latency:} Nodes geografisch verspreiden zodat connecties vanuit andere continenten niet traag zijn.
+	\end{itemize}
+	Er wordt best gebruik gemaakt van het \underline{horizontaal schaalschema}. Dit heeft als voordeel dat er geen speciale hardware vereist is, en er gewoon machines kunnen bijgekocht worden indien dit nodig zou zijn.
+
+	Er zijn \underline{twee belangrijke patronen} om data de distribueren:
+	\begin{enumerate}
+		\item \textbf{Replicatie:} Dit is eenvoudig alle data dupliceren op elke verschillende node, zodat ze allemaal dezelfde data bevatten. De \underline{voordelen} zijn: hoge databeschikbaarheid en fouttolerantietegen het uitvallen van een node door de redundantie van de informatie. Het \underline{nadeel} is: hoe moeten we ervoor zorgen dat alle nodes over dezelfde data beschikken (zie sectie \ref{sec:replicatie})? 
+		\item \textbf{Partitionering (sharding):} De grote hoeveelheid data kan ook gepartitioneerd worden, zodat elke node zijn unieke verzameling van gegevens bevat. Partitionering heeft een aantal \underline{voordelen}: Elke partitie moet slechts zijn beperkte data behandelen. Hoe groter de dataset wordt, hoe minder operaties een bepaalde partitie zal moeten uitvoeren, aangezien er meer patitities zullen ingevoerd worden zodat de data meer verspreidt ligt over alle partities. Het \underline{nadeel} is: hoe kunnen we bepalen op welke node een bepaald stukje informatie moet komen. Idealiter heeft elke node dezelfde workload.
+	\end{enumerate}
+	In praktijk worden replicatie en partitionering gecombineerd. Eerst wordt partitionering toegepast, waarna deze partities ook nog gerepliceerd worden.
+
+	\section{Replicatie}
+	\label{sec:replicatie}
+	Er zijn \underline{twee modellen} om aan replicatie te doen: het leader-follow model en het leaderless model. Een node die repliceerd wordt een replica genoemd.
+	\subsection{Leader-Follower model}
+	Dit model verloopt in drie stappen:
+	\begin{enumerate}
+		\item Een replica wordt tot leader gemaakt. Enkel op deze replica mogen er writeoperaties plaatsvinden.
+		\item Elke andere replica is een follower. Elke keer dat de leader naar zijn schijf schrijft, zal de leader ook de gewijzigde data doorsturen, in de vorm van een \underline{replication log}, naar alle followers. Deze replication log bevat instructies dat elke follower moet ondernemen zodat ze de update juist kunnen uitvoeren.
+		\item Een cliënt kan een readoperatie zowel aan de leader als aan een follower aanvragen. 
+	\end{enumerate}
+	Deze manier garandueerd dat de followers \underline{ooit zullen convergeren} naar de juiste toestand.
+	\subsection{Leaderless model}
+\end{document}
