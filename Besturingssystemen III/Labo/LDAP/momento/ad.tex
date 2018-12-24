@@ -77,10 +77,36 @@ $root->GetInfo();
 
     \item[\info] Belangrijke functies:
     \begin{itemize}
-        \item[\info] \$Object$\rightarrow$Get()
-        \item[\info] \$Object$\rightarrow$GetEx()
-        \item[\info] \$Object$\rightarrow$GetInfo() \# Voor property cache te initialiseren
-        \item[\info] \$Object$\rightarrow$GetInfoEx()
+        \item[\info] \$Object\(\rightarrow \)Get(''attribuut'') \# equivalent met \$Object\(\rightarrow \)\{attribuut\}
+        \item[\info] \$Object\(\rightarrow \)GetEx() \# bedoeld voor multivalued attributen te verwerken, geeft altijd een referentie naar een array terug, ook al is er maan één waarde.
+        \item[\info] \$Object\(\rightarrow \)GetInfo() \# Voor de meeste attributen te initialiseren.
+        \item[\info] \$Object\(\rightarrow \)GetInfoEx([referentie naar een array van attributen], 0) \# expliciet zeggen welke properties moeten geinitialiseerd worden
+        \item[\info] \$Object\(\rightarrow \)SetInfo()
     \end{itemize}
+
+    \item[\info] Gebruik maken van \textbf{IADsPropertyList}:
+    \begin{lstlisting}
+my $object = bind_object(...);
+$object->GetInfo();
+while(my $attribuut = $object->Next()){
+    # toegang tot Name, ADsType en Values attributen van $attribuut
+    # ,dat eigenlijk een instantie is van IADsPropertyEntry.
+    for my $waarde (@{$attribuut->{Values}}){
+        # Heel rare manier om de waarde van $waarde op te halen
+        # verwacht het ADsType dat $waarde zou moeten bevatten 
+        # Elke waarde van $attribuut->{Values} IS van hetzelfde type
+        # Meestal is er ook slechts maar 1 waarde
+        print $waarde->GetObjectProperty($atribuut->{ADsType});
+    }
+}
+    \end{lstlisting}
+    \item[\info] In schemacontext kan het handig zijn om filteren op attributeSchema of classSchema:
+    \begin{lstlisting}
+my $root = bind_object('RootDSE');
+my $schema = bind_object($root->Get("schemanamingcontext"));
+$schema->{Filter} = ["attributeSchema"];
+# OF
+# $schema->{Filter} = ["classSchema]";
+    \end{lstlisting}
 \end{itemize}
 \end{document}
