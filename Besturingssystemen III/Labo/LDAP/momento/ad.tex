@@ -1,0 +1,86 @@
+\documentclass{report}
+\usepackage{ugentstyle}
+
+\begin{document}
+\maketitle{Besturingssystemen III $-$ LDAP}
+
+\definecolor{applegreen}{rgb}{0.55, 0.71, 0.0}
+\definecolor{amber}{rgb}{1.0, 0.49, 0.0}
+
+\lstset{language=perl,
+       showstringspaces=false,
+       keywordstyle=\color{blue},
+       commentstyle=\color{amber},
+       stringstyle=\color{applegreen}
+       }
+\definecolor{keyword}{rgb}{0.0,0.0,1.0}
+\begin{itemize}
+    \item[\info] Importeren type library:
+    \begin{lstlisting}
+use Win32::OLE::Const 'Active DS Type Library';
+    \end{lstlisting}
+    \item[\info] Binden van een object:
+    \begin{lstlisting}
+sub bind_object {
+    my $parameter = shift;
+    my $moniker, $object;
+
+    # |!| INLOGPROCEDURE    
+    # thuis  : 193.190.126.71
+    # school : 192.168.16.16
+    my $ip = "193.190.126.71";
+    $moniker = "LDAP://$ip/" . $parameter; 
+    my $login = "Bert De Saffel";
+    my $pass = "Bert De Saffel";
+    my $dso = Win32::OLE->GetObject("LDAP:");
+
+    $object = $dso->openDSObject(
+        $moniker, $login , $pass, ADS_SECURE_AUTHENTICATION);
+
+    print Win32::OLE->LastError() if Win32::OLE->LastError();
+    return $object;
+}
+
+    \end{lstlisting}
+
+    \item[\info] Printen attribuut:
+    \begin{lstlisting}
+my $object = bind_object(...);
+print $object->{attribuut};
+    \end{lstlisting}
+
+    \item[\info] Op een klasse filteren in een container:
+    \begin{lstlisting}
+my $object = bind_object(...);
+$object->{Filter} = ['user'];
+for (in $object){ # zal enkel AD-objecten bevatten van type 'user'
+    ...
+}
+    \end{lstlisting}
+
+    \item[\info] Property Cache initialiseren (belangrijk bij binding RootDSE)
+    \begin{lstlisting}
+my $root = bind_object('RootDSE');
+$root->GetInfo();
+
+#Je kan het ook combineren op 1 lijn
+
+(my $root = bind_object('RootDSE'))->GetInfo();
+    \end{lstlisting}
+
+    \item[\info] Verschillende contexts:
+    \begin{itemize}
+        \item[\info] DefaultNamingContext
+        \item[\info] ConfigurationNamingContext
+        \item[\info] SchemaNamingContext
+    \end{itemize}
+
+    \item[\info] Belangrijke functies:
+    \begin{itemize}
+        \item[\info] \$Object$\rightarrow$Get()
+        \item[\info] \$Object$\rightarrow$GetEx()
+        \item[\info] \$Object$\rightarrow$GetInfo() \# Voor property cache te initialiseren
+        \item[\info] \$Object$\rightarrow$GetInfoEx()
+    \end{itemize}
+\end{itemize}
+\end{document}

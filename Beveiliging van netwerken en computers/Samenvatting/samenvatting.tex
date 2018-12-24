@@ -89,10 +89,10 @@
 				\item Authenticatie: Enkel indien beide partijen dezelfde sleutel hebben (en dus elkaar vertrouwen), kunnen ze communiceren.
 			\end{itemize}
 
-		\emph{Assymetrische encryptie} zorgt ervoor dat elke entiteit een sleutelpaar heeft bestaande uit een geheime sleutel en een publieke sleutel. Dit garandeert:
+		\emph{Assymetrische encryptie} zorgt ervoor dat elke entiteit een sleutelpaar heeft bestaande uit een private sleutel en een publieke sleutel. Dit garandeert:
 			\begin{itemize}
 				\item Confidentialiteit: Enkel de ontvanger kan berichten decrypteren die geëncrypteerd zijn met de ontvanger zijn publieke sleutel. 
-				\item Authenticatie: Enkel de verzender kan een bericht versturen met zijn specifieke geheime sleutel. Dit bericht is dan ook enkel decrypteerbaar met de publieke sleutel van dezelfde verzender.
+				\item Authenticatie: Enkel de verzender kan een bericht versturen met zijn specifieke private sleutel. Dit bericht is dan ook enkel decrypteerbaar met de publieke sleutel van dezelfde verzender.
 			\end{itemize}
 		
 		\item \textbf{Hash functies}
@@ -114,14 +114,14 @@
 	Stel nu \textbf{P(N, k)) = 0.99}, dan is \textbf{k $\approx$ 4,6} en \textbf{$\sqrt{N} \approx 4,6 \cdot 2^{n/2}$}.
 	\item \textbf{Message Authentication Code}
 
-	Een \textbf{Message Authentication Code (MAC)} kan net zoals een hash gebruikt worden om informatie te encrypteren. De input van deze functie is echter een combinatie van plaintext en een geheime sleutel. Het biedt ook bijkomende functionaliteit:
+	Een \textbf{Message Authentication Code (MAC)} kan net zoals een hash gebruikt worden om informatie te encrypteren. De input van deze functie is echter een combinatie van plaintext en een private sleutel. Het biedt ook bijkomende functionaliteit:
 	\begin{itemize}
 		\item Controle of een bericht aangepast wordt.
 		\item Controle of dat de verzender correct is
 		\item Indien een sequentienummer bijgehouden wordt, dat de berichtvolgorde gerespecteerd wordt.
 	\end{itemize}
 
-	\textbf{MAC} kent een gelijkenis met \textbf{symmetrische encryptie}. In beide gevallen moet de zender en ontvanger een geheime sleutel hebben zodat ze hetzelfde authenticatiemechanisme hebben. Het nadeel is natuurlijk dat de ontvanger ook deze sleutel moet hebben. MAC biedt wel geen confidentialiteit. Dit laat echter toe om beide functies op te splitsen. De authenticatie kan met een MAC gebeuren op een server, terwijl confidentialiteit de taak is van een werkstation, gebruik makend van encryptie. Gegeven de notatie \textbf{$MAC = C_k(M)$} met k de geheime sleutel en M het bericht. Een MAC moet aan volgende vereisten voldoen:
+	\textbf{MAC} kent een gelijkenis met \textbf{symmetrische encryptie}. In beide gevallen moet de zender en ontvanger een private sleutel hebben zodat ze hetzelfde authenticatiemechanisme hebben. Het nadeel is natuurlijk dat de ontvanger ook deze sleutel moet hebben. MAC biedt wel geen confidentialiteit. Dit laat echter toe om beide functies op te splitsen. De authenticatie kan met een MAC gebeuren op een server, terwijl confidentialiteit de taak is van een werkstation, gebruik makend van encryptie. Gegeven de notatie \textbf{$MAC = C_k(M)$} met k de private sleutel en M het bericht. Een MAC moet aan volgende vereisten voldoen:
 	\begin{itemize}
 		\item Indien $M$ en $C_k(M)$ gekend zijn, moet het onmogelijk zijn om een bericht $M'$ te construeren zodat \textbf{$$C_k(M') = C_k(M)$$} Dit is nodig voor data-integriteit
 		
@@ -256,7 +256,7 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 			\begin{itemize}
 				\item Host-based authentication: Enkel de host wordt geauthenticeerd, zodat er verondersteld moet worden dat de host zelf al de individuele gebruikers heeft geauthenticeerd. De gebruiker maakt gebruik van de host zijn private host key om een handtekening te maken. De server verifieerd deze handtekening, gebruik makend van de public host key van de host.
 				\item Password-based authentication: Bij elke nieuwe SSH connectie moet de gebruiker zijn paswoord meegeven. Dit paswoord is natuurlijk geëncrypteerd door het SSH transportlaag protocol.
-				\item Public key authentication: Een gebruiker moet een public-private sleutelpaar hebben. Bij een SSH connectie voor een gebruiker wordt er een speciale handtekening, gegenereerd met behulp van zijn geheime sleutel. De server controleert of de bijhorende publieke sleutel correct is, en authenticeerd al dan niet de gebruiker.
+				\item Public key authentication: Een gebruiker moet een public-private sleutelpaar hebben. Bij een SSH connectie voor een gebruiker wordt er een speciale handtekening, gegenereerd met behulp van zijn private sleutel. De server controleert of de bijhorende publieke sleutel correct is, en authenticeerd al dan niet de gebruiker.
 			\end{itemize}
 		\end{itemize}
 		\item \accentuate{In welke gevallen is het aan te raden om een SSH sleutel\emph{her}uitwisseling te initialiseren? Waarom?}
@@ -300,11 +300,11 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 		\item Bob kiest een geheim getal $b < p$. Zijn publieke sleutel is $y_B = g^b\;\hbox{mod}\;p$.
 		\item Alice en Bob bereken respectievelijk $y_B^a\;\hbox{mod}\;p$ en $y_A^b\;\hbox{mod}\;p$. Deze zullen beiden dezelfde uitkomst bekomen, en wordt dan hun sleutel. 
 	\end{enumerate}
-	 Aangezien $g^x$ elk mogelijk getal zal genereren modulo $p$ voor alle $x < p$, is het moeilijk voor een aanvaller, die de publieke sleutels toch kent, de geheime sleutel te achterhalen. Ze moeten hierbij het discrete logaritme probleem oplossen. 
+	 Aangezien $g^x$ elk mogelijk getal zal genereren modulo $p$ voor alle $x < p$, is het moeilijk voor een aanvaller, die de publieke sleutels toch kent, de private sleutel te achterhalen. Ze moeten hierbij het discrete logaritme probleem oplossen. 
 	 
 	 Stel $p = 23$ en $g = 5$. Alice neemt $a = 6$ en Bob neemt $b = 15$, dan wordt $y_A = 5^6\;\hbox{mod}\;23 = 8$ en $y_B = 5^{15}\;\hbox{mod}\;23 = 19$. Alice berekent $19^6\;\hbox{mod}\;23 = 2$ en Bob berekent  $8^{15}\;\hbox{mod}\;23 = 2$.
 
-	 Normaal wordt $p$ een priemgetal van ongeveer 300 cijfers genomen. De getallen $a$ en $b$ zijn dan weer minstens 100 cijfers lang. De geheime sleutel bepalen, indien $g$, $p$, $y_A$ en $y_B$ gekend zijn duurt quasi oneindig lang. 
+	 Normaal wordt $p$ een priemgetal van ongeveer 300 cijfers genomen. De getallen $a$ en $b$ zijn dan weer minstens 100 cijfers lang. De private sleutel bepalen, indien $g$, $p$, $y_A$ en $y_B$ gekend zijn duurt quasi oneindig lang. 
 
 	\subsubsection{Nadelen \emph{normale} Diffie-Hellman}
 	\begin{itemize}
@@ -320,7 +320,7 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 	\end{itemize}
 
 	\subsection{Sleuteldistributiecentrum}
-	Het sleuteldistributiecentrum vermijdt dat gebruikers zelf de sleutel moeten overhandigen. Elke gebruiker heeft een geheime sleutel die kan gebruikt worden om met het \textbf{KDC (Key Distribution Centre)} te communiceren. Er zijn twee soorten sleutels: de sessiesleutels zijn een tijdelijke sleutel die gebruikt worden voor één enkele sessie. Deze sessiesleutel wordt gebruikt om informatie te encrypteren tussen verschillende gebruikers. De ander sleutel is de mastersleutel. Deze wordt gebruikt om sessiesleutels te encrypteren en wordt gedeeld tussen een gebruiker en de KDC. De basiswerking van de KDC (figuur \ref{fig:basiswerkingKDC}) is als volgt:
+	Het sleuteldistributiecentrum vermijdt dat gebruikers zelf de sleutel moeten overhandigen. Elke gebruiker heeft een private sleutel die kan gebruikt worden om met het \textbf{KDC (Key Distribution Centre)} te communiceren. Er zijn twee soorten sleutels: de sessiesleutels zijn een tijdelijke sleutel die gebruikt worden voor één enkele sessie. Deze sessiesleutel wordt gebruikt om informatie te encrypteren tussen verschillende gebruikers. De ander sleutel is de mastersleutel. Deze wordt gebruikt om sessiesleutels te encrypteren en wordt gedeeld tussen een gebruiker en de KDC. De basiswerking van de KDC (figuur \ref{fig:basiswerkingKDC}) is als volgt:
 	\begin{enumerate}
 		\item Alice vraagt aan de KDC om een verbinding op te zetten met Bob. Alice stuurt ook een "nonce" $N_1$. Dit is een willekeurig getal dat slechts éénmaal gebruikt wordt om replay aanvallen te voorkomen.
 		\item De KDC geeft volgende informatie terug, dat geëncrypteerd wordt door Alice haar sleutel $K_{A-KDC}$: De sessiesleutel, de identiteit van Bob, dezelfde nonce dat Alice stuurde naar de KDC, en geëncrypteerde informatie (met Bob zijn sleutel $K_{B-KDC}$).
@@ -401,7 +401,7 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 	\begin{itemize}
 		\item[\info] \textbf{CA Hiërarchy}: De publieke sleutels van Alice en Bob kunnen door een CA getekend worden, waarvan de publieke sleutel door een hoger gelegen CA getekend werd, ...
 		\item[\info] \textbf{Web model}: Elke browser en operatingsysteem komt met een lijst van erkende root-certificaten. Het is dan ook hun taak om een nieuw certificaat te controleren, op basis van de CA hiërarchy.
-		\item[\info] \textbf{User-centrisch} (PGP): Elke gebruiker is zijn eigen root CA. Stel dat Alice en Bob elkaar vertrouwen, en dat nu Charlie met Alice wilt praten. Alice kent Charlie niet, maar Bob wel. Charlie vraagt aan Bob om zijn publieke sleutel te tekenen met Bob zijn geheime sleutel. Alice kan dit nu controleren, en door transitieve eigenschap, kent Alice nu ook Charlie. Op die manier wordt er een netwerk opgebouwd, maar is dus enkel handig wanneer veel mensen collaboreren.	
+		\item[\info] \textbf{User-centrisch} (PGP): Elke gebruiker is zijn eigen root CA. Stel dat Alice en Bob elkaar vertrouwen, en dat nu Charlie met Alice wilt praten. Alice kent Charlie niet, maar Bob wel. Charlie vraagt aan Bob om zijn publieke sleutel te tekenen met Bob zijn private sleutel. Alice kan dit nu controleren, en door transitieve eigenschap, kent Alice nu ook Charlie. Op die manier wordt er een netwerk opgebouwd, maar is dus enkel handig wanneer veel mensen collaboreren.	
 		\item[\info] \textbf{Cross-certification}: \todo{dunno, lijkt me niet zo belangrijk ook}
 	\end{itemize}
 
@@ -793,7 +793,7 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 	\end{table}
 	Geëncrypteerd is dit dus \texttt{DNETLEEDHESWLXFTAAX}.
 
-	De laatste methode die besproken wordt is de \underline{columnar transposition cipher}. Een bericht wordt in rijen geschreven over een bepaald aantal kolommen. Hierna worden de kolommen gesorteerd op basis van de geheime sleutel $K = k_ik_j ... k_n$. Stel $K = k_3k_4k_2k_1k_5k_6k_7$ en plaintext \texttt{ATTACK POSTPONED UNTIL TWO AM}: Op Tabel \ref{table:columnartransposition} wordt deze plaintext uitgeschreven in rijen en kolommen. De ciphertext wordt dan \texttt{TTNAAPTMTSUOAODWCOIXKNLYPETZ}.
+	De laatste methode die besproken wordt is de \underline{columnar transposition cipher}. Een bericht wordt in rijen geschreven over een bepaald aantal kolommen. Hierna worden de kolommen gesorteerd op basis van de private sleutel $K = k_ik_j ... k_n$. Stel $K = k_3k_4k_2k_1k_5k_6k_7$ en plaintext \texttt{ATTACK POSTPONED UNTIL TWO AM}: Op Tabel \ref{table:columnartransposition} wordt deze plaintext uitgeschreven in rijen en kolommen. De ciphertext wordt dan \texttt{TTNAAPTMTSUOAODWCOIXKNLYPETZ}.
 	\begin{table}[ht]
 		\centering
 		\begin{tabular}{|c|c|c|c|c|c|c|}
@@ -979,7 +979,7 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 
 	Stel nu $e = 5$ want $gcd(\phi(n), e) = gcd(216, 5) = 1$ en $1 \leq e \leq \phi(n)$
 
-	$d = 5^{-1} \mod 216 = = 173$
+	$d = 5^{-1} \mod 216 = 173$
 
 	$KU = \langle 5, 247 \rangle$
 
@@ -994,10 +994,129 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 	Er kan ook een handtekening gemaakt worden met de private sleutel: $S = M^{d} \mod n$. De handtekening verifiëren gebeurd dan met de publieke sleutel: $M = S^{e} \mod n$.
 
 	\subsection{Andere asymmetrische algoritmen}
+	\todo{niet belangrijk}
+	\section{Hashalgoritmen}
+	Een hashfunctie $H$ bewerkt een bepaald bericht $M$ zodat $H(M) = h$. Hierbij wordt er op voorhand vastgelegd hoeveel bits $h$ zal hebben. Zo zal $MD5$ een hashwaarde van 128 bits genereren, en $SHA1$ een hashwaarde van 160 bits. Een hash wordt gebruikt om wijzigingen te detecteren in een bericht, aangezien dat een wijziging in het bericht ook een andere hashwaarde zal opleveren.
 
-	
+	\underline{Het verschil met encryptiealgoritmen}
+	\begin{itemize}
+		\item[\info] Een hashalgoritme is performanter, omdat ze een andere functie hebben. Ze dienen niet om een bericht te encrypteren, want een hashfunctie kan niet gedecrypteerd worden.
+		\item[\info] De sleutelgrootten en datablokken bij hashfuncties zijn veel groter dan die van encryptiealgoritmen. Hashfuncties kunnen ook van sleutel verwisselen per datablok.
+		\item[\info] Hashalgoritmen zijn resistent tegen sleutel-gebaseerde aanvallen.
+	\end{itemize}
+
+	\subsection{MD5}
+	\textbf{Message Digest (MD5)} genereert hashwaarde met grootte \textbf{128 bits}. Dit aantal bits is eigenlijk niet genoeg om \textbf{strong collision resistance} te hebben, en wordt daarom niet als een goed hashalgoritme beschouwd. De uitwerking van dit hashalgoritme is dan ook niet interessant.
+	\subsection{SHA1}
+	Dit hashalgoritme genereert een hashwaarde die \textbf{160 bits} bevat. De \textbf{strong collision resistance} requirement is hier al veel beter, maar cryptoanalyse heeft did hashalgoritme ook in meerwaarde doen dalen en is ook trager dan $MD5$. Het hashalgoritme werkt op blokken van \textbf{512 bits}.
+	\subsection{SHA2}
+	Deze uitbreiding op $SHA1$ omvat eigenlijk 4 versies, die best in een tabel kunnen beschreven worden:
+	\begin{table}[ht]
+		\centering
+		\begin{tabular}{l | l | l}
+			Versie & grootte datablok & outputgrootte \\
+			\hline
+			SHA224 & 224 bits & 512 bits \\
+			SHA256 & 256 bits & 512 bits \\
+			SHA384 & 384 bits & 1024 bits \\
+			SHA512 & 512 bits & 1024 bits \\
+		\end{tabular}
+	\end{table}
+
+
+	\section{MAC-algoritmen}
+	Een MAC kan niet gebruikt worden als een encryptiealgoritme, omdat het net zoals een hash een onomkeerbaar proces is. 
+	\subsection{CBC-MAC}
+	Een symmetrische encryptie van het hele bericht met behulp van de CBC-mode. Het laatste blok wordt gebruikt als de MAC. Deze implementatie kan dus gebruik maken van een symmetrisch encryptiealgoritme zoals DES en AES.
+	\subsection{HMAC}
+	\todo{onbelangrijk}
+
 	\chapter{Software- en systeembeveiliging}
 	\section{Veilige applicaties}
+	\subsection{Email}
+	\subsubsection{PGP}
+	Staat voor Pretty Good Privacy en biedt beveiligingtools voor dataopslag en emailverkeer. Het maakt gebruik van betrouwbare algoritmen zoals AES, RSA en SHA1.
+	
+	\underline{Een sleutelpaar aanmaken} gebeurd op basis van de identiteit, de geldigheidsperiode en een paszin. Er zijn twee mogelijkheden:
+	\begin{itemize}
+		\item[\info] Een sleutelpaar voor de digitale handtekening. Dit wordt ook wel de \emph{master key} genoemd. 
+		\item[\info] Eén of meer sleutelparen voor encryptie. Deze worden \emph{subkeys} genoemd. 
+	\end{itemize}
+
+	\underline{Om authenticate te garanderen}, moet de \textbf{verzender} volgende acties ondernemen:
+	\begin{itemize}
+		\item[\info] Genereer een hashwaarde van het bericht.
+		\item[\info] Encrypteer deze hashwaarde met een asymmetrisch encryptiealgoritme met de private sleutel van de verzender.
+		\item[\info] Optioneel kan dit bericht nog gecompresseerd worden en omgevormd worden tot een radix-64 formaat.
+	\end{itemize}
+	De verzender stuurt nu het plaintext bericht, samen met de geëncrypteerde sleutel naar ontvanger. De \textbf{ontvanger} van dit bericht onderneemt dan volgende stappen:
+	\begin{itemize}
+		\item[\info] De optionele conversie van radix-64 en de compressie uitvoeren.
+		\item[\info] De hashwaarde moet gedecrypteerd worden met de publieke sleutel van de verzender.
+		\item[\info] De verzender berekend nu ook de hashwaarde van het bericht, en vergelijk dit met de gedecrypteerde hash. 
+	\end{itemize}
+	Als de hashes gelijk zijn, dan is het bericht geauthenticeerd. Zijn de hashes niet gelijk, dan werd het bericht niet geëncrypteerd door de verzender die verwacgt wordt.
+
+	\underline{Om confidentialiteit te garanderen}, moet de \textbf{verzender} volgende acties ondernemen:
+	\begin{itemize}
+		\item[\info] Genereer een sessiesleutel, dat enkel geldig is voor het huidig bericht.
+		\item[\info] Optioneel wordt het bericht gecompresseerd.
+		\item[\info] Het bericht wordt geëncrypteerd met een symmetrisch encryptiealgoritme met de sessiesleutel in CFB mode.
+		\item[\info] De sessiesleutel wordt ook geëncrypteerd met de ontvanger zijn publieke sleutel, gebruik makend van een asymmetrisch encryptiealgoritme.
+		\item[\info] Optioneel wordt het bericht geconverteerd naar radix-64 formaat.
+	\end{itemize}
+	Het geëncrypteerde bericht kan nu verzonden worden naar de \textbf{ontvanger}, die nu volgende stappen overloopt:
+	\begin{itemize}
+		\item[\info] Eventueel de radix-64 transformatie ongedaan maken.
+		\item[\info] De sessiesleutel wordt gedecrypteerd met de private sleutel van de ontvanger.
+		\item[\info] Het bericht kan nu gedecrypteerd worden met deze sessiesleutel.
+		\item[\info] Optioneel wordt het bericht gedecompresseerd.
+	\end{itemize}
+
+	\underline{Hoe kunnen authenticatie en confidentialiteit gecombineerd worden?}
+
+	\begin{itemize}
+		\item[\info] Eerst wordt authenticatie toegevoegd. Dit bericht wordt dan geëncrypteerd. 
+	\end{itemize}
+	Omdat een gebruiker meerdere encryptiesleutelparen kan hebben, moet er een eenvoudige manier bestaan om de juiste op te halen. Daarvoor wordt een sleutel geïdentificeerd door 64 bits, zodat er $2^{64}$ mogelijke sleutels zijn, met als gevolg dat de kans op collisie klein is. Het is dan ook eenvoudig om de juiste sleutel op te halen, op basis van deze 64 bits. PGP bewaard deze sleutels in \textbf{twee sleutelhangers}. De publieke sleutelhanger en de private sleutelhanger.
+	\begin{itemize}
+		\item[\info] \textbf{Private sleutelhanger}: Deze houdt volgende informatie bij per sleutel:
+		\begin{itemize}
+			\item De 64 bit identificatie.
+			\item De correspondeerde publieke sleutel.
+			\item De private sleutel, geëncrypteerd met een symmetrisch encryptiealgoritme.
+			\item Een identificatie van de gebruiker.
+		\end{itemize}
+
+		Bij het aanmaken van een private sleutel wordt er gebruik gemaakt van een paszin. Op basis van deze paszin wordt er een tijdelijke sleutel aangemaakt die gebruikt zal worden van deze encryptie. Om zo een private sleutel te decrypteren, moet deze paszin opnieuw ingegeven worden, zodat dezelfde tijdelijke sleutel kan gegenereerd worden.
+
+		\item[\info] \textbf{Publieke sleutelhanger}: Deze houdt volgende informatie bij per sleutel:
+		\begin{itemize}
+			\item De 64 bit identificatie.
+			\item De publieke sleutel
+			\item Een identificatie van de gebruiker.
+			\item Informatie over de betrouwbaarheid van de sleutel.
+			\item Digitale handtekeningen van andere gebruikers van deze sleutel.
+			\item Informatie over de betrouwbaarheid van deze digitale handtekeningen.
+		\end{itemize}
+
+		De publieke sleutelhanger van een gebruiker, bevat dus publieke sleutels van andere gebruikers. De publieke sleutelhanger is echter niet publiek voor andere gebruikers, maar enkel voor de eigenaar.
+	\end{itemize}
+
+	PGP doet heel veel beroep op \underline{vertrouwen}. Hier kunnen \underline{drie aspecten} betrokken worden:
+	\begin{itemize}
+		\item[\info] \textbf{Vertrouwen in de eigenaar van de publieke sleutel}: Zo zijn er verschillende niveaus zoals: \emph{ultimate trust}, \emph{always to be trusted to sign other keys}, \emph{usually to be trusted to sign other keys}, \emph{usually not to be trusted to sign other keys}. Ultimate trust en 'always to be trusted' lijken op het eerste zicht op elkaar, maar ultimate trust dient enkel voor sleutels die ook in de private sleutelhanger zitten.
+		\item[\info] \textbf{Vertrouwen in de digitale handtekening van een publieke sleutel}: PGP zal de betrouwbaarheid van de eigenaar die de handtekening gezet heeft opzoeken.
+		\item[\info] \textbf{Vertrouwen in de link tussen de eigenaar en een publieke sleutel}: PGP zal periodiek een betrouwbaarheidsniveau aangeven op basis van de digitale handtekeningen op deze publieke sleutel.
+	\end{itemize}
+
+	Een sleutel $x$ is \underline{compleet geldig als}:
+	\begin{itemize}
+		\item[\info] er een pad bestaat van gesigneerde sleutels die terug naar $x$ verwijst in 5 stappen of minder.
+		\item[\info] $x$ getekend werd door voldoende andere sleutels.
+	\end{itemize}
+
+
 
 	\section{Veilige systemen}
 	\subsection{Authenticatiemethoden}
