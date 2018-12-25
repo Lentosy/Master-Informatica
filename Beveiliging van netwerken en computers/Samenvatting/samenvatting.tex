@@ -1116,8 +1116,73 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 		\item[\info] $x$ getekend werd door voldoende andere sleutels.
 	\end{itemize}
 
+	\subsubsection{S/MIME}
+	\textbf{Multipurpose Internet Mail Extensions (MIME)} beschrijft een formaat voor de inhoud van een email die de limitaties van \textbf{RFC 822} en \textbf{SMTP} oplost, maar toch compatibel blijft met \textbf{RFC 822}. \textbf{Securei Multipurpose Internet Mail Extension (S/MIME)} voegt extra beveiligingselementen toe.
 
+	Een standaard \textbf{RFC 822} bericht bestaat uit een aantal header lines zoals \textbf{from}, \textbf{to} en \textbf{subject}, gevolgd door een lege lijn en de body van het bericht. Deze standaard in combinatie met \textbf{SMTP} heeft volgende problemen:
+	\begin{itemize}
+		\item[\alert] Ondersteund slechts 7-bit ASCII karakters.
+		\item[\alert] Het versturen van executables is moeilijk.
+		\item[\alert] Er bestaat geen standaardimplementatie van SMTP.
+		\item[\alert] Sommige servers converteren de berichten (tabs naar spaties, CR LF naar LF, whitespace verwijderen, ...)
+	\end{itemize}
 
+	\textbf{MIME} definieert \underline{vijf nieuwe headers}:
+	\begin{itemize}
+		\item[\info] \texttt{MIME-VERSION}
+		\item[\info] \texttt{CONTENT-TYPE}: beschrijving van de structuur van de inhoud, zodat de ontvanger de juiste conversiemethode kan kiezen. Een aantal voorbeelden zijn: \begin{itemize}
+			\item text/plain
+			\item image/jpeg, image/gif
+			\item video/mpeg
+			\item audio/basic
+			\item text/enriched
+			\item multipart/mixed
+			\item application/octet-stream
+		\end{itemize}
+		\item[\info] \texttt{CONTENT-TRANSFER-ENCODING}: laat toe om het bericht om te vormen naar een formaat dat accepteerbaar is voor emailverkeer. Voorbeelden zijn:
+		\begin{itemize}
+			\item 7bit
+			\item 8bit
+			\item binair
+			\item base64
+			\item x-token
+		\end{itemize}
+		\item[\info] \texttt{CONTENT-ID}
+		\item[\info] \texttt{CONTENT-DESCRIPTION}: beschrijving van de inhoud van het bericht. Wordt meestal gebruikt wanneer de inhoud nietleesbaar is, zoals audio.
+	\end{itemize}
+
+	\textbf{S/MIME-functies}:
+	\begin{itemize}
+		\item[\info] Enveloped data: de inhoud en sleutels worden geëncrypteerd voor 1 of meerdere gebruikers.
+		\item[\info] Signed data: het bericht krijgt een digitale handtekening. Zowel de inhoud als deze handtekening worden geëncodeerd in base64.
+		\item[\info] Clear-signed data: zelfde als signed data, maar enkel de handtekening wordt geëncodeerd in base64. Dit heeft als gevolg dat een ontvanger zonder S/MIME het bericht wel kan lezen, maar niet kan verifiëren.
+		\item[\info] Signed and enveloped data: combinatie van encryptie en digitale handtekening.
+	\end{itemize}
+	Door deze functies kan S/MIME nieuwe content-types definieren:
+	\begin{itemize}
+		\item[\info] multipart/signed: clear signed data
+		\item[\info] application/pkcs7-mime: signed data, enveloped data of een entiteit met enkel publieke sleutels (degenerate signed data), afhankelijk van de parameter.
+		\item[\info] application/pkcs7-signature: enveloped data
+		\item[\info] application/pkcs10-mime: certificaatregistratie nodig
+	\end{itemize}
+
+	De \underline{S/MIME procedure}:
+	\begin{enumerate}
+		\item MIME bericht wordt aangemaakt.
+		\item Bericht wordt omgevormd tot een PKCS object, die onder andere de gebruikte algoritmen en certificaten bevat.
+		\item PKCS object wordt gezien als een message body, en wordt verpakt in MIME.
+		\item Het bericht moet omgevormd worden naar canonieke vorm.
+	\end{enumerate}
+
+	\subsection{Webapplicaties}
+	Mogelijke zwaktes in een webapplicatie:
+	\begin{itemize}
+		\item[\info] \textbf{Slechte configuratie}: Gebruik maken van oude software, paswoorden die makkelijk te raden zijn, source code die gedownload kan worden.
+		\item[\info] \textbf{Client-side}: De client-side vertrouwen is een slechte zaak. Het is eenvoudig om met javascript manipulaties uit te voeren. Controleer elke actie op de server-side.
+		\item[\info] \textbf{Direct object reference}: De applicatie bevat resources die enkel mogen gezien worden voor een geautoriseerde gebruiker, maar iedereen kan eigenlijk gewoon de URL intypen.
+		\item[\info] \textbf{Authenticatiefouten}: Het gebruik van zwakke paswoorden, die gekraakt kunnen worden met een brute-force methode. Ook als een gebruiker een fout paswoord, maar wel een juist username intypt, moet de applicatie toch tonen dat het ofwel een fout paswoord of fout usernaam is.
+		\item[\info] \textbf{Cross-site scripting (XSS)}: \todo{slide 64}
+	\end{itemize}
 	\section{Veilige systemen}
 	\subsection{Authenticatiemethoden}
 	...
