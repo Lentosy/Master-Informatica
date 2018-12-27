@@ -1,6 +1,10 @@
 \documentclass{report}
 \usepackage{ugentstyle}
 
+\lstset{
+	frame=single
+}
+
 \begin{document}
 	\maketitle{Systeemontwerp}
 	\tableofcontents
@@ -91,7 +95,7 @@
 			\item[\good] Robust systeem.
 			\item[\good] Eenvoudig om te ontwikkelen (veel frameworks ondersteunen dit: Java EE, .NET, ...).
 			\item[\good] De verschillende lagen kunnen gemockt worden om eenvoudig testen uit te voeren.
-			\item[\alert] Slechts één presentatielaag, maar er kunnen verschillende cliënts zijn (desktop, mobile, tablet, ...).
+			\item[\alert] Slechts één presentatielaag, maar er kunnen verschillende clients zijn (desktop, mobile, tablet, ...).
 			\item[\alert] Slechts één persistentielaag, maar er kunnen verschillende databasetechnologiën gebruikt worden.
 			\item[\alert] De domeinlogicalaag definieert repositories, maar de persistentielaag implementeert deze. De dependency is dus omgekeerd.
 		\end{itemize}
@@ -99,7 +103,7 @@
 		\begin{itemize}
 			\item[\info] Maakt gebruik van adapters. Deze adapters zijn interfaces en kunnen opgesplitst worden:
 			\begin{itemize}
-				\item[\info] \textbf{Inbound adapter}: Dit is API dat de domeinlogica openstelt, zodat deze kan aangeroepen worden door externen. Elke cliënt kan nu onafhankelijk van elkaar ontwikkeld worden. Ze moeten enkel maar de API aanroepen.
+				\item[\info] \textbf{Inbound adapter}: Dit is API dat de domeinlogica openstelt, zodat deze kan aangeroepen worden door externen. Elke client kan nu onafhankelijk van elkaar ontwikkeld worden. Ze moeten enkel maar de API aanroepen.
 				\item[\info] \textbf{Outbound adapter}: Dit is de API die de domeinlogica kan gebruiken (repository interface, payment interface).
 			\end{itemize}
 			\item[\good] presentatie-, persistentie- en domeinlogicalaag zijn losgekoppeld.
@@ -180,7 +184,7 @@
 			\end{enumerate}
 			\item[\good] HTTP wordt niet geblokkeerd door een firewall.
 			\item[\good] Implementeerd request/response interactie.
-			\item[\alert] Cliënts moeten de locatie (URL) kennen.
+			\item[\alert] clients moeten de locatie (URL) kennen.
 			\item[\alert] Meerdere resources in één request opvragen is moeilijk. 
 			\item[\alert] Soms is het moeilijk om de HTTP werkwoorden te mappen op een operatie.
 		\end{itemize}
@@ -188,7 +192,7 @@
 		\begin{itemize}
 			\item[\info] Google Remote Procedure Call.
 			\item[\info] API wordt gedefinieerd op basis van een Interface Definition File. Dit bestand bevat IDL (Interface Description Language) code.
-			\item[\info] Deze code wordt gecompileerd afhankelijk van de gekozen cliënt.
+			\item[\info] Deze code wordt gecompileerd afhankelijk van de gekozen client.
 			\item[\alert] Het valt niet op dat de communicatie nu over het netwerk gebeurd.
 		\end{itemize}
 	\end{itemize}
@@ -255,10 +259,10 @@
 	\end{itemize}
 	\underline{Containers} zijn een virtualisatietechniek op besturingssysteemniveau. Een populaire container technologie is Docker, dat gebruik maakt van de linux container functionaliteit.  
 	\begin{itemize}
-		\item \textbf{Linux Control Groups (cgroups).} Groeperen van taken, en privileges zetten op deze groepen.
+		\item \textbf{Linux Control Groups (cgroups).} Groeperen van processen, en privileges zetten op deze groepen.
 		\item \textbf{Linux namespaces.} Een geïsoleerde weergave van de systeemresources.
 		\item \textbf{Changing root (chroot).} Elk process de illusie geven dat ze vanuit de root-directory aangesproken worden.
-		\item \textbf{Veilige containers.} Mogelijkheden per process vastzetten.
+		\item \textbf{Veilige containers (LSM).} Mogelijkheden per process vastzetten.
 	\end{itemize}
 
 	\underline{Docker}:
@@ -272,7 +276,209 @@
 	\end{itemize}
 
 	\section{Docker Architecture}
+	\begin{figure}[ht]
+		\includegraphics[width=\textwidth]{docker_architecture}
+	\end{figure}
+	De \textbf{Docker daemon} is verantwoordelijk om containers te starten, stoppen, monitoren, alsook om images op te slaan en te builden. De \textbf{Docker client} kan de daemon aanspreken om de operaties van de daemon uit te voeren. De \textbf{Registry} bevat images die door de daemon gebruikt kunnen worden.
+
+	\underline{Een image aanmaken kan als volgt:}
+	\begin{lstlisting}
+# Dockerfile to build an Apache2 image
+# Base image is Ubuntu
+FROM ubuntu:14.04
+# Install apache2 package
+RUN apt-get update && apt-get install -y apache2 && apt-get clean
+	\end{lstlisting}
+
+	\underline{Syntax van een Dockerfile}:
+	\begin{lstlisting}[numbers=left]
+FROM ubuntu:14.04
+
+COPY html /var/www/html
+ADD web-page-config.tar /
+
+ENV APACHE_LOG_DIR /var/log/apache
+USER 73
+
+EXPOSE 7373/udp 8080
+
+RUN apt-get update && apt-get install -y \ apache 2 && apt-get clean
+
+ENTRYPOINT ["echo", "Dockerfile entrypoint Demo"]
+	\end{lstlisting}
+	\begin{itemize}
+		\item[\info] \textbf{Lijn 1 FROM} De base image van de container. Alle volgende commandos bouwen verder op deze image. 
+		\item[\info] \textbf{Lijn 3 COPY} Bestanden kopieren van de docker host naar het bestandssysteem van de nieuwe image.
+		\item[\info] \textbf{Lijn 4 ADD} Gelijkaardig aan COPY, maar kan ook .tar bestanden (die hij zal unzippen) en URLs (die hij zal downloaden) behandelen.
+		\item[\info] \textbf{Lijn 6 ENV} Een omgevingsvariabele instellen in de nieuwe image.
+		\item[\info] \textbf{Lijn 7 USER} Een gebruiker toevoegen met een specifiek UID. Deze UID wordt ook gebruikt in volgende RUN, CMD of ENTRYPOINT instructies.
+		\item[\info] \textbf{Lijn 9 EXPOSE} Deze instructie \underline{informeert} enkel dat  deze poorten zullen gebruikt worden. Docker zal zelf deze poorten niet openzetten.
+		\item[\info] \textbf{Lijn 11 RUN} Deze instructie bevat commando's die uitgevoerd moeten worden tijdens de buildfase. Het is beter om slechts één RUN instructie te hebben, omdat docker een nieuwe, read-only, laag aanmaakt voor elke instructie.
+		\item[\info] \textbf{Lijn 13 ENTRYPOINT} Het startpunt van de applicatie. Als deze applicatie stopt, wordt de container ook automatisch gestopt.
+	\end{itemize}
+
+	Wanneer een container gestart wordt vanuit een image, dan zal Docker een extra, schrijfbare, laag toevoegen. Op deze laag kunnen dan nieuwe bestanden gezet worden. Als de container verwijderd wordt, zullen ook deze bestanden verwijderd worden. Op die manier kunnen dus verschillende containers, die toch dezelfde image hebben, aparte informatie bewaren. 
+
+	\underline{Een container builden}:
+$$\texttt{docker build -t dockerfile .}$$
+	\chapter{Container orchestration}
+	\underline{Drie functies van een orchestration framework}:
+	\begin{enumerate}
+		\item \textbf{Resource management}: Een groep van machines als één cluster beschouwen, zodat het lijkt alsof deze groep één proces is met zijn eigen CPU-, RAM- en volumegebruik.
+		\item \textbf{Scheduling}: Het bepalen welke groep van containers op welke machine moet komen. De default werkwijze is om te kijken naar de systeemresources die een groep nodig heeft, en een daarbijhorende machine te vinden die deze systeemresources kan aanbieden.
+		\item \textbf{Service management}: Het blootstelling van de container aan de externe wereld. Ook zal het framework ervoor zorgen dat er genoeg instanties van een bepaalde service zijn. Verder zal het framework load balancing implementeren tussen deze instanties.
+	\end{enumerate}
+
+	\section{Kubernetes}
+	\underline{Kubernetes is een voorbeeld van een orchestration framework}.
+
+	\begin{itemize}
+		\item[\info] Een machine in een cluster kan \underline{twee vormen aannemen:}
+		\begin{itemize}
+			\item[\info] \textbf{Master:} deze machine beheert de cluster en bevat volgende componenten:
+			\begin{itemize}
+				\item Het bevat een \underline{API server}, die aangesproken kan worden door ontwikkelaars om de nodes aan te spreken.
+				\item De \underline{scheduler} bepaalt op welke node een pod ($\equiv$ container, maar specifiek voor kubernetes) moet komen.
+				\item De \underline{controller manager} is het proces dat verschillende kubernetes controllers bevat. Voorbeelden van controllers zijn:
+				\begin{itemize}
+					\item Replication Controller, die ervoor zorgt dat er een bepaald aantal kopieën van een pod aanwezig zijn in het cluster.
+					\item Node Controller, die notificaties geeft wanneer een node niet meer bereikbaar is.
+					\item Endpoints Controller, die pods en services samenvoegt.
+				\end{itemize}
+				\item Tot slot is er nog de \underline{etcd} storage, die configuratie en de staat van de cluster bewaart.
+			\end{itemize}
+
+			Meestal heeft een cluster maar een klein aantal masters.
+			\item[\info] \textbf{Node:} Dit zijn de effectieve machines die de applicatie doen draaien en bevat volgende componenten:
+			\begin{itemize}
+				\item De \underline{kubelet} beheert de pods die aanwezig zijn op de node.
+				\item De \underline{kube-proxy} voorziet een abstracte manier om de node te beheren.
+				\item De \underline{cAdvisor} is een daemon that metrieken verzamelt.
+				\item De \underline{pods} zijn de applicatieservices. 
+			\end{itemize}
+		\end{itemize}
+
+		\item[\info] Een \underline{pod} is een eenheid van deployment in kubernetes, en bestaat uit één of meerdere containers die eenzelfde IP-adress en opslagvolume delen. Kubernetes maakt zelf de pods aan, met behulp van een document dat de gewenste staat beschrijft:
+		\begin{lstlisting}
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+ name: myapp-deployment
+spec:
+ replicas: 3
+ template:
+  metadata:
+   labels:
+	app: MyApp
+  spec:
+   containers:
+   - name: nginx
+	 image: nginx:1.7.9
+	 ports:
+	 - containerPort:80
+		\end{lstlisting}
+
+		\item[\info] Vaak wordt er per pod maar één container geassocieerd, maar het is ook mogelijk om meerdere containers per pod te associeren. Dit is handig als je extra hulpfunctionaliteit wil bieden aan een service zoals:
+		\begin{itemize} 
+			\item[\info] \textbf{Sidecar container}: een service die periodiek een git pull doet om de applicatie up te daten. Een andere mogelijkheid is een service die logbestanden verwerkt.
+			\item[\info] \textbf{Adapters}      
+		\end{itemize}
+
+		\item[\info] De \underline{service registry} is een databank van services, die voor elke service al zijn instanties en hun locaties bijhoudt. Een instantie wordt registreerd in de databank bij creatie, en wordt er terug uitgehaald bij destructie. clients moeten enkel nog aan de service registery een query doen, om de instanties op te halen voor een specifieke service. 
+		\begin{itemize}
+			\item[\info] \textbf{Client-side discovery}: Een client is gekoppeld aan de service registry en zal zelf load-balancing toepassen. Het nadeel is dat de client nu sterk gekoppeld is aan de service registry en dat er nu discovery logic in elke client aanwezig moet zijn.
+			\item[\info] \textbf{Server-side discovery}: De client stuurt nu een request naar een load-balancer service, die op een bekende en vaste locatie ligt. De load-balancer zal nu zelf de service registry aanspreken en load-balancing implementeren. De client moet nu enkel een request sturen naar de load-balancer. Het nadeel is hier nu dat deze load-balancer opnieuw een component is dat moet onderhouden worden. Ook moet het gerepliceerd worden om beschikbaarheid te garanderen.
+		\end{itemize}
+
+		\item[\info] Kubernetes maakt gebruik van server-side discovery en vereist het aanmaken van een Kubernetes Service:
+		\begin{lstlisting}
+kind: Service
+apiVersion: v1
+metadata:
+ name: myapp-service
+spec:
+ selector:
+  app: MyApp
+ ports:
+ - protocol: TCP
+   port: 8080
+   target-port: 9000
+		\end{lstlisting}
+		Deze service zal clients een juiste pod bezorgen. 
 	
+		\item[\info] Een load balancer zal voor een bepaalde request bepalen welke instantie teruggeven moet worden. Enerzijds gebeurd dit op basis van de request, zoals bijvoorbeeld de geografische afstand, zodat enkel instanties in de omgeving relevant zijn. Anderzijds moet uit lijst van instanties degene gekozen worden op basis van de huidige capaciteit van een instantie.
+
+		\item[\info] Er zijn \underline{drie interessante operaties} die uitgevoerd kunnen worden met een load balancer.
+		\begin{enumerate}
+			\item \textbf{Rolling update:} In plaats van elke instantie op hetzelfde moment up te daten, kan er altijd een selectie van instanties offline gehaald worden. De load-balancer stuurt dan de requests door naar de overige instanties.
+			\item \textbf{Canary release:} Een kleine selectie van requests (bv 5\%) worden naar een instantie gestuurd die een nieuwe software update bevat. Op die manier worden weinig mensen getroffen door bugs, indien deze aanwezig zouden zijn.  
+			\item \textbf{A/B testing:} Dit dient eerder voor marketingdoeleinden. De helft van de gebruikers krijgen versie A, en de andere helft krijgen versie B van een applicatie.
+		\end{enumerate}
+	\end{itemize}
+
+	\section{Dimensies van cloud computing}
+	\underline{Drie dimensies in cloud computing}
+	\begin{itemize}
+		\item[\info] Essentiële eigenschappen.
+		\item[\info] Cloud service models.
+		\item[\info] Cloud deployment models.
+	\end{itemize}
+
+	\subsection{Essentiële eigenschappen}
+	\underline{vijf eigenschappen}
+	\begin{itemize}
+		\item[\info] \textbf{On-demand:} een resource moet op elk moment beschikbaar zijn.
+		\item[\info] \textbf{Elasticiteit:} het aantal beschikbare resources moet instelbaar zijn, afhankelijk van de huidige nood.
+		\item[\info] \textbf{Resource pooling:} De resources van de cloud provider worden gebruikt door meerder gebruikers. Een individuele gebruiker kan slechts op abstract niveau resources specificeren zoals het aanvragen van 6GB ram.
+		\item[\info] \textbf{Metered:} Het gebruik van resources wordt in het oog gehouden. Meestal moet enkel voor de effectief gebruikte resources betaald worden.
+		\item[\info] \textbf{Network access:} Een API is beschikbaar om de resources aan te spreken.
+	\end{itemize}
+	\subsection{Cloud service models}
+	\underline{eerst stakeholders beschrijven}:
+	\begin{itemize}
+		\item[\info] \textbf{Cloud provider:} De provider beheert de hardware en software en stelt deze ter beschikking voor cloud users. De cloud provider is verantwoordelijk om de afgesproken requirements met de verschillende cloud users na te leven, meestal in de vorm van minimale garanties die de cloud provider moet leveren. Voorbeelden van cloud providers zijn: Amazon, Google en Microsoft.
+		\item[\info] \textbf{Cloud users:} De cloud users gebruikt de resources van de cloud provider om applicaties te hosten, die dan gebruikt kunnen worden door end users. De cloud user heeft geen zicht op de interne structuur van de cloud provider, en kan enkel resources aanvragen. Er is geen formeel contract tussen cloud users en end users. Een voorbeeld van een cloud user is Netflix.
+		\item[\info] \textbf{End users:} De end users maken gebruik van de cloud applicaties van de cloud users. Meestal is hier een bepaalde kost aan verbonden (jaarlijkse subscriptie).
+	\end{itemize}
+
+	\underline{vijf service models}
+	\begin{itemize}
+		\item[\info] \textbf{Metal as a Service:} Huren van fysieke servers, kabels en electriciteit. De provider helpt met het instaleren van onder andere een besturingssysteem, configuratie van VLANs en andere toestellen op het netwerk ontdekken.
+		\item[\info] \textbf{Infrastructure as a Service:} Huren van virtuele machines, opslag en netwerkinfrastructuur. 
+		\item[\info] \textbf{Container as a Service:} Huren van pregeconfigureerde orchestratieplatformen zoals Kubernetes.
+		\item[\info] \textbf{Platform as a Service:} Huren van middleware producten zoals database management systemen, applicatieservers, message brokers, enz. 
+		\item[\info] \textbf{Software as a Service:} Huren van software.
+	\end{itemize}
+
+	\subsection{Cloud deployment models}
+	\underline{drie deployment models}
+	\begin{itemize}
+		\item[\info] \textbf{Public cloud:} Iedereen kan de systeemresources huren en gebruiken. 
+		\item[\info] \textbf{Private cloud:}
+		\item[\info] \textbf{Hybrid cloud:}
+	\end{itemize}
+
+	\section{Elastische schaling}
+	\underline{twee vormen van schaling}
+	\begin{itemize}
+		\item[\info] \textbf{Statische schaling:} De systeembeheerder voert zelf een commando in om meer of minder resources te voorzien, meestal als het te laat is.
+		\item[\info] \textbf{Elastische schaling:} Het systeem voorziet zelf schaling, in kleine intervallen, op basis van de huidige workload.
+	\end{itemize}
+	\underline{drie typen workloads}
+	\begin{itemize}
+		\item[\info] \textbf{Statische workload:} In dit geval is de werkload nagenoeg altijd dezelfde, zodat elastische schaling niet zo nuttig lijkt. Toch is het handig om, indien een machine faalt, snel een nieuwe machine werkend te hebben. Elastische schaling vergemakkelijkt dit proces. 
+		\item[\info] \textbf{Periodieke workload:} Bij voorgedefinieerde pieken, zoals applicaties die enkel beschikbaar moeten zijn per dag, is het wel handig om elastische schaling te hebben. Bij statische schaling kan je vooraf genoeg resources voorzien, maar op normale momenten zijn er dan teveel resources beschikbaar, zodat er meer moet betaald worden.
+		\item[\info] \textbf{Dynamische niet-periodieke workload:} Deze niet-periodieke workloads kunnen vooraf geweten zijn (ticketverkoop) of niet (opeens meer interesse in bepaalde website). 
+	\end{itemize}
+
+	Om \underline{elastische schaling} toe te passen kan men steunen op \underline{twee types}:
+	\begin{itemize}
+		\item[\alert] \textbf{Verticale schaling:} De bestaande infrastructuur uitbreiden (meer geheugen, CPU, harde schijven in nodes steken). Dit is geen goede techniek, omdat het neerschalen niet eenvoudig toelaat. Alle nieuwe hardware zou er dan uit moeten gehaald worden.
+		\item[\good] \textbf{Horizontale schaling:} Nieuwe nodes voorzien die dezelfde infrastructuur hebben. Op deze manier kan zelfs de capaciteit van de grootste node overschreden worden.
+	\end{itemize}
+
+	
+
 
  
 	\part{Distributed Data Storage \& Processing}
@@ -296,7 +502,7 @@
 
 	Een extreem voordeel van het document model is dat het geen restricties oplegt aan de data. Er kunnen twee producten zijn die in het systeem herkent worden als "Product" maar een andere interne structuur hebben. Het \underline{document model} wordt dus best \underline{gekenmerkt door}:
 	\begin{itemize}
-		\item Flexibiliteit in het schemamodel. Dit wordt ook wel "schema-on-read" genoemd aangezien de cliënt niet op voorhand kan weten welke structuur het document zal hebben.
+		\item Flexibiliteit in het schemamodel. Dit wordt ook wel "schema-on-read" genoemd aangezien de client niet op voorhand kan weten welke structuur het document zal hebben.
 		\item Data lokaliteit. Hiermee wordt bedoeld dat een document als één enkelvoudige string wordt opgeslagen, en alle informatie zit dan ook in die string. Er is geen nood aan het join-of indexeringmechanisme. Een document wordt altijd in zijn geheel ingelezen, dit kan een nadeel zijn indien slechts een beperkt aantal informatie van dat document nodig is.
 	\end{itemize}
 
@@ -339,7 +545,7 @@
 	\begin{enumerate}
 		\item Een replica wordt tot leader gemaakt. Enkel op deze replica mogen er writeoperaties plaatsvinden.
 		\item Elke andere replica is een follower. Elke keer dat de leader naar zijn schijf schrijft, zal de leader ook de gewijzigde data doorsturen, in de vorm van een \underline{replication log}, naar alle followers. Deze replication log bevat instructies dat elke follower moet ondernemen zodat ze de update juist kunnen uitvoeren.
-		\item Een cliënt kan een readoperatie zowel aan de leader als aan een follower aanvragen. 
+		\item Een client kan een readoperatie zowel aan de leader als aan een follower aanvragen. 
 	\end{enumerate}
 	Deze manier garandueerd dat de followers \underline{ooit zullen convergeren} naar de juiste toestand.
 	\subsection{Leaderless model}
