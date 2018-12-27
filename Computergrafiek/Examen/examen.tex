@@ -430,14 +430,14 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 \begin{itemize}
 	\vraag{\accentuate{(1-3)} de Casteljau constructie (van een punt met specifieke parameterwaarde) van een Bézier kromme}{
 		\begin{itemize}
-			\item \accentuate{Algemeen kan een de Casteljau constructie zoals op figuur \ref{fig:casteljau_construct_1} berekent worden.}
+			\item Algemeen kan een de Casteljau constructie zoals op figuur \ref{fig:casteljau_construct_1} berekent worden.
 			\begin{figure}[ht]
 				\centering
 				\includegraphics[width=\textwidth]{casteljau_construct_1}
 				\caption{Algemene methode de Casteljau constructie.}
 				\label{fig:casteljau_construct_1}
 			\end{figure}
-			\accentuate{Stel nu dat hij de punten op figuur \ref{fig:casteljau_construct_2} geeft (toevallig zelfde aantal punten). In dit geval komt $0$ overeen met $a$ en $1$ overeen met $b$. Hij zal enkel nog willekeurige $t-$waard geven. Vul het piramidaal schema in met deze $t$, en dan bekom je een gelijkaardige constructie zoals figuur \ref{fig:casteljau_construct_3}}.
+			Stel nu dat hij de punten op figuur \ref{fig:casteljau_construct_2} geeft (toevallig zelfde aantal punten). In dit geval komt $0$ overeen met $a$ en $1$ overeen met $b$. Hij zal enkel nog willekeurige $t-$waard geven. Vul het piramidaal schema in met deze $t$, en dan bekom je een gelijkaardige constructie zoals figuur \ref{fig:casteljau_construct_3}.
 			\begin{figure}[ht]
 				\centering
 				\includegraphics[width=0.6\textwidth]{casteljau_construct_2}
@@ -454,7 +454,7 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 	}
 	\vraag{\accentuate{(1)} verhoging van de graad van Bézier splines (in één enkele stap); voorafgaand moet het verband tussen de \textit{oude} en de \textit{nieuwe} controlepunten opgesteld worden (vermenigvuldiging met een specifieke matrix, cfr. theorieles)}{
 		\begin{itemize} 
-			Eerst algemene formule \accentuate{(niet te kennen)}:
+			\item Eerst algemene formule \accentuate{(niet te kennen)}:
 			$$p[u_1, u_2, ... u_m] = \sum_{i_1 = 1}^{m}
 			\sum_{\substack{i_2 = 1 \\ i_2 \neq i_1}}^{m}
 			...
@@ -554,7 +554,7 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 	\vraag{\accentuate{(3,4)} segmentering (subdivisie) van Bézier krommen (eventueel meerdere segmenten in één enkele stap)}
 		{
 			\begin{itemize} 
-				\item \accentuate{Als je een de Casteljau constructie toepast op een Bézier kromme, introduceer je hulppunten, die perfect kunnen dienen als de nieuwe punten van twee of meerdere bézierkrommen. Bekijk voorbeeld \ref{fig:subdivision_1}, waarbij de Bézierkromme gegeven wordt door de punten $(P_{0000}, P_{0001},$ $P_{0011}, P_{0111}, P_{1111})$. Het kan onmiddelijk gesegmenteerd worded in twee bézier krommen, respectievelijk bepaald door $(P_{0000},P_{000t},P_{00tt},P_{0ttt},P_{tttt})$ en $(P_{tttt},P_{ttt1},P_{tt11},P_{t111},P_{1111})$. Het is ook mogelijk om kubieke Bézierkrommem in meerdere segmenten op te splitsen, zoals \ref{fig:subdivision_2}, die respectievelijk segmenten bepalen door $(P_{000}, P_{00s}, P_{0ss}, P_{sss})$, $(P_{sss}, P_{sst}, P_{stt}, P_{ttt})$ en $(P_{ttt}, P_{tt1}, P_{t11}, P_{111})$. }
+				\item Als je een de Casteljau constructie toepast op een Bézier kromme, introduceer je hulppunten, die perfect kunnen dienen als de nieuwe punten van twee of meerdere bézierkrommen. Bekijk voorbeeld \ref{fig:subdivision_1}, waarbij de Bézierkromme gegeven wordt door de punten $(P_{0000}, P_{0001},$ $P_{0011}, P_{0111}, P_{1111})$. Het kan onmiddelijk gesegmenteerd worded in twee bézier krommen, respectievelijk bepaald door $(P_{0000},P_{000t},P_{00tt},P_{0ttt},P_{tttt})$ en $(P_{tttt},P_{ttt1},P_{tt11},P_{t111},P_{1111})$. Het is ook mogelijk om kubieke Bézierkrommem in meerdere segmenten op te splitsen, zoals \ref{fig:subdivision_2}, die respectievelijk segmenten bepalen door $(P_{000}, P_{00s}, P_{0ss}, P_{sss})$, $(P_{sss}, P_{sst}, P_{stt}, P_{ttt})$ en $(P_{ttt}, P_{tt1}, P_{t11}, P_{111})$. 
 				\begin{figure}[ht]
 					\centering
 					\includegraphics[width=\textwidth]{subdivision_1}
@@ -573,9 +573,9 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 	\vraag{\accentuate{(9-10,14-16)} constructie van de \textit{kromtecirkel} in een punt van een Bézier kromme}
 	{
 		\begin{itemize} 
-			\item \accentuate{Algemene methode om een kromtecirkel te berekenen in een punt van een Bézier kromme wordt weergegeven op figuur \ref{fig:kromtecirkel}. De kromming van een Bézier kromme wordt bepaald door de hulppunten van de laatste 2 iteraties van het de Casteljau proces. Eerst moet dus een de Casteljau constructie uitgevoerd worden op de Bézier kromme voor het opgegeven punt $t$. De straal $R$ van de kromtecirkel wordt gegeven door $$R = \frac{3\Delta^2}{4\delta}$$
+			\item Algemene methode om een kromtecirkel te berekenen in een punt van een Bézier kromme wordt weergegeven op figuur \ref{fig:kromtecirkel}. De kromming van een Bézier kromme wordt bepaald door de hulppunten van de laatste 2 iteraties van het de Casteljau proces. Eerst moet dus een de Casteljau constructie uitgevoerd worden op de Bézier kromme voor het opgegeven punt $t$. De straal $R$ van de kromtecirkel wordt gegeven door $$R = \frac{3\Delta^2}{4\delta}$$
 			Het volgende proces kan op twee manieren uitgevoerd worden, hier doe ik het voor de controlepunten $(P_{00t}, P_{0tt})$, maar zou evengoed gelden voor de controlepunten $(P_{tt1}, P_{t11})$. De afstand van $P_{ttt}$ tot $P_{0tt}$ noemen we $\Delta_0$ (is vrij onbelangrijk, maar toch vermeld ik het omdat het op de figuur staat). Het lijnstuk dat samenvallend is met $|P_{ttt}P_{0tt}|$ moet doorgetrokken worden, zodanig dat er een rechte hoek gemaakt kan worden tussen het eindpunt van dit lijnstuk en het punt $P_{00t}$. De afstand van $P_{00t}$ en dit eindpunt noemen we $\delta_0$. Nu kunnen we een lijnstuk, loodrecht op het lijnstuk $|P_{0tt}P_{tt1}|$ en door het punt $P_{ttt}$ met lengte $\frac{4}{3} \delta_0$ tekenen. Op dit moment kan er vanuit $P_{0tt}$ een lijnstuk getrokken worden tot aan het einde van het vorige lijnstuk, gevolgd door een ander lijnstuk, loodrecht met het vorige lijnstuk, zodanig dat het kruist met het verlengde van het lijnstuk door $P_{ttt}$. Deze kruising is het middelpunt van de cirkel. De afstand van dit middelpunt tot $P_{ttt}$ is de straal $R$ van de cirkel.
-			}
+			
 			\begin{figure}[ht]
 				\centering
 				\includegraphics[width=\textwidth]{kromtecirkel}
@@ -591,7 +591,7 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 			\begin{figure}[ht]
 				\centering
 				\includegraphics[width=0.5\textwidth]{bezier_repr_polynomiale_nurbs_1}	
-				\caption{Fase 1 bézier representatie van een polynomiale NURBS}
+				\caption{Fase 1 bézier representatie van een polynomiale NURBS.}
 				\label{fig:bezier_repr_polynomiale_nurbs_1}
 			\end{figure}
 
@@ -599,7 +599,7 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 			\begin{figure}[ht]
 				\centering
 				\includegraphics[width=0.5\textwidth]{bezier_repr_polynomiale_nurbs_2}	
-				\caption{Fase 2 bézier representatie van een polynomiale NURBS}
+				\caption{Fase 2 bézier representatie van een polynomiale NURBS.}
 				\label{fig:bezier_repr_polynomiale_nurbs_2}
 			\end{figure}
 
@@ -630,7 +630,7 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 			\begin{figure}[ht]
 				\centering
 				\includegraphics[width=0.5\textwidth]{bezier_repr_polynomiale_nurbs_3}	
-				\caption{Fase 3 bézier representatie van een polynomiale NURBS}
+				\caption{Fase 3 bézier representatie van een polynomiale NURBS.}
 				\label{fig:bezier_repr_polynomiale_nurbs_3}
 			\end{figure}
 
@@ -638,7 +638,7 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 			\begin{figure}[ht]
 				\centering
 				\includegraphics[width=0.5\textwidth]{bezier_repr_polynomiale_nurbs_4}	
-				\caption{Fase 4 bézier representatie van een polynomiale NURBS}
+				\caption{Fase 4 bézier representatie van een polynomiale NURBS.}
 				\label{fig:bezier_repr_polynomiale_nurbs_4}
 			\end{figure}
 
@@ -648,16 +648,51 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 			\begin{figure}[ht]
 				\centering
 				\includegraphics[width=0.5\textwidth]{bezier_repr_polynomiale_nurbs_5}	
-				\caption{Fase 5 bézier representatie van een polynomiale NURBS}
+				\caption{Fase 5 bézier representatie van een polynomiale NURBS.}
 				\label{fig:bezier_repr_polynomiale_nurbs_5}
 			\end{figure}
 		\end{itemize}}
-	\vraag{\accentuate{(6-10)} constructie van controlepunten na toevoeging van één of meerdere \textit{reële} knopen in de knopenvector van een (polynomiale) NURBS (zonder over te gaan op de Bézier representatie)}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
+	\vraag{\accentuate{(6-10)} constructie van controlepunten na toevoeging van één of meerdere \textit{reële} knopen in de knopenvector van een (polynomiale) NURBS (zonder over te gaan op de Bézier representatie)}
+	{
+		\begin{itemize} 
+			\item Voeg het nieuwe punt zoveel keer toe als de multipliciteit van de knoop aangeeft in de knopenvector. Daarna moeten er zoveel iterataties van het algoritme van Böhm uitgevoerd worden als de multipliciteit van de knoop. Figuur \ref{fig:bspline_toevoeging_rk_m1}, \ref{fig:bspline_toevoeging_rk_m2} en \ref{fig:bspline_toevoeging_rk_m3} geven respectievelijk het toevoegen van een knoop met multipliciteit 1, 2 of 3 weer.
+			\begin{figure}[ht]
+				\centering
+				\includegraphics[width=\textwidth]{bspline_toevoeging_rk_m1}	
+				\caption{Knoop toevoegen met multiplicteit 1 bij een NURBS van graad 3.}
+				\label{fig:bspline_toevoeging_rk_m1}
+			\end{figure}
+			\begin{figure}[ht]
+				\centering
+				\includegraphics[width=\textwidth]{bspline_toevoeging_rk_m2}	
+				\caption{Knoop toevoegen met multiplicteit 2 NURBS van graad 3.}
+				\label{fig:bspline_toevoeging_rk_m2}
+			\end{figure}
+			\begin{figure}[ht]
+				\centering
+				\includegraphics[width=\textwidth]{bspline_toevoeging_rk_m3}	
+				\caption{Knoop toevoegen met multiplicteit 3 NURBS van graad 3.}
+				\label{fig:bspline_toevoeging_rk_m3}
+			\end{figure}
+		\end{itemize}
+	}
 	\vraag{\accentuate{(10)} constructie van controlepunten na toevoeging van één of meerdere \textit{virtuele} knopen in de knopenvector van een (polynomiale) NURBS (zonder over te gaan op de Bézier representatie)}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
 	\vraag{\accentuate{(11)} berekening en constructie van de controlepunten van de \textit{open-uniforme} representatie van een (polynomiale) NURBS met een \textit{uniforme} knopenvector}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
 	\vraag{\accentuate{(12,19)} berekening en constructie van de controlepunten van de \textit{uniforme} representatie van een polynomiale of rationale NURBS met een \textit{open-uniforme} knopenvector}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
 	\vraag{\accentuate{(12)} de Boor constructie (van een punt met specifieke parameterwaarde) van een (polynomiale) NURBS}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
-	\vraag{\accentuate{(13)} constructie van de \textit{hodograaf} van een Bézier kromme of spline}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
+	\vraag{\accentuate{(13)} constructie van de \textit{hodograaf} van een Bézier kromme of spline}
+	{
+		\begin{itemize}
+			\item Stel het schema van de Casteljau op voor de gegeven Bézierkromme, maar voer in de eerste stap de blokken van het afgeleide type in, zoals weergegeven op figuur \ref{fig:constructie_hodograaf}. De resulterende hodograaf is zelf een Bézierkrommme van een graad minder en wordt gegeven door de resterende blokken van het interpolerende type.
+			\begin{figure}[ht]
+				\centering
+				\includegraphics[width=\textwidth]{constructie_hodograaf}	
+				\caption{Constructie van het de Casteljau schema voor een hodograaf.}
+				\label{fig:constructie_hodograaf}
+			\end{figure}
+		\end{itemize}
+		
+	}
 	\vraag{\accentuate{(13-16)} vaststellen van de continuïteit in de knooppunten van Bézier splines (\textit{stelling van Stärk})}
 	{
 		\begin{itemize} 
@@ -834,7 +869,10 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 			\newpage
 		\end{itemize}}
 		
-	\vraag{\accentuate{(18,19)} constructie van een  \textit{benadering door lijnstukken} van een uniforme NURBS door toepassing van het algoritme van Lane \& Riesenfeld}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
+	\vraag{\accentuate{(18,19)} constructie van een  \textit{benadering door lijnstukken} van een uniforme NURBS door toepassing van het algoritme van Lane \& Riesenfeld}{
+		\begin{itemize} 
+			\item Dit is een eenvoudig iteratief proces: pas altijd de helft af tussen twee punten
+		\end{itemize}}
 	\vraag{\accentuate{(20)} constructie van een \textit{triangulair schema} met behulp van het veralgemeend algoritme van Neville (voor een specifieke configuratie van inputgegevens), en berekening hieruit van de \textit{gewichtsfuncties} en de \textit{matrixrepresentatie}}{
 		\begin{itemize} 
 			\item \accentuate{Het veralgmeend algoritme van Neville laat toe om de rekenregels van Hermite interpolatie op te stellen, aangezien Hermite interpolatie ook nog gebruik maakt van richtingsvectoren en eventueel krommingen, die gedefinieerd worden op hetzelfde punt, zodat het punt een hogere multipliciteit krijgt. Hermite interpolatie gebruikt slechts twee datapunten $P_0$ en $P_1$, waarvoor men meestal respectievelijk $t=0$ en $t=1$ neemt}. Bij het veralgemeend algoritme van Neville zijn er twee mogelijkheden:
