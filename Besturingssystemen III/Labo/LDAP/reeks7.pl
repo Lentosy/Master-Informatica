@@ -93,7 +93,10 @@ my %ADS_SYSTEMFLAG_ENUM =
 # perl reeks7.pl oefnr arg1 arg2 ... argn
 
 my $oefnr = $ARGV[0] or die "geef oefeningnummer op";
+die "$oefnr is geen getal" if $oefnr =~ /\D/;
+
 "oef$oefnr"->();
+
 
 
 
@@ -163,35 +166,163 @@ sub oef8 {
 }
 
 sub oef9 {
-    print "Geen implementatie";
+    my $ldapattribuut = $ARGV[1] or die "geef LDAP attribuut op";
+    my $base = (bind_object(bind_object('RootDSE')->Get("defaultnamingcontext")))->{adspath};
+    my $filter = "($ldapattribuut=*)";
+    my $attributen = 'objectClass';
+    my $scope = 'subtree';
+    my $command = get_command();
+    $command->{CommandText} = "<$base>;$filter;$attributen;$scope";
+    my $resultset = $command->Execute();
+    my %classes;
+    until($resultset->{EOF}){
+        $classes{($resultset->Fields('objectClass')->{Value})->[-1]}++;
+        $resultset->MoveNext();
+    }
+    $resultset->Close();
+    close_command($command);
+    print "Volgende klassen hebben minstens 1 AD-object waarvan $ldapattribuut is ingesteld:\n";
+    print_frequentiehash_geordend(\%classes);
+
 }
 
 sub oef10 {
-    print "Geen implementatie";
+    my $base = (bind_object("OU=PC's,OU=iii," . bind_object('RootDSE')->Get("defaultnamingcontext")))->{adspath};
+    my $filter = "(cn=*A)";
+    my $attributen = 'canonicalName';
+    my $scope = 'subtree';
+    my $command = get_command();
+    $command->{Commandtext} = "<$base>;$filter;$attributen;$scope";
+    my $resultset = $command->Execute();
+    print_resultset($resultset, geef_lengte_langste_attribuutnaam($attributen));
+    $resultset->Close();
+    close_command($command);
 }
 
 sub oef11 {
-    print "Geen implementatie";
+    my $root = bind_object('RootDSE');
+    my $domein = $root->Get("defaultnamingcontext");
+    my $student = bind_object("CN=Bert De Saffel,OU=EM7INF,OU=Studenten,OU=iii,$domein");
+    my $primarygroup = $student->{PrimaryGroupID};
+
+    my $base = bind_object($domein)->{adspath};
+    my $filter = "(objectclass=group)";
+    my $attributen = 'cn,primaryGrouptoken';
+    my $scope = 'subtree';
+    my $command = get_command();
+    $command->{Commandtext} = "<$base>;$filter;$attributen;$scope";
+    my $resultset = $command->Execute();
+    while(!$resultset->{EOF} && $resultset->Fields('primaryGrouptoken')->{Value} != $primarygroup){
+        $resultset->MoveNext();
+    }
+    print "Primare group van Bert De Saffel is: " . $resultset->Fields('cn')->{Value} . " (id: $primarygroup)\n" ;
+    $resultset->Close();
+    close_command($command);
 }
 
 sub oef12 {
-    print "Geen implementatie";
+    my $root = bind_object('RootDSE');
+    my $configuration = $root->Get("configurationnamingcontext"); # <-------
+    my $student = bind_object("CN=Bert De Saffel,OU=EM7INF,OU=Studenten,OU=iii,$configuration");
+    my $primarygroup = $student->{PrimaryGroupID};
+
+    my $base = bind_object($configuration)->{adspath};
+    my $filter = "(fromServer=be)"; # <-------
+    my $attributen = 'cn,primaryGrouptoken';
+    my $scope = 'subtree';
+    my $command = get_command();
+    $command->{Commandtext} = "<$base>;$filter;$attributen;$scope";
+    my $resultset = $command->Execute();
+    while(!$resultset->{EOF} && $resultset->Fields('primaryGrouptoken')->{Value} != $primarygroup){
+        $resultset->MoveNext();
+    }
+    print "Primare group van Bert De Saffel is: " . $resultset->Fields('cn')->{Value} . " (id: $primarygroup)\n" ;
+    $resultset->Close();
+    close_command($command);
 }
 
 sub oef13 {
-    print "Geen implementatie";
+    my $root = bind_object('RootDSE');
+    my $schema = bind_object($root->Get('schemanamingcontext'));
+    my $base = $schema->{adspath};
+    my $filter = "(&(objectClass=classSchema)(!(objectClassCategory=1)))";
+    my $attributen = "cn,objectClassCategory";
+    my $scope = 'subtree';
+    my $command = get_command();
+    $command->{CommandText} = "<$base>;$filter;$attributen;$scope";
+    my $resultset = $command->Execute();
+    print "Abstracte klassen: \n";
+    while(!$resultset->{EOF}){
+        if($resultset->Fields('objectClassCategory')->{Value} % 2 == 0){ # 0 of 2 zal 0 geven
+            printf "\t%s\n", $resultset->Fields('cn')->{Value};
+        }
+        $resultset->MoveNext();
+    }
+
+    $resultset->MoveFirst();
+    print "Hulpklassen: \n";
+    while(!$resultset->{EOF}){
+        if($resultset->Fields('objectClassCategory')->{Value} == 3){ 
+            printf "\t%s\n", $resultset->Fields('cn')->{Value};
+        }
+        $resultset->MoveNext();
+    }
+    
+    $resultset->Close();
+    close_command($command);
 }
 
 sub oef14 {
-    print "Geen implementatie";
+    my $ldapdisplayname = $ARGV[1] or die "Geef LDAP attribuut op";
+    my $attribuut = bind_object("schema/$ldapdisplayname");
+    print $attribuut->Get("cn");
+    
 }
 
 sub oef15 {
-    print "Geen implementatie";
+    # searchFlags: laagste bit = indexering
+    # systemFlags: laagste bit = replicatie
+    # systemFlags: derde laagste bit = geconstrueerd attribuut 
+
+    my $root = bind_object('RootDSE');
+    my $schema = bind_object($root->Get("schemanamingcontext"));
+    my $base = $schema->{adspath};
+    my $filter = "(|(searchFlags:1.2.840.113556.1.4.803:=1)(systemFlags:1.2.840.113556.1.4.804:=5))";
+    my $attributen = 'cn,searchFlags,systemFlags';
+    my $scope = 'subtree';
+    my $command = get_command();
+    $command->{Commandtext} = "<$base>;$filter;$attributen;$scope";
+    $command->{Properties}->{"Sort On"} = 'cn';
+    my $resultset = $command->Execute();
+
+    print_resultset($resultset, geef_lengte_langste_attribuutnaam($attributen));
+    $resultset->Close();
+    close_command($command);
 }
 
 sub oef16 {
-    print "Geen implementatie"; 
+    my $groep = $ARGV[1] or die "Geef cn van groep op";
+    my $root = bind_object('RootDSE');
+    my $domein = bind_object($root->Get('defaultnamingcontext'));
+    my $base = $domein->{adspath};
+    my $filter = "(&(objectclass=group)(cn=$groep))";
+    my $attributen = "distinguishedName";
+    my $scope = 'subtree';
+    my $command = get_command();
+
+    $command->{CommandText} = "<$base>;$filter;$attributen;$scope";
+    my $resultset = $command->Execute();
+    my $distinguishedname = $resultset->Fields('distinguishedName')->{Value};
+    printf "Groep: %s\n", $distinguishedname;
+    $filter = "(memberof:1.2.840.113556.1.4.1941:=$distinguishedname)";
+    $attributen = 'cn,description,distinguishedname';
+    $command->{CommandText} = "<$base>;$filter;$attributen;$scope";
+    $resultset = $command->Execute();
+    print_resultset($resultset, geef_lengte_langste_attribuutnaam($attributen));
+
+    $resultset->Close();
+    close_command($command);
+
 }
 
 sub oef17 {
@@ -259,13 +390,13 @@ sub bind_object {
 }
 
 sub geef_lengte_langste_attribuutnaam {
-    my $padding = -1;
+    my $lengte = -1;
     for(split ',', shift){
-        if(length $_ > $padding) {
-            $padding = length $_; 
+        if(length $_ > $lengte) {
+            $lengte = length $_; 
         }
     }
-    return $padding;
+    return $lengte;
 }
 
 # Zal een resultset aflopen en elk record uitprinten
@@ -280,16 +411,26 @@ sub print_resultset {
     my $resultset = shift;
     my $padding = shift;
     
-    print $resultset->{RecordCount}, " AD-objecten\n";
-    print $resultset->{Fields}->{Count}, " LDAP attributen opgehaald per AD-object\n";
+    # gewoon wa formatteren op basis of er 1 element of meer zijn
+    $resultset->{RecordCount} == 1 
+        ? print "1 AD-object\n" 
+        : print $resultset->{RecordCount} . " AD-objecten\n";
+
+    $resultset->{Fields}->{Count} == 1 
+        ? print "1 LDAP attribuut opgehaald per AD-object\n" 
+        : print $resultset->{Fields}->{Count} . " LDAP attributen opgehaald per AD-object\n";
+
     until($resultset->{EOF}){
         for (in $resultset->{Fields}){
             printf "%${padding}s : ", $_->{Name};
             my $waarde = $_->{Value};
+
             if($_->{Type} == 204){
                 printf "%*v02X", "", $waarde;
             } elsif (ref $waarde eq "ARRAY") {
-                print join "|", $waarde;
+                print join "|", @{$waarde};
+            } elsif ($_->{Name} eq "systemFlags" || $_->{Name} eq "searchFlags"){
+                printf "(%d) %b", $waarde, $waarde;
             } else {
                 print $waarde;
             }  
@@ -297,5 +438,13 @@ sub print_resultset {
         }
         print "\n";
         $resultset->MoveNext();
+    }
+}
+
+# Een hash uitprinten, gesorteerd op de values
+sub print_frequentiehash_geordend {
+    my $hash = shift;
+    for my $key (sort { $hash->{$b} <=> $hash->{$a} } keys %{$hash}){
+        printf "%30s => %s\n", $key, $hash->{$key};
     }
 }
