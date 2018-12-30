@@ -216,8 +216,8 @@
 	\end{itemize}
 
 \chapter{Webservices}
-Een gedistribueerd systeem zal over verschillende servers API's beschikbaar hebben. Tabel \ref{table:mono_vs_distributed} geeft de voornaamste verschillen tussen een monolitische architectuur en een gedistribueerde architectuur.
-\begin{table}[h]
+Een gedistribueerd systeem zal over verschillende servers APIs beschikbaar hebben. Tabel \ref{table:mono_vs_distributed} geeft de voornaamste verschillen tussen een monolitische architectuur en een gedistribueerde architectuur.
+\begin{table}[ht]
 	\begin{tabular}{l | l | l}
 		& Monolitisch & Gedistribueerd \\
 		\hline
@@ -228,9 +228,15 @@ Een gedistribueerd systeem zal over verschillende servers API's beschikbaar hebb
 		Locatie & Alle componenten op één machine & Variabel \\
 		Beveiliging & Taak van het besturingssysteem & Inherent kwetsbaar door networkcommunicatie.
 	\end{tabular}
+	\caption{Monolitisch versus gedistribueerd.}
 	\label{table:mono_vs_distributed}
 \end{table}
-Er zijn twee belangrijke componenten bij gedistribueerde systemen, \textbf{EDI  (Electronic Data Interchange)} en \textbf{RPC (Remote Procedure Call)}.
+
+Er zijn twee belangrijke componenten bij gedistribueerde systemen :
+\begin{itemize}
+	\item \textbf{EDI  (Electronic Data Interchange)}
+	\item \textbf{RPC (Remote Procedure Call)}.
+\end{itemize}
  
 \section{Componenten}
 \subsection{EDI}
@@ -285,22 +291,15 @@ Er blijkt ook een gelijkheid te zijn met SOA en microservices. Het verschil tuss
 \todo{saai}
 
 \section{Webservices in Java}
-Voor webservices te implementeren in java maken we gebruik van SOAP. Een SOAP aanvraag ziet er als volgt uit :
-\begin{lstlisting}
-<?xml version="1.0" encouding="UTF-8"?>
-<S:Envelope 
-  xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
-  <S:Header/>
-  <S:Body>
-    <ns2:geefBoek xmlns:ns2="http://web.boeken.iii.be/">
-      <isbn>isbn2</isbn>
-    </ns2:geefBoek>
-  </S:Body>
-</S:Envelope>
-\end{lstlisting}
-
-Een eenvoudige webserivce dat een boek opvraagd met een bepaald isbn ziet er dan zo uit:
-\begin{lstlisting}
+De java klasse die een SOAP aanvraag moet verwerken wordt geannoteerd met 
+$$\texttt{@WebService(serviceName = "...")}$$
+Deze klasse bevat een aantal methoden, die geannoteerd worden met 
+$$\texttt{@WebMethod(operationName = "...")}$$
+De waarde van \texttt{operationName} in de SOAP aanvraag moet overeenkomen met één van de methoden in de webservice.
+Elke methode kan eventuele parameters hebben, geannoteerd met
+$$\texttt{@WebParam(name = "...")}$$
+Een eenvoudige webservice dat een boek geeft op basis van een ISBN, ziet er als volgt uit:
+\begin{lstlisting}[language=java]
 @WebService(serviceName = "Catalogus")
 public class Catalogus {
   @WebMethod(operationName = "geefBoek")
@@ -314,8 +313,202 @@ public class Catalogus {
   }
 }
 \end{lstlisting}
+
+De bijhorende SOAP aanvraag wordt:
+\begin{lstlisting}[language=xml]
+<?xml version="1.0" encouding="UTF-8"?>
+<S:Envelope 
+  xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+  <S:Header/>
+  <S:Body>
+    <ns2:geefBoek xmlns:ns2="http://web.boeken.iii.be/">
+      <isbn>isbn2</isbn>
+    </ns2:geefBoek>
+  </S:Body>
+</S:Envelope>
+\end{lstlisting}
+
+
+Het antwoord dat we terugkrijgen is dan (bijvoorbeeld):
+\begin{lstlisting}[language=xml]
+<?xml version="1.0" encouding="UTF-8"?>
+<S:Envelope 
+  xmlns:S="http://schemas.xmlsoap.org/soap/envelope/">
+  <S:Header/>
+  <S:Body>
+    <ns2:geefBoekResponse xmlns:ns2="http://web.boeken.iii.be/">
+      <return>
+        <isbn>isbn2</isbn>
+        <prijs>36.0</prijs>
+        <titel>Java Servlet Programming</titel>
+      </return>
+	</ns2:geefBoekResponse>
+  </S:Body>
+</S:Envelope>
+\end{lstlisting}
+
+
+	
 \section{Webservices in C\#}
-\todo{al de rest lel}
+Webservics in C\# kunnen geïmplementeerd worden met \textbf{Windows Communication Foundation (WCF)}. WCF is een .NET framework om servicegeoriënteerde applicaties te ontwikkelen. De communicatie verloopt tussen endpoints via berichten. Een service bestaat uit meerdere endpoints. De \underline{architectuur} wordt eerst weergegeven op figuur \ref{fig:wcf_architecture} en bestaat uit \underline{vier lagen}.
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=\textwidth]{wcf_architecture}
+	\caption{Architectuur WCF.}
+	\label{fig:wcf_architecture}
+\end{figure}
+\begin{itemize}
+	\item[\info] \textbf{Contracts:} Deze laag specificeert onder andere welke parameters er verwacht worden, de structuur van het bericht, de beschikbare interfaces/methodes en hoe er gecommuniceerd moet worden.
+	\item[\info] \textbf{Service runtime:} Deze laag specificeert het gedrag van de applicatie zoals het aantal berichten dat verwerkt kan worden, wat er moet gebeuren als er iets fout loopt, welke metadata er beschikbaar moet zijn voor de buitenwereld en hoeveel instanties er van deze service mogen zijn.
+	\item[\info] \textbf{Messaging:} Deze laag is opgebouwd uit kanalenn, ook wel de \emph{channel stack} genoemd. Een kanaal verwerkt berichten en komen in twee vormen voor:
+	\begin{itemize}
+		\item Transport kanaal: Verantwoordelijk voor het lezen en schrijven van berichten van en naar het netwerk.
+		\item Protocol kanaal: Implementeert message processing protocols door bijkomende headers te lezen en schrijven.
+	\end{itemize}
+	\item[\info] \textbf{Activation and hosting:} Een service kan enerzijds als een executable (self-hosted service) uitgevoerd worden en anderzijds gehost worden in een externe omgeving als webserver of Windows service.
+\end{itemize}
+
+\subsection{Ontwerp servicecontract}
+Het \underline{ontwerp van het servicecontract} is de eerste stap. Een methode krijgt het \texttt{[OperationContract]} attribuut (equivalent met annotaties in Java). Een methode die dit attribuut heeft, zal nooit referenties teruggeven, maar kopieën van de objecten. Het is ook mogelijk om eigen datatypes te definieren met het \texttt{[DataContract]} en \texttt{[DataMember]} attribuut. De werkelijke interface krijgt het \texttt{[ServiceContract]} attribuut. Een voorbeeld:
+\begin{lstlisting}[style=csharp]
+[ServiceContract(Namespace = "...")]
+public interface ICalculator {
+	[OperationContract]
+	double Add(double x, double y);
+	[OperationContract]
+	double Subtract(double x, double y);
+	[OperationContract]
+	double Multiply(double x, double y);
+	[OperationContract]
+	double Divide(double x, double y);
+}
+\end{lstlisting}
+De normale communicatie methode, waarbij de cliënt een vraag stelt waarop de server antwoord, is mogelijk. Ook is er een one-way contract, waarbij de cliënt geen antwoord verwacht van de server, en een duplex contract, waarbij de server zal ook informatie kan ophalen van clients. Een one-way contract is eenvoudig te definieren door de eigenschap \texttt{IsOneWay} van het attribuut \texttt{[OperationContract]} op \texttt{True} te zetten. 
+\begin{lstlisting}[style=csharp]
+[OperationContract(IsOneWay = true)]
+void Hello(string greeting);
+\end{lstlisting}
+
+
+Een duplex contract moet gedefinieerd worden in het \texttt{[ServiceContract]} attribuut in de server. In de client moet er ook een callback voorzien worden.
+\begin{lstlisting}[style=csharp]
+	// SERVER
+[ServiceContract
+	(
+	Namespace = "...", 
+	SessionMode = SessionMode.Required,
+	CallbackContract = typeof(ICalculatorDuplexCallback)
+	)
+]
+public interface ICalculatorDuplex {
+	[OperationContract(IsOneWay = true)]
+	void Clear();
+	[OperationContract(IsOneWay = true)]
+	void AddTo(double n);
+	[OperationContract(IsOneWay = true)]
+	void SubtractFrom(double n);
+	[OperationContract(IsOneWay = true)]
+	void MultiplyBy(double n);
+	[OperationContract(IsOneWay = true)]
+	void DivideBy(double n);
+}
+\end{lstlisting}
+\begin{lstlisting}[style=csharp]
+	// CLIENT
+public interface ICalculatorDuplexCallback {
+	[OperationContract(IsOneWay = true)]
+	void Result(double result);
+	[OperationContract(IsOneWay = true)]
+	void Equation(string eqn);
+}
+\end{lstlisting}
+\subsection{Implementatie contract}
+Als voorbeeld van de implementatie nemen we de standaardcommunicatiemethode. Na de vorige stap hebben we een interface ontworpen die er als volgt uit ziet:
+\begin{lstlisting}[style=csharp]
+[ServiceContract]
+public interface IMath {
+	[OperationContract]
+	double Add(double x, double y);
+	[OperationContract]
+	double Multiply(double x, double y);
+}
+\end{lstlisting}
+De implementatie van deze interface is vrij eenvoudig:
+\begin{lstlisting}[style=csharp]
+public class MathService : IMath {
+	public double Add(double x, double y) {
+		return x + y;
+	}
+	public double Multiply(double x, double y){
+		return x * y;
+	}
+}
+\end{lstlisting}
+
+\subsection{Configuratie}
+De configuratie specificeert per endpoint welke service (interface en implementatie) gebruikt moet worden, waar (URL) deze zich bevindt en hoe (binding) er moet gecommuniceerd worden. Een \underline{endpoint specificeren kan op twee manieren:}
+\begin{itemize}
+	\item[\info] \textbf{In code:}
+	\begin{lstlisting}[style=csharp]
+Uri base = new Uri("http://localhost:8080/Service");
+ServiceHost host = new ServiceHost(typeof(MathService), base);
+try {
+	selfHost.AddServiceEndPoint(
+		typeof(IMath),
+		new WSHttpBinding(),
+		"MathService");
+	// gedrag instellen, service runnen
+} catch (CommunicationException ce){
+	Console.WriteLine(ce.Message);
+	host.Abort();	
+}
+	\end{lstlisting}
+	\item[\info] \textbf{In configuration:}
+	\begin{lstlisting}[language=xml]
+<system.ServiceModel>
+  <services>
+    <service name ="x.y.z.MathService">
+      <endpoint address="http://localhost:8080/Service"
+                binding="basicHttpBinding"
+                bindingConfiguration="customConfiguration"
+                contract = "x.y.z.IMath"/>
+    </service>
+  </services>
+  <bindings>
+    <basicHttpBinding>
+      <binding name="customConfiguration"
+               closeTimeout="00:01:00"/>
+    </basicHttpBinding>
+  </bindings>
+  <behaviors>
+    <serviceBehaviours>
+      <behaviour>
+        <serviceMetadata httpGetEnabled="True"/>
+      </behaviour>
+    </serviceBehaviours>
+  </behaviors>
+</system.ServiceModel>
+	\end{lstlisting}
+Er zijn een aantal bindings voorzien zoals \texttt{BasicHttpBinding}, \texttt{WSHttpBinding}, \texttt{NetTcpBinding} en \texttt{NetNamedPipeBinding}.
+\end{itemize}
+\subsection{Hosting}
+Je kan ofwel de serivce publiceren \todo{holy shit dit is retarded}
+
+\chapter{API Gateways}
+Het publiceren van meerdere services blijft een uitdagen. Services kunnen onderling verschillende protocollen gebruiken en meerdere clients moeten de service kunnen aanspreken. Een webapplicatie kan bijvoorbeeld meer data krijgen dan een mobiele applicatie, omdat er meer plaats is om deze informatie te tonen. Een API ontwerpen die voor alle type clients zou werken is niet zinvol, en praktisch onrealiseerbaar. Men zou elke client de service rechtstreeks kunnen laten aanspreken. Dit komt erop neer dat de client de rol van \underline{API composer} krijgt. Dit heeft drie nadelen:
+\begin{itemize}
+	\item[\alert] \textbf{Slechte gebruikerservaring:}  De client moet complexe code bevatten om de resultaten van de APIs te combineren. Meerdere calls naar verschillende services vertraagd de aanvraag enorm.
+	\item[\alert] \textbf{Backend is niet afgeschermd:} Een wijziging in de backend vereist een wijziging in de frontend. Het uitrollen van een nieuwe versie van de service en de daarbijhorende client applicatie, wordt belemmerd. Niet iedereen gebruikt namelijk de nieuwste versie van elk product. Externe partners hebben ook nood aan een stabiele API. 
+	\item[\alert] \textbf{Services kunnen IPC-mechanismen gebruiken:} Het aanroepen van diverse protocollen wordt niet altijd ondersteund in de client.
+\end{itemize}
+De oplossing is de API gateway, dat gebaseerd is op het facade patroon zodat de interne structuur afgeschermd wordt. De API gateway is het toegangspunt van de applicatie en is verantwoordelijk voor:
+\begin{itemize}
+	\item[\info] Request routing.
+	\item[\info] API-compositie, aggregatie/samenvoegen resultaten.
+	\item[\info] Vertaling naar protocollen geschikt voor de client.
+	\item[\info] Randfunctionaliteiten: authenticatie, autorisatie, caching, logging, ...
+\end{itemize}
+De client stuurt slechts één enkele request naar de API gateway, waarop de API gateway één enkel resultaat terugstuurt. De API gateway zal intern één of meerdere services aanspreken. De API gateway voorziet voor elke client een API.
 
 \chapter{Netwerkprogrammatie in Java}
 Belangrijke netwerkklassen in java, in de package \underline{\texttt{java.net}}:
