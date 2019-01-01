@@ -527,10 +527,32 @@ Belangrijke netwerkklassen in java, in de package \underline{\texttt{java.net}}:
             \item MulticastSocket
         \end{itemize}
 \end{itemize}
+\section{Sockets}
+De cliënt maakt een \texttt{Socket} object aan. De constructor heeft de locatie van een bepaalde server, en een poortnummer, die de server heeft opengezet (cfr. \ref{code:socket}).
+\begin{equation}
+	\texttt{Socket socket = new Socket("localhost", 8901);}
+	\label{code:socket}
+\end{equation}
 
-De cliënt maakt een \texttt{Socket} object aan. De constructor heeft de locatie van een bepaalde server, en een poortnummer, die de server openzet. Communicatie met de socket gebeurt met de \texttt{PrintWriter} klasse, die naar de server zal sturen, en de \texttt{BufferedReader} klasse, die berichten van de server zal ontvangen. Gebruik best de try met resources om instanties van deze objecten te maken, zodat ze automatisch verdwijnen indien de code uit het \texttt{try} block komt. Vanaf dan kan er met de server gecommuniceert worden door weg te schrijven via de \texttt{PrintWriter}. Wachten op een bericht van de server kan door de \texttt{readLine()} methode van de \texttt{BufferedReader}klasse op te roepen. Dit is een synchrone methode dus de applicatie zal blokkeren. 
+ Communicatie met de socket gebeurt met de \texttt{PrintWriter} klasse, die naar de server zal sturen, en de \texttt{BufferedReader} klasse, die berichten van de server zal ontvangen. Code \ref{code:socket_communication} toont hoe deze objecten geïnitialiseerd kunnen worden.
+ \begin{equation}
+	\begin{split}
+		\texttt{PrintWriter out} & \texttt{ = new PrintWriter(socket.getOutputStream(), true);} \\
+		\texttt{BufferedReader in} & \texttt{ = new BufferedReader(new InputStreamReader(socket.getInputStream()));}
+	\end{split}
+	\label{code:socket_communication}
+ \end{equation}
 
-De server zal gebruik maken van een \texttt{ServerSocket} klasse. Deze werkt op identiek dezelfde manier als de \texttt{Socket} klasse die de cliënt gebruik, behalve dat een \texttt{ServerSocket} klasse meerdere sockets kan accepteren. Tot slot is er nog een \underline{protocol} nodig, die de communicatie tussen de server en communicatie beschrijft. Een eenvoudig protocol vereist bijvoorbeeld dat een bericht start met een bepaald sleutelwoord.
+ 
+ Gebruik best de try-met-resources om instanties van deze objecten te maken, zodat ze automatisch verdwijnen indien de code uit het \texttt{try} block komt. Na de initialisatie kan er met de server gecommuniceerd worden door weg te schrijven via de \texttt{PrintWriter}. Wachten op een bericht van de server kan door de \texttt{readLine()} methode van de \texttt{BufferedReader}klasse op te roepen. Dit is een synchrone methode dus de applicatie zal blokkeren. 
+
+De server zal gebruik maken van een \texttt{ServerSocket} klasse. Deze werkt op identiek dezelfde manier als de \texttt{Socket} klasse die de cliënt gebruik, behalve dat een instantie van de \texttt{ServerSocket} klasse meerdere sockets kan accepteren. De constructor van deze socket heeft als enige argument de poort die opengesteld moet worden (cfr \ref{code:serversocket}).
+\begin{equation}
+	\texttt{ServerSocket socket = new ServerSocket(8901);}
+	\label{code:serversocket}
+\end{equation}
+
+Tot slot is er nog een \underline{protocol} nodig, die de communicatie tussen de server en communicatie beschrijft. Een eenvoudig protocol vereist bijvoorbeeld dat een bericht start met een bepaald sleutelwoord. 
 
 \begin{lstlisting}
 // CLIENT
@@ -578,7 +600,77 @@ try {
 }
 \end{lstlisting}
 
-Een socket wordt best geïmplementeerd met behulp van threads, zodat verschillende cliënts op hetzelfde moment behandeld kunnen worden.
+\section{Multithreading}
+\subsection{Threads}
+Een socket wordt best geïmplementeerd met behulp van threads, zodat verschillende cliënts op hetzelfde moment behandeld kunnen worden. Er zijn een aantal opties om multithreading te implementeren.
+\begin{itemize}
+	\item[\info] \textbf{De interface \texttt{Runnable} implementeren.} Dit vereist dat de methode \texttt{run()} geïmplementeerd wordt. Het object moet dan verpakt worden in een \texttt{Thread}, zodat het kan uitgevoerd worden (cfr. \ref{code:implement_runnable_start}) met de \texttt{start()} methode van de klasse \texttt{Thread}.
+	\begin{lstlisting}[language=java]
+public class HelloRunnable implements Runnable {
+	@Override
+	public void run() {
+		System.out.println("Hello from a thread!");
+	}
+}
+	\end{lstlisting}
+	\begin{equation}
+		\texttt{(new Thread(new HelloRunnable())).start();}
+		\label{code:implement_runnable_start}
+	\end{equation}
+	\item[\info] \textbf{Overerven van de klasse \texttt{Thread}.} Om nu eigen functionaliteit aan te bieden, kan de methode \texttt{run()} overschreven worden. De thread kan nu direct gestart worden met de \texttt{start()} methode (cfr. \ref{code:extends_thread_start}).
+	\begin{lstlisting}[language=java]
+public class HelloThread extends Thread {
+	@Override
+	public void run() {
+		System.out.println("Hello from a thread!");
+	}
+}
+	\end{lstlisting}
+	\begin{equation}
+		\texttt{(new HelloThread()).start();}
+		\label{code:extends_thread_start}
+	\end{equation}
+	\item[\info] \textbf{Inline definitie.} Deze laatste methode zal een anonieme \texttt{Runnable} instantie aanmaken, die dan op exact dezelfde manier kan gestart worden zoals (cfr. \ref{code:implement_runnable_start}).
+	\begin{lstlisting}[language=java]
+public static void main(String args[]){
+	Runnable task = () -> {
+		System.out.println("Hello from a thread!");
+	};
+	new Thread(task).start(); // cfr. 5.4
+}
+	\end{lstlisting}
+\end{itemize}
+
+\subsection{Executors}
+Een \underline{Executor} is verantwoordelijk voor het beheren en aanmaken van threads. De statische factoryklasse \texttt{Executors} laat toe om verschillende typen executors te initialiseren. De eerste twee voorbeelden geven een \texttt{ExecutorService} object terug, het laatste een \texttt{ScheduledExecutorService} object:
+\begin{itemize}
+	\item[\info] \textbf{\texttt{Executors.newSingleThreadExecutor();}} Maakt gebruik van slechts één enkele thread. Indien de thread afsterft wordt er een nieuwe aangemaakt die zijn taken overneemt. 
+	\item[\info] \textbf{\texttt{Executors.newFixedThreadPool(10);}} Maakt een thread pool dat een vast aantal threads \emph{her}gebruikt. De parameter is het aantal threads dat in de thread pool zullen zitten.
+	\item[\info] \textbf{\texttt{Executors.newScheduledThreadPool(10);}} Maakt een thread pool waarmee threads na een bepaalde delay worden uitgevoerd.
+\end{itemize}
+
+De \texttt{ExecutorService} kan op meerdere manieren threads starten:
+\begin{itemize}
+	\item[\info] \textbf{\texttt{void execute(Runnable r);}} 
+	
+	Zal een \texttt{Runnable} object uitvoeren en verwacht geen returnwaarde.
+
+	\item[\info] \textbf{\texttt{Future<?> submit(Runnable r);}} 
+
+	Analoog met de \texttt{execute()}-methode, enkel is het returntype nu een \texttt{Future} object die de taak voorstelt. Een \texttt{Future} object is een object speciaal ontworpen voor asynchrone operaties. Het object bevat een aantal methodes zoals \texttt{isDone()}, om na te gaan of dat de taak voltooid is en \texttt{get()}, om de waarde op te halen.
+
+	\item[\info] \textbf{\texttt{<T> Future<?> submit(Callable c);}} 
+	
+	Deze methode verwacht kan ook een instantie van type \texttt{Callable} krijgen. De functionaliteit is compleet analoog met \texttt{Runnable}, enkel kan een instantie van \texttt{Callable} een returnwaarde geven. Deze versie geeft een \texttt{Future} object met de returnwaarde van de overschreven methode \texttt{call()} van het \texttt{Callable} object. 
+
+	\item[\info] \textbf{\texttt{<T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks);}}
+
+	Een lijst van \texttt{Callable} objecten uitvoeren. Het returntype is een lijst van \texttt{Future} objecten, die voor elke thread het returnresultaat bijhouden.
+	\item[\info] \textbf{\texttt{<T> T invokeAny(Collection<? extends Callable<T>> tasks);}}
+
+	Zal ook een lijst van \texttt{Callable} objecten uitvoeren, maar enkel het resultaat van de thread die het eerst klaar is wordt teruggegeven. 
+\end{itemize}
+
 
 \chapter{Java NIO}
 Java NIO (New IO) biedt een alternatieve manier om met IO te werken.
@@ -587,15 +679,18 @@ Java NIO (New IO) biedt een alternatieve manier om met IO te werken.
     \item \textbf{Non-blocking IO.} Een thread kan aan een kanaal vragen om data van een buffer in te lezen. Terwijl het kanaal dit doet, kan de thread andere zaken uitvoeren en wachten tot het kanaal klaar is.
     \item \textbf{Selectors.} Een selector is een object that meerdere kanalen kan monitoren. Het reageert op events (connectie opened, data arrived, ...). Een enkele thread kan meedere kanalen monitoren met behulp van selectors. Een selector registreren gebeurt door een kanaal mee te geven, en de \texttt{select()} methode op te roepen van de \texttt{Selector} klasse.
 \end{itemize}
-De kern van Java NIO zijn de klassen \texttt{Channel}, \texttt{Buffer} en \texttt{Selector}. Andere klassen zoals \texttt{Pipe} en \texttt{FileLock} dienen gebruikt te worden in samenwerking met de drie kernklassen. Elke klasse kent meerdere implementaties. Zo kent de \texttt{Channel} klasse bijvoorbeeld: \texttt{FileChannel}, \texttt{DatagramChannel}, \texttt{SocketChannel} en \texttt{ServerSocketChannel}. De klasse \texttt{Buffer} kent meerdere implementies afhankelijk van het datatype: \texttt{ByteBuffer}, \texttt{CharBuffer}, \texttt{DoubleBuffer}, \texttt{FloatBuffer}, \texttt{IntBuffer}, \texttt{LongBuffer}, \texttt{ShortBuffer}. 
+De kern van Java NIO zijn de klassen \texttt{Channel}, \texttt{Buffer} en \texttt{Selector}. Andere klassen zoals \texttt{Pipe} en \texttt{FileLock} dienen gebruikt te worden in samenwerking met de drie kernklassen. Elke klasse kent meerdere implementaties. Zo kent de \texttt{Channel} klasse bijvoorbeeld: 
+$$\texttt{FileChannel}, \texttt{DatagramChannel}, \texttt{SocketChannel}\;\hbox{en}\;\texttt{ServerSocketChannel}$$ 
+De klasse \texttt{Buffer} kent meerdere implementies afhankelijk van het datatype: 
+$$\texttt{ByteBuffer}, \texttt{CharBuffer}, \texttt{DoubleBuffer}, \texttt{FloatBuffer}, \texttt{IntBuffer}, \texttt{LongBuffer}, \texttt{ShortBuffer}$$ 
 De verschillen tussen de \texttt{Channel} en \texttt{Stream} klasse zijn:
 \begin{itemize}
     \item Lezen en schrijven is mogelijk met één kanaal. Een stream is ofwel leesmode of schrijfmode.
-    \item De lees en schrijfoperatie kan asynchroon gebeuren.
-    \item Een kanaal kan lezen van, of schrijven naar een Buffer
+    \item De lees en schrijfoperatie kan asynchroon gebeuren met kanalen.
+    \item Een kanaal kan lezen van, of schrijven naar een buffer
 \end{itemize}
 Het gebruik van een eenvoudig \texttt{Channel} object:
-\begin{lstlisting}
+\begin{lstlisting}[language=java]
 RandomAccessFile file = new RandomAccessFile("data/file.txt", "rw");
 FileChannel inChannel = file.getChannel();
 ByteBuffer buffer = ByteBuffer.allocate(48);
@@ -611,7 +706,258 @@ while(bytesRead != -1){
 }
 file.close();
 \end{lstlisting}
-De flip methode van een een buffer zal van de mode van lezen naar schrijven omzetten, of omgekeerd.
+\section{Buffers}
+Om een buffer te verkrijgen, moet er altijd geheugen gereserveerd worden met de \texttt{allocate(int n)} methode. De waarde $n$ is het aantal bytes. De \texttt{read(Buffer buffer)} methode van een \texttt{Channel} object zal naar de buffer schrijven. Het returntype van deze methode is het aantal bytes dat geschreven wordt, of -1 indien er niets geshreven wordt. De \texttt{flip()} methode van een \texttt{Buffer} object zal de buffermodus van schrijven naar lezen omzetten, of omgekeerd. Een buffer in leesmode laat toe om de methode \texttt{get()} van de buffer te gebruiken, of de \texttt{write()}-methode van een \texttt{Channel} object. De naamgeving van de methoden is hier verwarrend: 
+\begin{itemize}
+	\item \texttt{FileChannel.read(Buffer buffer)}: Zal data VAN het kanaal NAAR de buffer schrijven. Dit vereist dat de buffer in schrijfmode staat.
+	\item \texttt{FileChannel.write(Buffer buffer)}: Zal data NAAR het kanaal VAN de buffer schrijven. Dit vereist dat de buffer in leesmode staat.
+\end{itemize}
+
+Na het uitlezen van de buffer moet deze opnieuw ingesteld worden met de \texttt{clear()}-methode, zodat de buffer klaar staat om opnieuw naar geschreven te worden.
+
+Het is ook mogelijk om handmatig data in de buffer te plaatsen, zonder behulp van een \texttt{Channel}. De \texttt{put()}-methode (en al de varianten zoals \texttt{putInt}, ...) laat toe om rechtstreeks bytes te schrijven naar de buffer. 
+
+\underline{Terminologie:}
+\begin{itemize}
+	\item[\info] \textbf{Capaciteit:} Een buffer is in werkelijkheid een blok van geheugen en heeft daarom een vaste grootte, hier capaciteit genoemd. Eens de buffer vol is, kan er niet meer naar geschreven worden en moet dan ofwel gelezen worden, ofwel gereset worden.
+	\item[\info] \textbf{Positie:} De positie hangt af van de buffermode:
+	\begin{itemize}
+		\item Schrijfmode: Data schrijven naar een buffer gebeurd op een bepaalde positie. De positie wordt bij elke toevoeging (byte, int, long, ...) verplaatst naar de volgende schrijfbare geheugenlocatie van de buffer. De positie kan maximaal 1 minder dan de capaciteit worden.
+		\item Leesmode: Na het schrijven wordt de \texttt{flip()}-methode opgeroepen, die de positie terug op 0 zal zetten. Bij elke leesoperatie zal de positie zich verplaatsen naar de volgende leesbare geheugenlocatie.
+	\end{itemize}
+	\item[\info] \textbf{Limiet:} Ook hier wordt er een onderscheidt gemaakt afhankelijk van de buffermode:
+	\begin{itemize}
+		\item Schrijfmode: De limiet is gelijk aan de capaciteit.
+		\item Leesmode: Vooraleer de methode \texttt{flip()} opgeroepen wordt, heeft de capaciteit een bepaalde waarde. Na de \texttt{flip()}-methode zal de limiet gelijk zijn aan deze capaciteit. Het komt erop neer dat er maar zoveel bytes mogen gelezen worden als er geschreven zijn.
+	\end{itemize}
+\end{itemize}
+
+Bij berichten die een header en een body hebben met \underline{vaste grootte}, kan het handig zijn om scattering reads te gebruiken. Een kanaal kan schrijven naar een array van buffers. Deze variant zal de buffers in sequentie overlopen. Wanneer een buffer vol is, zal het de volgende buffer gebruiken. 
+\begin{lstlisting}[language=java]
+ByteBuffer header = ByteBuffer.allocate(128);
+ByteBuffer body   = ByteBuffer.allocate(1024);
+
+ByteBuffer[] bufferArray = { header, body };
+channel.read(bufferArray);
+\end{lstlisting}
+
+Op analoge manier kan ook de data van meerdere buffers rechstreeks in één kanaal geschreven worden. Deze manier werkt wel voor \underline{dynamische grootten}, aangezien er maar zoveel bytes geschreven zal worden als de positie aangeeft van elke buffer.
+\begin{lstlisting}[language=java]
+ByteBuffer header = ByteBuffer.allocate(128);
+ByteBuffer body   = ByteBuffer.allocate(1024);
+	
+// data naar buffer schrijven
+
+ByteBuffer[] bufferArray = { header, body };
+channel.write(bufferArray);
+\end{lstlisting}
+
+\section{Channels}
+Het is mogelijk om rechtstreeks \texttt{FileChannel} objecten te verplaatsen met de \texttt{transferTo()} en \texttt{transferFrom()} methoden.
+\begin{lstlisting}[language=java]
+RandomAccessFile fromFile = new RandomAccessFile("fromFile.txt", "rw");
+FileChannel fromChannel = fromFile.getChannel();
+
+RandomAccessFile toFile = new RandomAccessFile("toFile.txt", "rw");
+FileChannel toChannel = toFile.getChannel();
 
 
+toChannel.transferFrom(fromChannel, 0, fromChannel.size());
+// of
+fromChannel.transferTo(0, fromChannel.size(), toChannel);
+\end{lstlisting}
+
+Op die manier kan men voorkomen dat men constant bestanden moet kopiëren.
+
+\section{Selectors}
+Een selector kan meerdere kanalen monitoren, en nagaan of ze klaar zijn om naar geschreven of van gelezen te worden. Een selector kan aangemaakt worden met de \texttt{open()} methode van de statische klasse \texttt{Selector} (cfr. \ref{code:create_selector}).
+\begin{equation}
+	\texttt{Selector selector = Selector.open();}
+	\label{code:create_selector}
+\end{equation}
+Vooraleer een kanaal kan geregistreerd worden moet deze in non-blocking mode staan (cfr. \ref{code:channel_nonblocking}).
+\begin{equation}
+	\texttt{channel.configureBlocking(false);}
+	\label{code:channel_nonblocking}
+\end{equation}
+Uiteindelijk kan het kanaal regegistreerd worden aan de selector (cfr. \ref{code:channel_register_selector}). Bij de registratie moeten de operaties gespecificeerd worden die van belang zijn:
+\begin{itemize}
+	\item Connect
+	\item Accept
+	\item Read
+	\item Write
+\end{itemize}
+\begin{equation}
+	\texttt{SelectionKey key = channel.register(selector, SelectionKey.OP\_READ);}
+	\label{code:channel_register_selector}
+\end{equation}
+Een kanaal dat één van de vier events afvuurt is 'ready' voor dat event. Een kanaal meerdere events registreren, door de constanten met de OR operatie mee te geven.
+Een selector kan opvragen welke kanalen er 'ready' zijn voor de gespecificeerde events Het is eerst interessant om het \underline{aantal kanalen} op te vragen, met één van de \texttt{select()}-methoden  (cfr. \ref{code:selector_select}).
+\begin{equation}
+	\begin{split}
+		\texttt{int readyChannels} & \texttt{ = selector.select();} \\
+		\texttt{int readyChannels} & \texttt{ = selector.select(1000);} \\
+		\texttt{int readyChannels} & \texttt{ = selector.selectNow();} \\
+	\end{split}
+	\label{code:selector_select}
+\end{equation}
+De eerste variant is een blocking methode die oneindig lang zal wachten, tot er minstens één kanaal klaar is. De tweede variant zal slechts 1 seconde (1000 milliseconden) blocken. De laatste variant blokkeert niet en zal direct het aantal kanalen teruggeven. De \texttt{select()}-methoden geven niet altijd het aantal kanalen dat effectief 'ready' is, maar enkel de kanalen die 'ready' geworden zijn tussen twee \texttt{select()} calls.
+
+De beschikbare kanalen kunnen wel overlopen worden via de set gegeven door de \texttt{selectedKeys()}-methode. Na het overlopen van de kanalen moet de set leeggemaakt worden aangezien de selector dat niet zelf doet (cfr. \ref{code:clear_selectedkeys})
+\begin{equation}
+	\texttt{selector.selectedKeys().clear();}
+	\label{code:clear_selectedkeys}
+\end{equation}
+
+Voorbeeld eenvoudig gebruik van een selector:
+\begin{lstlisting}[language=java]
+while(true){
+	int readyChannels = selector.select(10000);
+	if(readyChannels == 0){ 
+		continue; 
+	}
+
+	for(SelectionKey key : selector.selectedKeys()){
+		if(key.isAcceptable()){
+
+		} else if (key.isConnectable()){
+
+		} else if (key.isReadable()){
+
+		} else if (key.isWriteable()){
+
+		}
+	}
+	selector.selectedKeys().clear();
+}
+\end{lstlisting}
+
+Voorbeeld: \texttt{SocketChannel}
+\begin{lstlisting}[language = java]
+// aanmaken
+SocketChannel socketChannel = SocketChannel.open();
+socketChannel.connect(
+	new InetSocketAddress("localhost", 9999)
+);
+
+// lezen
+ByteBuffer buf = ByteBuffer.allocate(48);
+int bytesRead = socketChannel.read(buf);
+
+// schrijven
+String newData = "New String to write to file...";
+buf.clear();
+buf.put(newData.getBytes());
+buf.flip();
+while(buf.hasRemaining()){
+	socketChannel.write(buf);
+}
+
+// afsluiten
+socketChannel.close();
+\end{lstlisting}
+
+Voorbeeld: \texttt{ServerSocketChannel}
+\begin{lstlisting}[language = java]
+ServerSocketChannel serverSocketChannel 
+	= SocketServerSocketChannelChannel.open();
+serverSocketChannel.socket().bind(
+	new InetSocketAddress(9999)
+);
+
+while(true){
+	SocketChannel socketChannel = serverSocketChannel.accept();
+	// ...
+}
+
+serverSocketChannel.close();
+\end{lstlisting}
+
+\section{Java IO vs Java NIO}
+\subsection{Streams vs Buffers}
+NIO is buffergeoriënteerd terwijl IO streamgeoriënteerd is. Een stream laat enkel toe om sequentieel te lezen, en kan niet meer teruggegaan worden, tenzij dit opgeslagen wordt in een buffer. Het voordeel van een buffer is dus dat het niet sequentieel afgelopen moet worden. 
+\subsection{Blocking vs Non-blocking IO}
+De traditionele IO zijn blocking. Een thread moet wachten vooraleer de blocking methoden klaar zijn. De non-blocking manier van buffers laat toe om enkel de huidige beschikbare data van een buffer op te halen, en zal niet blokkeren in het geval dat er nog data verwacht wordt. Dit heeft natuurlijk als gevolg dat een thread meerdere kanalen kan beheren.
+\subsection{Selectors}
+Dit is het direct gevolg van de asynchroniteit van buffers/kanalen. Een selector is de implementatie die toelaat om meerdere kanalen te monitoren met slechts één thread.
+\subsection{Verwerken van data}
+Stel dat we volgende inhoud willen lezen:
+\begin{lstlisting}
+Name: Anna
+Age: 25
+Email: anna@mailserver.com
+Phone: 1234567890
+\end{lstlisting}
+Bij een streamgeoriënteerde methode moet elke lijn één voor één ingelezen worden. De opeenvolging van \texttt{readLine()} methoden verzekert dat de vorige \texttt{readLine()} aanroep met succes voltooid is.
+\begin{lstlisting}[language=java]
+InputStream input = ...;
+BufferedReader reader = new BufferedReader(
+	new InputStreamReader(input);
+)
+String name = reader.readLine();
+String age = reader.readLine();
+String email = reader.readLine();
+String phone = reader.readLine();
+\end{lstlisting}
+Bij een buffergeoriënteerde methode is de verwerking wat complexer. Aan elke buffer moet een vooropgelegde aantal bytes toegekend worden die de buffer kan bevatten. Het probleem dat hierbij komt is dat het onmogelijk wordt om te weten wat er in de buffer zit, en je telkens de buffer moet inspecteren.
+\begin{lstlisting}[language=java]
+ByteBuffer buffer = ByteBuffer.allocate(48);
+int bytesRead = inChannel.read(buffer);
+\end{lstlisting}
+Het kan zijn dat de buffer slechts 'Name: An' bevat.
+\subsection{Overige topics}
+\begin{itemize}
+	\item[\info] \textbf{Change notifiers:} De \texttt{WatchService} klasse laat toe om eenvoudig wijzigingen in directory of bestand te monitoren. Dit is een verbetering dan het pollingsmechanisme dat gebruikt wordt door traditionele IO.
+	\item[\info] \textbf{Selectors:} De I/O van NIO is eventgebaseerd. Een selector wordt pas wakker wanneer een bepaald event optreedt.
+	\item[\info] \textbf{Channels:} Het gebruik van kanalen is niet altijd sneller. Een eenvoudig bestand inlezen kan twee tot drie maal performanter zijn met de traditionele IO operaties.
+	\item[\info] \textbf{Memory Mapping:} NIO heeft een mechanisme dat ervoor zorgt dat een bestand eigenlijk gezien wordt als een blok geheugen, met als gevolg dat I/O nu even snel is als traditioneel geheugen uitlezen, in plaats van schijfoperaties. Het maakt het ook mogelijk om meerdere readers en writers op ditzelfde geheugen te laten werken. 
+	\item[\info] \textbf{Character encoding en zoeken:} De laatste feature van NIO zijn character encodings via de klasse \texttt{Charset}. Het laat eenvoudig conversie tussen charsets toe. Het is meer flexibel dan de traditionele \texttt{getBytes()}-methode, en is zeer bruikbaar bij het zoeken in teksten die niet in het Engels geschreven zijn (met rare tekens). 
+\end{itemize}
+
+\chapter{Java Message Service}
+\textbf{Java Message Service (JMS)} is een asynchrone, betrouwbare berichtenservice. Verschillende componenten kunnen berichten sturen en ontvangen. Er zijn twee soorten berichtstijlen:
+\begin{itemize}
+	\item[\info] \textbf{Queue:} Niet te verwarren met een effectieve queue datastructuur. Een \underline{messaging queue} laat slechts één enkele subscriber toe en één enkele producent. Het is een point-to-point verbindingen waarbij de enige producer berichten op de queue zet, en de consumer (de enige mogelijke subscriber) deze berichten zoals een queue leest, first in first out.
+	\item[\info] \textbf{Topic:} Een topic laat toe om meerdere subscribers te hebben. Een publisher publiceert een bepaald bericht en elke subscriber (meerdere mogelijk) kan dit bericht lezen. Dit is in feite gewoon het publisher-subscriber model. Elke subscriber bevat nog altijd een wachtrij van nog te lezen berichten, maar is fundamentaal anders dan als de Messaging Queue.
+\end{itemize}
+Om een connectie te maken met een JMS provider wordt de klasse \texttt{ConnectionFactory} gebruikt. Deze klasse wordt niet zelf geïnitialiseerd, maar met behulp van annotaties (cfr. \ref{code:connectionfactory}).
+\begin{equation}
+	\begin{split}
+		& \texttt{@Resource(lookup = "java:comp/DefaultJMSConnectionFactory")} \\
+		& \texttt{private static ConnectionFactory connectionFactory;}
+	\end{split}
+	\label{code:connectionfactory}
+\end{equation}
+Hoe dat een \texttt{Queue} en \texttt{Topic} aangemaakt moeten worden, is gezien in de labo's. Een voorbeeld:
+	$$\texttt{create-jms-resource --restype javax.jms.Queue customQueue}$$
+De queue (of topic) wordt ook met een annotatie geïnitialiseerd (cfr. \ref{code:customQueue}).
+\begin{equation}
+	\begin{split}
+		& \texttt{@Resource(lookup = "jms/customQueue")} \\
+		& \texttt{private static Queue queue;}
+	\end{split}
+	\label{code:customQueue}
+\end{equation}
+Een producer kan een bericht op de queue zetten:
+\begin{lstlisting}[language=java]
+try (JMSContext context = connectionFactory.createContext();) {
+	context.createProducer().send(queue, "een bericht");
+} catch (JMSRuntimeException e) {
+	//...
+}
+\end{lstlisting}
+en een consumer kan dit bericht lezen:
+\begin{lstlisting}[language=java]
+try (JMSContext context = connectionFactory.createContext();) {
+	context.createConsumer(queue);
+	while(true){
+		Message m = consumer.receive(1000); // om de seconde
+		if(m != null && m instanceof TextMessage){
+			System.out.println(m.getBody(String.class));
+		}
+	}
+} catch (JMSRuntimeException e) {
+	//...
+}
+	\end{lstlisting}
 \end{document}

@@ -139,31 +139,42 @@
 
 	\section{Testvragen}
 	\begin{enumerate}
-		\item \accentuate{Leg het verschil uit tussen confidentialiteit, authenticatie, authorisatie, data-integriteit, onweerlegbaarheid en beschikbaarheid.}
+		\vraag{Leg het verschil uit tussen confidentialiteit, authenticatie, authorisatie, data-integriteit, onweerlegbaarheid en beschikbaarheid.}
+		{
+			Zie deel 1.1
+		}
+		\vraag{Waarom worden sequentienummers toegevoegd aan berichten? Is het een goed idee om een timestamp te gebruiken voor die reden?}
+		{
+			Een sequentienummer zorgt ervoor dat een bericht uniek is voor een bepaalde sessie. Een  ontvanger verwacht een bepaald sequentienummer van de verzender. Op die manier worden replay aanvallen voorkomen, omdat eens dat een sequentienummer door de ontvanger opgebruikt wordt, deze niet meer opnieuw kan gebruikt worden. Een timestamp kan een goed idee zijn, zodat ook de tijd in rekening gebracht wordt.
+		}
+		\vraag{Welke maatregelen kunnen genomen worden tegen DoS en DDoS aanvallen?}{
 
-		Zie deel 1.1
-		\item \accentuate{Waarom worden sequentienummers toegevoegd aan berichten? Is het een goed idee om een timestamp te gebruiken voor die reden?}
+		}
+		\vraag{Geef vijf voorbeelden van actieve aanvallen die een netwerkprotocol kunnen comprimeren.}{
+			\begin{enumerate}
+				\item Berichtmodificatie
+				\item Replay-aanvallen
+				\item Impersonatie
+				\item DoS
+				\item Hijacking
+			\end{enumerate}
+		}
 
-		Een sequentienummer zorgt ervoor dat een bericht uniek is voor een bepaalde sessie. Een  ontvanger verwacht een bepaald sequentienummer van de verzender. Op die manier worden replay aanvallen voorkomen, omdat eens dat een sequentienummer door de ontvanger opgebruikt wordt, deze niet meer opnieuw kan gebruikt worden. Een timestamp kan een goed idee zijn, zodat ook de tijd in rekening gebracht wordt.
-		\item \accentuate{Welke maatregelen kunnen genomen worden tegen DoS en DDoS aanvallen?}
-		\item \accentuate{Geef vijf voorbeelden van actieve aanvallen die een netwerkprotocol kunnen comprimeren.}
 
-		\begin{enumerate}
-			\item Berichtmodificatie
-			\item Replay-aanvallen
-			\item Impersonatie
-			\item DoS
-			\item Hijacking
-		\end{enumerate}
 
-		\item \accentuate{Wat zijn de strong en weak collision requirements? Geef voorbeelden waarom deze belangrijk zijn.}
+		\vraag{Wat zijn de strong en weak collision requirements? Geef voorbeelden waarom deze belangrijk zijn.}{
 
 		Weak collision requirement = Gegeven een hashwaarde $H(m) = h$, moet het onmogelijk zijn een bericht $n$ te vinden die dezelfde waarde $H(n) = h$ oplevert. Indien dit wel mogelijk zou zijn, dan kan een aanvaller andere berichten versturen, die toch dezelfde hash hebben als het legitieme bericht. De ontvanger kan dit onderscheidt dan ook niet maken zodat data-integriteit hier niet voldaan wordt. Data-origin wordt hier ook niet voldaan, omdat de ontvanger niet kan weten dat het van een andere ontvanger zou komen.
 
-		Strong collision requirement = Gegeven twee berichten $m$ en $n$, die verschillend zijn van elkaar, dan mogen $H(m)$ en $H(n)$ niet gelijk zijn aan elkaar. Is dit wel het geval, dan kan een aanvaller meerdere berichten $n_i$ zoeken die dezelfde hashwaarde heeft als $m$, zodat onweerlegbaarheid niet voldaan is. \accentuate{waarom?}
-		\item \accentuate{Wat is het hoofdzakelijk verschil tussen een digitale handtekening en een MAC.}
+		Strong collision requirement = Gegeven twee berichten $m$ en $n$, die verschillend zijn van elkaar, dan mogen $H(m)$ en $H(n)$ niet gelijk zijn aan elkaar. Is dit wel het geval, dan kan een aanvaller meerdere berichten $n_i$ zoeken die dezelfde hashwaarde heeft als $m$, zodat onweerlegbaarheid niet voldaan is. 
 
-		Een MAC werkt via een symmetrisch sleutelmechanisme, zodat enkel zenders en ontvangers moet dezelfde sleutel, kunnen verifiëren of dat het bericht ongewijzigd (integriteit) is of dat het bericht van de juiste zender komt (authenticatie). Een digitale handtekening werkt volgens een asymmetrisch sleutelmechanisme.  
+		}
+		\vraag{Wat is het hoofdzakelijk verschil tussen een digitale handtekening en een MAC.}
+		{
+			Een MAC werkt via een symmetrisch sleutelmechanisme, zodat enkel zenders en ontvangers moet dezelfde sleutel, kunnen verifiëren of dat het bericht ongewijzigd (integriteit) is of dat het bericht van de juiste zender komt (authenticatie). Een digitale handtekening werkt volgens een asymmetrisch sleutelmechanisme.  
+		}
+
+
  	\end{enumerate}
 
 
@@ -250,10 +261,12 @@
 
 	\subsection{Testvragen}
 	\begin{enumerate}
-		\item \accentuate{Juist of fout: het SSH transportlaag protocol encrypteerd TCP packetten.}
+		\vraag{Juist of fout: het SSH transportlaag protocol encrypteerd TCP packetten.}{
 
-		\item \accentuate{Leg de functie van het SSH transportlaag protocol, SSH user authentication protocol en SSH connectieprotocol uit.}
+		}
 
+		\vraag{Leg de functie van het SSH transportlaag protocol, SSH user authentication protocol en SSH connectieprotocol uit.}
+{
 		\begin{itemize}
 			\item[\info] Het SSH transportlaag protocol zal proberen om een SSH connectie te leggen tussen de SSH cliënt en de SSH server. De cliënt en de server spreken onder andere af welke cryptografische algoritmen ze gaan gebruiken voor verschillende categoriën zoals: encryptie, compressie, mac en sleuteluitwisseling. Dit protocol is voltooid indien de cliënt één van de volgende protocollen oproept met het \texttt{SSH\_MSG\_SERVICE\_REQUEST} bericht. Op dit moment verloopt het verkeer tussen de cliënt en de server via SSH transportlaagpakketten verstuurd, die beschermd zijn met encryptie en een MAC.
 			
@@ -264,13 +277,21 @@
 				\item Public key authentication: Een gebruiker moet een public-private sleutelpaar hebben. Bij een SSH connectie voor een gebruiker wordt er een speciale handtekening, gegenereerd met behulp van zijn private sleutel. De server controleert of de bijhorende publieke sleutel correct is, en authenticeerd al dan niet de gebruiker.
 			\end{itemize}
 		\end{itemize}
-		\item \accentuate{In welke gevallen is het aan te raden om een SSH sleutel\emph{her}uitwisseling te initialiseren? Waarom?}
-		\item \accentuate{Wat is het verschil tussen een SSH sessie en een SSH kanaal. Welke kanaaltypes worden ondersteund?}
-		                                    
-		\item \accentuate{Naar welk poortnummer luistert SSH in normale omstandigheden?}
+}
+		\vraag{In welke gevallen is het aan te raden om een SSH sleutel\emph{her}uitwisseling te initialiseren? Waarom?}{
 
+		}
+		\vraag{Wat is het verschil tussen een SSH sessie en een SSH kanaal. Welke kanaaltypes worden ondersteund?}{
+
+		}
+		                                    
+		\vraag{Naar welk poortnummer luistert SSH in normale omstandigheden?}
+{
 		Poort 22.
-		\item \accentuate{Leg het verschil uit tussen local en remote port forwarding.}
+}
+		\vraag{Leg het verschil uit tussen local en remote port forwarding.}{
+
+		}
 
 
 	\end{enumerate}
@@ -461,7 +482,33 @@
 	\end{itemize}
 
 	\subsection{Testvragen}
+	\begin{enumerate}
+		\vraag{Leg het verschil uit tussen ephemeral Diffie-Hellman en traditionele Diffie-Hellman.}{
+			Traditionele Diffie-Hellman maakt steeds gebruik van dezelfde private sleutels. Iedere keer dat twee partijen het Diffie-Hellman proces uitvoeren, zullen zij dezelfde gedeelde sleutel hebben. Een sleuteluitwisseling met ephemeral Diffie-Hellman zal per sessie een private sleutel genereren, wat ervoor zorgt dat er altijd een andere gedeelde sleutel zal zijn. Op die manier is perfect forward secrecy bereikt.
+		}
 
+		\vraag{Wat is het verschil tussen een sleuteldistributiecentrum en een public key infrastructure? Wat zijn de voordelen en nadelen van beiden?}{
+			Een sleuteldistributiecentrum is een databank die paren van public/private sleutels bevat. Elke gebruiker heeft een private sleutel om met het sleuteldistributiecentrum te communiceren. Het sleuteldistributiecentrum is dan ook verantwoordelijk voor de creatie van sessiesleutels. Een public key infrastructure maakt gebruik van certificaten.
+		}
+
+		\vraag{Geef 5 redenen waarom een certificaat teruggetrokken kan worden. Hoe wordt het terugtrekken van een certificaat geimplementeerd?}{
+			Het terugtrekken van een certificaat kan op twee manieren geïmplementeerd worden:
+			\begin{itemize}
+				\item Certificate Revocation List: Dit is een lijst waarop alle certificaten staan die niet meer vertrouwd mogen worden. Als een client een certificaat krijgt, controleert hij of deze in de lijst aanwezig is. Zo ja, dan wordt het certificaat niet meer goedgekeurd. Het nadeel aan deze methode is enerzijds dat de lijst vrij lang kan worden en anderzijds dat er geen mechanisme is om elke client te melden wanneer er een nieuw certificaat toegevoegd wordt.
+				\item Online Certificate Status Protocol: Deze methode laat toe om de status van een individueel certificaat te controleren, zodat real-time validatie mogelijk is. Dit heeft echter vier nadelen: de service moet altijd bereikbaar zijn, de service moet een massa van real-time queries kunnen behandelen, de privacy van een gebruiker wordt genegeerd omdat de CA nu weet welk certificaat opgehaald wordt en de query is synchroon.
+			\end{itemize}
+			Vijf redenen om een certificaat in te trekken zijn:
+			\begin{itemize}
+				\item Het certificaat heeft zijn geldigheidsdatum overschreden.
+				\item De private sleutel van het certificaat is verloren of gestolen.
+				\item De CA is niet meer beschikbaar of is overgenomen door aanvallers.
+			\end{itemize}
+		}
+
+		\vraag{Geef voorbeelden van restricties die deel kunnen uitmaken van een certificaat. Waarom zijn deze belangrijk?}{
+
+		}
+	\end{enumerate}
 
 
 	\section{Beveiligen van netwerkprotocollen}
@@ -625,36 +672,60 @@
 		\item \textbf{Certificaatketting}: Stuur niet enkel eigen certificaat maar ook het certificaat van diegene dat het getekend heeft. Dit bespaart een DNS lookup.
 	\end{itemize}
 
+	\subsubsection{Testvragen}
+	\begin{enumerate}
+		\vraag{Wat zijn de voornaamste verschillen tussen SSH en TLS?}{
+			TLS is een protocol op transportniveau, terwijl SSH op applicatieniveau werkt. TLS maakt gebruik van X.509 certificaten, terwijl SSH een eigen formaat gebruikt. TLS kent enkel public key authenticatie, terwijl SSH ook host-based en passwordbased heeft. De server bij SSH moet ook verplicht geauthenticeerd worden.
+		}
+
+		\vraag{De geëncrypteerde pakketten van TLS zijn geauthenticeerd bij het verzenden. Gebruikt dit authenticatiemechanisme een gedeelde sleutel, of een private sleutel? Waarom?}{
+			TLS maakt gebruik van een sessiesleutel, die gedeeld wordt door de client en de server. Het voordeel van een sessiesleutel is dat er perfect forward secrecy bereikt wordt. Bij elke nieuwe sessie wordt er een nieuwe sessiesleutel gegenereerd, die niet kan gebruikt worden bij vorige sessies.
+		}
+
+		\vraag{Is TLS kwetsbaar voor aanvallen die patroonanalyse uitvoeren op het verkeer? Waarom wel of niet?}{
+			TLS encrypteerd elk pakket op transportniveau en \todo{...}
+		}
+
+		\vraag{Wordt de TLS record header toegevoegd bij elk TCP pakket?}{
+			De TLS record header bevat onder andere 
+		}
+
+		\vraag{Voor welke applicaties zou je eerder SSH over TLS, of TLS over SSH gebruiken? Waarom?}{
+
+		}
+	\end{enumerate}
+
 	\subsection{Beveiligen van de netwerklaag}
-	= \underline{gebruik van IPSec}
+
 
 	Mogelijke bedreigingen op de netwerklaag:
 	\begin{itemize}
-		\item IP-adres kan gewijzigt worden (source spoofing).
+		\item IP-adres kan gewijzigd worden (source spoofing).
 		\item Vervalste routeinformatie kan verzonden worden.
 	\end{itemize}
 	Dit resulteert dat er geen data-integriteit of confidentialiteit is.
 
-	IPSec is een \underline{applicatieonafhankelijk} protocol dat \underline{veilige IP verbindingen legt}. 
+	\subsubsection{IPsec}
+	IPsec is een \underline{applicatieonafhankelijk} protocol dat \underline{veilige IP verbindingen legt}. 
 
-	\underline{Voordelen} van IPSec:
+	\underline{Voordelen} van IPsec:
 	\begin{itemize}
-		\item Aangezien dat IPSec applicatieonafhankelijk is, moeten applicaties zelf geen beveiliging op netwerklaag voorzien.
+		\item Aangezien dat IPsec applicatieonafhankelijk is, moeten applicaties zelf geen beveiliging op netwerklaag voorzien.
 		\item Beveiligingsmechanismen moeten maar gelden op beperkt aantal systemen (firewall of router). Het interne verkeer wordt hierdoor niet beïnvloedt.
 		\item Eindgebruikers moeten zich hier niet van bewust zijn.
 	\end{itemize}
 
-	\underline{Nadelen} van IPSec:
+	\underline{Nadelen} van IPsec:
 	\begin{itemize}
 		\item Er is geen beveiliging nadat het bericht de gateway heeft gepasseerd.
 		\item Systeemresources zijn nodig om cryptographische functies te berekenen.
-		\item De implementatie is vrij complex en het gebeurt vaak dat verschillende versies van IPSec incompatibel zijn met elkaar.
+		\item De implementatie is vrij complex en het gebeurt vaak dat verschillende versies van IPsec incompatibel zijn met elkaar.
 	\end{itemize}
 
-	IPSec kent \underline{twee modi}:
+	IPsec kent \underline{twee modi}:
 	\begin{itemize}
-		\item \textbf{Layer 2 tunnel mode} (default): Dit beschermt de interne routinggegevens door heel het pakket te encrypteren en een nieuw IP header vooraan toe te voegen. Dit is geschikt voor \emph{network-to-netwerk} (tussen 2 verschillende routers op verschillende locaties), \emph{host-to-network} (remote user access) en \emph{host-to-host} (private chat) communicatie.
-		\item \textbf{Transport mode}:  Enkel de payload wordt geëncrypteerd zodat de IP header ongewijzigt blijft. Dit is geschikt voor \emph{end-to-end} communicatie tussen toestellen met publieke IP adressen.
+		\item \textbf{Layer 2 tunnel mode} (default): Dit beschermt de interne routinggegevens door heel het pakket te encrypteren en een nieuw IP header vooraan toe te voegen. Dit is geschikt voor \emph{network-to-netwerk} (tussen 2 verschillende routers op verschillende locaties), \emph{host-to-network} (remote user access) en \emph{host-to-host} (private chat) communicatie. Het voordeel van tunnel model is dat niet elk toestel op een subnetwerk IPsec moet understeunen, maar enkel de gateways.
+		\item \textbf{Transport mode}:  Enkel de payload wordt geëncrypteerd zodat de IP header ongewijzigd blijft. Dit is geschikt voor \emph{end-to-end} communicatie tussen toestellen met publieke IP adressen.
 	\end{itemize}
 	
 	\subsubsection{Protocollen}
@@ -669,9 +740,9 @@
 		\end{figure}
 		Dit biedt authenticatie, data-integriteit en voorkomt IP spoofing en replay mechanismen.
 		\begin{enumerate}
-			\item De IP header en data payload worden gehasht.
+			\item De IP header en data payload worden gehasht met behulp van een gedeelde sleutel die zowel de verzender als ontvanger bezit.
 			\item De returnwaarde van deze hashfunctie wordt gebruikt om een authentication header te maken, die toegevoegd wordt aan het originele pakket.
-			\item Het pakket wordt doorgestuurd naar de IPSec router van de begunstigde.
+			\item Het pakket wordt doorgestuurd naar de IPsec router van de begunstigde.
 			\item Deze router zal de IP header en data opnieuw hashen, en vergelijkt deze met de authentication header. Indien deze verschillend zijn, wil dit zeggen dat het pakket is aangepast.
 		\end{enumerate}
 		\item \textbf{Encapsulating Security Payload} (figuur \ref{fig:encapsulating_security_payload}): 
@@ -688,7 +759,7 @@
 
 		In \underline{transport mode} biedt ESP encryptie en authenticatie, maar geen traffic flow confidentialiteit.
 
-		In \underline{tunnel mode} biedt het wel traffic flow confidentialiteit. Een aanvaller kan enkel zien naar welk lokaal netwerk een pakket werd verstuurd, maar weet niet naar welk specifiek toestal van dit netwerk het verstuurd werd.
+		In \underline{tunnel mode} biedt het wel traffic flow confidentialiteit. Een aanvaller kan enkel zien naar welk lokaal netwerk een pakket werd verstuurd, maar weet niet naar welk specifiek toestel van dit netwerk het verstuurd wordt.
 		
 	\end{itemize}
 	Beide protocollen kunnen ook gecombineerd worden in beide modi (figuur \ref{fig:ah_esp}).
@@ -698,7 +769,43 @@
 		\label{fig:ah_esp}
 	\end{figure}
 
+	IPsec maakt gebruik van \textbf{Securityy Associations (SA)}. Dit is een one-way relatie tussen een zender en ontvanger. Voor een duplex relate zijn er twee associaties nodig. Een associatie bevat: 
+	\begin{itemize}
+		\item[\info] Een SPI (Security Parameters Index), een unieke identifier van de associatie.
+		\item[\info] Het doel ipadress.
+		\item[\info] Protocol specificatie (AH of ESP, al dan niet in tunnel of transport mode).
+	\end{itemize}
 
+	\subsubsection{VPN}
+	Een VPN in een beveiligde tunnel van site to site. Volgende protocollen laten dit onder andere toe: \accentuate{(volgens mij niet te kennen, gewoon een opsomming van een aantal protocollen zonder veel uitleg.)}
+	\begin{itemize}
+		\item[\info] \textbf{IPsec:} Het IPsec protocol is ontworpen om de VPN te implementeren. Het nadeel is echter dat IPsec vrij complex is, dat er verschillende implementaties zijn van de standaard, en dat het problemen geeft bij firewalls die geen IPsec ondersteunen.
+		\item[\info] \textbf{Point-to-Point protocol (PPTP):} Dit protocol wordt zowat ondersteund op elk besturingssysteem. Het is eenvoudig op te stellen en is snel. Het nadeel is dat het niet veilig is. Het maakt gebruik van $MS-CHAPv2$ authenticatie, die als onveilig wordt beschouwd. 
+		\item[\info] \textbf{OpenVPN:} Dit is een uitbreiding van OpenSSL en maakt dus gebruik van TLS. Een aantal voordelen zijn: veel configuratiemogelijkheden, kan firewalls omzeilen, heeft een groot bereik van encryptiealgoritmen en is open source. Het is echter wel moeilijk op te stellen, en de beveiliging vind plaats op de transportlaag in plaats van de netwerklaag.
+	\end{itemize}
+
+	\subsubsection{Testvragen}
+	\begin{enumerate}
+		\vraag{Geef vijf voorbeelden van beveiligingsproblemen die met IPsec kunnen opgelost worden maar niet met TLS of SSH.}
+		{
+			\begin{itemize}
+				\item IPsec is platformonafhankelijk, zodat er slechts één configuratie moet zijn.
+			\end{itemize}
+		}
+		\vraag{Welke van de volgende beveiligingsprincipes worden bereikt met IPsec: integriteit, authenticatie, confidentialiteit, access control.}
+		{
+			\begin{itemize}
+				\item Authenticatie: Dit kan gerealiseerd worden met zowel AH als ESP. AH zal op basis van de IP header en de data payload een hash creëren met een gedeelde sleutel van de zender en ontvanger. De ontvanger zal ook de IP header en data payload hashen met dezelfde sleutel om te valideren zodat de verzender geauthenticeerd is. ESP kan dit op exact dezelfde manier doen.
+				\item Integriteit: Het ESP protocol voorziet integriteit door de data en optioneel de IP header te encrypteren.
+				\item Confidentialiteit: Het Encapsulating Security Payload protocol voorziet traffic flow confidentialiteit omdat het de payload en optioneel de IP header encrypteerd. Het is maar een beperkte vorm enkel weet naar welk lokaal netwerk een pakket wordt verstuurd, maar weet niet welk specifiek toestel binnen dit netwerk het pakket zal ontvangen.
+			\end{itemize}
+		}
+
+		\vraag{Welke IPsec protocollen bereiken traffic flow confidentialiteit? Waarom is dit slechts een beperkte vorm van confidentialiteit?}
+		{
+		Het Encapsulating Security Payload protocol voorziet traffic flow confidentialiteit omdat het de payload en optioneel de IP header encrypteerd. Het is maar een beperkte vorm enkel weet naar welk lokaal netwerk een pakket wordt verstuurd, maar weet niet welk specifiek toestel binnen dit netwerk het pakket zal ontvangen.
+		}
+	\end{enumerate}
 
 	\subsection{Beveiligen van de datalinklaag}
 	\subsubsection{Mogelijke aanvallen op de datalinklaag}
@@ -711,15 +818,60 @@
 	\begin{itemize}
 		\item \textbf{Pakketten zijn afluisterbaar}
 		\item \textbf{Deauthenticatie aanval}: Om van een draadloos netwerk te gaan, moet er een deauthenticatierequest verstuurd worden naar het access point waarop er geauthenticeerd werd. Een aanvaller kan in de naam van iemand anders zo een deauthenticatierequest versturen.
-		\item \textbf{Hidden node probleem} (figuur \ref{fig:hidden_node_problem}):
-		\begin{figure}[ht]
-			\includegraphics[width=\textwidth]{hidden_node_problem}
-			\caption{Hidden node problem.}
-			\label{fig:hidden_node_problem}
-		\end{figure}
-	\end{itemize}
-	\todo{saai}
+		\item \textbf{Hidden node probleem}: Stel een draadloos netwerk $[A \rightarrow (B] \leftarrow C)$. $A$ kan $B$ bereiken, maar niet $C$. $C$ kan $B$ bereiken maar niet $A$. $B$ kan zowel $A$ als $C$ bereiken. Stel dat $A$ nu een bericht stuurt naar $B$, en op hetzelfde moment stuurt $C$, die niets afweet van het bericht van $A$, ook een bericht naar $B$. Er treedt een collisie op. Dit kan opgelost worden met \textbf{Request To Send (RTS)} en \textbf{Clear To Send (CTS)} berichten. Vooraleer $A$ een pakket stuurt naar $B$, stuurt hij eerst een $RTS$ pakket naar $B$, waarop $B$ een $CTS$ pakket broadcast, zodat $C$ weet dat hij niets mag versturen naar $B$. De kans op collisie is veel kleiner omdat een $RTS$ pakket juist klein is, in plaats van de werkelijke datatransmissie die zal plaats vinden.
 
+		Een aanvaller kan dit in zijn voordeel gebruiken door $CTS$ pakketten te broadcasten, zodat geen enkel node nog kan communiceren (DoS aanval).
+
+	\end{itemize}
+
+	\subsubsection{WEP}
+	\textbf{Wired Equivalent Privacy (WEP)} voorziet volgende beveiligingsrequirements:
+	\begin{itemize}
+		\item[\info] Authenticatie.
+		\item[\info] Confidentialiteit.
+		\item[\info] Integriteit.
+	\end{itemize}
+	Het bevat geen sleuteluitwisselingsysteem zodat elk access point en elke client manueel dezelfde sleutel moeten krijgen. Dit is natuurlijk nadelig: het manueel beheren van sleutels is niet flexibel en het gebruik van slechts één sleutel laat toe dat slechts één gebruiker de veiligheid van het hele netwerk doet falen. De encryptie van WEP is relatief eenvoudig te kraken, maar het concept van gedeelde sleutels die manueel moeten toegekend worden vertraagd het vernieuwen van de sleutels.
+
+	WEP laat een aantal authenticatiemechanismen toe:
+	\begin{itemize}
+		\item[\info] \textbf{Open system authentication:} Dit is niet echt authenticatie; de client stuurt namelijk enkel zijn MAC address door naar het access point, die dan een bepaalde statuscode teruggeeft (0 = succes, 1 = ..., 16 = authentication rejected).
+		\item[\info] \textbf{Shared key authentication:} Deze authenticatiemethode maakt gebruik van het sleuteluitwisselingsproces zoals eerder vermeld en is daarom inherent zwak. De client stuurt zijn MAC address door naar het acces point, die antwoord met een bepaald stukje tekst. De client moet deze tekst geëncrypteerd met de gedeelde sleutel versturen naar het access point, die het bericht dan decrypteerd. Het access point stuurt dan een statuscode terug.  
+		\item[\info] \textbf{Authentication using SSID of access point:} Dit is een heel onveilige methode: de client verstuurt een bericht, met als inhoud de SSID van het access point. Als de SSID overeenkomt met de werkelijke SSID van het access point, wordt de client geauthenticeerd. De SSID wordt niet geëncrypteerd en een aanvaller kan deze eenvoudig stelen. 
+		\item[\info] \textbf{MAC address filtering:} Het access point houdt een lijst bij van toegestane MAC adressen. De client verstuurt zijn MAC adres naar het access point, die dan in zijn lijst kijkt of dat dit MAC adres toegestaan is. Dit is ook een onveilige methode: een aanvaller kan zijn MAC adres vervangen door een geldig MAC adres, door het MAC adres van een systeem te nemen dat vertrouwd is met het access point.
+	\end{itemize}
+	In princie is WEP heel onveilig: de sleutelgrootte bedraagt slechts 40 bits, er is geen eenvoudige manier om sleutels uit te wisselen, en maakt gebruik van een kleine, in plaintext leesbare initialisatievector van $24$ bits. De initialisatievector heeft slechts $2^{24}$ mogelijkheden en kan opgeslagen worden in $24GB$ opslagplaats. 
+	\subsubsection{WPA}
+	\textbf{WiFi Protected Access (WPA)}
+	Dit mechanisme verbeterd WEP op een aantal manieren:
+	\begin{itemize}
+		\item[\good] De lengte van de initialisatievector bedraagt nu $48$ bits. 
+		\item[\good] Het maakt gebruik van sleutels van $104$ bits die per pakket worden gegenereed.
+		\item[\good] Door gebruik te maken van het $802.1X$ authenticatieframework, is automatische sleuteluitwisseling mogelijk.
+	\end{itemize}
+	Het $802.1X$ definieert drie entiteiten:
+	\begin{itemize}
+		\item[\good] \textbf{Supplicant:} De draadloze client.
+		\item[\good] \textbf{Authenticator:} Meestal het access point.
+		\item[\good] \textbf{Authentication server:} 
+	\end{itemize}
+	\todo{onbelangrijk hoofdstuk tbh}
+
+	\section{Firewalls}
+	Een firewall bevindt zich tussen het lokale netwerk en het internet en dient om inkomend en uitgaand verkeer te controleren. De firewall zelf dient natuurlijk beschermd te zijn tegen niet-geauthenticeerde toegang. Een firewall is nuttig voor toegang tot bepaalde services te blokkeren, vaak per user. \underline{Een firewall kan vier functies aannemen}:
+	\begin{itemize}
+		\item[\info] \textbf{Pakketfilter:} Dit is het eenvoudigste component. De router analyseert elk inkomend en uitgaand IP pakket en beslist op basis van firewallregels of het pakket al dan niet geaccepteerd wordt. Een regel filtert op basis van het bron IP-adres, doel IP-adres, adres op transportniveau, het transportprotocol dat gebruikt wordt en de router interface waarop het pakket toekomt. Er kan een default policy ingesteld worden. De \texttt{DROP} policy zal al het verkeer blokkeren, tenzij het expliciet vermeld is dat het toegestaan is. De \texttt{ACCEPT} policy zal het omgekeerde doen.  Een pakketfilter is een eenvoudige manier beveiliging op te stellen. Er is geen cryptografie nodig, geen sleuteluitwisseling en is duidelijk voor eindgebruikers. Een normale configuratie houdt geen 'staat' bij. De firewall weet dus niet of een pakket deel uitmaakt van een bepaalde connectie. Het is wel mogelijk om een stateful firewall te configureren. 
+		\item[\info] \textbf{Circuit-level gateway:} Meestal wordt dit gebruikt als proxy-server voor TCP. De gateway krijgt een request om een TCP connectie op te stellen. De gateway zal de client authenticeren en zal daarna de TCP connectie met de server opstellen in naam van de client. Al het TCP verkeer tussen de client en de server verloopt nu tussen de firewall. Deze manier is applicatieonafhankelijk, maar kan hierdoor geen applicatiespecifieke bedreigingen stoppen. Het kan wel gebruikt worden in combinatie met de proxy (zie volgend punt).
+		\item[\info] \textbf{Application-level gateway (proxy):} De proxy is een applicatiespecifieke versie van de gateway die hiervoor bersproken werd. Netwerkverkeer voor die applicaties is dan enkel mogelijk via de proxy. Deze manier is veiliger dan zowel pakketfilter en circuit-level gateway: het gebruikte applicatieprotocol is beschikbaar voor de proxy en enkel een beperkt aantal applicaties moet onderzocht worden. Applicaties worden meestal default in geblokkeerd, zodat explicite toestemming nodig is. 
+		\item[\info] \textbf{Bastion:} Een bastion is een firewall die blootgesteld wordt aan de buitenwereld die geconfigureerd is om aanvallen tegen te houden. Een bastion kan een aantal configuraties aannemen:
+		\begin{itemize}
+			\item Eenvoudige dual-homed firewall: Deze soort bastion gebruikt zijn interfaces om het internet af te schermen van het interne netwerk.
+			\item Dual-homed firewall: In de realiteit is het beter om twee pakketfilters te zetten: één tussen het internet en de bastion die enkel verkeer doorlaat tussen het internet en de bastion, en één tussen de bastion en het interne netwerk die enkel verkeer toelaat tussen de bastion en het interne netwerk.
+			Deze configuratie is wel niet flexibel: de bastion moet nu al het verkeer behandelen, en is ook een single point of failure; als de bastion offline is, is er geen verkeer meer mogelijk tussen het internet en het interne netwerk.
+			\item Screened host firewall: Hier is er slechts één pakketfilter, die tussen het internet en de bastion staat. De functie van de bastion is om authenticatie en een aantal proxyfuncties te bieden. Voor sommige niet-kritische applicaties zoals een publieke webserver, kan de filter direct beslissen om het verkeer door te laten naar de webserver, zodat de bastion minder belast wordt.
+			\item Screened subnet firewall: \todo{dunno}
+		\end{itemize}
+	\end{itemize}
 
 	\chapter{Encryptiealgoritmen}
 	\section{Geschiedenis}
