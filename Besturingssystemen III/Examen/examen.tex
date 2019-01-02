@@ -16,9 +16,9 @@
 		\vraag { Bespreek de \textit{diverse namen} die alle Active Directory objecten \textit{identificeren}. \accentuate{\textsection 2.2.1} } 
 		{ 
 			\begin{itemize}
-				\item \textbf{Relative distinguished name.} Dit is een identificatie van een object \textbf{binnen} een \textbf{containerobject}. Een relative distinguished name moet dus \textbf{niet uniek} zijn op Active Directory niveau. Dit wordt opgeslagen in het attribuut \textbf{cn}.
+				\item \textbf{Relative distinguished name (RDN).} Dit is een identificatie van een object \textbf{binnen} een \textbf{containerobject}. Een RDN moet dus \textbf{niet uniek} zijn op Active Directory niveau. Dit wordt opgeslagen in het attribuut \textbf{cn}.
 				
-				\item \textbf{Distinguished name.} Deze \textbf{unieke} identificatie wordt opgebouwd uit de relative distinguished name van het object zelf en van alle RDNs waarvan het object hiërarchisch deel uitmaakt. Dit wordt opgeslagen in het attribuut \textbf{distinguishedName}
+				\item \textbf{Distinguished name.} Deze \textbf{unieke} identificatie wordt opgebouwd uit de RDN van het object zelf en van alle RDNs waarvan het object hiërarchisch deel uitmaakt. Dit wordt opgeslagen in het attribuut \textbf{distinguishedName}
 				
 				\item \textbf{Canonieke naam.} Dit heeft dezelfde functie als een distinguished name, maar heeft een eenvoudigere representatie. Dit wordt opgeslagen in het attribuut \textbf{canonicalName}
 				
@@ -27,10 +27,8 @@
 			
 		}	
 		\vraag { Wat zijn \textit{SPN objecten}? Bespreek de \textit{aanvullende naamgeving} voor deze objecten. \accentuate{ (\textsection 2.2.2)} } { 
-			\textbf{Security Principal Objects (SPN)} zijn objecten die \textbf{security IDs (SIDs)} bevatten. Dergelijke objecten worden gebruikt voor het verlenen van toegang tot domeinbronnen en zijn daarom van toepassing op gebruikersaccounts, computeraccounts, groepen en domeinen. Een SID is net zoals een GUID uniek binnen een forest voor elk nieuw aangemaakt object. Bij het verplaatsen en hernoemen binnen hetzelfde domein blijven de GUID en SID behouden van een SPN object. Indien het object naar een andere domein verplaatst wordt, zal enkel GUID hetzelfde blijven. Hierbij wordt het \textbf{sIDHistory} attribuut aangevuld met het vorige SID.	
-		}
-		
-		\vraag { Enkele veel gebruikte klassen (hiermee worden \textit{attributeschema} en \textit{classschema} objecten niet bedoeld) vertonen nog meer identificerende attributen voor hun instanties. Bespreek deze klassen en attributen. } { 		
+			\textbf{Security Principal Objects (SPN)} zijn objecten die \textbf{security IDs (SIDs)} bevatten. Dergelijke objecten worden gebruikt voor het verlenen van toegang tot domeinbronnen en zijn daarom van toepassing op gebruikersaccounts, computeraccounts, groepen en domeinen. Een SID is net zoals een GUID uniek binnen een forest voor elk nieuw aangemaakt object. Bij het verplaatsen en hernoemen binnen hetzelfde domein blijven de GUID en SID behouden van een SPN object. Indien het object naar een andere domein verplaatst wordt, zal enkel GUID hetzelfde blijven. Hierbij wordt het \textbf{sIDHistory} attribuut aangevuld met het vorige SID.	De aanvullende naamgeving voor deze objecten zijn:
+
 			\begin{itemize}
 				\item Een \textbf{gebruikersaccount} heeft nood aan een extra identificatieattribuut om inlogprocedures door een gebruiker te vereenvoudigen. Een \textbf{User Principal Name (UPN)} is een vereenvoudigde waarde (loginnaam) dat uitsluitend gebruikt wordt voor aanmelding. Verder moet een UPN uniek zijn binnen het hele forest en heeft standaard de volgende vorm:
 				$$\texttt{RDN@UPNsuffix}$$
@@ -40,23 +38,38 @@
 					\item De DNS domeinnaam van het root domein.
 					\item Een willekeurige maar een op voorhand gedefinieerde naam.
 				\end{itemize}
+
+				Er bestaat ook een alternatieve vorm, om compatibiliteit met vroegere NT versies te behouden. Men kan de NetBIOS naam van het domein en de SAM accountnaam van de gebruiker, aan elkaar gekoppeld door het \textbackslash-teken te gebruiken.  
 				
 				\item Een \textbf{computeraccount} bevat drie extra attributen:
 				\begin{itemize}
 					\item \textbf{SAM accountnaam.} Dit is gelijkaardig aan het UPN attribuut, maar dient voor compatibiliteit met oudere windows systemen (pre 2000). Standaard bestaat deze naam uit de eerste 15 bytes van de RDN, gevolgd door een \$ teken. Deze naam kan op elk moment gewijzigd worden. Deze waarde wordt opgeslagen in het attribuut \textbf{samAccountName}.
-					\item \textbf{DNS hostnaam.} Deze waarde bevat standaard de eerste 15 tekens van de RDN en de suffix voor primaire DNS;
-					\item \textbf{Service Principal Name.}
+					\item \textbf{DNS hostnaam.} Deze waarde bevat standaard de eerste 15 bytes van de RDN en de suffix voor primaire DNS.
+					\item \textbf{Service Principal Name.} Dit attribuut wordt gebruikt tijdens de wederzijdse verificatie van client software en de server die een bepaalde service aanbiedt. Het attribuut wordt bepaald door het multi-valued \texttt{servicePrincipalName} kenmerk.
 				\end{itemize}
-		\end{itemize}}
+			\end{itemize}
+		}
+		
+		\vraag { Enkele veel gebruikte klassen (hiermee worden \textit{attributeschema} en \textit{classschema} objecten niet bedoeld) vertonen nog meer identificerende attributen voor hun instanties. Bespreek deze klassen en attributen. } { 		
+			
+		}
 		
 		\vraag { In welke \textit{partities} is de Active Directory informatie verdeeld? Geef de betekenis van elke partitie, hun onderlinge relatie (zowel fysiek als met betrekking tot hun naamgeving), en de replicatiekarakteristieken ervan. \accentuate{(laatste helft \textsection 2.2.3)} } {
 			\begin{itemize}
-				\item \textbf{Domeingegevens.} Deze partitie bevat informatie over alle objecten in het domein (servers, bestanden, printers, accounts, ...). Objecten die aangemaakt of gewijzigd zijn, worden steeds opgeslagen in de domeingegevens. In Active Directory kunnen er meerdere domeinen bestaan in een forest. Deze domeinen vormen een boomstructuur met als wortel de domeingegevens van het \textbf{root} domein. Domeingegevens van een bepaald domein worden gerepliceerd tussen alle domeincontrollers van enkel dat domein.
-				\item \textbf{Applicatiepartitie.} Elk van de eventuele applicatiepartities wordt uitgewisseld tussen een eigen deelverzameling specifiek hiervoor geconfigureerde domeincontrollers van het forest, onafhankelijk van domeingrenzen. De applicatiepartitie DomainDNSZones wordt enkel gesynchroniseerd met domeincontrollers binnen een domein die ook DNS server zijn. De applicatiepartitie ForestDNSZones daarentegen zal de domeincontrollers die DNS server zijn op forestniveau synchroniseren.
-				\item \textbf{Configuratiegegevens.} Deze partitie beschrijft de fysieke topologie van de directory. Het bevat onder andere een lijst van alle domeinstructuren, de locaties van de domeincontrollers, de sites en de replicatietopologie. Deze partitie bevat ook de koppeling tussen een partitie en zijn replicerende domeincontrollers in het attribuut \textbf{msDS-NC-Replica-Locations} van het overeenkomstige \textbf{crossref} object. Enkel voor applicatiepartities kan dit dynamisch gewijzigd worden. 
-				\item \textbf{Het schema.} Dit is de formele definitie van alle objecten en kenmerkgegevens die kunnen opgeslagen worden in Active Directory. Dit schema is uniek voor alle domeinen in het forest.	
+				\item \textbf{Domeingegevens.} Deze partitie bevat informatie over alle objecten in het domein (servers, bestanden, printers, accounts, ...). Objecten die aangemaakt of gewijzigd zijn, worden steeds opgeslagen in de domeingegevens. In Active Directory kunnen er meerdere domeinen bestaan in een forest. Deze domeinen vormen een boomstructuur met als wortel de domeingegevens van het \textbf{root} domein. 
+				
+				Domeingegevens van een bepaald domein worden gerepliceerd tussen alle domeincontrollers van enkel dat domein.
+
+				\item \textbf{Configuratiegegevens.} De configuratiegegevens beschrijven de fysieke topologie van de directory. Het bevat ondermeer een lijst van alle domeinstructuren, de locaties van de domeincontrollers en de global catalog controllers, de sites en de replicatietopologie. 
+
+				De configuratiegegevens worden gerepliceerd naar alle domeincontrollers in het forest.
+				\item \textbf{Het schema.} Deze partitie is de formele definitie van alle objecten en kenmerkgegevens die kunnen opgeslagen worden in de directory. 
+
+				Het schema wordt gerepliceerd naar alle domeincontrollers in het forest.
+				\item \textbf{Applicatiepartitie.} De applicatiepartitie laat toe om een deel van de Active Directory gegevens gescheiden onder te brengen. Indien de DNS gegevens van de domeinen en van het forest geïntegreerd worden in Active Directory, dan worden er respectievelijk \texttt{DomainDNSZones} en \texttt{ForestDNSZones} applicatiepartities aangemaakt.
+				
+				De replicatiestrategie van een applicatiepartie is de enige die dynamisch kan gewijzigd worden, aangezien het ook de enige partitie is dat dynamisch kan aangemaakt worden. De specifieke domeincontrollers instellen die repliceren kan in het \texttt{msDS-NC-Replica-Locations} kenmerk van het overeenkomstige crossref object in de configuratiegegevens. 
 			\end{itemize}
-			Een willekeurige domeincontroller zorgt voor de opslag en replicatie van 
 			
 		}
 	\end{enumerate}

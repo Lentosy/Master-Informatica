@@ -9,6 +9,7 @@ use Math::BigInt;
 
 use Win32::OLE qw(in);
 use Win32::OLE::Variant;
+Win32::OLE->Option(Warn => 3);
 #use Win32::OLE::Const 'Active DS Type Library'; 
 
 # als je niet op de VM werkt kan je natuurlijk de constanten van 'Active DS Type Library' niet inladen
@@ -303,15 +304,30 @@ sub oef15 {
 sub oef16 {
     my $groep = $ARGV[1] or die "Geef cn van groep op";
     my $root = bind_object('RootDSE');
-    my $domein = bind_object($root->Get('defaultnamingcontext'));
+    $root->GetInfo();
+    my $domein = bind_object($root->Get('defaultNamingContext'));
     my $base = $domein->{adspath};
-    my $filter = "(&(objectclass=group)(cn=$groep))";
+    my $filter = "(cn=$groep)";
     my $attributen = "distinguishedName";
     my $scope = 'subtree';
-    my $command = get_command();
+    
+    # get_command niet oproepen => moet gebruik maken van account Interim F
+    my $connection = Win32::OLE->new("ADODB.Connection");
+    $connection->{Provider} = "ADsDSOObject";
+    $connection->{Properties}->{"User ID"} = "Interim F";
+    $connection->{Properties}->{"Password"} = "Interim F";
+    $connection->{Properties}->{"Encrypt Password"} = 1;
+    $connection->Open();
+    my $command = Win32::OLE->new("ADODB.Command");
+    $command->{ActiveConnection} = $connection;
+    $command->{Properties}->{"Page Size"} = 20;
 
     $command->{CommandText} = "<$base>;$filter;$attributen;$scope";
+    print  $command->{CommandText} ;
     my $resultset = $command->Execute();
+    if($resultset->{RecordCount} == 0){
+        die "$groep bestaat niet \n";
+    }
     my $distinguishedname = $resultset->Fields('distinguishedName')->{Value};
     printf "Groep: %s\n", $distinguishedname;
     $filter = "(memberof:1.2.840.113556.1.4.1941:=$distinguishedname)";
@@ -326,11 +342,89 @@ sub oef16 {
 }
 
 sub oef17 {
-    print "Geen implementatie";
+    my $root = bind_object('RootDSE');
+    my $schema = bind_object($root->Get("schemanamingcontext"));
+
+    my $base = $schema->{adspath};
+    my $filter = "(&(objectCategory=attributeSchema)(linkID=*)(!(linkID:1.2.840.113556.1.4.804:=1)))";
+    my $attributen = "ldapdisplayname,linkID";
+    my $scope = "subtree";
+
+    my $command = get_command();
+    $command->{CommandText} = "<$base>;$filter;$attributen;$scope";
+    $command->{Properties}->{"Sort On"} = "linkID";
+
+    my $forwardset = $command->Execute();
+    until($forwardset->{EOF}){
+        my $filter = sprintf "(&(objectCategory=attributeSchema)(linkID=%s))", $forwardset->Fields('linkID')->{Value};
+        $command->{CommandText} = "<$base>;$filter;$attributen;$scope";
+        my $backwardset = $command->Execute();
+        until($backwardset->{EOF}){
+            printf "%40s\t%s\n", $forwardset->Fields('ldapdisplayname')->{Value}, $backwardset->Fields('ldapdisplayname')->{Value};
+            $backwardset->MoveNext();
+        }
+
+        $backwardset->Close();
+        $forwardset->MoveNext();
+    }
+    $forwardset->Close();
+    close_command($command);
 }
 
 sub oef18 {
-    print "Geen implementatie";
+    my @objectcategories = @ARGV[1 .. $#ARGV] or die "geef minstens één objectCategory (DnsNode, printQueue, person, computer, ...) mee";
+    print join "-", @objectcategories;
+
+    my $root = bind_object('RootDSE');
+    my $domein = bind_object($root->Get("defaultnamingcontext"));
+
+    my $base = $domein->{adspath};
+    my $attributen = "adspath,cn,objectCategory,objectClass";
+    my $scope = "subtree";
+    my $padding = geef_lengte_langste_attribuutnaam($attributen);
+    for my $category (@objectcategories){
+        
+        my $filter = "(objectCategory=$category)";
+
+
+        my $command = get_command();
+        $command->{Commandtext} = "<$base>;$filter;$attributen;$scope";
+
+        my $resultset = $command->Execute();
+
+        until($resultset->{EOF}){
+            # custom code voor deze oefening
+            my $object = bind_object(substr $resultset->Fields("adspath")->{Value}, 22, length $resultset->Fields("adspath")->{Value}); # omdat ik in bind_object zelf LDAP en het IP adres al toevoeg
+            my $class = $object->{class};
+            printf "%${padding}s : %s\n", "class", $class;
+            # al de rest komt van de print_resultset methode
+            for (in $resultset->{Fields}){
+                printf "%${padding}s : ", $_->{Name};
+                my $waarde = $_->{Value};
+                if($waarde){
+                    if($_->{Type} == 204){
+                        printf "%*v02X", "", $waarde;
+                    } elsif (ref $waarde eq "ARRAY") {
+                        print join "|", @{$waarde};
+                    } elsif ($_->{Name} eq "systemFlags" || $_->{Name} eq "searchFlags"){
+                        printf "(%d) %b", $waarde, $waarde;
+                    } else {
+                        print $waarde;
+                    }  
+                } else {
+                    print "(geen waarde)";
+                }
+
+                print "\n";
+            }
+            print "\n";
+            $resultset->MoveNext();
+        }
+        $resultset->Close();
+        close_command($command);
+    }
+
+    
 }
 
 sub oef19 {
@@ -424,16 +518,20 @@ sub print_resultset {
         for (in $resultset->{Fields}){
             printf "%${padding}s : ", $_->{Name};
             my $waarde = $_->{Value};
-
-            if($_->{Type} == 204){
-                printf "%*v02X", "", $waarde;
-            } elsif (ref $waarde eq "ARRAY") {
-                print join "|", @{$waarde};
-            } elsif ($_->{Name} eq "systemFlags" || $_->{Name} eq "searchFlags"){
-                printf "(%d) %b", $waarde, $waarde;
+            if($waarde){
+                if($_->{Type} == 204){
+                    printf "%*v02X", "", $waarde;
+                } elsif (ref $waarde eq "ARRAY") {
+                    print join "|", @{$waarde};
+                } elsif ($_->{Name} eq "systemFlags" || $_->{Name} eq "searchFlags"){
+                    printf "(%d) %b", $waarde, $waarde;
+                } else {
+                    print $waarde;
+                }  
             } else {
-                print $waarde;
-            }  
+                print "(geen waarde)";
+            }
+
             print "\n";
         }
         print "\n";
