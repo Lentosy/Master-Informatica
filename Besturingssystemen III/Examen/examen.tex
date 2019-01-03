@@ -60,10 +60,10 @@
 				
 				Domeingegevens van een bepaald domein worden gerepliceerd tussen alle domeincontrollers van enkel dat domein.
 
-				\item \textbf{Configuratiegegevens.} De configuratiegegevens beschrijven de fysieke topologie van de directory. Het bevat ondermeer een lijst van alle domeinstructuren, de locaties van de domeincontrollers en de global catalog controllers, de sites en de replicatietopologie. 
+				\item \textbf{Configuratiegegevens.} De configuratiegegevens beschrijven de fysieke topologie van de directory. Het bevat ondermeer een lijst van alle domeinstructuren, de locaties van de domeincontrollers en de global catalog controllers, de sites en de replicatietopologie. Er is slechts één configuratiepartitie per forest en geldt voor alle domeincontrollers in dit forest.
 
 				De configuratiegegevens worden gerepliceerd naar alle domeincontrollers in het forest.
-				\item \textbf{Het schema.} Deze partitie is de formele definitie van alle objecten en kenmerkgegevens die kunnen opgeslagen worden in de directory. 
+				\item \textbf{Het schema.} Deze partitie is de formele definitie van alle objecten en kenmerkgegevens die kunnen opgeslagen worden in de directory. Er is slechts één schemapartitie per forest.
 
 				Het schema wordt gerepliceerd naar alle domeincontrollers in het forest.
 				\item \textbf{Applicatiepartitie.} De applicatiepartitie laat toe om een deel van de Active Directory gegevens gescheiden onder te brengen. Indien de DNS gegevens van de domeinen en van het forest geïntegreerd worden in Active Directory, dan worden er respectievelijk \texttt{DomainDNSZones} en \texttt{ForestDNSZones} applicatiepartities aangemaakt.
@@ -84,10 +84,10 @@
 		
 		\vraag { Bespreek de \textit{diverse naamgevingen}, specifiek voor attributeSchema objecten. } { 
 			\begin{itemize}
-				\item \textbf{Common Name}: De RDN van het attributeSchema object in de Schema container.
-				\item \textbf{GUID}: Dit kan automatisch gegenereerd worden bij de creatie van een nieuw kenmerk. Een attribuut krijgt dan wel een verschillende GUID in verschillende forests. Manueel een GUID instellen kan ook, met bv de \textbf{guidgen} of \textbf{uuidgen} opdrachten.
-				\item \textbf{LDAP Display Name}: De naam die gebruikt wordt voor LDAP. Deze naam is belangrijk voor programmatische toegang.
-				\item \textbf{Object Identifier}: De interne representatie van een object. Deze identifiers worden verleend door specialie autoriteiten, en zijn gegarandeerd uniek in alle netwerken over de hele wereld. Een Object Identifier bestaat uit een decimale reeks met punten, waarbij de toekenning op een hiërarchische manier gebeurd. Een Object Identifier kan aangevraagd worden bij een regionale ISO vertegenwoordiger. Indien dit niet gewenst is, kan er ook een Object Identifier gegenereerd worden in een Microsoft subtak, met behulp van de opdracht \textbf{oidgen}.
+				\item \textbf{cn}: De RDN van het attributeSchema object in de Schema container.
+				\item \textbf{schemaIDGUID}: Dit kan automatisch gegenereerd worden bij de creatie van een nieuw kenmerk. Een attribuut krijgt dan wel een verschillende GUID in verschillende forests. Manueel een GUID instellen kan ook, met bv de \textbf{guidgen} of \textbf{uuidgen} opdrachten.
+				\item \textbf{lDAPDisplayName}: De naam die gebruikt wordt voor LDAP. Deze naam is belangrijk voor programmatische toegang.
+				\item \textbf{attributeID}: De interne representatie van een object. Deze identifiers worden verleend door specialie autoriteiten, en zijn gegarandeerd uniek in alle netwerken over de hele wereld. Een Object Identifier bestaat uit een decimale reeks met punten, waarbij de toekenning op een hiërarchische manier gebeurd. Een Object Identifier kan aangevraagd worden bij een regionale ISO vertegenwoordiger. Indien dit niet gewenst is, kan er ook een Object Identifier gegenereerd worden in een Microsoft subtak, met behulp van de opdracht \textbf{oidgen}.
 			\end{itemize}
 		}
 		
@@ -96,37 +96,41 @@
 				\item \textbf{attributeSyntax en oMSyntax}: De syntax bepaalt het data type zoals: Object ID, Boolean, Integer, DirectoryString zijn enkele van de 26 mogelijkheden. Slechts 18 van deze 26 worden momenteel gebruikt in Active Directory. Het is \textbf{onmogelijk} om een nieuwe syntax te definieëren. Het object ID van een syntax wordt geïdentificeerd in de vorm van 2.5.5.x . Sommige Object Identifiers zijn blijkbaar niet te onderscheiden, waarop beroep moet gedaan worden op een bijkomende Integer waarde: mOSyntax.
 				\item \textbf{rangeLower en rangeUpper}: Bepalen de lengte- of bereikbeperkingen van kenmerken.
 				\item \textbf{isSingleValued}: Geeft aan of een attribuut meerdere waarden kan bevatten (een lijst).
-				\item \textbf{searchFlags}: Dit veld bevat binaire informatie, waarbij elke afzonderlijke bit kan ingesteld worden. Veronderstel de vorm $b_{10}b_9b_9b_7b_6b_5b_4b_3b_2b_1$, dan betekent elke bit het volgende:
+				\item \textbf{searchFlags}: Dit veld bevat binaire informatie, waarbij elke afzonderlijke bit kan ingesteld worden. Veronderstel de vorm ${\color{red}b_{10}}b_9{\color{red}b_8}b_7{\color{red}b_6b_5b_4b_3b_2b_1}$, dan betekent elke bit het volgende:
 				\begin{itemize}
 					\item \textbf{$b_1$}: Deze wordt meestal gezet, zodat eenvoudige indexering van de waarde van het kenmerk geactiveerd wordt, ongeacht van waar het object zich in Acive Directory bevindt.
-					\item \textbf{$b_2$}: Indien deze gezet wordt, wordt de waarde van het kenmerk gecbomineerd met de identificatie van de container waarin het object zich bevindt. Dit heet een containerized index, en zijn in staat om snel objecten op te sporen in een specifieke container.
+					\item \textbf{$b_2$}: Indien deze gezet wordt, wordt de waarde van het kenmerk gecombineerd met de identificatie van de container waarin het object zich bevindt. Dit heet een containerized index, en zijn in staat om snel objecten op te sporen in een specifieke container.
 					\item \textbf{$b_3$}: Dit laat Ambiguous Name Resolution toe. Bij opzoekingen van kenmerken waaraan een bepaalde waarde voldaan moet worden, kan i.p.v. \\ ($\mid$ (kenmerk1=waarde)(kenmerk2=waarde)(kenmerk3=waarde)...) gewoon (anr=waarde) gebruiken. 
-					\item \textbf{$b_4$}: \accentuate{(staat niets over in de cursus)}
+					\item \textbf{$b_4$}: Geeft aan of het attribuut behouden moet worden in het tombstone object voor verwijderde objecten.
 					\item \textbf{$b_5$}: Deze bit heeft niets met indexering te maken, maar geeft aan of de waarde van een attribuut behouden blijft bij het maken van een kopie van dit object.
-					\item \textbf{$b_6$}: Deze bit instellen versnelt opzoekingen waarn kenmerken metw wildcards vermeld worden. Deze tuple indexen worden best zeldzaam gebruikt, aangezien ze veel resources in beslag nemen.
-					\item \textbf{$b_7$}: \accentuate{niet belangrijk, dus niet opschrijven}
+					\item \textbf{$b_6$}: Deze bit instellen versnelt opzoekingen waarin kenmerken met wildcards vermeld worden. Deze tuple indexen worden best zeldzaam gebruikt, aangezien ze veel resources in beslag nemen.
 					\item \textbf{$b_8$}: \accentuate{(staat niets over in de cursus)}
-					\item \textbf{$b_9$}: \accentuate{niet belangrijk, dus niet opschrijven}
 					\item \textbf{$b_{10}$}: \accentuate{(staat niets over in de cursus)}
 				\end{itemize}
-				\item \textbf{systemFlags}: Dit heeft dezelfde vorm als searchFlags, een binair formaat $b_{28}...b_{5}b_{4}b_3b_2b_1$ waarvan de bits het volgende betekenen:
+				\item \textbf{systemFlags}: Dit heeft dezelfde vorm als searchFlags, een binair formaat ${\color{red}b_{28}}...{\color{red}b_{5}}b_{4}{\color{red}b_3b_2b_1}$ waarvan de bits het volgende betekenen:
 				\begin{itemize}
 					\item \textbf{$b_1$}: Deze bit geeft aan of dat het kenmerk gerepliceerd mag worden naar andere domeincontrollers of niet. Attributen die vaak wijzigen zoals lastLogOn en lastLogOff worden niet gerepliceerd.
-					\item \textbf{$b_2$}: \accentuate{(staat niets over in de cursus)}
+					\item \textbf{$b_2$}: Deze bit geeft aan of dat het kenmerk gerepliceerd wordt naar de globale catalogus.
 					\item \textbf{$b_3$}: Dit geeft aan of een attribuut geconstrueerd is of niet. Een dergerlijk attribuut wordt niet opgeslagen in Active Directory, maar wordt telkens opnieuw berekend op basis van andere kenmerken.
-					\item \textbf{$b_5$}: \todo{opzoeken}
-					\item \textbf{$b_28$}:\todo{opzoeken}
+					\item \textbf{$b_5$}: Geeft aan of dat het attribuut een systeemobject is.
+					\item \textbf{$b_{28}$}:Geeft aan dat de naam van het object al dan niet gewijzigd kan worden. 
 				\end{itemize}
 				\item \textbf{isMemberOfPartialAttributeSet}: Bepaalt of een attribuut in de global catalog wordt opgenomen of niet.
-				\item \textbf{linkID}:??
+				\item \textbf{linkID}: Een getal dat aangeeft dat het attribuut een gelinkt attribuut is. Een even getal duidt op een forward-link en het sequentieel daaropvolgend oneven getal duidt op de corresponderende back-link. Dergerlijke linkIDs laten toe om n-tot-n en n-tot-1 relaties te definieren zoals de member en memberof, alsook de managedBy en managedObjects attributen. 
 			\end{itemize}
 		}
 		
-		\vraag { Welke andere types objecten bevat het \textit{Active Directory schema}, en wat is hun bedoeling? \accentuate{ (o.a. \textsection 2.2.7)} } { \todo{Oplossen}}
+		\vraag { Welke andere types objecten bevat het \textit{Active Directory schema}, en wat is hun bedoeling? \accentuate{ (o.a. \textsection 2.2.7)} } {
+			\begin{itemize}
+				\item \textbf{subSchema:} Er is slechts één object die behoort tot de klasse subSchema, Aggregate. Dit object bevat een alternatieve, compactie representatie van het gehele schema en wordt het abstracte schema genoemd. De bedoeling is om vereenvoudigde schema gegevens ter beschikking te stellen aan LDAP cliënts, zonder dat die zich om veel implementatie details hoeven te bekommeren. Voor elk classSchema en attribuutSchema object biedt het abstracte schema slechts enkele kenmerken aan. 
+				\item \textbf{classSchema:} Voor elke klasse is er een classSchema object waarmee de klasse kan ingesteld worden. De kenmerken van classSchema objecten definieren de klasse, en bevatten twee soorten regels: met structuurregels worden mogelijke hiërarchische relaties tussen klassen of objecten gedefinieerd, terwijl met inhoudsregels kenmerken definieren die beschikbaar zijn voor een exemplaar van die klasse.
+			\end{itemize}
+		}
 		
 		\vraag { Via welke attributen kun je de \textit{klasse} van een willekeurig Active Directory object achterhalen? Hoe moet je op zoek gaan naar alle objecten van een bepaalde klasse? Illustreer aan de hand van relevante voorbeelden. \accentuate{ (laatste paragraaf \textsection 2.2.6)} } { 
 			\begin{itemize}
-				\item De \textbf{objectClass} en \textbf{objectCategory} attributen laten toe om een klasse te achterhalen. Het attribuut objectClass 
+				\item \textbf{objectClass:} Het attribuut objectClass is multi-valued en niet geïndexeerd en bevat niet enkel de klasse zelf, maar ook alle hiërarchische superklassen. Voor printQueue, user en computer is objectClass ingevuld met respectievelijk \{printQueue, connectionPoint, leaf, top\}, \{user, organizationalPerson, person, top\} en \{computer, user, organizationalPerson, person, top\}. 
+				\item  \textbf{objectCategory:} Het kenmerk objectCategory is single-valued en wordt geïndexeerd. Het bevat echter niet noodzakelijk de klasse van het object, maar bevat de meest typische vertegenwoordiger voor die klasse. Voor printQueue, user en computer is objectCategory respectievelijk printQueue, person en computer.
 			\end{itemize}	
 		}
 	\end{enumerate}
@@ -135,13 +139,17 @@
 	\begin{enumerate}
 		\vraag { Bespreek het \textit{doel} en de \textit{werking} van classSchema objecten. } { 
 			\begin{itemize}
-				\item Voor elke klasse is er een classSchema object waarmee de klasse kan ingesteld worden. De kenmerken van classSchema objecten definiëren de klasse, en bevatten twee soorten regels: met structuurregels worden mogelijke hiërarchische relaties tussen klassen of objecten gedefinieerd, terwijl met inhoudsregels kenmerken definiëren die beschikbaar zijn voor een exemplaar van die klasse.
+				\item Voor elke klasse is er een classSchema object waarmee de klasse kan ingesteld worden. De kenmerken van classSchema objecten definieren de klasse, en bevatten twee soorten regels: met structuurregels worden mogelijke hiërarchische relaties tussen klassen of objecten gedefinieerd, terwijl met inhoudsregels kenmerken definieren die beschikbaar zijn voor een exemplaar van die klasse.
 			\end{itemize}	
 		}
 		
 		\vraag { Hoe benadert Active Directory het mechanisme van \textit{overerving}? } {
 			\begin{itemize}
-				\item Een klasse die een andere klasse (de superklasse) overeft, neemt de kenmerken van deze superklasse over, inclusief de structuurregels en de inhoudsregels. Deze overerving werkt recursief: de subklasse erft alle gegevens van opeenvolgende superklassen. Een klasse kan echter maar van één superklasse overerven, en eventueel van speciaal hiervoor bestemde hulpklassen, die zelf geen instanties kunnen bevatten. Vanaf Windows Server 2003 is het mogelijk om dynamische objecten te definiëren. Hierdoor is het mogelijk om hulpklassen dynamisch te gebruiken: tijdens de create van een object kunnen extra dynamische hulpklassen gegenereerd worden, die enkel voor die instantie geldig zijn, door aanvullingen van het objectClass attribuut. Na de create kan dit attribuut niet meer gewijzigd worden.
+				\item Een klasse die een andere klasse (de superklasse) overeft, neemt de kenmerken van deze superklasse over, inclusief de structuurregels en de inhoudsregels. Deze overerving werkt recursief: de subklasse erft alle gegevens van opeenvolgende superklassen. Een klasse kan echter maar van één superklasse overerven, en eventueel van speciaal hiervoor bestemde hulpklassen, die zelf geen instanties kunnen bevatten. Vanaf Windows Server 2003 is het mogelijk om dynamische objecten te definieren. Hierdoor is het mogelijk om hulpklassen dynamisch te gebruiken: tijdens de create van een object kunnen extra dynamische hulpklassen gegenereerd worden, die enkel voor die instantie geldig zijn, door aanvullingen van het objectClass attribuut. Na de create kan dit attribuut niet meer gewijzigd worden.
+
+				Het kenmerk \texttt{objectClassCategory} geeft de categorie van de klasse aan: structurele klasse, abstracte klasse en hulpklassen. Er kunnen geen instanties aangemaakt worden van een abstracte. Abstracte klassen bevatten een verzameling kenmerken die door subklassen die van de klasse afgeleid zijn, overgeërfd worden. 
+
+				De hiërarchische relaties tussen objecten van klassen wordt gedefinieerd in de kenmerken \texttt{possSuperiors} en \texttt{systemPossSuperiors}. 
 			\end{itemize}	
 		}
 		
@@ -158,10 +166,17 @@
 		\vraag { Bespreek de belangrijkste \textit{kenmerken} van classSchema objecten, en op welke waarden die ingesteld kunnen worden. } { 
 			\begin{itemize}
 				\item \textbf{rDNAttID:} bepaalt welk kenmerk van een klasse gebruikt wordt om de RDN van objecten te bepalen. Vaak gebruikte waarden zijn: cn (Common-Name), ou (Organizational-Unit-Name), dc (Domain-Component), o (Organization-Name), c (Country-Name) of l (Locality-Name).
+				\item \textbf{(system)mustContain, (system)mayContain:} Deze vier attributen specificeren welke kenmerken optioneel zijn en welke verplicht ingevuld moeten worden. Voor een kenmerk dat overgeërfd is, en verplicht is, kan het kenmerk niet optioneel gemaakt worden, ook al staat in de subklasse dit kenmerk bij \texttt{(system)mayContain}. De prefix \texttt{system} duidt op de lijst van attributen die enkel door Active Directory zelf kunnen gewijzigd kunnen worden. 
 				\item \textbf{defaultSecurityDescriptor:} bepaalt de explicitiete machtigingen die gelden voor objecten van deze klassen.
 				\item \textbf{systemOnly:} Indien deze bit aanstaat, kunnen de structuurregels en inhoudsregels van de klasse niet gewijzigd worden.
+				\item \textbf{systemFlags:} Kan twee belangrijke bits bevatten:
+					\begin{itemize}
+						\item bit 5: geeft aan of dat de klasse een systeemklasse is of niet.
+						\item bit 28: geeft aan of dat de naam van de klasse mag gewijzigd worden.
+					\end{itemize}
 				\item \textbf{objectClass:} een multi-valued en niet geïndexeerd kenmerk. Het bevat niet alleen de klasse van het object zelf, maar ook alle hiërarchische superklassen.
 				\item \textbf{objectCategory:} is single-valued en wordt geïndexeerd. De waarde van dit kenmerk bevat de meest typische vertegenwoordiger uit de verzameling van het objectClass kenmerk.
+				\item \textbf{isDefunct:} duidt aan of al dan niet instanties van de klasse aangemaakt mogen worden.
 			\end{itemize}	
 		}
 		
@@ -169,6 +184,7 @@
 		{ 
 			\begin{itemize}
 				\item \textbf{subSchema:} er is slechts één object die behoort tot de klasse subSchema, Aggregate. Dit object bevat een alternatieve, compactie representatie van het gehele schema en wordt het abstracte schema genoemd. De bedoeling is om vereenvoudigde schema gegevens ter beschikking te stellen aan LDAP cliënts, zonder dat die zich om veel implementatie details hoeven te bekommeren. Voor elk classSchema en attribuutSchema object biedt het abstracte schema slechts enkele kenmerken aan. 
+				\item \textbf{attributeSchema:} Het attributeSchema bevat alle kenmerken die in het schema voorkomen. Een kenmerk is zelf een object. Zo een kenmerk wordt éénmaal gedefinieerd en kan meerdere malen gebruikt worden bij verschillende klassen, wat voor consistentie zorgt.
 			\end{itemize}
 		}
 		

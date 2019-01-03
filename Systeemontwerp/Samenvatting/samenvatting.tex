@@ -169,7 +169,7 @@
 		\item[\info] publish/async responses: Een service publiceerd een bericht en zal eventueel antwoorden opvangen van 0 of meerdere geïnteresseerden.
 	\end{itemize}
 	\section{Synchrone communicatie}
-	\underline{Voorbeelden van synchrone communicatie}: REST en gRPC.
+	\subsection{Voorbeelden}
 	\begin{itemize}
 		\item[\info] REST
 		\begin{itemize}
@@ -194,10 +194,29 @@
 			\item[\alert] Het valt niet op dat de communicatie nu over het netwerk gebeurd.
 		\end{itemize}
 	\end{itemize}
-	\underline{Hoe foutbestendig maken?}
+	\subsection{Foutbestendigheid}
+	Communicatie tussen twee services moet foutbestendig zijn. Problemen zoals trage netwerken, overbelaste microservices, enz... moeten oplosbaar zijn. Er zijn \underline{drie patronen} die geschikt zijn om technische problemen te voorkomen en op te lossen.
+	\begin{itemize}
+		\item[\info] \textbf{Netwerk-timeouts:} Zet een limiet op het aantal seconden dat een microservice wacht op een antwoord van een andere microservice.
+		\item[\info] \textbf{Bulkheads:} Zet een limiet op het aantal requests dat een client kan versturen naar een service. Dit kan bijvoorbeeld geïmplementeerd worden door bij elke service die andere services aanspreekt, een eigen thread pool bij te houden, zodat enkel de thread pool van één service vol komt te zijn.
+		\item[\info] \textbf{Circuit breaker pattern:} Monitor het aantal succesvolle en gefaalde operaties van een service. Wanneer de verhouding van gefaalde en succesvolle operaties een bepaalde limiet overtreedt, dan wordt de circuit breaker (die de operaties monitored), geactiveerd en zal geen enkele request nog lukken.
+	\end{itemize}
+	Wanneer deze problemen zich voordoen, is het nuttig om een aantal \underline{fallback strategiën} te hebben. Meestal is dit een fout of een gecached antwoord terugsturen.
+	\section{Asynchrone communicatie}
+	\begin{itemize}
+		\item[\info] Maakt gebruik van messaging.
+
+	\end{itemize}
+	\subsection{Foutbestendigheid}
+	Bij asynchrone communicatie kunnen er zich \underline{twee problemen} voordoen:
+	\begin{itemize}
+		\item[\info] \textbf{Competing consumers:} Het kan voorkomen dat er meerdere instanties van dezelfde service geïnteresseerd is in een bepaalde message stream. Er moet garantie zijn dan de berichten die toekomen in deze stream sequentieel afgewerkt worden. Het kan ook zijn dat verschillende services geïnteresseerd zijn in dezelfde message stream. Men zou de berichten dan moeten dupliceren, en dat gaat niet met een standard queue.
+	\end{itemize}
+
+	Deze problemen worden opgelost door een \underline{message broker}.
 
 	\chapter{Saga}
-	=\underline{garanderen dat een transactie ofwel volledig, ofwel niet uitgevoerd wordt.}
+	\underline{= garanderen dat een transactie ofwel volledig, ofwel niet uitgevoerd wordt.}
 	\begin{itemize}
 		\item[\info] Traditioneel: 2-fasen-commit.
 		\begin{itemize}
