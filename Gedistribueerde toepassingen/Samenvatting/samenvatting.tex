@@ -113,7 +113,7 @@
 	\subsection{Basispad (Root Location Path)}
 	
 	Het eenvoudigste pad is \texttt{/} en selecteert het root-element van het XML-document. Verder is dit een absoluut pad, dus deze uitdrukking zal \textbf{altijd} het root-element teruggeven.
-	\subsection{Kinelement-stap (Child Element Location Steps)}
+	\subsection{Kindelement-stap (Child Element Location Steps)}
 	Dit pad bestaat uit de naam van een element en selecteert alle elementen met deze naam in de huidige context. De context is afhankelijk van de ouder. 
 	
 	\begin{lstlisting}
@@ -130,7 +130,7 @@
 	<xls:value-of select="@isbn"/>
 </xls:template>
 	\end{lstlisting}
-	
+	Hier wordt de XPath uitdrukking van het selectattribuut \texttt{/query/@isbn}.
 	\subsection{Voorwaarden}
 	\begin{lstlisting}
 <xsl:apply-templates select="//book[title='XML']//name[.='Ongenae]"/>
@@ -165,8 +165,9 @@
 		\item \textbf{Getallen} : Stel dat \textit{born} het geboortejaar van een persoon is, dan zal de volgende uitdrukking de eeuw uitschrijven van dit jaar.
 		\texttt{<xls:value of select="(@born - (@born mod 100)) div 100 + 1"}
 		
-		\item \textbf{Strings} : Strings staan tussen enkele of dubbele aanhalingstekens. Strings vergelijken kan met = en != operatoren.
+		\item \textbf{Strings} : Strings staan tussen enkele of dubbele aanhalingstekens. Strings vergelijken kan met = (slects één gelijk-aan) en != operatoren.
 		
+	
 		\item \textbf{Logische waarden} : De sleutelwoorden true en false bestaan niet in XPath, wel worden ze respectievelijk voorgesteld door de functies true() en false(). Op logische waarden kunnen de operatoren \textit{and} en \textit{or} toegepast worden. Met not(...) wordt de negatie toegepast.
 		
 	\end{itemize}
@@ -209,8 +210,8 @@
 			Nu kan eenvoudig alle elementen opgehaald worden die een bepaalde waarde voor het attribuut hebben:
 			$$\texttt{<xsl:for-each select="key('sleutelnaam','attribuutwaarde')">}$$
 			Men kan ook alle elementen gegroepeerd ophalen, zonder expliciet de attribuutwaarde mee te geven, door nog een buitenlus te definieëren die elke waarde van het attribuut achterhaald door enkel de eerste tegenkomst van die waarde te selecteren:
-			$$\texttt{<xsl:for-each select='element[count(. | key('..', attr)[1]) = 1]">}$$
-			waarbij \texttt{attr} de naam van het attribuut is en \texttt{..} (wegens plaatsgebrek) de naam van de sleutel.
+			$$\texttt{<xsl:for-each select='element[count(. | key(naam, attr)[1]) = 1]">}$$
+			waarbij \texttt{attr} de naam van het attribuut is en \texttt{naam} de naam van de sleutel.
 
 
 	\end{itemize}
@@ -360,7 +361,7 @@ Webservics in C\# kunnen geïmplementeerd worden met \textbf{Windows Communicati
 \begin{itemize}
 	\item[\info] \textbf{Contracts:} Deze laag specificeert onder andere welke parameters er verwacht worden, de structuur van het bericht, de beschikbare interfaces/methodes en hoe er gecommuniceerd moet worden.
 	\item[\info] \textbf{Service runtime:} Deze laag specificeert het gedrag van de applicatie zoals het aantal berichten dat verwerkt kan worden, wat er moet gebeuren als er iets fout loopt, welke metadata er beschikbaar moet zijn voor de buitenwereld en hoeveel instanties er van deze service mogen zijn.
-	\item[\info] \textbf{Messaging:} Deze laag is opgebouwd uit kanalenn, ook wel de \emph{channel stack} genoemd. Een kanaal verwerkt berichten en komen in twee vormen voor:
+	\item[\info] \textbf{Messaging:} Deze laag is opgebouwd uit kanalen, ook wel de \emph{channel stack} genoemd. Een kanaal verwerkt berichten en komen in twee vormen voor:
 	\begin{itemize}
 		\item Transport kanaal: Verantwoordelijk voor het lezen en schrijven van berichten van en naar het netwerk.
 		\item Protocol kanaal: Implementeert message processing protocols door bijkomende headers te lezen en schrijven.
@@ -369,7 +370,7 @@ Webservics in C\# kunnen geïmplementeerd worden met \textbf{Windows Communicati
 \end{itemize}
 
 \subsection{Ontwerp servicecontract}
-Het \underline{ontwerp van het servicecontract} is de eerste stap. Een methode krijgt het \texttt{[OperationContract]} attribuut (equivalent met annotaties in Java). Een methode die dit attribuut heeft, zal nooit referenties teruggeven, maar kopieën van de objecten. Het is ook mogelijk om eigen datatypes te definieren met het \texttt{[DataContract]} en \texttt{[DataMember]} attribuut. De werkelijke interface krijgt het \texttt{[ServiceContract]} attribuut. Een voorbeeld:
+Het \underline{ontwerp van het servicecontract} is de eerste stap. Een methode krijgt het \texttt{[OperationContract]} attribuut (equivalent met annotaties in Java). Een methode die dit attribuut heeft, zal nooit referenties teruggeven, maar kopieën van de objecten. Het is ook mogelijk om eigen datatypes te definieren met de \texttt{[DataContract]} (voor de klasse) en \texttt{[DataMember]} (voor de properties) attributen. De werkelijke interface krijgt het \texttt{[ServiceContract]} attribuut. Een voorbeeld:
 \begin{lstlisting}[style=csharp]
 [ServiceContract(Namespace = "...")]
 public interface ICalculator {
@@ -528,7 +529,7 @@ Belangrijke netwerkklassen in java, in de package \underline{\texttt{java.net}}:
         \end{itemize}
 \end{itemize}
 \section{Sockets}
-De cliënt maakt een \texttt{Socket} object aan. De constructor heeft de locatie van een bepaalde server, en een poortnummer, die de server heeft opengezet (cfr. \ref{code:socket}).
+De cliënt maakt een \texttt{Socket} object aan. De constructor verwacht de locatie van een server, en een poortnummer, die de server heeft opengezet (cfr. \ref{code:socket}).
 \begin{equation}
 	\texttt{Socket socket = new Socket("localhost", 8901);}
 	\label{code:socket}
@@ -554,7 +555,7 @@ De server zal gebruik maken van een \texttt{ServerSocket} klasse. Deze werkt op 
 
 Tot slot is er nog een \underline{protocol} nodig, die de communicatie tussen de server en communicatie beschrijft. Een eenvoudig protocol vereist bijvoorbeeld dat een bericht start met een bepaald sleutelwoord. 
 
-\begin{lstlisting}
+\begin{lstlisting}[language=java]
 // CLIENT
 String hostName = "localhost";
 int portNumber = 4444;
@@ -568,7 +569,7 @@ try(
     String input = ... // input ophalen van gebruiker
     while(!input.equals("exit")){
         out.println(input); // naar server
-        System.out.println("echo: ) + in.readLine()); // van server
+        System.out.println("echo: ") + in.readLine()); // van server
         input = ... // input ophalen van gebruiker
     }
 } catch (IOException ex) {
@@ -877,7 +878,7 @@ serverSocketChannel.close();
 \subsection{Streams vs Buffers}
 NIO is buffergeoriënteerd terwijl IO streamgeoriënteerd is. Een stream laat enkel toe om sequentieel te lezen, en kan niet meer teruggegaan worden, tenzij dit opgeslagen wordt in een buffer. Het voordeel van een buffer is dus dat het niet sequentieel afgelopen moet worden. 
 \subsection{Blocking vs Non-blocking IO}
-De traditionele IO zijn blocking. Een thread moet wachten vooraleer de blocking methoden klaar zijn. De non-blocking manier van buffers laat toe om enkel de huidige beschikbare data van een buffer op te halen, en zal niet blokkeren in het geval dat er nog data verwacht wordt. Dit heeft natuurlijk als gevolg dat een thread meerdere kanalen kan beheren.
+De traditionele IO is blocking. Een thread moet wachten vooraleer de blocking methoden klaar zijn. De non-blocking manier van buffers laat toe om enkel de huidige beschikbare data van een buffer op te halen, en zal niet blokkeren in het geval dat er nog data verwacht wordt. Dit heeft natuurlijk als gevolg dat een thread meerdere kanalen kan beheren.
 \subsection{Selectors}
 Dit is het direct gevolg van de asynchroniteit van buffers/kanalen. Een selector is de implementatie die toelaat om meerdere kanalen te monitoren met slechts één thread.
 \subsection{Verwerken van data}

