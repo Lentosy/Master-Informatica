@@ -1,0 +1,121 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[dutch]{babel}
+\usepackage{color}
+\usepackage{listings}
+
+
+\usepackage[a4paper, total={7in, 8in}]{geometry}
+
+
+
+\def\warning#1{\color{red} #1 \color{black}}
+\def\note#1{\color{cyan} #1 \color{black}}
+
+\begin{document}
+\pagenumbering{gobble}
+\title{Examen Beveiliging}
+\date{11 januari 2019}
+\author{}
+\maketitle
+
+\part{Gesloten boek}
+\section{Terminologie}
+Leg volgende termen kort uit:
+\begin{itemize}
+    \item Digraph Crypto.
+    \item Degenerate signed data.
+    \item Dual-homed firewall.
+    \item Cross-Site Request Forgery.
+\end{itemize}
+
+\section{Juist/Fout}
+Zijn volgende uitspraken waar of niet waar? Leg uit waarom.
+\begin{itemize}
+    \item Ephemeral DH is veiliger dan traditionele DH.
+    \item Een metamorphic virus is detecteerbaar met emulatietechnieken.
+    \item TLS is niet beveiligd tegen trafiekanalyse.
+    \item ??? vergeten
+\end{itemize}
+
+\section{SSH}
+
+\begin{enumerate}
+    \item Van welke deelprotocollen maakt SSH gebruik? Wat is de functionaliteit van elk deelprotocol.
+    \item Geef aan of volgende beveiligingsdoelen gerealiseerd worden in SSH of niet. Leg uit.
+    \begin{itemize}
+        \item Traffic-flow confidentialiteit.
+        \item Authenticatie.
+        \item Non-repudiation.
+    \end{itemize}
+
+    \item Geef drie verschillen tussen SSH en VPN.
+    \item Waarom maakt SSH gebruik van zowel RSA als Diffie Helman.
+    \item Stel dat je een connectie wil maken vanuit België naar China, maar de overheid blokeert actief al het SSH verkeer en filtert bovendien ook alle pakketten. Hoe kan je een SSH connectie openen (zonder hierbij een extra server te moeten inschakelen).
+\end{enumerate}
+
+\section{Malware}
+\begin{enumerate}
+    \item Geef vijf technieken die malware toepassen om niet gedetecteerd te worden.
+    \item Geef drie manieren om een buffer overflow te voorkomen.
+    \item 
+\end{enumerate}
+
+\section{Bitcoin}
+\begin{enumerate}
+    \item Leg uit hoe een nieuwe transactie geregistreerd wordt.
+    \item Waarom maakt het bitcoin protocol gebruik van EC en niet van RSA?
+    \item Geef aan of volgende beveiligingsdoelen gerealiseerd worden in het bitcoin protocol of niet. Leg uit.
+    \begin{itemize}
+        \item Authenticatie.
+        \item Beschikbaarheid.
+        \item Confidentialiteit.
+    \end{itemize}
+    \item Naast proof-of-work bestaat er een alternatieve manier (proof-of-stake) om consensus te verkrijgen over een transactie. Geef drie implementaties van deze alternatieve manier.
+\end{enumerate}
+
+
+\part{Open boek}
+\section{Blokcijfers}
+Als encryptieschema gebruiken we tabel \ref{table:encryptieschema}. In plaats van de XOR operator maken we gebruik van optelling modulo 26, bijvoorbeeld: C XOR D = F en E XOR Y = C.
+
+\begin{table}[ht]
+    \begin{tabular}{l | l l l l l l l l l l l l l l l l l l l l l l l l l l }
+        & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12 & 13 & 14 & 15 & 16 & 17 & 18 & 19 & 20 & 21 & 22 & 23 & 24 & 25 \\
+        \hline
+        k & A & B & C & D & E & F & G & H & I & J & K & L & M & N & O & P & Q & R & S & T & U & V & W & X & Y & Z \\
+        $E_k$ & P & K &X& C& Y& W& R& S& E& J& U& D& G& O& Z& A& T& N& M &V &F& H& L& I& B& Q
+    \end{tabular}
+    \caption{Encryptieschema.}
+    \label{table:encryptieschema}
+\end{table}
+\begin{enumerate}
+
+    \item
+Encrypteer \texttt{TRIPOS} met behulp van volgende blockcijfermodi:
+\begin{itemize}
+    \item Electronic Codebook.
+    \item Cipher Block Chaining (IV $c_0$ = K).
+    \item Output Feedback (IV $c_0$ = K).
+\end{itemize}
+    \item
+Decrypteer \texttt{BSMILVO} met behulp van Cipher Block Chaining (IV $c_0$ = K). Welke operatie moeten we gebruiken in plaats van XOR?
+    
+\end{enumerate}
+
+\section{Beveiliging van een online webshop}
+Een bepaalde webshop laat toe aan gebruikers om goederen aan hun digitale winkelkar toe te voegen. De server houdt per gebruiker een bestand bij, met daarin de goederen die in de winkelkar zitten. Indien een gebruiker op de knop \emph{\texttt{voeg toe}} drukt, dan zal de server dit bestand aanvullen met de prijs, hoeveelheid en naam van het geselecteerde goed. 
+
+\begin{enumerate}
+    \item Is deze implementatie kwetsbaar voor een Denial of Service aanval? Leg uit.
+\end{enumerate}
+
+De implementatie wordt nu aangepast. De gebruiker houdt nu client-side een lijst bij van zijn winkelkar. Telkens wanneer een gebruiker op de knop \emph{\texttt{voeg toe}} drukt, zal de server een hidden form doorsturen met informatie over het object, die de client dan via javascript toevoegd aan zijn client-side winkelkar. Eens de client zijn bestelling wil afronden wordt de lijst doorgestuurd naar de server, die als antwoord het totaalbedrag terugstuurd en een bevestiging vraagt aan de gebruiker.
+
+\begin{enumerate}
+    \item[2.] Is deze implementatie nog steeds kwetsbaar voor de Denial of Service aanval uit vorige implementatie? Leg uit.
+    \item[3.] Zijn er nog andere aanvallen mogelijk? Je mag veronderstellen dat er HTTPS gebruikt wordt en dat XSS, CSRF, SQL injection, ... onmogelijk zijn.
+\end{enumerate}
+    
+\section{IPsec}
+\end{document}

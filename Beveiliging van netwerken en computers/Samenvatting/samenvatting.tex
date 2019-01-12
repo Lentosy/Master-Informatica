@@ -1375,7 +1375,7 @@
 		$$\texttt{SELECT * FROM users WHERE u = '' OR 1 < 2\#}$$
 		Het \# symbool zorgt ervoor dat alles erna als comentaar beschouwd wordt. Deze uitspraak is natuurlijk altijd waar, zodat alle gebruikers teruggestuurd worden naar de aanvaller.
 		
-		\item[\info] \textbf{Cross-site request forgery (CSRF)}:
+		\item[\info] \textbf{Cross-site request forgery (CSRF)}: Dit lijkt heel goed op XSS, enkel dat een CSRF aanval bepaalde functies probeert uit te voeren in functie van een ingelogde gebruiker.
 	\end{itemize}
 	\subsubsection{Verdedigmogelijkheden}
 	Er bestaan meerdere manieren om een webserver te beschermen:
@@ -1408,7 +1408,7 @@
 		\item[\info] \textbf{Dictionary attack:} Deze methode maakt gebruik van een voorgedefinieerde lijst van vaak gebruikte paswoorden. Er kan een trade-off gemaakt worden tussen het gebruik van berekende hashes voor die paswoorden en de tijd die men daarin wil steken. Varianten van deze aanval zal de lijst uitbreiden met kleine wijzigingen voor elk paswoord.
 		\item[\info] \textbf{Hash chaining:} Een hash chain is een opeenvolging van hash- en reductiefuncties:
 		$$aaaaaa \rightarrow_{\substack{H}} 281DAZF40 \rightarrow_{\substack{R}}  sgfnyd \rightarrow_{\substack{H}}  920ECF10 \rightarrow_{\substack{R}}  kiebgt$$
-		Enkel het eerste en het laatste paswoord worden opgeslaan, als een paar $aaaaaa \rightarrow kiebgt$. Stel nu dat we een hash $920ECF10$ hebben, als we hier de reductiefunctie op loslaten krijgen we $kiebgt$.  In onze tabel zoeken we op of er een bepaalde hash chain eindigt op $kiebgt$, in dit geval start deze chain met $aaaaaa$. We voeren dezelfde bewerking uit en zo zal blijken dat het paswoord $sgfnyd$ is. In praktijk wordt er een lijst bijgehouden van vaak gebruike paswoorden samen met hun hash chain. De reductiefunctie kiezen is moeilijk, omdat ze moet resulteren in waarschijnlijke paswoorden. Een ander nadeel is dat erveel valse alarmen zijn. Dit wil zeggen dat een andere chain dezelfde hash uitkomt. 
+		Enkel het eerste en het laatste paswoord worden opgeslaan, als een paar $aaaaaa \rightarrow kiebgt$. Stel nu dat we een hash $920ECF10$ hebben, als we hier de reductiefunctie op loslaten krijgen we $kiebgt$.  In onze tabel zoeken we op of er een bepaalde hash chain eindigt op $kiebgt$, in dit geval start deze chain met $aaaaaa$. We voeren dezelfde bewerking uit en zo zal blijken dat het paswoord $sgfnyd$ is. In praktijk wordt er een lijst bijgehouden van vaak gebruike paswoorden samen met hun hash chain. De reductiefunctie kiezen is moeilijk, omdat ze moet resulteren in waarschijnlijke paswoorden. Een ander nadeel is dat er veel valse alarmen zijn. Dit wil zeggen dat een andere chain dezelfde hash uitkomt. 
 		\item[\info] \textbf{Rainbow tables:} Deze vorm voorkomt collisies door bij elke iteratie een andere reductiefunctie te gebruiken. Op die manier kan er enkel nog een collisie voorkomen als twee chains op dezelfde iteratie dezelfde waarde uitkomen.
 	\end{itemize}
 	Het is natuurlijk mogelijk om zich te \underline{beveiliging} tegen dit soort aanvallen: het aantal loginpogingen kunnen in eerste instantie beperkt worden. Het gebruik van tragere en complexe hashfuncties zoals bycrpt wordt ook aangeraden. Men voegt vaak ook een \emph{salt} toe: een vast aantal bits waarvan de waarde bepaald wordt bij de creatie van het paswoord. De combinatie van deze salt en het paswoord wordt via een one-way functie geëncodeerd. Dit resultaat wordt dan gehasht.
