@@ -162,50 +162,52 @@ Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
 			We kunnen deze punten echter voorstellen met homogene coördinaten, met $w$ het gewicht van dat punt:
 			\begin{equation*}
 				\begin{split}
-					P_{000} & = ({\color{yellow}3}, {\color{yellow}0}, {\color{yellow}3}) \\
-					P_{001} & = ({\color{purple}1}, {\color{purple}2}, {\color{purple}1}) \\
-					P_{011} & = ({\color{orange}-1}, {\color{orange}2}, {\color{orange}1}) \\
-					P_{111} & = ({\color{green}-3}, {\color{green}0}, {\color{green}3}) \\
+					P_{000} & = (3,0, 3) \\
+					P_{001} & = (1, 2, 1) \\
+					P_{011} & = (-1, 2, 1) \\
+					P_{111} & = (-3, 0, 3) \\
 				\end{split}
 			\end{equation*}
 			Uitvoering van het piramidaal schema:
 			\begin{equation*}
 				\begin{split}
-					P_{00t, x} & = {\color{yellow}3} * {\color{red}(1 - t)} + {\color{purple}1} * {\color{blue}t} = 3 - 2t \\
-					P_{00t, y} & = {\color{yellow}0} * {\color{red}(1 - t)} + {\color{purple}2} * {\color{blue}t} = 2t \\
-					P_{00t, w} & = {\color{yellow}3} * {\color{red}(1 - t)} + {\color{purple}1} * {\color{blue}t} = 3 - 2t\\
-					P_{01t, x} & = {\color{purple}1} * {\color{red}(1 - t)} {\color{orange}\;- \;1} * {\color{blue}t} = 1 - 2t \\
-					P_{01t, y} & = {\color{purple}2} * {\color{red}(1 - t)} + {\color{orange}2} * {\color{blue}t} = 2 \\
-					P_{01t, w} & = {\color{purple}1} * {\color{red}(1 - t)} + {\color{orange}1} * {\color{blue}t} = 1 \\
-					P_{11t, x} & = {\color{orange}- 1} * {\color{red}(1 - t)} {\color{green}\;-\;3} * {\color{blue}t} = -2t - 1 \\
-					P_{11t, y} & = {\color{orange}2} * {\color{red}(1 - t)} + {\color{green}0} * {\color{blue}t} = 2 - 2t \\
-					P_{11t, w} & = {\color{orange}1} * {\color{red}(1 - t)} + {\color{green}3} * {\color{blue}t} = 2t + 1 \\
+					P_{00t, x} & = 3 (1 - t) + 1  t = 3 - 2t \\
+					P_{00t, y} & = 0  (1 - t) + 2  t = 2t \\
+					P_{00t, w} & = 3  (1 - t) + 1  t = 3 - 2t\\
+					P_{01t, x} & = 1  (1 - t) \;- \;1  t = 1 - 2t \\
+					P_{01t, y} & = 2  (1 - t) + 2  t = 2 \\
+					P_{01t, w} & = 1  (1 - t) + 1  t = 1 \\
+					P_{11t, x} & = - 1  (1 - t) \;-\;3  t = -2t - 1 \\
+					P_{11t, y} & = 2  (1 - t) + 0  t = 2 - 2t \\
+					P_{11t, w} & = 1  (1 - t) + 3  t = 2t + 1 \\
 				\end{split}
 			\end{equation*}
 			\begin{equation*}
 				\begin{split}
-					P_{0tt, x} & = {\color{yellow}(3-2t)} * {\color{red}(1 - t)} + {\color{purple}(1 - 2t)} * {\color{blue}t} = 3 - 4t \\
-					P_{0tt, y} & = {\color{yellow}2t} * {\color{red}(1 - t)} + {\color{purple}2} * {\color{blue}t} = 4t - 2t^2 \\
-					P_{0tt, w} & = {\color{yellow}(3 - 2t)} * {\color{red}(1 - t)} + {\color{purple}1} * {\color{blue}t} = 3 - 4t +2t^2\\
-					P_{1tt, x} & = {\color{purple}(1 - 2t)} * {\color{red}(1 - t)} + {\color{orange}\;(-\;2t - 1)} * {\color{blue}t} = 1 - 4t \\
-					P_{1tt, y} & = {\color{purple}2} * {\color{red}(1 - t)} + {\color{orange}(2 - 2t)} * {\color{blue}t} = 2 -2t^2 \\
-					P_{1tt, w} & = {\color{purple}1} * {\color{red}(1 - t)} + {\color{orange}(2t + 1)} * {\color{blue}t} = 2t^2 + 1 \\
+					P_{0tt, x} & = (3-2t)(1 - t) + (1 - 2t)t = 3 - 4t \\
+					P_{0tt, y} & = 2t(1 - t) + 2t = 4t - 2t^2 \\
+					P_{0tt, w} & = (3 - 2t)(1 - t) + 1t = 3 - 4t +2t^2\\
+					P_{1tt, x} & = (1 - 2t)(1 - t) + \;(-\;2t - 1)t = 1 - 4t \\
+					P_{1tt, y} & = 2(1 - t) + (2 - 2t)t = 2 -2t^2 \\
+					P_{1tt, w} & = 1(1 - t) + (2t + 1)t = 2t^2 + 1 \\
 				\end{split}
 			\end{equation*}
 
 			Uiteindelijk kunnen deze laatste twee punten opnieuw geïnterpoleerd worden om het punt $P_{tt}$ te bekomen.
 			\begin{equation*}
 				\begin{split}
-					P_{ttt, x}^{(1)} & = (3-4t)(t-1) + t(1-4t) = -8t^2 +8t - 3 \\
-					P_{ttt, y}^{(1)} & = (4t-2t^2)(t-1)+ t(2-2t^2) = -4t^3 + 6t^2 - 2t\\
-					P_{ttt, w}^{(1)} & = (3-4t+2t^2)(t-1) + t(2t^2 + 1) = 4t^3 -6t^2 +8t - 3
+					P_{ttt, x} & = (3-4t)(1-t) + t(1-4t) = 3-6t \\
+					P_{ttt, y} & = (4t-2t^2)(1-t)+ t(2-2t^2) = 6t-6t^2\\
+					P_{ttt, w} & = (3-4t+2t^2)(1-t) + t(2t^2 + 1) = 3-6t+6t^2
 				\end{split}
 			\end{equation*}
 
-			Nu dat we de $x$, $y$ en $w$ waarde van een punt kunnen bepalen voor eender welke waarde $t$, kan men nu de cirkelvergelijking invullen: \todo{ergens een foutje gemaakt}
+			Nu dat we de $x$, $y$ en $w$ waarde van een punt kunnen bepalen voor eender welke waarde $t$, kan de cirkelvergelijking ingevuld worden: 
 			\begin{equation*}
 				\begin{split}
-					|P_{tt, x}^{(1)}|^2 + |P_{tt, y}^{(1)}|^2 - |P_{tt, w}^{(1)}|^2 & =
+					|P_{tt, x}|^2 + |P_{tt, y}|^2 - |P_{tt, w}|^2 & = (3-6t)^2 + (6t-6t^2)^2 - (3-6t+6t^2)^2 \\
+																  & = 9 - 36t + 36t^2 + 36t^2 - 72t^3 + 36t^4 - 36t^4 + 72t^3 - 72t^2 + 36t - 9 \\
+																  & = 0
 				\end{split}
 			\end{equation*}
 			De opgegeven figuur is dus een exacte halve cirkel.
@@ -248,11 +250,17 @@ Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
 				
 					Deze bijdrage veronderstelt een ideaal mat oppervlak, en is bijgevolg enkel afhankelijk van de invallende lichtintensiteit $I_L$, de afstand $R$ van het oogpunt tot het oppervlak, en de hoek $\theta$ tussen de invallende lichtstraal $L$ en de normaal $N$ op het oppervlak.
 
+					$$I_D = k_D\sum_L I_L \frac{\cos \theta}{R^2} \qquad 0 \leq k_D \leq 1$$
+
 				\item \textbf{$I_S$} = Spiegelende intensiteit.
 
-					Deze bijdrage geeft een teruggekaatste lichtstraal in de veronderstelling van een perfect reflecterend oppervlak. 
+					Deze is het grootst in de richting $R$, die de teruggekaatste lichtstraal in de veronderstelling van een perfect reflecterend oppverlak weergeeft. Meestal neemt men een heuristische formule die dit gedrag vertoont, zoals,
+					$$I_S = k_S\sum_L I_L \frac{\cos^n \Omega}{R^2} \qquad 0 \leq k_S \leq 1$$ 
+					waarbij $n$ het getal is dat de gladheid van het oppervlak karakteriseert en $\Omega$ de hoek tussen $R$ en $V$.
 
-				\item \textbf{$I_G$} = Intensiteit ten gevolge van omgevingslicht. Dit wordt berekend als het product van $K_O \cdot I_O$ waarbij $I_O$ een constante van de volledige figuur is, en $K_O$ een materiaal afhankelijke coëfficiënt voorstelt.
+				\item \textbf{$I_G$} = Intensiteit ten gevolge van omgevingslicht. 
+				
+				Dit wordt berekend als $$I_G = k_O \cdot I_O  \qquad 0 \leq k_O \leq 1$$ waarbij $I_O$ een constante van de volledige figuur is, en $k_O$ een materiaal afhankelijke coëfficiënt voorstelt.
 				
 
 
@@ -264,9 +272,9 @@ Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
 			 
 	\vraag{Geef en omschrijf (in het bijzonder de nadelen) van de drie mogelijke benaderingen voor de berekening van de \textit{lichtintensiteit van zichtbare punten}, indien men het object beschrijft aan de hand van een verzameling \textit{vlakke veelhoeken}.}{
 		\begin{itemize} 
-		\item \textbf{Uniform model:} Eerst wordt er voor elk hoekpunt van het object een normaal $N_a$ berekent, door de oppervlakte normalen van de aangrenzende segmenten uit te middelen.
-		\item \textbf{Gouraud-model:} Op basis van de normalen $N_a$ wordt eerst de lichtintensiteiten $I_a$ berekent, van de hoekpunten van het object. Elk ander punt van een veelhoek van het object kan berekend worden door lineaire interpolatie ten opzichte van de lichtintensiteiten van de verschillende hoekpunten van de veelhoek. Een nadeel van deze methode is dat, als de normalen in de hoekpunten gelijk zouden zijn, maar het object toch kartelingen bevat. Het object zou uniform gelijk gekleurd worden. Nog een tekortkoming is een gebrekkige weergave van spiegelende terugkaatsing. Het Gouraud-model is ook onderhevig aan het Mach-banden effect.
-		\item \textbf{Phong-model:} Dit model interpoleert niet de hoekpunten zoals in het Gouraud-model, maar de normalen zelf, en pas hierna de lichtintensiteit voor elk punt te berekenen. Het model produceert normalen in een willekeurig punt van de benaderende veelhoek, die de normalen op het reële, gekromde vlak beter benaderen. Het Phong-model is wel wat rekenintensiever dan het Gouraud-model.
+		\item \textbf{Uniform model:} Voor elk oppervlak wordt zijn normaal berekend die de lichtintensiteit voor het hele oppervlak bepaald. Het nadeel aan deze methode is dat elk punt van het oppervlak dezelfde intensiteit krijgt, wat zorgt voor een niet realistische voorstelling aangezien de verschillende segmenten, hoe klein ook, duidelijk zichtbaar zijn. Om dit te verhelpen wordt er in elk hoekpunt van het object een normaal $N_A$ berekend, door de oppervlakte normalen van de aangrenzende segmenten uit te middelen.
+		\item \textbf{Gouraud-model:} Op basis van de normalen $N_A$ wordt eerst de lichtintensiteiten $I_A$ berekent, van de hoekpunten van het object. Elk ander punt van een veelhoek van het object kan berekend worden door lineaire interpolatie ten opzichte van de lichtintensiteiten van de verschillende hoekpunten van de veelhoek. Een nadeel van deze methode is dat, als de normalen in de hoekpunten gelijk zouden zijn, maar het object toch kartelingen bevat, het object uniform gekleurd zou worden. Nog een tekortkoming is een gebrekkige weergave van spiegelende terugkaatsing. Het Gouraud-model is ook onderhevig aan het Mach-banden effect.
+		\item \textbf{Phong-model:} Dit model interpoleert niet de hoekpunten zoals in het Gouraud-model, maar de normalen zelf. Pas hierna wordt de lichtintensiteit van elk punt berekend. Het model produceert normalen in een willekeurig punt van de benaderende veelhoek, die de normalen op het reële, gekromde vlak beter benaderen. Het Phong-model is wel wat rekenintensiever dan het Gouraud-model.
 	\end{itemize}}
 			
 \end{enumerate}
@@ -280,24 +288,61 @@ Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
 			Een willekeurige functie $f^t(x)$ in $V^t$ kan geschreven worden als een lineaire combinatie van de basisvectoren $\phi^t(x)$ van deze ruimte. Deze basisvectoren worden ook wel schaalfuncties genoemd. 
 			$$f^t(x) = \sum_{i=0}^{m_t - 1} c_i^t \cdot \phi^t_i(x)$$
 			Meestal groepeerd men deze schalingsfuncties in een rijmatrix:
-			$$\Phi^t(x) = \big(\phi_0^t(x)\;\phi_1^t\;...\;\phi_{m_t - 1}^t(x)\big)$$
-			Als de schalingsfuncties van een functieruimte $V^t$ gekend zijn, kan er met behulp van een constante reductiematrix, $P^t$, de schalingsfuncties van de lagere niveau functieruimte $V^{t - 1}$ uit afgeleidt worden:
+			$$\Phi^t(x) = \big(\phi_0^t(x)\quad\phi_1^t\quad...\quad\phi_{m_t - 1}^t(x)\big)$$
+
+			Elke functie $f^{t - 1}(x)$ kan ook geschreven worden als een lineaire combinatie van de basisvectoren van $V^t$. Aangezien Alle $V^t$ onderling genest zijn, maakt $\phi^{t-1}(x)$ ook deel uit van $V^t$, met als gevolg dat elke basisvector $\phi_i^{t-1}(x)$ kan geschreven worden als een lineaire combinatie van de basisvectoren van $V^t$. Hiervoor wordt er een reductiematrix $P^t$ gebruikt:
 			$$\Phi^{t - 1}(x) = \Phi^{t} \cdot P^t$$
 			De reductiematrix $P^t$ bevat als aantal rijen het aantal schalingsfuncties in de ruimte $V^t$, en als aantal kolommen het aantal schalingsfuncties in de ruimte $V^{t - 1}$.
-			Aangezien alle $V^t$ onderling genest zijn, maakt $\phi_i^{t - 1}$ ook deel uit van $V^t$ en kan elke basisvector $\phi_i^{t - 1}(x)$ geschreven worden als een lineaire combinatie van 
-			
+
+			Er zijn diverse keuzen voor de basisvectoren van $V^t$ mogelijk: er kan gekozen worden om de schalingsfuncties van $V^{t - 1}$ aan te vullen met zogenaamde wavelets uit $W^{t - 1}$. De wavelets uit $W^t$ worden genoteerd als $\psi_i^t$, en worden ook in een rijmatrix gegroepeerd:
+			$$\Psi^t(x) = \big(\psi_0^t(x)\quad\psi_1^t(x)\quad...\quad\psi^t_{n_t - 1}(x)\big)$$
+			Deze wavelets moeten voldoen aan de volgende voorwaarde
+			$$<\phi_i^t(x) | \psi_j^t(x)> \equiv \int \big(\phi_i^t(x) \cdot \psi_j^t(x)\big) dx = 0, \qquad i \neq j $$
+			zodat de wavelets semi-orthogonaal zijn. De orthogonaliteit van wavelets vereist bovendien
+			$$<\psi_i^t(x) | \psi_j^t(x)> \equiv \int \big(\psi_i^t(x) \cdot \psi_j^t(x)\big) dx = 0, \qquad i \neq j $$
+			wat meestal niet voldaan is, maar wel voor Haar-wavelets. Aangezien nu de wavelets van $W^{t - 1}$ deel uitmaken van $V^t$, kan elke wavelet $phi_i^{t - 1}$ geschreven worden als een lineaire combinatie van de schaalfunctiers van $V^t$. Hiervoor wordt er een reductiematrix $Q^t$ gebruikt: 
+			$$\Psi^{t - 1} = \Phi^t(x) \cdot Q^t$$
+			De reductiematrix $Q^t$ heeft als aantal rijen het aantal schalingsfuncties in de ruimte $V^t$ en als aantal kolommen het verschil van de aantallen schalingsfuncties in $V^t$ en $V^{t - 1}$. 
+
+			Elke functie kan dus op diverse manieren gerepresenteerd worden. Als de combinatie $V^t = V^{t - 1} + W^{t - 1}$ gebruikt wordt, kan elke functie $f^{t + 1}(x)$ als volgt geschreven worden:
+			$$f^{t+1}(x) = \sum_{i=0}^{m_t - 1} c_i^t \cdot \phi^t_i(x) + \sum_{i=0}^{n_t - 1} d_i^t \cdot \psi^t_i(x)$$
+			De coëfficiënten $c_i^t$ en $d_i^t$ worden in een rijmatrix voorgesteld:
+		$$C^t = \begin{pmatrix} c_0^t \\ c_1^t \\ ... \\ c^t_{m_t - 1}\end{pmatrix}\qquad D^t = \begin{pmatrix} d_0^t \\ d_1^t \\ ... \\ d^t_{n_t - 1}\end{pmatrix}$$
+			Op deze manier kan elke functie $f^{t + 1}(x)$ nu geschreven worden als:
+			$$f^{t + 1}(x) = \Phi^t(x) \cdot C^t + \Psi^t(x) \cdot D^t$$
+			De coëfficiëntenrijen $C^{t - 1}$ en $D^{t - 1}$ zijn equivalent met $C^t$. Om $C^t$ te berekenen volstaat het om de alternatieve ontwikkeling in basisvectoren van een willekeurige functie te vergelijken:
+			\begin{equation*}
+				\begin{split}
+					\Phi^t(x) \cdot C^t = f^t(x) & = \Phi^{t-1}(x) \cdot C^{t-1} + \Psi^{t-1}(x) \cdot D^{t-1} \\
+												 & = \Phi^{t} \cdot P^t \cdot C^{t-1} + \Phi^{t} \cdot Q^t \cdot D^{t-1} \\
+												 & = \Phi^{t} \cdot (P^t\cdot C^{t - 1} + Q^t \cdot D^{t - 1})
+				\end{split}
+			\end{equation*}
+			Om andersom, $C^{t - 1}$ en $D^{t - 1}$ te bepalen uit $C^t$ introduceert men de analyse $A^t$ en $B^t$:
+			$$C^{t - 1} = A^t\cdot C^t\qquad D^{t - 1} = B^t\cdot D^t$$
+			Hieruit kan afgeleidt worden dat de analyse en synthese ($P^t$ en $Q^t$) filters elkaars geïnverteerden zijn.
+			\begin{equation*}
+				\begin{split}
+					\Phi^t(x) \cdot C^t = f^t(x) & = \Phi^{t-1}(x) \cdot C^{t-1} + \Psi^{t-1}(x) \cdot D^{t-1} \\
+												 & = \Phi^{t-1}(x) \cdot A^t \cdot C^t + \Psi^{t-1}(x) \cdot B^t \cdot C^t \\
+												 & = \Phi^{t} \cdot P^t \cdot A^t \cdot C^t + \Phi^{t} \cdot Q^t \cdot B^t \cdot C^t \\
+												 & = \Phi^{t} \cdot (P^t  | Q^t) \cdot \bigg(\frac{A^t}{B^t}\bigg) \cdot C^t				
+				\end{split}
+			\end{equation*}
+			zodat
+			$$\bigg(\frac{A^t}{B^t}\bigg) = (P^t  | Q^t)^{-1}$$
 
 		\end{itemize}}
 			
 	\vraag{Vertaal deze algemene concepten in het bijzonder geval van de \textit{Haar-wavelet} transformatie. \accentuate{(§3.5.1 \& §3.5.2)}}
 	{
 		\begin{itemize}
-			\item Elke niveau $t$ benadering door een Haar-wavelet levert stuksgewijs constantie functies op. Als Haar-schalingsfuncties neemt men meestal:
+			\item Elke niveau $t$ benadering door een Haar-wavelet levert stuksgewijs constante functies op, constant in elk van de $2^t$ deelintervallen van het interval $[0, 1[$. Als Haar-schalingsfuncties neemt men meestal:
 		$$\phi_i^t(x) = \phi(2^tx - i)\quad,\quad\hbox{met}\quad \phi(x) = 
 			\begin{cases}
-				0 & x < 0 \\
-				1 & 0 \leq x < 1 \\
-				0 & x \geq 1
+				0 &, x < 0 \\
+				1 &, 0 \leq x < 1 \\
+				0 &, x \geq 1
 			\end{cases}$$
 
 		Voorbeelden van de $V^0, V^1, V^2$ en $V^3$ schalingsfuncties zijn te zien op figuur \ref{fig:haar_schalingsfuncties}.
@@ -307,8 +352,9 @@ Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
 			\caption{De $V^0, V^1, V^2$ en $V^3$ Haar-schalingsfuncties.}
 			\label{fig:haar_schalingsfuncties}
 		\end{figure}
-		De corresponderende reductiematrix wordt dan gegeven door:
+		De reductiematrix $P^t$ wordt dan gegeven door:
 		$$
+		P^t = 
 		\begin{pmatrix}
 			+1 & 0 & ... & 0 & 0 \\
 			+1 & 0 & ... & 0 & 0 \\
@@ -324,10 +370,10 @@ Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
 		$$
 		De Haar-wavelets zijn de wavelets die corresponderen met de Haar-schalingsfuncties, kunnen eveneens beschreven worden door:
 		$$\psi_i^t(x) = \psi(2^tx - i)\quad,\quad\hbox{met}\quad \psi(x) = \begin{cases}
-			0 & x < 0 \\
-			+ 1 & 0 \leq x < 1/2 \\
-			-1 & 1/2 \leq x < 1 \\
-			0 & x \geq 1
+			0 &, x < 0 \\
+			+ 1 &, 0 \leq x < 1/2 \\
+			-1 &, 1/2 \leq x < 1 \\
+			0 &, x \geq 1
 		\end{cases}$$
 		Voorbeelden van de $W^0, W^1, W^2$ en $W^3$ Haar-wavelets zijn te zien op figuur \ref{fig:haar_waveletfuncties}.
 		\begin{figure}[ht]
@@ -336,8 +382,9 @@ Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
 			\caption{De $W^0, W^1, W^2$ en $W^3$ Haar-wavelets.}
 			\label{fig:haar_waveletfuncties}
 		\end{figure}
-		De reductiematrix $Q^t$ wordt dan gegeven door:
+		De wavelet $\psi(x)$ is de moederwavelet van de Haar-wavelet transformatie. Alle Haar-wavelets worden van de moederwavelet afgeleid door schaaloperaties en translaties. De reductiematrix $Q^t$ van de Haar-wavelet transformatie wordt gegeven door de volgende eenvoudige matrix, bestaande uit $2^t$ rijen en $2^t - 1$ kolommen:
 		$$
+		Q^t =
 		\begin{pmatrix}
 			+1 & 0 & ... & 0 & 0 \\
 			-1 & 0 & ... & 0 & 0 \\
@@ -351,6 +398,30 @@ Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
 		 	0 & 0 & ... & 0 & -1  \\
 		\end{pmatrix}
 		$$
+
+		Voor de analyse filters van de Haar-wavelet transformatie bekomt men bijvoorbeeld volgende matrices met $2^t - 1$  rijen en $2^t$ kolommen:
+		$$
+		A^t =
+		\begin{pmatrix}
+			+1&+1&0&0&...&...&0&0&0&0 \\
+			0&0&+1&+1&...&...&0&0&0&0 \\
+			...&...&...&...&...&...&...&...&...&...\\
+			0&0&0&0&...&...&+1&+1&0&0\\
+			0&0&0&0&...&...&0&0&+1&+1
+		\end{pmatrix}
+		$$
+		$$
+		B^t =
+		\begin{pmatrix}
+			+1&-1&0&0&...&...&0&0&0&0 \\
+			0&0&+1&-1&...&...&0&0&0&0 \\
+			...&...&...&...&...&...&...&...&...&...\\
+			0&0&0&0&...&...&+1&-1&0&0\\
+			0&0&0&0&...&...&0&0&+1&-1
+		\end{pmatrix}
+		$$
+
+
 	\end{itemize}
 	}
 	
