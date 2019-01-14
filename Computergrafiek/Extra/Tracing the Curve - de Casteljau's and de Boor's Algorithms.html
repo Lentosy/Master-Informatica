@@ -1,0 +1,175 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><title> Tracing the Curve - de Casteljau's and de Boor's Algorithms </title>
+</head><body vlink="#FF1CAC" text="#0A0AFF" link="#22806A" background="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/background.gif" alink="#666666">
+
+<h1> Tracing the Curve - de Casteljau's and de Boor's Algorithms </h1>
+
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/GrLine.gif">
+<p>
+Tracing a curve is a simple task.  Dragging the small triangle (<i>i.e.</i>,
+the <i>u</i>-indicator) in the right-hand side of the vertical slider moves 
+its corresponding point on the curve.  This point is referred to as the 
+<b><i>tracing point</i></b>.
+</p><p>
+</p><center>
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/GrLine1.gif" border="0">
+</center>
+<p>
+</p><h3> De Casteljau's Algorithm </h3>
+
+One can activate de Casteljau's algorithm for tracing a curve. 
+<a href="Finding a Point on a Bézier Curve%20 De Casteljau's Algorithm.html"><b>De Casteljau's algorithm</b>
+</a> is an elegant algorithm for computing the corresponding point  on a
+Bézier curve of a given <i>u</i>.   As shown in the following figure, 
+activating button <font face="Helvetica"><b>de Casteljau's Alg.</b></font> 
+in the <b><i>Display &amp; Tracing Options Window</i></b> displays all 
+intermediate computation steps of the de Casteljau net:
+<p>
+</p><center>
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-cast-1-1.jpg" border="2">
+</center>
+<p>
+The above only displays the de Casteljau net graphically.  This system can
+also show the detailed computations step-by-step.  To see this, select
+<font face="Helvetica"><b>Window</b></font> followed by
+<font face="Helvetica"><b>Triangular Computing Scheme</b></font>.
+This will bring up the <b><i>Triangular Computing Scheme Window</i></b>.
+This window has a button <font face="Helvetica"><b>STEP</b></font> for
+displaying the computation of de Casteljau's algorithm step-by-step.
+Clicking on <font face="Helvetica"><b>STEP</b></font> displays the left-most
+column which contains all given control points as show below:
+</p><p>
+</p><center>
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-cast-2-1.jpg" border="2">
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-cast-2-2.jpg" border="2" align="TOP">
+</center>
+<p>
+Clicking on <font face="Helvetica"><b>STEP</b></font> again displays the
+second column, each element of which is computed as the combination of the
+north-west and south-west control points on the first column.  The south-east
+pointing and north-east pointing arrows have values 1-<i>u</i> and <i>u</i>,
+respectively.   Note that the points on each column correspond to a polyline
+of the de Casteljau net.  Since we have two columns, we have two polylines
+of the de Casteljau net.
+</p><p>
+</p><center>
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-cast-3-1.jpg" border="2">
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-cast-3-2.jpg" border="2" align="TOP">
+</center>
+<p>
+Clicking on <font face="Helvetica"><b>STEP</b></font> twice produces the
+following result.  As you can see, we have four columns and hence four
+polylines of the de Casteljau net.
+</p><p>
+</p><center>
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-cast-4-1.jpg" border="2">
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-cast-4-2.jpg" border="2" align="TOP">
+</center>
+<p>
+Clicking on <font face="Helvetica"><b>STEP</b></font> twice again will 
+produce a single point, which is the point on the curve corresponding to
+the given <i>u</i>.
+</p><p>
+</p><center>
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-cast-5-1.jpg" border="2">
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-cast-5-2.jpg" border="2" align="TOP">
+</center>
+<p>
+Button <font face="Helvetica"><b>RESET</b></font> resets the computation so
+that we can restart the computation.
+</p><p>
+The vertical and horizontal sliders in the <b><i>Triangular Computing
+Scheme Window</i></b> are used for scrolling the 
+triangular-shaped computation vertically and horizontally, respectively.
+</p><p>
+</p><center>
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/GrLine1.gif" border="0">
+</center>
+<p>
+</p><h3> De Boor's Algorithm </h3>
+
+<a href="De Boor's Algorithm.html"><b>De Boor's algorithm</b></a> is
+an extension of de Casteljau's algorithm.  De Boor's algorithm can be used
+on all four types of curves and when it is applied to a Bézier
+curve, it reduces to de Casteljau's algorithm.
+Note that in the computation of de Boor's algorithm, unlike de Casteljau's,
+not all control points are involved.  As a matter of fact, if the degree of
+a B-spline (or NURBS) curve is <b><i>p</i></b>, there are no more than
+<b><i>p</i></b>+1 control points involved.  The following shows a B-spline
+curve of degree 5 and its convex hull and de Boor net at <i>u</i>=0.14.
+Since its degree is 5, only six control points are involved.
+Since <i>u</i>=0.14, the involved control points are from 0 to 5.
+<p>
+Another major difference between de Casteljau's and de Boor's algorithm
+is that the weights for computing intermediate control points of the de Boor 
+net are not 1-<i>u</i> and <i>u</i>.  In the case of de Boor's algorithm, 
+these weights must be computed separately as they are different in each 
+stage.  As a result, the new points do not subdivide the line segments 
+in a ratio of <i>u</i>/(1-<i>u</i>).
+</p><p>
+</p><center>
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-boor-1-1.jpg" border="2">
+</center>
+<p>
+Selecting <font face="Helvetica"><b>Window</b></font> followed by
+<font face="Helvetica"><b>Triangular Computing Scheme</b></font>
+brings up the <b><i>Triangular Computing Scheme Window</i></b>.
+This window works for both de Casteljau's and de Boor's algorithms.
+However, when the curve is a B-spline or NURBS, only those involving
+control points will be shown.  Clicking on 
+<font face="Helvetica"><b>STEP</b></font> will display the first column
+which is actually part of the control polygon.
+</p><p>
+</p><center>
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-boor-2-1.jpg" border="2">
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-boor-2-2.jpg" border="2" align="TOP">
+</center>
+<p>
+Clicking on <font face="Helvetica"><b>STEP</b></font> once computes the
+second column:
+</p><p>
+</p><center>
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-boor-3-1.jpg" border="2">
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-boor-3-2.jpg" border="2" align="TOP">
+</center>
+<p>
+Clicking on <font face="Helvetica"><b>STEP</b></font> two more times
+finishes columns 3 and 4.
+</p><p>
+</p><center>
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-boor-4-1.jpg" border="2">
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-boor-4-2.jpg" border="2" align="TOP">
+</center>
+<p>
+Clicking on <font face="Helvetica"><b>STEP</b></font> twice again reduces
+the number of points to one and this is the point corresponding to 
+<i>u</i>=0.14 on the B-spline curve.
+</p><p>
+</p><center>
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-boor-5-1.jpg" border="2">
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-boor-5-2.jpg" border="2" align="TOP">
+</center>
+<p>
+
+</p><center>
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/GrLine1.gif" border="0">
+</center>
+
+<h3> On-the-Fly Computation </h3>
+
+One of the many nice features the curve system provides to you is that you 
+can drag the <i>u</i>-indicator to trace the curve and at the same time see
+the change of convex hull, de Casteljau or de Boor net, and the triangular
+computation scheme for obtaining the corresponding point on the curve.
+For example, if the <i>u</i>-indicator moves to <i>u</i> = 0.60, 
+you will see a continuous update of the tracing point, convex hull,
+de Casteljau or de Boor net, and the triangular computing scheme.
+The following figures show the situation at <i>u</i>=0.6.
+<p>
+</p><center>
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-boor-6-1.jpg" border="2">
+<img src="Tracing%20the%20Curve%20-%20de%20Casteljau's%20and%20de%20Boor's%20Algorithms_files/de-boor-6-2.jpg" border="2" align="TOP">
+</center>
+<p>
+
+</p></body></html>

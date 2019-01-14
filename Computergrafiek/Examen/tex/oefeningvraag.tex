@@ -1,4 +1,5 @@
 
+
 \chapter{Informatie derde vraag}
 Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over één of enkele van volgende onderwerpen:
 \begin{itemize}
@@ -11,18 +12,20 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 				\caption{Algemene methode de Casteljau constructie.}
 				\label{fig:casteljau_construct_1}
 			\end{figure}
-			Stel nu dat hij de punten op figuur \ref{fig:casteljau_construct_2} geeft (toevallig zelfde aantal punten). In dit geval komt $0$ overeen met $a$ en $1$ overeen met $b$. Hij zal enkel nog willekeurige $t$ waarde geven. Vul het piramidaal schema in met deze $t$, en dan bekom je een gelijkaardige constructie zoals figuur \ref{fig:casteljau_construct_3}.
+			Stel nu dat hij de kromme van figuur \ref{fig:casteljau_construct_2} geeft. In dit geval komt $0$ overeen met $a$ en $1$ overeen met $b$. Hij zal enkel nog een willekeurige $t$ waarde geven. Vul het piramidaal schema in met deze $t$, en dan bekom je een gelijkaardige constructie zoals figuur \ref{fig:casteljau_construct_3}.
 			\begin{figure}[ht]
-				\centering
-				\includegraphics[width=0.6\textwidth]{casteljau_construct_2}
-				\caption{Een willekeurige Bézier kromme.}
-				\label{fig:casteljau_construct_2}
-			\end{figure}
-			\begin{figure}[ht]
-				\centering
-				\includegraphics[width=0.6\textwidth]{casteljau_construct_3}
-				\caption{de Casteljau constructie voor een willekeurige Bézier kromme.}
-				\label{fig:casteljau_construct_3}
+				\begin{minipage}{0.5\textwidth}
+					\centering
+					\includegraphics[width=\textwidth]{casteljau_construct_2}
+					\caption{Een Bézier kromme.}
+					\label{fig:casteljau_construct_2}
+				\end{minipage}
+				\begin{minipage}{0.5\textwidth}
+					\centering
+					\includegraphics[width=\textwidth]{casteljau_construct_3}
+					\caption{de Casteljau constructie voor een willekeurige Bézier kromme.}
+					\label{fig:casteljau_construct_3}
+				\end{minipage}
 			\end{figure}
 		\end{itemize}			
 	}
@@ -36,39 +39,52 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 			\sum_{\substack{i_n = 1 \\ i_n \not\in \{i_1, ... i_{n}\}}}^{m}
 			P[{u_i}_1, {u_i}_2, ..., {u_i}_n] \bigg/ \binom{m}{n}
 			$$
-			Een verhoging van de graad kan eenvoudig uitgevoerd worden met een matrix ($n + 1$ kolommen, $m + 1$ rijen), waarin de coëfficiënten van Pascal instaan. Hier uitgewerkt om een Bézier kromme van graad 3 te verhogen naar graad 6, in één enkele stap:
-			$$
-			\begin{pmatrix}
-				1 & 0 & 0  & 0  \\ 
-				1 & 1 & 0  & 0  \\ 
-				1 & 2 & 1  & 0  \\ 
-				1 & 3 & 3  & 1  \\ 
-				0 & 4 & 6  & 4  \\ 
-				0 & 0 & 10 & 10 \\ 
-				0 & 0 & 0  & 20 
-			\end{pmatrix}
-			\rightarrow
-			\begin{pmatrix}
-				20 & 0  & 0 & 0 \\ 
-				10 & 10 & 0 & 0 \\ 
-				4  & 6  & 4 & 0 \\ 
-				1  & 3  & 3 & 1 \\ 
-				0  & 1  & 2 & 1 \\ 
-				0  & 0  & 1 & 1 \\ 
-				0  & 0  & 0 & 1 
-			\end{pmatrix}
-			\rightarrow
-			\begin{pmatrix}
-				20 & 0  & 0  & 0  \\ 
-				10 & 10 & 0  & 0  \\ 
-				4  & 12 & 4  & 0  \\ 
-				1  & 9  & 9  & 1  \\ 
-				0  & 4  & 12 & 4  \\ 
-				0  & 0  & 10 & 10 \\ 
-				0  & 0  & 0  & 20 
-			\end{pmatrix}
-			$$
-			Deze matrix kan nu eenvoudig vermenigvuldigt worden met de kolommatrix van de punten:
+			Hierbij is $n$ de oude graad en $m$ de nieuwe graad waarbij geldt dat $m > n$. Een verhoging van de graad kan eenvoudig uitgevoerd worden door een matrix met $n + 1$ kolommen en $m + 1$ rijen op te bouwen. Als voorbeeld nemen we een Bézier kromme waarvan we de graad verhogen van 3 naar 6 (dus zeven punten). De matrix kan opgebouwd worden in drie stappen:
+			\begin{enumerate}
+				\item Een eerste hulpmatrix bevat de binomiale coëfficiënten waarbij een aantal restricties gelden: elke kolom mag slechts $m - n + 1$ niet-nul elementen bevatten, waarbij elke volgende kolom steeds een rij lager begint. Ook moet rekening gehouden dat voor de laatste $n$ rijen $n_i$, $(m-n+2 \leq i \leq m + 1)$ de eerste $i - n - 1$ kolommen vervangen moeten worden door een $0$. Bij ons voorbeeld mag elke kolom slechts $6 - 3 + 1 = 4$ niet-nul elementen bevatten. Bovendien zal rij 5, 6 en 7 respectievelijk beginnen met 1, 2 en 3 nul-elementen.
+				$$
+				A = 
+				\begin{pmatrix}
+					1 & 0 & 0  & 0  \\ 
+					1 & 1 & 0  & 0  \\ 
+					1 & 2 & 1  & 0  \\ 
+					1 & 3 & 3  & 1  \\ 
+					0 & 4 & 6  & 4  \\ 
+					0 & 0 & 10 & 10 \\ 
+					0 & 0 & 0  & 20 
+				\end{pmatrix}
+				$$
+
+				\item Als tweede hulpmatrix nemen we de rotatie van $180$ graden van de eerste matrix:
+				$$
+				B = 
+				\begin{pmatrix}
+					20 & 0  & 0 & 0 \\ 
+					10 & 10 & 0 & 0 \\ 
+					4  & 6  & 4 & 0 \\ 
+					1  & 3  & 3 & 1 \\ 
+					0  & 1  & 2 & 1 \\ 
+					0  & 0  & 1 & 1 \\ 
+					0  & 0  & 0 & 1 
+				\end{pmatrix}
+				$$
+				\item Nu kan de effectieve matrix opgesteld worden, door elk element $A_{ij}$ te vermenigvuldigen met elk element $B_{ij}$ \accentuate{(Geen matrixvermenigvuldiging, gewoon de individuele elementen met elkaar vermenigvuldigen)}:
+				$$
+				C =
+				\begin{pmatrix}
+					20 & 0  & 0  & 0  \\ 
+					10 & 10 & 0  & 0  \\ 
+					4  & 12 & 4  & 0  \\ 
+					1  & 9  & 9  & 1  \\ 
+					0  & 4  & 12 & 4  \\ 
+					0  & 0  & 10 & 10 \\ 
+					0  & 0  & 0  & 20 
+				\end{pmatrix}
+				$$
+			\end{enumerate}
+		
+			Deze matrix kan nu eenvoudig vermenigvuldigt worden met de rijmatrix van de originele punten $P(t)$ om de nieuwe punten $Q(t)$ te bekomen. Elke kolom stelt één van de originele 4 punten voor. Een punt $Q_i$ kan hieruit afgeleidt worden door op de $i$-de rij, de som van 
+			de producten van het originele punt met de factor voor die kolom te berekenen, en deze som te delen door $\binom{m}{n}$. In dit geval is $m = 6$ en $n = 3$, zodat $\binom{6}{3} = \frac{6!}{3! 3!} = 20$. De zeven punten worden dus:
 			$$
 			\begin{pmatrix}
 				Q_{000000} (=Q_0) \\
@@ -80,6 +96,7 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 				Q_{111111} (=Q_6)\\
 			\end{pmatrix}
 			= 
+			\frac{1}{20}
 			\begin{pmatrix}
 				20 & 0  & 0  & 0  \\ 
 				10 & 10 & 0  & 0  \\ 
@@ -97,8 +114,6 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 				P_{111} (=P_3)\\
 			\end{pmatrix}
 			$$
-			Elke kolom stelt één van de originele 4 punten voor. Een punt $P_i$ kan hieruit afgeleidt worden door op de $i$-de rij, de som van 
-			de producten van het originele punt met de factor voor die kolom te berekenen, en deze som te delen door $\binom{m}{n}$. In dit geval is $m = 6$ en $n = 3$, zodat $\binom{6}{3} = \frac{6!}{3! 3!} = 20$. De zeven punten worden dus:
 			\begin{itemize}
 				\item $Q_0 = \frac{1}{20} (20P_0 + 0P_1  + 0P_2  + 0P_3) = P_0$
 				\item $Q_1 = \frac{1}{20}(10P_0 + 10P_1 + 0P_2  + 0P_3) = \frac{1}{2}(P_0 + P_1)$ 
@@ -107,12 +122,18 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 				\item $Q_4 = \frac{1}{20}(0P_0  + 4P_1 + 12P_2  + 4P_3) = \frac{1}{5}(P_1  + 3P_2 + P_3)$
 				\item $Q_5 = \frac{1}{20}(0P_0  + 0P_1 + 10P_2  + 10P_3) = \frac{1}{2}(P_2 + P_3)$
 				\item $Q_6 = \frac{1}{20}(0P_0  + 0P_1 + 0P_2  + 20P_3) = P_3$
-			\end{itemize}		
+			\end{itemize}
+			
+			\begin{itemize}
+				\item De punten $Q_0$ en $Q_6$ komen respectievelijk overeen met $P_0$ en $P_3$ en moeten niet gewijzigd worden.
+				\item Voor de punten $Q_1$ en $Q_5$ passen we respectievelijk $1/2$ af tussen $P_0$ en $P_1$ en tussen $P_2$ en $P_3$.
+				\item Voor het punt $Q_2$ passen we eerst een hulppunt $R$ af op $1/5$ van het punt $P_1$. Van $R$ naar $P_{2}$ zetten we het punt $Q_2$ op $1/5$ van $R$.
+			\end{itemize}
 		\end{itemize}}
 	\vraag{\accentuate{(2)} verhoging van de graad van Bézier splines (\textit{stapsgewijs}: één graad verhogen per stap)}{
 		\begin{itemize} 
 			\item Slechts één graad verhogen per stap is heel eenvoudig:
-			      $$Q_k = \frac{k}{n + 1}\qquad P_{k - 1} + \frac{n + 1 - k}{n + 1}P_k$$
+			      $$Q_k = \frac{k}{n + 1}P_{k - 1} + \frac{n + 1 - k}{n + 1}P_k$$
 			      Stel een bézierkromme van de 3de graad met punten $P_{000}, P_{001}, P_{011}$ en $P_{111}$.
 			      			
 			      De nieuwe punten van de bézierkromme van de 4de graad worden dan:
@@ -123,7 +144,7 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 			      	\item $Q_{0111} = \frac{3}{4}P_{011} + \frac{1}{4}P_{111}$
 			      	\item $Q_{1111} = P_{111}$
 			      \end{itemize}
-			      Het punt $Q_{0001}$ ligt bijvoorbeeld op $t = 0.75$ voor het lijnstuk $[P_{000}P_{001}]$.
+			      Het punt $Q_{0001}$ ligt bijvoorbeeld op het punt waarvoor $t=0.75$ op het lijnstuk $[P_{000}P_{001}]$.
 		\end{itemize}}
 
 	\vraag{\accentuate{(3,4)} segmentering (subdivisie) van Bézier krommen (eventueel meerdere segmenten in één enkele stap)}
@@ -156,7 +177,7 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 			
 			\begin{figure}[ht]
 				\centering
-				\includegraphics[width=0.6\textwidth]{kromtecirkel}
+				\includegraphics[width=\textwidth]{kromtecirkel}
 				\caption{De kromtecirkel door het punt $P_{ttt}$.}
 				\label{fig:kromtecirkel}
 			\end{figure}
@@ -212,7 +233,7 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 				\label{fig:bezier_repr_polynomiale_nurbs_3}
 			\end{figure}
 
-			Punten waarvan slechts 1 argument van de blossomnotatie verschillen, kunnen geïnterpoleerd worden. Teken een lijnstuk door elk paar punten waarvoor dit van toepassing is. Op figuur \ref{fig:bezier_repr_polynomiale_nurbs_4} wordt dit uitgewerkt, samen met het introduceren van de nieuwe hulppunten.
+			Punten waarvan slechts 1 argument van de blossomnotatie verschillen, en die op een ander lijnstuk liggen, kunnen geïnterpoleerd worden. Teken een lijnstuk door elk paar punten waarvoor dit van toepassing is. Op figuur \ref{fig:bezier_repr_polynomiale_nurbs_4} wordt dit uitgewerkt, samen met het introduceren van de nieuwe hulppunten.
 			\begin{figure}[ht]
 				\centering
 				\includegraphics[width=0.5\textwidth]{bezier_repr_polynomiale_nurbs_4}	
@@ -233,7 +254,7 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 	\vraag{\accentuate{(6-10)} constructie van controlepunten na toevoeging van één of meerdere \textit{reële} knopen in de knopenvector van een (polynomiale) NURBS (zonder over te gaan op de Bézier representatie)}
 	{
 		\begin{itemize} 
-			\item Voeg het nieuwe punt zoveel keer toe als de multipliciteit van de knoop aangeeft in de knopenvector. Daarna moeten er zoveel iterataties van het algoritme van Böhm uitgevoerd worden als de multipliciteit van de knoop. Figuur \ref{fig:bspline_toevoeging_rk_m1}, \ref{fig:bspline_toevoeging_rk_m2} en \ref{fig:bspline_toevoeging_rk_m3} geven respectievelijk het toevoegen van een knoop met multipliciteit 1, 2 of 3 weer.
+			\item Voeg het nieuwe punt zoveel keer toe als de multipliciteit van de knoop aangeeft in de knopenvector. Daarna moeten er zoveel iterataties van het algoritme van de Boor uitgevoerd worden als de multipliciteit van de nieuwe knoop. Figuur \ref{fig:bspline_toevoeging_rk_m1}, \ref{fig:bspline_toevoeging_rk_m2} en \ref{fig:bspline_toevoeging_rk_m3} geven respectievelijk het toevoegen van een knoop met multipliciteit 1, 2 of 3 weer.
 			\begin{figure}[ht]
 				\begin{minipage}{0.5\textwidth}
 					\centering
@@ -307,7 +328,22 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 	{
 		\begin{itemize} 
 		\item \textbf{Stelling van Stärk:} Men bereikt $C^k$ continuïteit indien de blossomargumenten voor elk van de $2k$ naburige controlepunten hetzelfde punt in de ruimte oplevert, of men nu de argumenten evalueert in de blossompolynoom van het ene segment, of in de blossompolynoom van het andere segment. 
-		\item Stel een linkersegment met data- en controlepunten $P[a, a, a], P[a, a, b], P[a, b, b]$ en $P[b, b, b]$, en een rechtersegment, bepaald door $Q[b, b, b], Q[b, b, c], Q[b, c, c]$ en $Q[c, c, c]$ met gemeenschappelijk punt $P[b, b, b] \equiv Q[b, b, b]$. Aangezien we dit gemeenschappelijk punt hebben is $C^0$ continuïteit voldaan. Om $C^1$ continuïteit te bereiken moet, indien men de argumenten van controlepunt $P[a, b, b]$ van het linkersegment evalueert in de blossom van het rechtersegment, dit een punt $Q[a, b, b]$ opleveren dat samenvalt met $P[a, b, b]$.
+		\item Veronderstel een linkersegment met data- en controlepunten $P[a, a, a], P[a, a, b], P[a, b, b]$ en $P[b, b, b]$, en een rechtersegment, bepaald door $Q[b, b, b], Q[b, b, c], Q[b, c, c]$ en $Q[c, c, c]$ met gemeenschappelijk punt $P[b, b, b] \equiv Q[b, b, b]$. Dit is ook te zien op figuur \ref{fig:stark_1}.
+		\begin{figure}[ht]
+			\centering
+			\includegraphics[width=\textwidth]{stark_1}
+			\caption{Een Bézier spline.}
+			\label{fig:stark_1}
+		\end{figure}
+		
+		Aangezien we dit gemeenschappelijk punt hebben is $C^0$ continuïteit voldaan. Om $C^1$ continuïteit te bereiken moet, indien men de argumenten van controlepunt $P[a, b, b]$ van het linkersegment evalueert in de blossom van het rechtersegment, dit een punt $Q[a, b, b]$ opleveren dat samenvalt met $P[a, b, b]$. Hetzelfde moet gelden tussen controlepunt $Q[b,b,c]$ van het rechtersegment, en het punt $P[b,b,c]$ van het linkersegment, bekomen door de argumenten te evalueren in de blossom van het linkersegment. Om $C^2$ continuïteit te hebben doet men hetzelfde voor punten $P[a,a,b]$ en $Q[b,c,c]$. Om $C^3$ continuïteit te hebben doet men hetzelfde voor punten $P[a,a,a]$ en $Q[c,c,c]$. Dit is te zien op figuur \ref{fig:stark_2}.
+
+		\begin{figure}[ht]
+			\centering
+			\includegraphics[width=\textwidth]{stark_2}
+			\caption{De stelling van Stärk.}
+			\label{fig:stark_2}
+		\end{figure}
 			
 		\end{itemize}
 	}
@@ -348,202 +384,81 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 		\begin{itemize} 
 			\item \accentuate{Het veralgmeend algoritme van Neville laat toe om de rekenregels van Hermite interpolatie op te stellen, aangezien Hermite interpolatie ook nog gebruik maakt van richtingsvectoren en eventueel krommingen, die gedefinieerd worden op hetzelfde punt, zodat het punt een hogere multipliciteit krijgt. Hermite interpolatie gebruikt slechts twee datapunten $P_0$ en $P_1$, waarvoor men meestal respectievelijk $t=0$ en $t=1$ neemt}. Bij het veralgemeend algoritme van Neville zijn er twee mogelijkheden:
 				\begin{enumerate}
-					\item Indien er minstens twee verschillende indices in $P_{pqr...wxy}(t)$ optreden, dan blijft de traditionele versie van het algoritme onveranderd geldig:
+					\item Indien er minstens twee verschillende indices in $P_{pqr...wxy}(t)$ optreden, dan blijft de traditionele versie van het algoritme onveranderd geldig, zoals te zien op figuur \ref{fig:hermite_interpolation_1}.
 					\begin{figure}[ht]
 						\centering
-						\begin{tikzpicture}
-							\node (x) at (0, 0) {$P_{{\color{green}p}qr...wx}(t)$};
-							\node (z) at (1, 2) {$P_{{\color{green}p}qr...wx{\color{green}y}}(t)$};
-							\node (y)at (2, 0) {$P_{qr...wx{\color{green}y}}(t)$};
-		
-							\draw[->] (x) -- node[xshift=-0.5cm]{$\frac{t_y - t}{t_y - t_p}$} (z);
-							\draw[->] (y) -- node[xshift=0.5cm]{$\frac{t - t_p}{t_y - t_p}$} (z);
-						\end{tikzpicture}
+						\includegraphics[width=0.5\textwidth]{hermite_interpolation_1}
+						\caption{Lineaire interpolatie met het algoritme van Neville.}
+						\label{fig:hermite_interpolation_1}
 					\end{figure}	
-					\item Indien echter in de labeling van een hulppunt, of van het eindresultaat, slechts één enkele index $i$ optreedt, met multipliciteit $\mu_i = m + 1$, dan moet op het lager niveau slechts één enkel hulppunt geïntroduceerd worden: het hulppunt waarin de index $i$ optreedt met multipliciteit $\mu_i = m$.
+					\item Indien echter in de labeling van een hulppunt, of van het eindresultaat, slechts één enkele index $i$ optreedt, met multipliciteit $\mu_i = m + 1$, dan moet op het lager niveau slechts één enkel hulppunt geïntroduceerd worden: het hulppunt waarin de index $i$ optreedt met multipliciteit $\mu_i = m$. Ter  vervanging van lineaire interpolatie moet nu gebruik gemaakt worden van Taylor reeksontwikkelingen, zoals te zien op figuur \ref{fig:hermite_interpolation_2}.
 					\begin{figure}[ht]
 						\centering
-						\begin{tikzpicture}
-							\node (x) at (0, 0) {$P_{i}^{(m)}$};
-							\node (z) at (1, 2) {$\substack{P_{\underline{i...i}}(t) \\ \hbox{\scriptsize {m+1 termen}}}$};
-							\node (y)at (2, 0) {$\substack{P_{\underline{i...i}}(t) \\ \hbox{\scriptsize {m termen}}}$};
-		
-							\draw[->] (x) -- node[xshift=-0.5cm]{$\frac{(t - t_i)^m}{m!}$} (z);
-							\draw[->] (y) -- node[xshift=0.5cm]{$1$} (z);
-						\end{tikzpicture}
+						\includegraphics[width=0.5\textwidth]{hermite_interpolation_2}
+						\caption{Taylor reeksontwikkeling met het algoritme van Neville.}
+						\label{fig:hermite_interpolation_2}
 					\end{figure}	
 						
 				\end{enumerate}
-				Veronderstel nu een Hermite interpolatie van graad vijf. Dit heeft twee datapunten $P_0$ en $P_1$, de richtingsvectoren in deze punten $P_0^{'}$ en $P_1^{'}$, en de krommingen $P_0^{''}$ en $P_{1}^{''}$. Punt $P_{000111}(t)$ is de top van het piramidaal schema. Op figuur \ref{fig:20triangular} wordt dit schema voorgesteld.
+				Veronderstel nu een Hermite interpolatie van graad drie. Dit heeft twee datapunten $P_0$ en $P_1$ en de richtingsvectoren in deze punten $P_0^{'}$ en $P_1^{'}$. Punt $P_{0011}(t)$ is de top van het piramidaal schema. Op figuur \ref{fig:20triangular} wordt dit schema voorgesteld.
 
 				\begin{figure}[ht]
 					\centering
-					\begin{tikzpicture}[scale=1.5]
-						\node (p000111) at (5, 10) {$P_{000111}(t)$};
-							\node (p00011) at (4, 8) {$P_{00011}(t)$};
-							\node (p00111) at (6, 8) {$P_{00111}(t)$};
-								\node (p0001) at (3, 6) {$P_{0001}(t)$};
-								\node (p0011) at (5, 6) {$P_{0011}(t)$};
-								\node (p0111) at (7, 6) {$P_{0111}(t)$};
-									\node (p000) at (2, 4) {$P_{000}(t)$};
-									\node (p001) at (4, 4) {$P_{001}(t)$};
-									\node (p011) at (6, 4) {$P_{011}(t)$};
-									\node (p111) at (8, 4) {$P_{111}(t)$};
-										\node (p0'') at (1, 2) {$P_{0}^{''}$};
-										\node (p00) at (3, 2) {$P_{00}(t)$};
-										\node (p01) at (5, 2) {$P_{01}(t)$};
-										\node (p11) at (7, 2) {$P_{11}(t)$};
-										\node (p1'') at (9, 2) {$P_{1}^{''}$};
-											\node (p0') at (2, 0) {$P_{0}^{'}$};
-											\node (p0) at (4, 0) {$P_{0}$};
-											\node (p1) at (6, 0) {$P_{1}$};
-											\node (p1') at (8, 0) {$P_{1}^{'}$};
-						
-						\draw[->] (p0') -- node[xshift=-0.5cm]{t} (p00);
-						\draw[->] (p0) -- node[xshift=0.2cm]{1} (p00);
-						\draw[->] (p0) -- node[xshift=-0.5cm]{1 - t} (p01);
-						\draw[->] (p1) -- node[xshift=0.2cm]{t} (p01);
-						\draw[->] (p1) -- node[xshift=-0.2cm]{t}(p11);
-						\draw[->] (p1') -- node[xshift=0.5cm]{t - 1} (p11);
-
-						\draw[->] (p0'') -- node[xshift=-0.5cm]{$\frac{t^2}{2}$} (p000);
-						\draw[->] (p00) -- node[xshift=0.2cm]{1} (p000);
-						\draw[->] (p00) -- node[xshift=-0.5cm]{1 - t} (p001);
-						\draw[->] (p01) -- node[xshift=0.2cm]{t}  (p001);
-
-						\draw[->] (p01) -- node[xshift=-0.5cm]{1 - t}(p011);
-						\draw[->] (p11) -- node[xshift=0.2cm]{t} (p011);
-						\draw[->] (p11) -- node[xshift=-0.2cm]{1}(p111);
-						\draw[->] (p1'') -- node[xshift=0.5cm]{$\frac{(t - 1)^2}{2}$}  (p111);
-
-						\draw[->] (p000) -- node[xshift=-0.5cm]{1 - t}(p0001);
-						\draw[->] (p001) -- node[xshift=0.2cm]{t}(p0001);
-						\draw[->] (p001) -- node[xshift=-0.5cm]{1 - t} (p0011);
-						\draw[->] (p011) -- node[xshift=0.2cm]{t}(p0011);
-						\draw[->] (p011) -- node[xshift=-0.5cm]{1 - t} (p0111);
-						\draw[->] (p111) -- node[xshift=0.2cm]{t} (p0111);
-
-						\draw[->] (p0001) -- node[xshift=-0.5cm]{1 - t}(p00011);
-						\draw[->] (p0011) -- node[xshift=0.2cm]{t}(p00011);
-						\draw[->] (p0011) -- node[xshift=-0.5cm]{1 - t} (p00111);
-						\draw[->] (p0111) -- node[xshift=0.2cm]{t}(p00111);
-
-						\draw[->] (p00011) -- node[xshift=-0.5cm]{1 - t}(p000111);
-						\draw[->] (p00111) -- node[xshift=0.2cm]{t}(p000111);				
-					\end{tikzpicture}
+					\includegraphics[width=\textwidth]{hermite_interpolation_3}
 					\caption{Constructie van het triangulair schema.}
 					\label{fig:20triangular}
 				\end{figure}
-
-		\end{itemize}}
-		De gewichtsfuncties kunnen berekent worden via de volgende stappen:
-		\begin{enumerate}
-			\item Keer elke pijl van het schema om.
-			\item Plaats de constante 1 op de top van de piramide.
-			\item De mengfunctie horend bij een specifiek basisdatapunt $P_i$, kan bekomen worden door in het aangepaste diagram achtereenvolgens:
+				De gewichtsfuncties kunnen berekent worden via de volgende stappen:
 				\begin{enumerate}
-					\item het aantal alternatieve paden te zoeken die tot dit punt leiden (eenvoudig via de driehoek van Pascal),
-					\item de gewichtsfactoren langs een specifiek pad te vermenigvuldigen,
-					\item de bijdrage van elk individueel pad te sommeren.
+					\item Keer elke pijl van het schema om.
+					\item Plaats de constante 1 op de top van de piramide.
+					\item De mengfunctie horend bij een specifiek basisdatapunt $P_i$, kan bekomen worden door in het aangepaste diagram achtereenvolgens:
+						\begin{enumerate}
+							\item het aantal alternatieve paden te zoeken die tot dit punt leiden (eenvoudig via de driehoek van Pascal),
+							\item de gewichtsfactoren langs een specifiek pad te vermenigvuldigen,
+							\item de bijdrage van elk individueel pad te sommeren.
+						\end{enumerate}
 				\end{enumerate}
-		\end{enumerate}
-
-		Op figuur \ref{fig:20invtriangular} wordt het omgekeerde schema getoond.
-
-		\begin{figure}[ht]
-			\centering
-			\begin{tikzpicture}[scale=1.5]
-				\node (p000111) at (5, 10) {};
-					\node (p00011) at (4, 8){};
-					\node (p00111) at (6, 8) {};
-						\node (p0001) at (3, 6) {};
-						\node (p0011) at (5, 6) {};
-						\node (p0111) at (7, 6) {};
-							\node (p000) at (2, 4) {};
-							\node (p001) at (4, 4) {};
-							\node (p011) at (6, 4) {};
-							\node (p111) at (8, 4) {};
-								\node (p0'') at (1, 2) {$H_{2,5}(t)$};
-								\node (p00) at (3, 2) {};
-								\node (p01) at (5, 2) {};
-								\node (p11) at (7, 2) {};
-								\node (p1'') at (9, 2) {$H_{3,5}(t)$};
-									\node (p0') at (2, 0) {$H_{1,5}(t)$};
-									\node (p0) at (4, 0) {$H_{0,5}(t)$};
-									\node (p1) at (6, 0) {$H_{5,5}(t)$};
-									\node (p1') at (8, 0) {$H_{4,5}(t)$};
-				
-				\draw[<-] (p0') -- node[xshift=-0.5cm]{t} (p00);
-				\draw[<-] (p0) -- node[xshift=0.2cm]{1} (p00);
-				\draw[<-] (p0) -- node[xshift=-0.5cm]{1 - t} (p01);
-				\draw[<-] (p1) -- node[xshift=0.2cm]{t} (p01);
-				\draw[<-] (p1) -- node[xshift=-0.2cm]{t}(p11);
-				\draw[<-] (p1') -- node[xshift=0.5cm]{t - 1} (p11);
-
-				\draw[<-] (p0'') -- node[xshift=-0.5cm]{$\frac{t^2}{2}$} (p000);
-				\draw[<-] (p00) -- node[xshift=0.2cm]{1} (p000);
-				\draw[<-] (p00) -- node[xshift=-0.5cm]{1 - t} (p001);
-				\draw[<-] (p01) -- node[xshift=0.2cm]{t}  (p001);
-
-				\draw[<-] (p01) -- node[xshift=-0.5cm]{1 - t}(p011);
-				\draw[<-] (p11) -- node[xshift=0.2cm]{t} (p011);
-				\draw[<-] (p11) -- node[xshift=-0.2cm]{1}(p111);
-				\draw[<-] (p1'') -- node[xshift=0.5cm]{$\frac{(t - 1)^2}{2}$}  (p111);
-
-				\draw[<-] (p000) -- node[xshift=-0.5cm]{1 - t}(p0001);
-				\draw[<-] (p001) -- node[xshift=0.2cm]{t}(p0001);
-				\draw[<-] (p001) -- node[xshift=-0.5cm]{1 - t} (p0011);
-				\draw[<-] (p011) -- node[xshift=0.2cm]{t}(p0011);
-				\draw[<-] (p011) -- node[xshift=-0.5cm]{1 - t} (p0111);
-				\draw[<-] (p111) -- node[xshift=0.2cm]{t} (p0111);
-
-				\draw[<-] (p0001) -- node[xshift=-0.5cm]{1 - t}(p00011);
-				\draw[<-] (p0011) -- node[xshift=0.2cm]{t}(p00011);
-				\draw[<-] (p0011) -- node[xshift=-0.5cm]{1 - t} (p00111);
-				\draw[<-] (p0111) -- node[xshift=0.2cm]{t}(p00111);
-
-				\draw[<-] (p00011) -- node[xshift=-0.5cm]{1 - t}(p000111);
-				\draw[<-] (p00111) -- node[xshift=0.2cm]{t}(p000111);				
-			\end{tikzpicture}
-			\caption{Het inverse triangulair schema dat op figuur \ref{fig:20triangular} geconstrueerd werd.}
-			\label{fig:20invtriangular}
-		\end{figure}
 		
-		De mengfuncties worden dan:
-		\begin{equation*}
-			\begin{split}
-				H_{0, 5}(t) = & 6 \cdot \bigg[(1-t)^3 + t(1-t)^3 + 4t^2(1-t)^3\bigg] = -24t^5 + 66t^4 -60t^3 + 24t^2 -12t + 6\\
-				H_{1, 5}(t) = & 4 \cdot \bigg[t(1-t)^3 + 3t^2(1-t)^3\bigg] = -12t^5 +32t^4 -24t^3 + 4t\\
-				H_{2, 5}(t) = & 1 \cdot \bigg[(1 - t)^3\bigg(\frac{t^2}{2}\bigg)\bigg] = -\frac{1}{2}  t^5 + \frac{3}{2}  t^4  - \frac{3}{2}t^3 + \frac{1}{2}t^2\\
-				H_{3, 5}(t) = & 1 \cdot \bigg[(t^3\bigg(\frac{(1-t)^2}{2}\bigg)\bigg] = \frac{1}{2}t^5 - t^4 + \frac{1}{2}t^3\\
-				H_{4, 5}(t) = & 4 \cdot \bigg[a_4t^5 + b_4t^4 + c_4t^3 + d_4t^2 + e_4t + f_4 \bigg]  \\
-				H_{5, 5}(t) = & 6 \cdot \bigg[a_5t^5 + b_5t^4 + c_5t^3 + d_5t^2 + e_5t + f_5 \bigg]  \\
-			\end{split}
-		\end{equation*}
-		Omgevormd tot de matrixrepresentatie:
-		$$
-		P(t) = (t^5, t^4, t^3, t^2, t, 1) 
-		\cdot
-		\begin{pmatrix}
-			-24 & -12 & - \frac{1}{2}  & \frac{1}{2} & a_4 & a_5 \\
-			66  & 32  & \frac{3}{2}    & -1 		 & b_4 & b_5 \\
-			-60 & -24 & - \frac{3}{2}  & \frac{1}{2} & c_4 & c_5 \\
-			24  & 4   &  \frac{1}{2}   & 0 			 & d_4 & d_5 \\
-			-12 & 0   & 0  			   & 0 			 & e_4 & e_5 \\
-			6   & 0   & 0  			   & 0 			 & f_4 & f_5 \\
-		\end{pmatrix}
-		\cdot 
-		\begin{pmatrix}
-			P_0 \\
-			P_1 \\
-			P_0^{'} \\
-			P_1^{''} \\
-			P_0^{'} \\
-			P_1^{''} \\
-
-		\end{pmatrix}
-		$$
-		\accentuate{CONTROLE: Som van de waarden van de rijen voor elk datapunt moet 0 zijn: $-24 -12 - \frac{1}{2} + \frac{1}{2} + a_4 + a_5 = 0 $}.
+				Op figuur \ref{fig:20invtriangular} wordt het omgekeerde schema getoond.
+		
+				\begin{figure}[ht]
+					\centering
+					\includegraphics[width=\textwidth]{hermite_interpolation_4}
+					\caption{Het inverse triangulair schema dat op figuur \ref{fig:20triangular} geconstrueerd werd.}
+					\label{fig:20invtriangular}
+				\end{figure}
+				
+				De mengfuncties worden dan:
+				\begin{equation*}
+					\begin{split}
+						H_{1, 3}(t)  & = \bigg[{\color{red}t}(1-t)^2\bigg] = t^3 -2t^2 + t \\
+						H_{0, 3}(t)  & = \bigg[{\color{red}1}(1-t)^2 + 2(1-t)^2{\color{blue}t}\bigg]= 2t^3 - 3t^2 + 1\\
+						H_{3, 3}(t)  & = \bigg[{\color{blue}t^2} + 2{\color{blue}t^2}(1-t)\bigg] = -2t^3 + 3t^2\\
+						H_{2, 3}(t)  & = \bigg[{\color{blue}t^2}{\color{red}(t-1)}\bigg] = t^3 - t^2
+					\end{split}
+				\end{equation*}
+				Omgevormd tot de matrixrepresentatie:
+				$$
+				P(t) = (t^3, t^2, t, 1) 
+				\cdot
+				\begin{pmatrix}
+					2 & -2 & 1 & 1 \\
+					-3 & 3 & -2 & -1 \\
+					0 & 0 & 1 & 0 \\
+					1 & 0 & 0 & 0
+				\end{pmatrix}
+				\cdot 
+				\begin{pmatrix}
+					P_0 \\
+					P_1 \\
+					P_0^{'} \\
+					P_1^{'} \\
+				\end{pmatrix}
+				$$
+				\accentuate{CONTROLE: Som van de waarden van de rijen voor elk datapunt moet 0 zijn: $-24 -12 - \frac{1}{2} + \frac{1}{2} + a_4 + a_5 = 0 $}.
+		
+		\end{itemize}}
 
 
 

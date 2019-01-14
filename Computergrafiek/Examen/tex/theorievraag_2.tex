@@ -300,7 +300,7 @@ Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
 			$$<\phi_i^t(x) | \psi_j^t(x)> \equiv \int \big(\phi_i^t(x) \cdot \psi_j^t(x)\big) dx = 0, \qquad i \neq j $$
 			zodat de wavelets semi-orthogonaal zijn. De orthogonaliteit van wavelets vereist bovendien
 			$$<\psi_i^t(x) | \psi_j^t(x)> \equiv \int \big(\psi_i^t(x) \cdot \psi_j^t(x)\big) dx = 0, \qquad i \neq j $$
-			wat meestal niet voldaan is, maar wel voor Haar-wavelets. Aangezien nu de wavelets van $W^{t - 1}$ deel uitmaken van $V^t$, kan elke wavelet $phi_i^{t - 1}$ geschreven worden als een lineaire combinatie van de schaalfunctiers van $V^t$. Hiervoor wordt er een reductiematrix $Q^t$ gebruikt: 
+			wat meestal niet voldaan is, maar wel voor Haar-wavelets. Aangezien nu de wavelets van $W^{t - 1}$ deel uitmaken van $V^t$, kan elke wavelet $\phi_i^{t - 1}$ geschreven worden als een lineaire combinatie van de schaalfunctiers van $V^t$. Hiervoor wordt er een reductiematrix $Q^t$ gebruikt: 
 			$$\Psi^{t - 1} = \Phi^t(x) \cdot Q^t$$
 			De reductiematrix $Q^t$ heeft als aantal rijen het aantal schalingsfuncties in de ruimte $V^t$ en als aantal kolommen het verschil van de aantallen schalingsfuncties in $V^t$ en $V^{t - 1}$. 
 
@@ -466,66 +466,67 @@ Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
 				\caption{De $\Phi^{3, k}$ spline-schalingsfuncties en $\Psi^{3, k}$ spline-wavelets voor $1 \leq k \leq 4$.}
 				\label{fig:spline_schaling_wavelet}
 			\end{figure}
+			De synthesefilters $P^{t, k}$ bestaan elk uit $2^t + k -1$ rijen en $2^{t - 1} + k - 1$ kolommen. De eerste $k-1$ en laatste $k-1$ kolommen hebben geen eenvoudige structuur. Het middendeel bevat voor elke kolom slechts $k + 1$ niet-nul elementen, die op een constante factor na, de binomiaalcoëfficiënten blijken te zijn. Deze niet-nul elementen wordne per opeenvolgende kolom telkens twee rijen naar onderen verschoven. De synthese filters $P^{3, k}$ voor $1 \leq k \leq 4$ worden hieronder in matrixvorm gegeven:
+			$$
+			P^{3, 1} = 
+			\begin{pmatrix}
+				1 &   &   &   \\
+				1 &   &   &   \\
+				  & 1 &   &   \\
+				  & 1 &   &   \\
+				  &   & 1 &   \\
+				  &   & 1 &  \\
+				  &   &   & 1 \\
+				  &   &   & 1 \\
+			\end{pmatrix}
+			\qquad
+			P^{3, 2} = \frac{1}{2}
+			\begin{pmatrix}
+				2 &   &   &   & \\
+				1 & 1 &   &   & \\
+				  & 2 &   &   & \\
+				  & 1 & 1 &   & \\
+				  &   & 2 &   & \\
+				  &   & 1 & 1 & \\
+				  &   &   & 2 & \\
+				  &   &   & 1 & 1\\
+				  &   &   &   & 2\\
+			\end{pmatrix}
+			$$
+			$$
+			P^{3, 3} = \frac{1}{4}
+			\begin{pmatrix}
+				4 &   &   &   &   &   \\ % 1
+				2 & 2 &   &   &   &   \\ % 2
+				  & 3 & 1 &   &   &   \\ % 3
+				  & 1 & 3 &   &   &   \\ % 4
+				  &   & 3 & 1 &   &   \\ % 5
+				  &   & 1 & 3 &   &   \\ % 6
+				  &   &   & 3 & 1 &   \\ % 7
+				  &   &   & 1 & 3 &   \\ % 8
+				  &   &   &   & 2 & 2 \\ % 9
+				  &   &   &   &   & 4 \\ % 10
+			\end{pmatrix}
+			\qquad
+			P^{3, 3} = \frac{1}{16}
+			\begin{pmatrix}
+				16 &    &    &    &    &    &     \\ % 1
+				8  & 8  &    &    &    &    &     \\ % 2
+				   & 12 & 4  &    &    &    &     \\ % 3
+				   & 3  & 11 &  2 &    &    &     \\ % 4
+				   &    & 8  &  8 &    &    &     \\ % 5
+				   &    & 2  & 12 & 2  &    &     \\ % 6
+				   &    &    & 8  & 8  &    &     \\ % 7
+				   &    &    & 2  & 11 &  3 &     \\ % 8
+				   &    &    &    & 4  & 12 &     \\ % 9
+				   &    &    &    &    &  8 &  8  \\ % 10
+				   &    &    &    &    &    & 16  \\ % 11
+			\end{pmatrix}
+			$$
+			De synthesefilters $Q^{t,k}$ bestaan uit $2^t +k - 1$ rijen en $2^t$ kolommen, en opnieuw worden in het middendeel van de matrix de niet-nul elementen per opeenvolgende kolom telkens twee rijen naar onder verschoven. De niet-nul elementen zijn groter in aantal ($3k - 1$) en minder eenvoudig uit te drukken. 
 		\end{itemize}
 		}
-		De synthesefilters $P^{t, k}$ bestaan elk uit $2^t + k -1$ rijen en $2^{t - 1} + k - 1$ kolommen. De eerste $k-1$ en laatste $k-1$ kolommen hebben geen eenvoudige structuur. Het middendeel bevat voor elke kolom slechts $k + 1$ niet-nul elementen, die op een constante factor na, de binomiaalcoëfficiënten blijken te zijn. Deze niet-nul elementen wordne per opeenvolgende kolom telkens twee rijen naar onderen verschoven. De synthese filters $P^{3, k}$ voor $1 \leq k \leq 4$ worden hieronder in matrixvorm gegeven:
-		$$
-		P^{3, 1} = 
-		\begin{pmatrix}
-			1 &   &   &   \\
-			1 &   &   &   \\
-			  & 1 &   &   \\
-			  & 1 &   &   \\
-			  &   & 1 &   \\
-			  &   & 1 &  \\
-			  &   &   & 1 \\
-			  &   &   & 1 \\
-		\end{pmatrix}
-		\qquad
-		P^{3, 2} = \frac{1}{2}
-		\begin{pmatrix}
-			2 &   &   &   & \\
-			1 & 1 &   &   & \\
-			  & 2 &   &   & \\
-			  & 1 & 1 &   & \\
-			  &   & 2 &   & \\
-			  &   & 1 & 1 & \\
-			  &   &   & 2 & \\
-			  &   &   & 1 & 1\\
-			  &   &   &   & 2\\
-		\end{pmatrix}
-		$$
-		$$
-		P^{3, 3} = \frac{1}{4}
-		\begin{pmatrix}
-			4 &   &   &   &   &   \\ % 1
-			2 & 2 &   &   &   &   \\ % 2
-			  & 3 & 1 &   &   &   \\ % 3
-			  & 1 & 3 &   &   &   \\ % 4
-			  &   & 3 & 1 &   &   \\ % 5
-			  &   & 1 & 3 &   &   \\ % 6
-			  &   &   & 3 & 1 &   \\ % 7
-			  &   &   & 1 & 3 &   \\ % 8
-			  &   &   &   & 2 & 2 \\ % 9
-			  &   &   &   &   & 4 \\ % 10
-		\end{pmatrix}
-		\qquad
-		P^{3, 3} = \frac{1}{16}
-		\begin{pmatrix}
-			16 &    &    &    &    &    &     \\ % 1
-			8  & 8  &    &    &    &    &     \\ % 2
-			   & 12 & 4  &    &    &    &     \\ % 3
-			   & 3  & 11 &  2 &    &    &     \\ % 4
-			   &    & 8  &  8 &    &    &     \\ % 5
-			   &    & 2  & 12 & 2  &    &     \\ % 6
-			   &    &    & 8  & 8  &    &     \\ % 7
-			   &    &    & 2  & 11 &  3 &     \\ % 8
-			   &    &    &    & 4  & 12 &     \\ % 9
-			   &    &    &    &    &  8 &  8  \\ % 10
-			   &    &    &    &    &    & 16  \\ % 11
-		\end{pmatrix}
-		$$
-		De synthesefilters $Q^{t,k}$ bestaan uit $2^t +k - 1$ rijen en $2^t$ kolommen, en opnieuw worden in het middendeel van de matrix de niet-nul elementen per opeenvolgende kolom telkens twee rijen naar onder verschoven. De niet-nul elementen zijn groter in aantal ($3k - 1$) en minder eenvoudig uit te drukken. 
+
 \end{enumerate}
 
 \section{2D Wavelet transformaties \accentuate{(§4.5.1)}}
@@ -546,15 +547,19 @@ Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
 	\vraag{Beschrijf, aan de hand van \textit{contourplotjes}, en voor elk van deze alternatieve methodes, de resulterende \textit{2D Haar-schaalfuncties en Haar-wavelets} van het laagste en het op één na laagste niveau.}
 	{\begin{itemize} 
 		\item \textbf{Standaard constructie}:
-		Men bekomt de standaard 2D-Haar wavelets in $W^0$ en $W^1$ door de tensorproducten te berekenen van de 1D-Haar-wavelets in $W^0$ en $W^1$, aangevuld met $\phi^0$, de schalingsfunctie. De plustekens en mintekens duiden telkens de gebieden aan waar de wavelet +1 en -1 bedraagt. In de andere gebieden is de wavelet nul.
+		Men bekomt de standaard 2D-Haar wavelets in $W^0$ en $W^1$ door de tensorproducten te berekenen van de 1D-Haar-wavelets in $W^0$ en $W^1$, aangevuld met $\phi^0$. De plustekens en mintekens duiden telkens de gebieden aan waar de wavelet +1 en -1 bedraagt. In de andere gebieden is de wavelet nul. Dit is te zien op figuur \ref{fig:standaard_constructie}.
 		\begin{figure}[ht]
 			\centering
 			\includegraphics[width=0.5\textwidth]{standaard_constructie}
+			\caption{De standaard constructie met behulp van contourplotjes.}
+			\label{fig:standaard_constructie}
 		\end{figure}
-		\item \textbf{Niet-standaard constructie}:
+		\item \textbf{Niet-standaard constructie}: Men bekomt de niet-standaard 2D-Haar wavelets in $W^1$ door tensorproducten te berekenen van de 1D-Haar wavelets in $W^0$ en $W^1$, aangevuld met 1D-Haar schaalfuncties in $V^0$ en $V^1$. Dit is te zien op figuur \ref{fig:nietstandaard_constructie}
 		\begin{figure}[ht]
 			\centering
 			\includegraphics[width=0.5\textwidth]{nietstandaard_constructie}
+			\caption{De niet-standaard constructie met behulp van contourplotjes.}
+			\label{fig:nietstandaard_constructie}
 		\end{figure}
 	 \end{itemize}}
 \end{enumerate}

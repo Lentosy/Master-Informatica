@@ -1,0 +1,251 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><title> Finding a Point on a Bézier Curve: De Casteljau's Algorithm </title>
+</head><body vlink="#FF1CAC" text="#0A0AFF" link="#22806A" background="Finding%20a%20Point%20on%20a%20B%C3%A9zier%20Curve%20%20De%20Casteljau's%20Algorithm_files/background.gif" alink="#666666">
+
+<h1> Finding a Point on a Bézier Curve: De Casteljau's Algorithm </h1>
+
+<img src="Finding%20a%20Point%20on%20a%20B%C3%A9zier%20Curve%20%20De%20Casteljau's%20Algorithm_files/GrLine.gif">
+<p>
+Following the construction of a Bézier curve, the next important job
+is to find the point <b>p</b>(<i>u</i>) on the curve given a particular
+<i>u</i>.  A simple way is expanding the Bézier curve definition into
+a conventional form <b>f</b>(<i>u</i>) = ( <i>f</i>(<i>u</i>),
+<i>g</i>(<i>u</i>), <i>h</i>(<i>u</i>) ) (see Exercise) and plugging a
+particular <i>u</i> into this equation to obtain <b>f</b>(<i>u</i>).
+While this works find, it is not numerically stable (<i>i.e.</i>,
+could introduce numerical errors during the course of evaluating the
+polynomials). 
+</p><p>
+In what follows, we shall only write down the
+number of control points.  That is, the control points are <b>00</b> for
+<b>p</b><sub>0</sub>, <b>01</b> for <b>p</b><sub>1</sub>, ...,
+<b>0<i>i</i></b> for <b>p</b><sub><i>i</i></sub>, ..., <b>0<i>n</i></b> for
+<b>p</b><sub><i>n</i></sub>.  The <b>0</b>s in these numbers indicate the
+initial or the 0-<i>th</i> iteration.  Later on, it will be replaced with
+<b>1</b>, <b>2</b>, <b>3</b> and so on.
+</p><p>
+The fundamental concept of de Casteljau's algorithm is choosing a point
+<b>C</b> in line segment <b>AB</b> such that the distance between <b>A</b>
+and <b>C</b> and the distance between <b>A</b> and <b>B</b> has a given
+ratio, say <i>u</i>.  Let us find a way to determine point <b>C</b>.
+</p><p>
+</p><center>
+<img src="Finding%20a%20Point%20on%20a%20B%C3%A9zier%20Curve%20%20De%20Casteljau's%20Algorithm_files/point-c.jpg" border="2">
+</center>
+<p>
+The vector from <b>A</b> to <b>B</b> is <b>B - A</b>.  Since <i>u</i> is
+a ratio in the range of 0 and 1, point <b>C</b> is located at
+<i>u</i>(<b>B - A</b>).  Taking the position of <b>A</b> into consideration,
+point <b>C</b> is <b>A</b> + <i>u</i>(<b>B - A</b>) =
+(1 - <i>u</i>)<b>A</b> + <i>u</i><b>B</b>.  Therefore, given a <i>u</i>,
+(1 - <i>u</i>)<b>A</b> + <i>u</i><b>B</b> is the point <b>C</b> between
+<b>A</b> and <b>B</b> such that the ratio of the distance between <b>C</b> and 
+<b>A</b> and the distance between <b>A</b> and <b>B</b> is <i>u</i>.
+</p><p>
+The idea of de Casteljau's algorithm goes as follows.  Suppose we want to
+find <b>p</b>(<i>u</i>), where <i>u</i> is in [0,1].  Starting with the
+first polyline, <b>00-01-02-03...-0<i>n</i></b>, on the leg (<i>i.e.</i>
+line segment) from <b>0i</b> to <b>0(i+1)</b>, use the above formula to find
+a point <b>1i</b> such that the ratio of the distance between <b>0i</b> and 
+<b>1i</b> and the distance between <b>0i</b> and <b>0(i+1)</b> is <i>u</i>.
+In this way, we will obtain <i>n</i> points <b>10</b>, <b>11</b>, <b>12</b>, 
+...., <b>1(<i>n</i>-1)</b>.  They define a new polyline of <i>n</i> - 1 legs.
+</p><p>
+</p><center>
+<img src="Finding%20a%20Point%20on%20a%20B%C3%A9zier%20Curve%20%20De%20Casteljau's%20Algorithm_files/de-casteljau.jpg" border="2">
+</center>
+<p>
+In the figure above, <i>u</i> is 0.4.  <b>10</b> is in the leg of <b>00</b>
+and <b>01</b>, <b>11</b> is in the leg of <b>01</b> and <b>02</b>, ..., and
+<b>14</b> is in the leg of <b>04</b> and <b>05</b>.  All of these new points
+are in blue.
+</p><p>
+Now the new points are numbered as <b>1<i>i</i></b>.  Apply the procedure
+to this new polyline and we shall get a second polyline of <i>n</i> - 1
+points <b>20</b>, <b>21</b>, ..., <b>2(<i>n</i>-2)</b> and <i>n</i> - 2 legs.
+Starting with this polyline, we can construct a third one of <i>n</i> - 2
+points  <b>30</b>, <b>31</b>, ..., <b>3(<i>n</i>-3)</b> and
+<i>n</i> - 3 legs.  Repeating this process <i>n</i>  times yields
+a single point <b><i>n</i>0</b>.  De Casteljau proved that this is the point
+<b>p</b>(<i>u</i>) on the curve that corresponds to <i>u</i>.
+</p><p>
+Let us continue with the above figure.  Let <b>20</b> be the point in the leg 
+of <b>10</b> and <b>11</b> such that the ratio of the distance between
+<b>10</b> and <b>20</b> and the distance between <b>10</b> and <b>11</b> is
+<i>u</i>.  Similarly, choose <b>21</b> on the leg of <b>11</b> and
+<b>12</b>, <b>22</b> on the leg of <b>12</b> and <b>13</b>, and <b>23</b> on 
+the leg of <b>13</b> and <b>14</b>.  This gives a third polyline defined by
+<b>20</b>, <b>21</b>, <b>22</b> and <b>23</b>.  This third polyline has
+<i>n</i> - 1 points and <i>n</i> - 2 legs.
+Keep doing this, we shall obtain a new polyline of three points <b>30</b>,
+<b>31</b> and <b>32</b>.  Then, from this fourth polyline, we have
+the fifth one of two points <b>40</b> and <b>41</b>.  Do it once more,
+and we have <b>50</b>, the point <b>p</b>(0.4) on the curve.
+</p><p>
+This is the geometric interpretation of de Casteljau's algorithm, one of the
+most elegant result in curve design.
+
+</p><p>
+</p><center>
+<img src="Finding%20a%20Point%20on%20a%20B%C3%A9zier%20Curve%20%20De%20Casteljau's%20Algorithm_files/GrLine1.gif">
+</center>
+
+<h3> Actual Computation </h3>
+
+Given the above elegant geometric interpretation of de Casteljau's algorithm,
+we shall present a computation method, which is shown in the following
+figure.
+<p>
+</p><center>
+<img src="Finding%20a%20Point%20on%20a%20B%C3%A9zier%20Curve%20%20De%20Casteljau's%20Algorithm_files/de-cast-compute.jpg" border="2">
+</center>
+<p>
+First, all given control points are arranged into a column, which is the
+left-most one in the figure.  For each pair of adjacent control points,
+draw a south-east arrow and a north-east arrow, and write down a new point at 
+the intersection of the two adjacent arrows.  For example, if the two adjacent
+points are <b>ij</b> and <b>i(j+1)</b>, the new point is <b>(i+1)j</b>.
+The south-east (<i>resp.</i>, north-east) arrow means multiplying
+1 - <i>u</i> (<i>resp.</i>, <i>u</i>) to the point at its tail,
+<b>ij</b> (<i>resp.</i>, <b>i(j+1)</b>), and the new point is the sum.
+</p><p>
+Thus, from the initial column, column <b>0</b>, we compute column <b>1</b>;
+from column <b>1</b> we obtain column <b>2</b> and so on.  Eventually, after
+<i>n</i> applications we shall arrive at a single point <b><i>n</i>0</b> and
+this is the point on the curve.  The following algorithm summarizes what we
+have discussed.  It takes an array <b>p</b> of <i>n</i>+1 points and a
+<i>u</i> in the range of 0 and 1, and returns a point on the Bézier
+curve
+<b>p</b>(<i>u</i>).
+</p><p>
+</p><ul>
+     <ul>
+          <b>Input:</b> array <b>p</b>[0:<i>n</i>] of <i>n</i>+1 points
+                    and real number <i>u</i>  <br>
+          <b>Output:</b> point on curve, <b>p</b>(<i>u</i>)  <br>
+          <b>Working:</b> point array <b>q</b>[0:<i>n</i>]  <br>
+          <br>
+          <b>for</b> <i>i</i> := 0 <b>to</b> <i>n</i>  <b>do</b> <br>
+          <ul>
+               <b>q</b>[<i>i</i>] := <b>p</b>[<i>i</i>];  // save input  <br>
+          </ul>
+          <b>for</b> <i>k</i> := 1 <b>to</b> <i>n</i> <b>do</b>  <br>
+          <ul>
+               <b>for</b> <i>i</i> := 0 <b>to</b> <i>n - k</i> <b>do</b> <br>
+               <ul>
+                    <b>q</b>[<i>i</i>] := (1 - <i>u</i>)<b>q</b>[<i>i</i>]
+                         + <i>u</i><b>q</b>[<i>i</i> + 1];
+               </ul>
+          </ul>
+          <b>return</b> <b>q</b>[0];
+     </ul>
+</ul>
+
+
+<p>
+</p><center>
+<img src="Finding%20a%20Point%20on%20a%20B%C3%A9zier%20Curve%20%20De%20Casteljau's%20Algorithm_files/GrLine1.gif">
+</center>
+
+<h3> A Recurrence Relation </h3>
+
+The above computation can be expressed recursively.   Initially, let
+<b>P</b><sub>0,<i>j</i></sub> be <b>P</b><sub><i>j</i></sub> for <i>j</i> = 0,
+1, ..., <i>n</i>.  That is, <b>P</b><sub>0,<i>j</i></sub> is the <i>j</i>-th
+entry on column 0.  The computation of entry <i>j</i> on column
+<i>i</i> is the following:
+<p>
+</p><center>
+<img src="Finding%20a%20Point%20on%20a%20B%C3%A9zier%20Curve%20%20De%20Casteljau's%20Algorithm_files/de-cast-rec-eqn.jpg" border="1">
+</center>
+<p>
+More precisely, entry <b>P</b><sub><i>i</i>,<i>j</i></sub> is the sum of
+(1-<i>u</i>)<b>P</b><sub><i>i</i>-1,<i>j</i></sub> (upper-left corner) and
+<i>u</i><b>P</b><sub><i>i</i>-1,<i>j</i>+1</sub> (lower-left corner).
+The final result (<i>i.e.</i>, the point on the curve) is
+<b>P</b><sub><i>n</i>,0</sub>.  Based on this idea, one may immediately
+come up with the following recursive procedure:
+</p><p>
+</p><ul>
+     <ul>
+          <b>function</b> <font color="#FF0000"><b>
+                           deCasteljau</b></font>(<i>i</i>,<i>j</i>) <br>
+          <b>begin</b> <br>
+          <ul>
+               <b>if</b> <i>i</i> = 0 <b>then</b> <br>
+               <ul>
+                    <b>return</b>  <b>P</b><sub>0,<i>j</i></sub>  <br>
+               </ul>
+               <b>else</b> <br>
+               <ul> 
+                    <b>return</b>  
+                         (1-<i>u</i>)*<font color="#FF0000"><b>
+                              deCasteljau</b></font>(<i>i</i>-1,<i>j</i>) +
+                         <i>u</i>*<font color="#FF0000"><b>
+                              deCasteljau</b></font>(<i>i</i>-1,<i>j</i>+1)
+               </ul>
+          </ul>
+          <b>end</b>
+     </ul>
+</ul>
+<p>
+This procedure looks simple and short; however, it is extremely inefficient.
+Here is why.  We start with a call to 
+<font color="#FF0000"><b>deCasteljau</b></font>(<i>n</i>,0) for computing
+<b>P</b><sub><i>n</i>,0</sub>.  The <b>else</b> part splits this call into 
+two more calls, <font color="#FF0000"><b>deCasteljau</b></font>(<i>n</i>-1,0)
+for computing <b>P</b><sub><i>n</i>-1,0</sub> and
+<font color="#FF0000"><b>deCasteljau</b></font>(<i>n</i>-1,1) for computing
+<b>P</b><sub><i>n</i>-1,1</sub>.
+</p><p>
+</p><center>
+<img src="Finding%20a%20Point%20on%20a%20B%C3%A9zier%20Curve%20%20De%20Casteljau's%20Algorithm_files/de-cast-rec-comp.jpg" border="2">
+</center>
+<p>
+Consider the call to 
+<font color="#FF0000"><b>deCasteljau</b></font>(<i>n</i>-1,0).  It splits into
+two more calls,
+<font color="#FF0000"><b>deCasteljau</b></font>(<i>n</i>-2,0) for computing
+<b>P</b><sub><i>n</i>-2,0</sub> and
+<font color="#FF0000"><b>deCasteljau</b></font>(<i>n</i>-2,1) for computing
+<b>P</b><sub><i>n</i>-2,1</sub>.  The call to
+<font color="#FF0000"><b>deCasteljau</b></font>(<i>n</i>-1,1) splits into
+two calls,
+<font color="#FF0000"><b>deCasteljau</b></font>(<i>n</i>-2,1) for computing
+<b>P</b><sub><i>n</i>-2,1</sub> and 
+<font color="#FF0000"><b>deCasteljau</b></font>(<i>n</i>-2,2) for computing
+<b>P</b><sub><i>n</i>-2,2</sub>.  Thus, 
+<font color="#FF0000"><b>deCasteljau</b></font>(<i>n</i>-2,1) is called
+twice.  If we keep expanding these function calls, we should discover that 
+almost all function calls for computing 
+<b>P</b><sub><i>i</i>,<i>j</i></sub> are repeated, not once but many many 
+times.  How bad is this?  In fact, the above computation scheme is very 
+similar to the following way of computing the <i>n</i>-th Fibonacci number:
+</p><ul>
+<ul>
+     <b>function</b>  <font color="#FF0000"><b>Fibonacci</b></font>(<i>n</i>)<br>
+     <b>begin</b>
+     <ul>
+          <b>if</b> <i>n</i> = 0 <b>or</b> <i>n</i> = 1 <b>then</b> <br>
+          <ul>
+               <b>return</b> 1 <br>
+          </ul>
+          <b>else</b>
+          <ul>
+               <b>return</b>  <font color="#FF0000"><b>Fibonacci</b></font>
+                                   (<i>n</i>-1) +
+                              <font color="#FF0000"><b>Fibonacci</b></font>
+                                   (<i>n</i>-2)
+          </ul>
+     </ul>
+     <b>end</b>
+</ul>
+</ul>
+This program takes an exponential number of function calls (an exercise) to
+compute <font color="#FF0000"><b>Fibonacci</b></font>(<i>n</i>).
+Therefore, this recursive version of de Casteljau's algorithm is 
+<font color="#FF0000"><b><i>not</i></b></font> suitable for direct 
+implementation, although it looks simple and elegant!
+
+
+</body></html>

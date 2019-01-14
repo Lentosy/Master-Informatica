@@ -1,0 +1,283 @@
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8"><title> De Boor's Algorithm  </title>
+</head><body vlink="#FF1CAC" text="#0A0AFF" link="#22806A" background="De%20Boor's%20Algorithm_files/background.gif" alink="#666666">
+
+<h1> De Boor's Algorithm </h1>
+
+<img src="De%20Boor's%20Algorithm_files/GrLine.gif">
+<p>
+De Boor's algorithm is a generalization of de Casteljau's algorithm.
+It provides a fast and numerically stable way for finding a point on a
+B-spline curve given a <i>u</i> in the domain.
+</p><p>
+Recall from
+<a href="https://pages.mtu.edu/~shene/COURSES/cs3621/NOTES/spline/bspline-property.html#reduce-no-non-zero">a property of
+multiple knots</a> that increasing the multiplicity of an internal knot
+decreases the number of non-zero basis functions at this knot.
+In fact, if the multiplicity of this knot is <i>k</i>, there are at most
+<i>p - k</i> + 1 non-zero basis functions at this knot.  Consequently, at
+a knot of multiplicity <i>p</i>, there will be only one non-zero basis
+function whose value at this knot is one because of the property of partition
+of unity.   Let this knot be
+<i>u</i><sub><i>i</i></sub>.  If <i>u</i> is <i>u</i><sub><i>i</i></sub>,
+since <i>N</i><sub><i>i,p</i></sub>(<i>u</i>) is non-zero on
+[<i>u</i><sub><i>i</i></sub>,<i>u</i><sub><i>i</i>+1</sub>),
+the point on the curve <b>p</b>(<i>u</i>) is affected by <i>exactly one</i>
+control point <b>p</b><sub><i>i</i></sub>.  More precisely, we actually
+have <b>p</b>(<i>u</i>) = <i>N</i><sub><i>i,p</i></sub>(<i>u</i>)
+<b>p</b><sub><i>i</i></sub> = <b>p</b><sub><i>i</i></sub>!
+</p><p>
+So, what is the point of this interesting or somewhat strange property?
+Simple: <font color="#FF0000"><b>if a knot <i><u>u</u></i> is inserted
+<i>p</i> times to a B-spline/NURBS curve, the last generated new control
+point is <u>the</u> point on the curve that corresponds to <i><u>u</u></i>.
+</b></font> Why is this so?  After inserting <i><u>u</u></i> <i>p</i> times,
+the triangular computation scheme yields one point.  Because
+the given B-spline/NURBS curve must passe this new point, it is
+the point on the curve corresponding to <i><u>u</u></i>.  Note that this
+argument holds even if <i><u>u</u></i> is inserted as an existing knot.
+</p><p>
+Therefore, this observation provides us with a technique for finding
+<b>p</b>(<i>u</i>) on the curve.  We just simply insert <i>u</i> <i>p</i>
+times and the <i>last</i> point is <b>p</b>(<i>u</i>)!
+</p><p>
+Let us take a look at an example before move on.  The following is a degree
+4 NURBS curve with 7 control point.  To compute <b>p</b>(0.9),
+<i>u</i> = 0.9 is inserted 4 (the degree) times.  The second and third
+figures show the results after the first and second insertion.  Thus, two new
+control points are added near the lower right corner.  Please note that the 
+control polyline is closer to the curve than the original.  The result of the
+third insertion is shown in the fourth.  We have one
+more control point; but the point on curve is not yet numbered since it is
+not yet a control point.  The fourth insertion makes this happen.  Therefore,
+after four insertion, <b>p</b>(0.9) is a control point.
+</p><p>
+</p><center>
+<img src="De%20Boor's%20Algorithm_files/de-boor-1.jpg" border="2">
+<img src="De%20Boor's%20Algorithm_files/de-boor-2.jpg" border="2">
+<img src="De%20Boor's%20Algorithm_files/de-boor-3.jpg" border="2">
+<img src="De%20Boor's%20Algorithm_files/de-boor-4.jpg" border="2">
+<img src="De%20Boor's%20Algorithm_files/de-boor-5.jpg" border="2">
+</center>
+<p>
+The general knot insertion algorithm discussed on the previous page can be
+easily modified to fulfill our purpose.  First note that we only need to
+insert <i>u</i> enough number of times so that <i>u</i> becomes a knot of
+multiplicity <i>p</i>.  If <i>u</i> is already a knot of multiplicity <i>s</i>,
+then inserting it <i>p - s</i> times would be sufficient.
+</p><p>
+</p><ul>
+     <ul>
+          <b>Input:</b> a value <i>u</i> <br>
+          <b>Output:</b> the point on the curve, <b>p</b>(<i>u</i>)
+                    <br>
+                    <br>
+          If <i>u</i> lies in
+          [<i>u</i><sub><i>k</i></sub>,<i>u</i><sub><i>k</i>+1</sub>)
+          and <i>u</i> != <i>u</i><sub><i>k</i></sub>,
+          let <i>h</i> = <i>p</i> (<i>i.e.</i>, inserting <i>u</i> <i>p</i>
+          times) and <i>s</i> = 0;  <br>
+          If <i>u</i> = <i>u</i><sub><i>k</i></sub> and
+          <i>u</i><sub><i>k</i></sub> is a knot of multiplicity <i>s</i>,
+          let <i>h</i> = <i>p - s</i> (<i>i.e.</i>, inserting <i>u</i>
+          <i>p - s</i> time); <br>
+          Copy the affected control points <b>p</b><sub><i>k-s</i></sub>,
+          <b>p</b><sub><i>k-s</i>-1</sub>, <b>p</b><sub><i>k-s</i>-2</sub>,
+          ...,  <b>p</b><sub><i>k-p</i>+1</sub> and
+          <b>p</b><sub><i>k-p</i></sub> to a new array and rename them
+          as <b>p</b><sub><i>k-s</i>,0</sub>,
+          <b>p</b><sub><i>k-s</i>-1,0</sub>,
+          <b>p</b><sub><i>k-s</i>-2,0</sub>,
+          ...,  <b>p</b><sub><i>k-p</i>+1,0</sub>;
+          <br>
+          <br>
+          <b>for</b> <i>r</i> := 1 <b>to</b> <i>h</i> <b>do</b> <br>
+          <ul>
+               <b>for</b> <i>i</i> := <i>k-p+r</i> <b>to</b>
+                         <i>k-s</i> <b>do</b>  <br>
+               <ul>
+                    <b>begin</b>  <br>
+                    <ul>
+                         Let <i>a</i><sub><i>i,r</i></sub> =
+                              (<i><u>u</u></i> - <i>u</i><sub><i>i</i></sub>)
+                                   / ( <i>u</i><sub><i>i+p-r</i>+1</sub> -
+                                       <i>u</i><sub><i>i</i></sub> )
+                              <br>
+                         Let <b>p</b><sub><i>i,r</i></sub> =
+                              (1 - <i>a</i><sub><i>i,r</i></sub>)
+                                   <b>p</b><sub><i>i</i>-1,<i>r</i>-1</sub>
+                              + <i>a</i><sub><i>i,r</i></sub>
+                                   <b>p</b><sub><i>i</i>,<i>r</i>-1</sub>
+                              <br>
+                    </ul>
+                    <b>end</b>  <br>
+               </ul>
+          </ul>
+          <b>p</b><sub><i>k-s,p-s</i></sub> is the point <b>p</b>(<i>u</i>).
+          <p>
+     </p></ul>
+</ul>
+<p>
+In the following left diagram, all <b>p</b><sub><i>i</i>,0</sub>'s are on the
+left column.  From the zero-th column and coefficients
+<i>a</i><sub><i>i</i>,1</sub>, one can compute
+<b>p</b><sub><i>i</i>,1</sub>'s.  From this first column and coefficients
+<i>a</i><sub><i>i</i>,2</sub>'s, the second column is computed and so on.
+Since there are (<i>k-s</i>)-(<i>k-p</i>)+1 = <i>p-s</i>+1 points on the
+zero-th column and since each column has one point less than the previous
+one, it takes <i>p-s</i> columns to reduce the number of points on that column
+to 1.  This is why the last point is <b>p</b><sub><i>k-s</i>,<i>p-s</i></sub>.
+The right diagram shows the corner-cutting process.  </p><p>
+</p><center>
+<img src="De%20Boor's%20Algorithm_files/de-boor-tri-1.jpg" border="2">
+<img src="De%20Boor's%20Algorithm_files/de-boor-tri-2.jpg" border="2">
+</center>
+<p>
+While this process looks like the one obtained from de Casteljau's algorithm,
+in fact they are very different.  <b>First</b>, under de Casteljau's
+algorithm, the dividing points are computed with a pair of numbers
+1 - <i>u</i> and <i>u</i> that never change throughout the computation
+procedure, while under de Boor's algorithm these pairs of numbers are
+different and depend on the column number and control point number.
+<b>Second</b>, de Casteljau's algorithm can be used for curve subdivision, 
+while the intermediate control points generated by de Boor's algorithm are not
+sufficient for this purpose.  <b>Third</b>, in de Boor's algorithm
+only <i>p</i>+1 affected control points are involved in the computation,
+while de Casteljau's algorithm uses <i>all</i> control points.  Since
+control points <b>p</b><sub><i>k-p</i></sub> to <b>p</b><sub><i>k</i></sub>
+define a convex hull that contains the curve segment on knot span
+[<i>u</i><sub><i>k</i></sub>, <i>u</i><sub><i>k</i>+1</sub>), the computation
+of de Boor's algorithm is performed <i>within</i> the corresponding
+convex hull.
+
+</p><p>
+</p><center>
+<img src="De%20Boor's%20Algorithm_files/GrLine1.gif">
+</center>
+
+<h3> An Example </h3>
+
+Suppose we have a degree 3 B-spline curve (<i>i.e.</i>, <i>p</i> = 3)
+defined by seven control
+points <b>p</b><sub>0</sub>, ..., <b>p</b><sub>6</sub> (<i>i.e.</i>,
+<i>n</i> = 6) and the following knot vector of 11 knots (<i>i.e.</i>,
+<i>m</i> = 10):
+<p>
+</p><center>
+<table cellpadding="4" border="3">
+     <tbody><tr align="CENTER">
+          <td> <i>u</i><sub>0</sub> = <i>u</i><sub>1</sub> =
+               <i>u</i><sub>2</sub> = <i>u</i><sub>3</sub> </td>
+          <td> <i>u</i><sub>4</sub> </td>
+          <td> <i>u</i><sub>5</sub> </td>
+          <td> <i>u</i><sub>6</sub> </td>
+          <td> <i>u</i><sub>7</sub> = <i>u</i><sub>8</sub> =
+               <i>u</i><sub>9</sub> = <i>u</i><sub>10</sub> </td>
+     </tr>
+     <tr align="CENTER">
+          <td> 0 </td>
+          <td> 0.25 </td>
+          <td> 0.5 </td>
+          <td> 0.75 </td>
+          <td> 1 </td>
+     </tr>
+</tbody></table>
+</center>
+<p>
+Based on these information, we shall compute <b>p</b>(0.4).  For de Boor's
+algorithm, this is equivalent to inserting <i>u</i> = 0.4 three times.
+Since <i>u</i> = 0.4 is not an existing knot, <i>s</i> = 0 and
+<i>u</i> = 0.4 is in [<i>u</i><sub>4</sub>, <i>u</i><sub>5</sub>), the
+affected control points are <b>p</b><sub>4</sub>, <b>p</b><sub>3</sub>,
+<b>p</b><sub>2</sub> and <b>p</b><sub>1</sub>.  The following is the
+computation scheme:
+</p><p>
+</p><center>
+<img src="De%20Boor's%20Algorithm_files/de-boor-ex-1.jpg" border="2">
+<img src="De%20Boor's%20Algorithm_files/de-boor-ex-2.jpg" border="2">
+</center>
+<p>
+Let us compute the second column.  The involved <i>a</i> coefficients are
+</p><blockquote>
+     <i>a</i><sub>4,1</sub> = (<i>u</i> - <i>u</i><sub>4</sub>) /
+          ( <i>u</i><sub>4+3</sub> - <i>u</i><sub>4</sub>) = 0.2
+          <br>
+     <i>a</i><sub>3,1</sub> = (<i>u</i> - <i>u</i><sub>3</sub>) /
+          ( <i>u</i><sub>3+3</sub> - <i>u</i><sub>3</sub>) = 8/15 = 0.53
+          <br>
+     <i>a</i><sub>2,1</sub> = (<i>u</i> - <i>u</i><sub>2</sub>) /
+          ( <i>u</i><sub>2+3</sub> - <i>u</i><sub>2</sub>) = 0.8
+          <br>
+</blockquote>
+Therefore, the first column is computed as follows:
+<blockquote>
+     <b>p</b><sub>4,1</sub> =
+          (1 - <i>a</i><sub>4,1</sub>)<b>p</b><sub>3,0</sub> +
+               <i>a</i><sub>4,1</sub><b>p</b><sub>4,0</sub> =
+          0.8<b>p</b><sub>3,0</sub> + 0.2<b>p</b><sub>4,0</sub>
+               <br>
+     <b>p</b><sub>3,1</sub> =
+          (1 - <i>a</i><sub>3,1</sub>)<b>p</b><sub>2,0</sub> +
+               <i>a</i><sub>3,1</sub><b>p</b><sub>3,0</sub> =
+          0.47<b>p</b><sub>2,0</sub> + 0.53<b>p</b><sub>3,0</sub>
+               <br>
+     <b>p</b><sub>2,1</sub> =
+          (1 - <i>a</i><sub>2,1</sub>)<b>p</b><sub>1,0</sub> +
+               <i>a</i><sub>2,1</sub><b>p</b><sub>2,0</sub> =
+          0.2<b>p</b><sub>1,0</sub> + 0.8<b>p</b><sub>2,0</sub>
+               <br>
+</blockquote>
+<p>
+To compute the second column, we need the following coefficients:
+</p><blockquote>
+     <i>a</i><sub>4,2</sub> = (<i>u</i> - <i>u</i><sub>4</sub>) /
+          (<i>u</i><sub>4+3-1</sub> - <i>u</i><sub>4</sub>) = 0.3  <br>
+     <i>a</i><sub>3,2</sub> = (<i>u</i> - <i>u</i><sub>3</sub>) /
+          (<i>u</i><sub>3+3-1</sub> - <i>u</i><sub>3</sub>) = 0.8  <br>
+</blockquote>
+The points are
+<blockquote>
+     <b>p</b><sub>4,2</sub> = (1 - <i>a</i><sub>4,2</sub>)
+               <b>p</b><sub>3,1</sub>
+          + <i>a</i><sub>4,2</sub><b>p</b><sub>4,1</sub> =
+          0.7<b>p</b><sub>3,1</sub> + 0.3<b>p</b><sub>4,1</sub>
+               <br>
+     <b>p</b><sub>3,2</sub> = (1 - <i>a</i><sub>3,2</sub>)
+               <b>p</b><sub>2,1</sub>
+          + <i>a</i><sub>3,2</sub><b>p</b><sub>3,1</sub> =
+          0.2<b>p</b><sub>2,1</sub> + 0.8<b>p</b><sub>3,1</sub>
+               <br>
+</blockquote>
+Finally, since <i>a</i><sub>4,3</sub> = (<i>u</i> - <i>u</i><sub>4</sub>)/
+(<i>u</i><sub>4+3-2</sub> - <i>u</i><sub>4</sub>) = 0.6,
+the final point is
+<blockquote>
+     <b>p</b><sub>4,3</sub> =
+          (1 - <i>a</i><sub>4,3</sub>)<b>p</b><sub>3,2</sub> +
+               <i>a</i><sub>4,3</sub><b>p</b><sub>4,2</sub>
+               = 0.4<b>p</b><sub>3,2</sub> + 0.6<b>p</b><sub>4,2</sub>
+</blockquote>
+This is the point on the curve corresponding to <i>u</i> = 0.4.
+<p>
+Please notice the similarity of those intermediate polylines generated by
+de Boor's algorithm and those generated by de Casteljau's algorithm.
+</p><p>
+Please also note that <i>u</i> is not a knot in this example.  If <i>u</i>
+is a knot, the computation would be easier since we will have fewer number
+of affected control points.
+
+</p><p>
+</p><center>
+<img src="De%20Boor's%20Algorithm_files/GrLine1.gif">
+</center>
+<p>
+
+</p><h3> De Boor's Algorithm for NURBS Curves </h3>
+
+De Boor's algorithm also works for NURBS curves.  We just multiply every
+control point by its weight converting the NURBS curve to a 4D B-spline curve,
+perform de Boor's algorithm on this 4D B-spline curve, and then project
+the resulting curve back by dividing the first three components with the 
+fourth and keeping the fourth component as its new weight.
+
+</body></html>
