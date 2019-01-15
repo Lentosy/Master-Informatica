@@ -1,0 +1,152 @@
+\part{Microservices}
+	\chapter{Architectuurstijlen}
+	\begin{itemize}
+		\item[\info] Gelaagde stijl:
+		\begin{itemize}
+			\item[\info] Kan toegepast worden op elk view model.
+			\item[\info] 3 lagen in het \textbf{logische view}: persistentie, presentatie en domeinlogica.
+			\item[\good] Robust systeem.
+			\item[\good] Eenvoudig om te ontwikkelen (veel frameworks ondersteunen dit: Java EE, .NET, ...).
+			\item[\good] De verschillende lagen kunnen gemockt worden om eenvoudig testen uit te voeren.
+			\item[\alert] Slechts één presentatielaag, maar er kunnen verschillende clients zijn (desktop, mobile, tablet, ...).
+			\item[\alert] Slechts één persistentielaag, maar er kunnen verschillende databasetechnologiën gebruikt worden.
+			\item[\alert] De domeinlogicalaag definieert repositories, maar de persistentielaag implementeert deze. De dependency is dus omgekeerd.
+		\end{itemize}
+		\item[\info] Hexagonale stijl:
+		\begin{itemize}
+			\item[\info] Maakt gebruik van adapters. Deze adapters zijn interfaces en kunnen opgesplitst worden:
+			\begin{itemize}
+				\item[\info] \textbf{Inbound adapter}: Dit is API dat de domeinlogica openstelt, zodat deze kan aangeroepen worden door externen. Elke client kan nu onafhankelijk van elkaar ontwikkeld worden. Ze moeten enkel maar de API aanroepen.
+				\item[\info] \textbf{Outbound adapter}: Dit is de API die de domeinlogica kan gebruiken (repository interface, payment interface).
+			\end{itemize}
+			\item[\good] presentatie-, persistentie- en domeinlogicalaag zijn losgekoppeld.
+		\end{itemize}
+		\item[\info] Monolithische stijl:
+		\begin{itemize}
+			\item[\info] Een monolitische applicatie bevat de drie lagen van de gelaagde stijl, en verpakt dit in één executable.
+			\item[\good] Makkelijk te ontwikkelen met een IDE.
+			\item[\good] Eenvoudig om wijzigingen door te voeren: edit $\rightarrow$ build $\rightarrow$ deploy.
+			\item[\good] Eenvoudig te testen.
+			\item[\good] Eenvoudig om te deployen.
+			\item[\alert] Voor grote codebases wordt het moeilijk om elk detail van de codebase te kennen.
+			\item[\alert] Een kleine wijziging resulteert in het rebuilden van de hele applicatie.
+			\item[\alert] Een bug kan het hele systeem onbereikbaar maken.
+			\item[\alert] Replicatie is haast onmogelijk. 
+		\end{itemize}
+		\item[\info] \textbf{Microservices}:
+		\begin{itemize}
+			\item[\info] Decomposeerd een applicatie in kleine, zwak gekoppelde services, die individueel kunnen gedeployed worden.
+			\item[\info] Services communiceren met elkaar via APIs.
+			\item[\info] Wordt geïmplementeerd in de implementatie view. Elke service heeft zijn eigen logische view.
+			\item[\info] \underline{Wat is een service?}
+			\begin{itemize}
+				\item[\info] Een individueel component dat een bepaalde functionaliteit aanbiedt.
+				\item[\info] Deze functionaliteit wordt via een API beschikbaar gesteld. 
+			\end{itemize}
+			\item[\info] \underline{Wat is een service?}
+			\begin{itemize}
+				\item[\info] Een service dat goed gedefinieerd is in functie van de business.
+				\item[\info] Voert een eenvoudige functie uit, en kan door een klein ontwikkelteam beheerd worden.
+			\end{itemize}
+			\item[\alert] De juiste services vinden is moeilijk.
+			\item[\alert] Foute decompositie leidt tot een gedistribueerd monolitisch systeem.
+			\item[\alert] Gedistribueerde systemen zijn complex. (bv geen IDE die dit ondersteund).
+			\item[\alert] Communicatie tussen services (over een netwerk) is traag.
+			\item[\alert] Vele verschillende services kunnen op hetzelfde moment aan het draaien zijn. 
+		\end{itemize}
+	\end{itemize}
+	
+	\chapter{Decompositie van een applicatie}
+	Het proces om een applicatie in te delen in verschillende microservices noemt men \textbf{decompositie}. Dit \textbf{iteratief} proces is belangrijk aangezien een foutieve methode leidt tot ongewenste resultaten. Een dergerlijk proces kan opgedeeld worden in drie stappen.
+	\begin{enumerate}
+		\item[\info]\textbf{Identificatie van de systeemoperaties.} Dit omvat het vertalen van de noden van één of meerdere gebruikers naar user stories en use-cases. Vaak wordt er hier overlegd met enkele domeinexperts. Het is belangrijk om te achterhalen wat belangrijke systeemoperaties zijn. Welke informatie moet er met een \textit{create}, \textit{update} of \textit{delete} gewijzigd worden? Welke informatie moet met een \textit{query} opgehaald worden? In deze fase worden er nog geen technische vaststellingen gedaan. De focus ligt namelijk op het vaststellen van de pre- en postcondities van de verschillende systeemoperaties.
+		
+		\item[\info]\textbf{Identificatie van de services.} Services specificeren handelingen dat een bedrijf kan doen. Voorbeelden voor een online webshop zijn: \textit{Sales}, \textit{Marketing}, \textit{Payment}, \textit{Order Shipping} en \textit{Order Tracking}. Deze services blijven lang stabiel en zullen haast nooit veranderen tenzij de business een shift van focus doen. Een obstakel dat zich kan voordoen zijn \textbf{godklassen}. Dit zijn klassen die te veel verantwoordelijkheid op zich dragen. Een oplossing hiervoor is om deze klasse in een centrale databank op te slaan en services die deze klasse nodig hebben kunnen die dan via de databank aanspreken. Dit is duidelijk een overtreding op de principes van de microservice architectuur. Er is nu een sterke koppeling tussen de microservices en de godklasse. Een betere oplossing is het opsplitsen van de klasse in verschillende klassen op basis van de bestaande services. Deze verschillende klassen kunnen in een microservice gestoken worden waarbij de definitie van de klasse sterk gedaald is (ze moet maar gelden binnen de microservice). Voorbeeld van een godklasse is een \textbf{Order} klasse voor pizza's. Denk aan de typische attributen: \textit{status}, \textit{requestedDeliveryTime}, \textit{prepareByTime}, \textit{deliveryTime}, \textit{paymentinfo}, \textit{deliveryAddress}, ... . Het opsplitsen van deze klassen kan bijvoorbeeld gebeuren door enkel informatie die relevant is voor de keuken, in een keukenserivce te steken en informatie die enkel relevant is voor het bezorgen van een bepaalde order in een deliveryservice. Op die manier worden godklassen vermeden.
+		
+		\item[\info]\textbf{Identificatie van de service API's.} Deze laatste stap zal nagaan welke operaties van een microservice publiek moeten gesteld worden aan de buitenwereld via een API. 
+	\end{enumerate}
+	\chapter{Interactiestijlen tussen services}
+	\begin{table}[ht]
+		\centering
+		\begin{tabular}{c | c | c}
+			& one-to-one & one-to-many \\
+			\hline
+			synchroon & request/response & / \\
+			\hline 
+		asynchroon & \hspace{2em} \begin{minipage}[c]{0.3\textwidth}request/async response \\ one way notifications\end{minipage} & \hspace{2em} \begin{minipage}[c]{0.3\textwidth}publish/subscribe \\ publish/async response\end{minipage}
+		\end{tabular}
+	\end{table}
+	\begin{itemize}
+		\item[\info] request/response: Een service stuurt een request en wacht op een response.
+		\item[\info] request/async response: Een service stuurt een request, maar wacht niet noodzakelijk op een response.
+		\item[\info] one way notifications: Een service stuurt een request en verwacht geen response.
+		\item[\info] publish/subscribe: Een service publiceerd een bericht en kan opgevangen worden door 0 of meerdere geïnteresseerden.
+		\item[\info] publish/async responses: Een service publiceerd een bericht en zal eventueel antwoorden opvangen van 0 of meerdere geïnteresseerden.
+	\end{itemize}
+	\section{Synchrone communicatie}
+	\subsection{Voorbeelden}
+	\begin{itemize}
+		\item[\info] REST
+		\begin{itemize}
+			\item[\info] Vier levels:
+			\begin{enumerate}
+				\item[0]: Enkel HTTP POST mogelijk. Elke actie krijgt dan ook een ander endpoint toegewezen.
+				\item[1]: Maakt gebruik van resources zodat elk individuele resource een URI krijgt. Nog steeds enkel HTTP POST mogelijk.
+				\item[2]: GET, POST, PUT mogelijk. Een zelfde resource kan nu meerdere operaties ondersteunen.
+				\item[3]: HATEEOAS mogelijk: een GET request bevat, behalve het object, ook URLs die mogelijke acties op het object toelaten.
+			\end{enumerate}
+			\item[\good] HTTP wordt niet geblokkeerd door een firewall.
+			\item[\good] Implementeerd request/response interactie.
+			\item[\alert] clients moeten de locatie (URL) kennen.
+			\item[\alert] Meerdere resources in één request opvragen is moeilijk. 
+			\item[\alert] Soms is het moeilijk om de HTTP werkwoorden te mappen op een operatie.
+		\end{itemize}
+		\item[\info] gRPC
+		\begin{itemize}
+			\item[\info] Google Remote Procedure Call.
+			\item[\info] API wordt gedefinieerd op basis van een Interface Definition File. Dit bestand bevat IDL (Interface Description Language) code.
+			\item[\info] Deze code wordt gecompileerd afhankelijk van de gekozen client.
+			\item[\alert] Het valt niet op dat de communicatie nu over het netwerk gebeurd.
+		\end{itemize}
+	\end{itemize}
+	\subsection{Foutbestendigheid}
+	Communicatie tussen twee services moet foutbestendig zijn. Problemen zoals trage netwerken, overbelaste microservices, enz... moeten oplosbaar zijn. Er zijn \underline{drie patronen} die geschikt zijn om technische problemen te voorkomen en op te lossen.
+	\begin{itemize}
+		\item[\info] \textbf{Netwerk-timeouts:} Zet een limiet op het aantal seconden dat een microservice wacht op een antwoord van een andere microservice.
+		\item[\info] \textbf{Bulkheads:} Zet een limiet op het aantal requests dat een client kan versturen naar een service. Dit kan bijvoorbeeld geïmplementeerd worden door bij elke service die andere services aanspreekt, een eigen thread pool bij te houden, zodat enkel de thread pool van één service vol komt te zijn.
+		\item[\info] \textbf{Circuit breaker pattern:} Monitor het aantal succesvolle en gefaalde operaties van een service. Wanneer de verhouding van gefaalde en succesvolle operaties een bepaalde limiet overtreedt, dan wordt de circuit breaker (die de operaties monitored), geactiveerd en zal geen enkele request nog lukken.
+	\end{itemize}
+	Wanneer deze problemen zich voordoen, is het nuttig om een aantal \underline{fallback strategiën} te hebben. Meestal is dit een fout of een gecached antwoord terugsturen.
+	\section{Asynchrone communicatie}
+	\begin{itemize}
+		\item[\info] Maakt gebruik van messaging.
+
+	\end{itemize}
+	\subsection{Foutbestendigheid}
+	Bij asynchrone communicatie kunnen er zich \underline{twee problemen} voordoen:
+	\begin{itemize}
+		\item[\info] \textbf{Competing consumers:} Het kan voorkomen dat er meerdere instanties van dezelfde service geïnteresseerd is in een bepaalde message stream. Er moet garantie zijn dan de berichten die toekomen in deze stream sequentieel afgewerkt worden. Het kan ook zijn dat verschillende services geïnteresseerd zijn in dezelfde message stream. Men zou de berichten dan moeten dupliceren, en dat gaat niet met een standard queue.
+	\end{itemize}
+
+	Deze problemen worden opgelost door een \underline{message broker}.
+
+	\chapter{Saga}
+	\underline{= garanderen dat een transactie ofwel volledig, ofwel niet uitgevoerd wordt.}
+	\begin{itemize}
+		\item[\info] Traditioneel: 2-fasen-commit.
+		\begin{itemize}
+			\item[\info] Eerst wordt elke databank naarwaar geschreven moet worden, op de hoogte gebracht van de informatie die ze moeten schrijven.
+			\item[\info] De eerste fase zal aan elke databank vragen of zij klaar zijn om weg te schrijven (prepare-fase).
+			\item[\info] De tweede fase zal effectief een commit uitvoeren op elke databank (commit-fase).
+			\item[\info] Van zodra één databank 'nee' antwoord, wordt het hele proces gestopt.
+			\item[\alert] Synchroon
+			\item[\alert] Niet elke database implementeert het concept van transacties en locking.
+		\end{itemize}
+		\item[\info] \textbf{Saga}
+		\begin{itemize}
+			\item[\info] Een sequentie van lokale interacties tussen verschillende microservices.
+			\item[\info] Elke systeemoperatie moet een saga hebben.
+			\item[\info] 
+		\end{itemize}
+	\end{itemize}
+	

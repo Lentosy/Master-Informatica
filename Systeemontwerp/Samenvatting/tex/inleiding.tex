@@ -1,0 +1,76 @@
+\chapter{Inleiding}
+	\begin{itemize}
+		\item[\info] \underline{Systeemontwerp} = het ontwerpen van een infrastructuur waarbij verschillende componenten met elkaar kunnen interageren.
+		\item[\info] Typische high level architectuurblokken: 
+			\begin{itemize}
+				\item[\info] \underline{transactiebehandeling}: requests behandelen van gebruikers.
+				\item[\info] \underline{business intelligence}: geproduceerde data analyseren.
+			\end{itemize}  
+	\end{itemize}
+	\section{Softwarearchitectuur}
+	\subsection{Systeemrequirements}
+	\begin{itemize}
+		\item[\info] \underline{functionele requirements}: specificatie wat een systeem moet \textbf{doen}.
+		\item[\info] \underline{niet-functionele requirements}: specificatie wat een systeem moet \textbf{zijn} (kwaliteitseisen).
+	\end{itemize}
+
+	\subsection{4+1 view model}
+	\begin{itemize}
+		\item[\info] Logical view:
+			\begin{itemize}
+				\item[\info] Bevat de klassen, packages, relaties tussen klassen, associaties tussen de klassen (\accentuate{domain class diagram en entity-relationship diagram})
+			\end{itemize}
+		\item[\info] Implementation view:
+			\begin{itemize}
+				\item[\info] Bevat de output van het build systeem, zoals de verschillende modules (bv JARs) en componenten (executables, WARS).
+				\item[\info] Beschrijft de onderliggende relaties tussen alle modules en componenten (import, use, merge, ...)
+			\end{itemize}
+		\item[\info] Process view:
+			\begin{itemize}
+				\item[\info] Bevat de beschrijving van de werking van verschillende processen (een proces kan een hele module zijn) (\accentuate{activity diagram}).
+				\item[\info] Een proces kan beheerd worden: starten, pauzeren, configureren, stoppen.
+				\item[\info] Heeft als doel om \underline{deadlocks} en \underline{netwerkvertragingen} te voorkomen en \underline{consistentie} te bereiken. 
+			\end{itemize}
+		\item[\info] Deployment view:
+			\begin{itemize}
+				\item[\info] Beschrijft op welke toestellen de processen moeten gedeployed worden, hoeveel toestellen er gebruikt worden.
+				\item[\info] Verschillende deploymentconfiguraties mogelijk per klant of geografisch gebied, maar ook of dat het een productie of ontwikkelomgeving is.
+			\end{itemize}
+		\item[\info] \accentuate{+1} Use Cases/Scenarios:
+			\begin{itemize}
+				\item[\info] Een use case beschrijft, binnen een view, hoe dat de componenten binnen die view met elkaar interageren voor een bepaalde situatie.
+				\item[\info] Is eigenlijk redundant omdat andere 4 views deze informatie ook al bevatten, maar \underline{use cases zijn toch nuttig}:
+				\begin{itemize}
+					\item[\good] Het valideert het ontwerp.
+					\item[\good] Het kan nieuwe systeemelementen ontdekken.
+				\end{itemize}
+			\end{itemize}
+	\end{itemize}
+	\section{Reactive manifesto}
+	\underline{4 kenmerken:}
+	\begin{itemize}
+		\item[\info] Message Driven: asynchrone communicatie tussen componenten. Maakt gebruik van een wachtrij om de berichten te beheren. Dit heeft \underline{drie voordelen}:
+		\begin{itemize}
+			\item[\good] Zwakke koppeling: de verschillende componenten moeten enkel een protocol afspreken voor het bericht. 
+			\item[\good] Loskoppelen van de tijd: Zender en ontvanger moeten niet wachten op elkaar.
+			\item[\good] Loskoppelen van locatie: De zender en ontvanger moeten niet in hetzelfde proces beschikbaar zijn, enkel de locator (\accentuate{analogie met gsm-nummer, ik kan eender waar naar iemand bellen, onafhankelijk van zijn locatie}) moet bekend zijn.
+		\end{itemize}
+		\item[\info] Responsief:
+			\begin{itemize}
+				\item[\info] Lazy loading
+				\item[\info] Toon progressbar
+				\item[\info] Een trage service mag andere services niet beïnvloeden.
+			\end{itemize}
+		\item[\info] Elastisch:
+			\begin{itemize}
+				\item[\info] Predictieve en reactieve schaling
+				\item[\info] Resources moeten voor elk individueel component instelbaar zijn
+				\item[\info] Systeem moet responsief blijven
+			\end{itemize}
+		\item[\info] Foutbestendig:
+			\begin{itemize}
+				\item[\info] Systeem moet zichzelf kunnen herstellen
+				\item[\info] Fouten moeten snel opgespoord kunnen worden via monitoring
+				\item[\info] Voorzie fallback services
+			\end{itemize}
+	\end{itemize}
