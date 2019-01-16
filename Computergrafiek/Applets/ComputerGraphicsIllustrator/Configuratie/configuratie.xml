@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- globaal configuratie bestand voor de applicatie --><configuratie xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="configuratie.xsd">
+<panelen>
+    <tekenveld>
+        <achtergrondkleur>
+            <R>0</R>
+            <G>0</G>
+            <B>0</B>
+        </achtergrondkleur>
+        <schaal>0.25</schaal>
+        <grid snap-to-grid="false" zichtbaar="false"/>
+    </tekenveld>
+    <basisfuncties zichtbaar="false"/>
+    <knopenvector zichtbaar="true"/>
+</panelen>
+<kromme>
+    <lijndikte>3</lijndikte>
+    <kleur>
+        <R>0</R>
+        <G>0</G>
+        <B>255</B>
+    </kleur>
+</kromme>
+<controlepunten>
+    <puntdikte>7</puntdikte>
+    <standaardkleur>
+        <R>0</R>
+        <G>0</G>
+        <B>255</B>
+    </standaardkleur>
+    <geselecteerdekleur>
+        <R>153</R>
+        <G>0</G>
+        <B>153</B>
+    </geselecteerdekleur>
+    <eindpuntenkleur>
+        <R>0</R>
+        <G>0</G>
+        <B>255</B>
+    </eindpuntenkleur>
+</controlepunten>
+</configuratie>

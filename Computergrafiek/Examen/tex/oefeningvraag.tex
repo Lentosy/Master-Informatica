@@ -117,9 +117,9 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 			\begin{itemize}
 				\item $Q_0 = \frac{1}{20} (20P_0 + 0P_1  + 0P_2  + 0P_3) = P_0$
 				\item $Q_1 = \frac{1}{20}(10P_0 + 10P_1 + 0P_2  + 0P_3) = \frac{1}{2}(P_0 + P_1)$ 
-				\item $Q_2 = \frac{1}{20}(4P_0  + 12P_1 + 4P_2  + 0P_3) = \frac{1}{5}(P_0  + 3P_1 + P_2)$
+				\item $Q_2 = \frac{1}{20}(4P_0  + 12P_1 + 4P_2  + 0P_3) = \frac{1}{5}(P_0  + 3P_1 + P_2) = \frac{4}{5}(\frac{1}{4}P_0 + \frac{3}{4}P_1) + \frac{1}{5}P_2$
 				\item $Q_3 = \frac{1}{20}(1P_0  + 9P_1 + 9P_2  + 1P_3) = \frac{1}{20}(P_0 + 9P_1  + 9P_2 + P_3)$
-				\item $Q_4 = \frac{1}{20}(0P_0  + 4P_1 + 12P_2  + 4P_3) = \frac{1}{5}(P_1  + 3P_2 + P_3)$
+				\item $Q_4 = \frac{1}{20}(0P_0  + 4P_1 + 12P_2  + 4P_3) = \frac{1}{5}(P_1  + 3P_2 + P_3) = \frac{1}{5}P_1 + \frac{4}{5}(\frac{3}{4}P_2 + \frac{1}{4}P_3) $
 				\item $Q_5 = \frac{1}{20}(0P_0  + 0P_1 + 10P_2  + 10P_3) = \frac{1}{2}(P_2 + P_3)$
 				\item $Q_6 = \frac{1}{20}(0P_0  + 0P_1 + 0P_2  + 20P_3) = P_3$
 			\end{itemize}
@@ -127,7 +127,7 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 			\begin{itemize}
 				\item De punten $Q_0$ en $Q_6$ komen respectievelijk overeen met $P_0$ en $P_3$ en moeten niet gewijzigd worden.
 				\item Voor de punten $Q_1$ en $Q_5$ passen we respectievelijk $1/2$ af tussen $P_0$ en $P_1$ en tussen $P_2$ en $P_3$.
-				\item Voor het punt $Q_2$ passen we eerst een hulppunt $R$ af op $1/5$ van het punt $P_1$. Van $R$ naar $P_{2}$ zetten we het punt $Q_2$ op $1/5$ van $R$.
+				\item Voor het punt $Q_2$ maken we eerst een hulppunt aan, dat op $1/4$ van het punt $P_1$ ligt op het lijnstuk $[P_0P_1]$. Het punt $Q_2$ komt nu op $1/5$ van $R$ te liggen op het lijnstuk $[P_2R]$. Analoog voor het punt $P_4$.
 			\end{itemize}
 		\end{itemize}}
 	\vraag{\accentuate{(2)} verhoging van de graad van Bézier splines (\textit{stapsgewijs}: één graad verhogen per stap)}{
@@ -290,18 +290,26 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 	\vraag{\accentuate{(11)} berekening en constructie van de controlepunten van de \textit{open-uniforme} representatie van een (polynomiale) NURBS met een \textit{uniforme} knopenvector}
 	{
 		\begin{itemize} 
-			\item Bij een uniforme knopenvector vormen alle knopen een rekenkundige rij. Bij een open-uniforme knopenvector vormen enkel de reële knopen een rekenkundige rij. De meest extreme reële knopen worden $k$ maal herhaald. 
+			\item Bij een uniforme knopenvector vormen alle knopen een rekenkundige rij. Bij een open-uniforme knopenvector vormen enkel de reële knopen een rekenkundige rij. De meest extreme reële knopen worden $k$ maal herhaald. Een open-uniforme NURBS begint en eindigt op respectievelijk het eerste en laatste datapunt.
 
 			Zo wordt de uniforme knopenvector $\{-1, 0, 1; 2, 3, 4, 5 ; 6, 7, 8 \}$ in open-uniforme vorm: $\{2, 2, 2; 2, 3, 4, 5; 5, 5, 5\}$. 
-
-			Een open-uniforme NURBS begint en eindigt op respectievelijk het eerste en laatste datapunt.
+			Maak gebruik van de interpolatieblokken om de nieuwe controlepunten te achterhalen.
+			
 		\end{itemize}
 	}
-	\vraag{\accentuate{(12,19)} berekening en constructie van de controlepunten van de \textit{uniforme} representatie van een polynomiale of rationale NURBS met een \textit{open-uniforme} knopenvector}{\begin{itemize} \item \todo{oplossen} \end{itemize}}
+	\vraag{\accentuate{(12,19)} berekening en constructie van de controlepunten van de \textit{uniforme} representatie van een polynomiale of rationale NURBS met een \textit{open-uniforme} knopenvector}{
+		\begin{itemize} 
+			\item Bij de uniforme knopenvector vormen alle knopen een rekenkundige rij. Bij een open-uniforme knopenvector vormen enkel de reële knopen een rekenkundige rij. De meest extreme reële knopen worden $k$ maal herhaald. Een open-uniforme NURBS begint en eindigt op respectievelijk het eerste en laatste datapunt.
+
+			
+			Zo wordt de open-uniforme knopenvector $\{2, 2, 2; 2, 3, 4, 5; 5, 5, 5\}$ in uniforme vorm: $\{-1, 0, 1; 2, 3, 4, 5 ; 6, 7, 8 \}$.
+			Maak gebruik van de interpolatieblokken om de nieuwe controlepunten te achterhalen.
+		\end{itemize}
+		}
 	\vraag{\accentuate{(12)} de Boor constructie (van een punt met specifieke parameterwaarde) van een (polynomiale) NURBS}
 	{
 		\begin{itemize} 
-			\item Hierbij wordt een piramidaal schema gebruikt dat bijna identiek is aan het schema dat gebruikt wordt voor het algoritme van de Casteljau. Het verschil is hier echter dat bij elke iteratie hetzelfde vervangend argument, $t$, wordt geïntroduceerd, zoals te zien op figuur \ref{fig:deboor_constructie}.
+			\item Hierbij wordt een piramidaal schema gebruikt dat identiek is aan het schema dat gebruikt wordt voor het algoritme van de Casteljau. Het verschil is dat bij de Boor de inputgegevens bestaan uit louter controlepunten, zonder datapunten. De constructie is te zien op figuur \ref{fig:deboor_constructie}.
 
 			\begin{figure}[ht]
 				\centering
@@ -314,7 +322,7 @@ Deze vraag is een \textbf{oefening}, gequoteerd op 1/2 van de totaalpunten, over
 	\vraag{\accentuate{(13)} constructie van de \textit{hodograaf} van een Bézier kromme of spline}
 	{
 		\begin{itemize}
-			\item Stel het schema van de Casteljau op voor de gegeven Bézierkromme, maar voer in de eerste stap de blokken van het afgeleide type in, zoals weergegeven op figuur \ref{fig:constructie_hodograaf}. De resulterende hodograaf is zelf een Bézierkrommme van een graad minder en wordt gegeven door de resterende blokken van het interpolerende type.
+			\item Stel het schema van de Casteljau voor de gegeven Bézierkromme, of het schema van de Boor voor de gegeven spline op, maar voer in de eerste stap de blokken van het afgeleide type in, zoals weergegeven op figuur \ref{fig:constructie_hodograaf}. De resulterende hodograaf is zelf een Bézierkrommme/spline van een graad minder en wordt gegeven door de resterende blokken van het interpolerende type.
 			\begin{figure}[ht]
 				\centering
 				\includegraphics[width=0.6\textwidth]{constructie_hodograaf}	

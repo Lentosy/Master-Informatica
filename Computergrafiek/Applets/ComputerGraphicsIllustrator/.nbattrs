@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE attributes PUBLIC "-//NetBeans//DTD DefaultAttributes 1.0//EN" "http://www.netbeans.org/dtds/attributes-1_0.dtd">
+<attributes version="1.0">
+    <fileobject name="KnopenVenster.java">
+        <attr name="class_dependency_javax.swing.event.MouseInputListener" stringvalue="KnopenVenster"/>
+        <attr name="class_dependency_javax.swing.JLabel" stringvalue="KnopenVenster"/>
+    </fileobject>
+    <fileobject name="KrommeChooser.java">
+        <attr name="class_dependency_javax.swing.filechooser.FileFilter" stringvalue="KrommeChooser.ExtensionFilter"/>
+        <attr name="class_dependency_javax.swing.JFileChooser" stringvalue="KrommeChooser"/>
+    </fileobject>
+    <fileobject name="Project.java">
+        <attr name="class_dependency_javax.swing.JLayeredPane" stringvalue="Project"/>
+    </fileobject>
+    <fileobject name="GrafiekVenster.java">
+        <attr name="class_dependency_javax.swing.border.Border" stringvalue="GrafiekVenster.GrafiekBorder"/>
+        <attr name="class_dependency_javax.swing.JLabel" stringvalue="GrafiekVenster"/>
+    </fileobject>
+    <fileobject name="Listener.java">
+        <attr name="EA-OpenIDE-Connection" serialvalue="aced0005737200146a6176612e7574696c2e4c696e6b65644c6973740c29535d4a60882203000078707704000000017372002a6f72672e6f70656e6964652e6c6f61646572732e436f6e6e656374696f6e537570706f72742450616972055f8af6f04a3bd80200024c00047479706574002b4c6f72672f6f70656e6964652f636f6f6b6965732f436f6e6e656374696f6e436f6f6b696524547970653b4c000576616c75657400124c6a6176612f6c616e672f4f626a6563743b78707372002e6f72672e6e65746265616e732e6d6f64756c65732e6a6176612e4a617661436f6e6e656374696f6e732454797065a83dd01001306d7402000149000666696c746572787000000050737200436f72672e6e65746265616e732e6d6f64756c65732e6a6176612e4a617661446174614f626a6563742450657273697374656e74436f6e6e656374696f6e48616e646c65ba16f1d2dd4c1cb60200014c000e646174614e6f646548616e646c6574001f4c6f72672f6f70656e6964652f6e6f6465732f4e6f64652448616e646c653b7870737200296f72672e6f70656e6964652e6c6f61646572732e446174614e6f6465244f626a65637448616e646c655bd0f82e01811d2e0200025a0005636c6f6e654c00036f626a7400244c6f72672f6f70656e6964652f66696c6573797374656d732f46696c654f626a6563743b787000737200326f72672e6f70656e6964652e66696c6573797374656d732e416273747261637446696c654f626a656374245265706c616365896fa1bce4b5219f0200024c000866696c654e616d657400124c6a6176612f6c616e672f537472696e673b4c000666734e616d6571007e000f787074001154656b656e56656e737465722e6a617661740035433a2f4b61746a612f494e464f524d41544943412f7468657369732f4d696a6e5f4170706c696361746965312f4c616772616e676578"/>
+    </fileobject>
+    <fileobject name="ActieSnap.java">
+        <attr name="class_dependency_javax.swing.AbstractAction" stringvalue="ActieSnap"/>
+    </fileobject>
+    <fileobject name="TekenVenster.java">
+        <attr name="class_dependency_Listener" stringvalue="TekenVenster"/>
+        <attr name="class_dependency_javax.swing.JLabel" stringvalue="TekenVenster"/>
+    </fileobject>
+    <fileobject name="MouseLabel.java">
+        <attr name="class_dependency_javax.swing.event.MouseInputListener" stringvalue="MouseLabel"/>
+        <attr name="class_dependency_javax.swing.JLabel" stringvalue="MouseLabel"/>
+    </fileobject>
+    <fileobject name="InstellingenPanel.java">
+        <attr name="class_dependency_java.awt.event.ActionListener" stringvalue="InstellingenPanel"/>
+        <attr name="class_dependency_javax.swing.JPanel" stringvalue="InstellingenPanel"/>
+    </fileobject>
+    <fileobject name="Tools.java">
+        <attr name="class_dependency_java.awt.event.ActionListener" stringvalue="Tools"/>
+        <attr name="class_dependency_javax.swing.AbstractAction" stringvalue="Tools.ToolsAction"/>
+    </fileobject>
+    <fileobject name="ActieGridGrootte.java">
+        <attr name="class_dependency_javax.swing.AbstractAction" stringvalue="ActieGridGrootte"/>
+    </fileobject>
+    <fileobject name="">
+        <attr name="OpenIDE-Folder-Order" stringvalue="ikoon10.png/Jama/Nouveau dossier/images/BSpline.java/Basisfuncties.png/Bspline.png/ColorIcon.java/ComboDoc.java/ControlePunt.java/Exit.png/Fit_to_screen.png/GrafiekVenster.java/Grid.java/Halveren.png/Instellingen.png/Instellingen....png/InstellingenPanel.java/Inzoomen.png/Kleur.png/KnopenVenster.java/Knopenvector.png/Kromme.java/KrommeChooser.java/Lagrange.java/Lagrange.png/Layout.java/Listener.java/MainLayout.java/MouseLabel.java/NewDialog.java/Nieuw.png/Openen.png/Opslaan.png/Opslaan_als....png/Project.java/Redo.png/Roteren.png/ScrollButton.java/SpinButton.java/StatusBar.java/StatusLabel.java/TabLayout.java/TekenVenster.java/Teken_box.png/TestMatrix.java/TestMatrix2.java/Tools.java/Uitzoomen.png/Undo.png/Verhogen_graad.png/Verlagen_graad.png/Wiskunde.java/WorkSpace.java/Zet_open-uniform.png/Zet_uniform.png/apply.png/cancel.png/down.png/knoop.png/left.png/ok.png/progIcon.png/right.png/selectedknoop.png/spiraal_Icon3.png/statusKnoop.png/up.png/verslag.pdf"/>
+    </fileobject>
+    <fileobject name="ActieGrid.java">
+        <attr name="class_dependency_javax.swing.AbstractAction" stringvalue="ActieGrid"/>
+    </fileobject>
+</attributes>

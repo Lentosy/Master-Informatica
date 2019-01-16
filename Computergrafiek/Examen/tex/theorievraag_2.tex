@@ -314,19 +314,20 @@ Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
 			\begin{equation*}
 				\begin{split}
 					\Phi^t(x) \cdot C^t = f^t(x) & = \Phi^{t-1}(x) \cdot C^{t-1} + \Psi^{t-1}(x) \cdot D^{t-1} \\
-												 & = \Phi^{t} \cdot P^t \cdot C^{t-1} + \Phi^{t} \cdot Q^t \cdot D^{t-1} \\
-												 & = \Phi^{t} \cdot (P^t\cdot C^{t - 1} + Q^t \cdot D^{t - 1})
+												 & = \Phi^{t}(x) \cdot P^t \cdot C^{t-1} + \Phi^{t}(x) \cdot Q^t \cdot D^{t-1} \\
+												 & = \Phi^{t}(x) \cdot (P^t\cdot C^{t - 1} + Q^t \cdot D^{t - 1})
 				\end{split}
 			\end{equation*}
-			Om andersom, $C^{t - 1}$ en $D^{t - 1}$ te bepalen uit $C^t$ introduceert men de analyse $A^t$ en $B^t$:
-			$$C^{t - 1} = A^t\cdot C^t\qquad D^{t - 1} = B^t\cdot D^t$$
+			Zodat volgt dat $$C^t = (P^t\cdot C^{t - 1} + Q^t \cdot D^{t - 1})$$
+			Om andersom, $C^{t - 1}$ en $D^{t - 1}$ te bepalen uit $C^t$ introduceert men de analyse filters $A^t$ en $B^t$:
+			$$C^{t - 1} = A^t\cdot C^t\qquad D^{t - 1} = B^t\cdot C^t$$
 			Hieruit kan afgeleidt worden dat de analyse en synthese ($P^t$ en $Q^t$) filters elkaars geïnverteerden zijn.
 			\begin{equation*}
 				\begin{split}
 					\Phi^t(x) \cdot C^t = f^t(x) & = \Phi^{t-1}(x) \cdot C^{t-1} + \Psi^{t-1}(x) \cdot D^{t-1} \\
 												 & = \Phi^{t-1}(x) \cdot A^t \cdot C^t + \Psi^{t-1}(x) \cdot B^t \cdot C^t \\
-												 & = \Phi^{t} \cdot P^t \cdot A^t \cdot C^t + \Phi^{t} \cdot Q^t \cdot B^t \cdot C^t \\
-												 & = \Phi^{t} \cdot (P^t  | Q^t) \cdot \bigg(\frac{A^t}{B^t}\bigg) \cdot C^t				
+												 & = \Phi^{t}(x) \cdot P^t \cdot A^t \cdot C^t + \Phi^{t}(x) \cdot Q^t \cdot B^t \cdot C^t \\
+												 & = \Phi^{t}(x) \cdot (P^t  | Q^t) \cdot \bigg(\frac{A^t}{B^t}\bigg) \cdot C^t				
 				\end{split}
 			\end{equation*}
 			zodat
@@ -368,7 +369,7 @@ Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
 		 	0 & 0 & ... & 0 & +1  \\
 		\end{pmatrix}
 		$$
-		De Haar-wavelets zijn de wavelets die corresponderen met de Haar-schalingsfuncties, kunnen eveneens beschreven worden door:
+		De Haar-wavelets zijn de wavelets die corresponderen met de Haar-schalingsfuncties en kunnen eveneens beschreven worden door:
 		$$\psi_i^t(x) = \psi(2^tx - i)\quad,\quad\hbox{met}\quad \psi(x) = \begin{cases}
 			0 &, x < 0 \\
 			+ 1 &, 0 \leq x < 1/2 \\
@@ -429,7 +430,7 @@ Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
 	\vraag{Bespreek de noodzaak van \textit{spline-wavelets} (1D). Wat is het verband tussen de \textit{Haar-wavelet} transformatie en de \textit{spline-wavelet} transformatie? Geef een overzicht van de relatieve voor- en nadelen. }
 	{
 		\begin{itemize} 
-			\item De Haar-wavelets laten enkel stuksgewijs constante functies toe, en zijn door het ontbreken van continuïteit (zelfs geen $C^0$ continuïteit) te beperkt voor de meeste toepassingen in de computergrafiek, in het bijzonder de voorstelling van krommen en oppervlakken. Daarom zoekt men een betere techniek. Via de stelling van Curry en Schoenberg kan men aantonen dat elke B-spline die met een bepaalde knopenvector voorgesteld kan worden, ook kan voorgesteld worden door een willekeurig verfijnde knopenvector. Dit heeft als gevolg dat alle mengfuncties behorend bij een bepaalde knopenvector, ook kunnen beschouwd worden als een lineaire combinatie van mengfuncties van een willekeurige verfijning van deze knopenvector. We kunnen dan de B-spline mengfuncties, behorend bij een rij onderling geneste knopenvectoren van een zelfde orde $k$, beschouwen als schaalfuncties van diverse niveau's van een spline-wavelet transformatie. In de praktijk wordt dit enkel gebruikt in combinatie met een open-uniforme knopenvector waarbij bovendien het aantal segmenten een macht van $2$ is, $2^t$, met $t$ het niveau van de Multi-Resolutie-Analyse schalingsfunctie:
+			\item De Haar-wavelets laten enkel stuksgewijs constante functies toe, en zijn door het ontbreken van continuïteit (zelfs geen $C^0$ continuïteit) te beperkt voor de meeste toepassingen in de computergrafiek, in het bijzonder voor de voorstelling van krommen en oppervlakken. Daarom zoekt men een betere techniek. Via de stelling van Curry en Schoenberg kan men aantonen dat elke B-spline die met een bepaalde knopenvector voorgesteld kan worden, ook kan voorgesteld worden door een willekeurig verfijnde knopenvector. Dit heeft als gevolg dat alle mengfuncties behorend bij een bepaalde knopenvector, ook kunnen beschouwd worden als een lineaire combinatie van mengfuncties van een willekeurige verfijning van deze knopenvector. We kunnen dan de B-spline mengfuncties, behorend bij een rij onderling geneste knopenvectoren van een zelfde orde $k$, beschouwen als schaalfuncties van diverse niveau's van een spline-wavelet transformatie. In de praktijk wordt dit enkel gebruikt in combinatie met een open-uniforme knopenvector waarbij bovendien het aantal segmenten een macht van $2$ is, $2^t$, met $t$ het niveau van de Multi-Resolutie-Analyse schalingsfunctie:
 			$$(0, ...,0\;;\;0,1,2...,2^t-1,2^t\;;\;2^t,...,2^t)$$
 			De virtuele knopen komen aan beide kanten $k$ maal voor. Als spline-schalingsfuncties $\Phi^{t, k}$ heeft men de verzameling van $2^t + k - 1$ (het aantal controlepunten, waarvan 2 datapunten) mengfuncties $N_i(x) \equiv b_i^{t, k}(x)$, zoals die afgeleid kunnen worden met behulp van het algoritme van Cox en de Boor.
 			
@@ -466,7 +467,7 @@ Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
 				\caption{De $\Phi^{3, k}$ spline-schalingsfuncties en $\Psi^{3, k}$ spline-wavelets voor $1 \leq k \leq 4$.}
 				\label{fig:spline_schaling_wavelet}
 			\end{figure}
-			De synthesefilters $P^{t, k}$ bestaan elk uit $2^t + k -1$ rijen en $2^{t - 1} + k - 1$ kolommen. De eerste $k-1$ en laatste $k-1$ kolommen hebben geen eenvoudige structuur. Het middendeel bevat voor elke kolom slechts $k + 1$ niet-nul elementen, die op een constante factor na, de binomiaalcoëfficiënten blijken te zijn. Deze niet-nul elementen wordne per opeenvolgende kolom telkens twee rijen naar onderen verschoven. De synthese filters $P^{3, k}$ voor $1 \leq k \leq 4$ worden hieronder in matrixvorm gegeven:
+			De synthesefilters $P^{t, k}$ bestaan elk uit $2^t + k -1$ rijen en $2^{t - 1} + k - 1$ kolommen. De eerste $k-1$ en laatste $k-1$ kolommen hebben geen eenvoudige structuur. Het middendeel bevat voor elke kolom slechts $k + 1$ niet-nul elementen, die op een constante factor na, de binomiaalcoëfficiënten blijken te zijn. Deze niet-nul elementen worden per opeenvolgende kolom telkens twee rijen naar onderen verschoven. De synthese filters $P^{3, k}$ voor $1 \leq k \leq 4$ worden hieronder in matrixvorm gegeven:
 			$$
 			P^{3, 1} = 
 			\begin{pmatrix}
@@ -547,7 +548,7 @@ Deze vraag wordt gequoteerd op 1/4 van de totaalpunten.
 	\vraag{Beschrijf, aan de hand van \textit{contourplotjes}, en voor elk van deze alternatieve methodes, de resulterende \textit{2D Haar-schaalfuncties en Haar-wavelets} van het laagste en het op één na laagste niveau.}
 	{\begin{itemize} 
 		\item \textbf{Standaard constructie}:
-		Men bekomt de standaard 2D-Haar wavelets in $W^0$ en $W^1$ door de tensorproducten te berekenen van de 1D-Haar-wavelets in $W^0$ en $W^1$, aangevuld met $\phi^0$. De plustekens en mintekens duiden telkens de gebieden aan waar de wavelet +1 en -1 bedraagt. In de andere gebieden is de wavelet nul. Dit is te zien op figuur \ref{fig:standaard_constructie}.
+		De standaard 2D-Haar wavelets in $W^0$ en $W^1$ kunnen bekomen worden door de tensorproducten te berekenen van de 1D-Haar-wavelets in $W^0$ en $W^1$, aangevuld met $\phi^0$. De plustekens en mintekens duiden telkens de gebieden aan waar de wavelet +1 en -1 bedraagt. In de andere gebieden is de wavelet nul. Dit is te zien op figuur \ref{fig:standaard_constructie}.
 		\begin{figure}[ht]
 			\centering
 			\includegraphics[width=0.5\textwidth]{standaard_constructie}

@@ -1,0 +1,32 @@
+<?xml version="1.0"?>
+<!-- xmlschema voor een Lagrange kromme !-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<!-- begin declaratie rootelement "Lagrange" !-->
+<xs:element name="Lagrange">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="datapunten"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<!-- einde declaratie rootelement "Lagrange" !-->
+
+<!-- begin declaratie subelement "datapunten" !-->
+<xs:element name="datapunten">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="datapunt" maxOccurs="unbounded">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="x" type="xs:int"/>
+<xs:element name="y" type="xs:int"/>
+<xs:element name="t_waarde" type="xs:double"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<!-- einde declaratie subelement "datapunten" !-->
+
+</xs:schema>

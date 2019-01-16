@@ -1,0 +1,109 @@
+<?xml version="1.0"?>
+<!-- xmlschema voor het globaal configuratiebestand !-->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" attributeFormDefault="unqualified">
+<!-- begin declaratie rootelement "configuratie" !-->
+<xs:element name="configuratie">
+<xs:complexType>
+<xs:sequence>
+<xs:element ref="panelen"/>
+<xs:element ref="kromme"/>
+<xs:element ref="controlepunten"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<!-- einde declaratie rootelement "configuratie" !-->
+
+<!-- begin declaratie subelement "panelen" !-->
+<xs:element name="panelen">
+<xs:complexType>
+<xs:sequence>
+
+<xs:element name="tekenveld">
+ <xs:complexType>
+ <xs:sequence>
+ <xs:element name="achtergrondkleur" type="kleurType"/>
+ <xs:element name="schaal" type="schaalType"/>
+ <xs:element name="grid">
+  <xs:complexType>
+   <xs:attribute name="zichtbaar" type="xs:boolean"/>
+   <xs:attribute name="snap-to-grid" type="xs:boolean"/>
+  </xs:complexType>
+ </xs:element>
+ </xs:sequence>
+ </xs:complexType>
+</xs:element>
+ 
+<xs:element name="basisfuncties">
+<xs:complexType>
+<xs:attribute name="zichtbaar" type="xs:boolean"/>
+</xs:complexType>
+</xs:element>
+
+<xs:element name="knopenvector">
+<xs:complexType>
+<xs:attribute name="zichtbaar" type="xs:boolean"/>
+</xs:complexType>
+</xs:element>
+
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<!-- einde declaratie subelement "panelen" !-->
+
+<!-- begin declaratie subelement "kromme" !-->
+<xs:element name="kromme">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="lijndikte" type="dikteType"/>
+<xs:element name="kleur" type="kleurType"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<!-- einde declaratie subelement "kromme" !-->
+
+<!-- begin declaratie subelement "controlepunten" !-->
+<xs:element name="controlepunten">
+<xs:complexType>
+<xs:sequence>
+<xs:element name="puntdikte" type="dikteType"/>
+<xs:element name="standaardkleur" type="kleurType"/>
+<xs:element name="geselecteerdekleur" type="kleurType"/>
+<xs:element name="eindpuntenkleur" type="kleurType"/>
+</xs:sequence>
+</xs:complexType>
+</xs:element>
+<!-- einde declaratie subelement "controlepunten" !-->
+
+
+
+<!-- begin definitie eigen types !-->
+<xs:complexType name="kleurType">
+<xs:sequence>
+<xs:element name="R" type="RGBwaarde"/>
+<xs:element name="G" type="RGBwaarde"/>
+<xs:element name="B" type="RGBwaarde"/>
+</xs:sequence>
+</xs:complexType>
+
+<xs:simpleType name="RGBwaarde">
+<xs:restriction base="xs:integer">
+<xs:minInclusive value="0"/>
+<xs:maxInclusive value="255"/>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="schaalType">
+<xs:restriction base="xs:double">
+<xs:pattern value="0.25|0.5|0.75|1|1.5|2|4|6|8"/>
+</xs:restriction>
+</xs:simpleType>
+
+<xs:simpleType name="dikteType">
+<xs:restriction base="xs:integer">
+<xs:minInclusive value="1"/>
+<xs:maxInclusive value="15"/>
+</xs:restriction>
+</xs:simpleType>
+<!-- einde definitie eigen types !-->
+
+</xs:schema>
