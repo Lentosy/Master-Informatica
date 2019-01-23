@@ -2,25 +2,25 @@
 	\chapter{De uitdagingen van moderne data}
 	Data-intensieve applicaties moeten rekening houden met volgende vier categorieën:
 	\begin{itemize}
-		\item[\info]\textbf{Volume.} De hoeveelheid opslag die over verschillende plaatsen moeten opgeslagen worden.
-		\item[\info]\textbf{Velocity.} De snelheid waarop nieuwe informatie actueel wordt.
-		\item[\info]\textbf{Variety.} De verschillende soorten types van data die bestaan. 
-		\item[\info]\textbf{Veracity.} De betrouwbaarheid van de data. 
+		\item \textbf{Volume.} De hoeveelheid opslag die over verschillende plaatsen moeten opgeslagen worden.
+		\item \textbf{Velocity.} De snelheid waarop nieuwe informatie actueel wordt.
+		\item \textbf{Variety.} De verschillende soorten types van informatie die bestaan. 
+		\item \textbf{Veracity.} De betrouwbaarheid van de informatie. 
 	\end{itemize}
 	\chapter{Datamodellen}
 	\section{Het relationeel model}
 	\accentuate{zie cursus relationele gegevensbanken, belangrijk is om gewoon de nadelen te kennen zoals:}
 	\begin{itemize}
 		\item[\alert] Er zou een brede tabel nodig zijn met honderden kolommen (waarvan de meeste dan NULL zijn) om bijvoorbeeld de producten van een winkel op te slaan. Elk product heeft diverse kenmerken die eigen zijn aan een bepaalde productcategorie.
-		\item[\alert] Men zou dit kunnen oplossen door een nieuwe tabel te maken per productcategorie, maar dit introduceert veel tabellen en relaties (te vergelijken met het verhogen van de normaalvorm).
+		\item[\alert] Dit zou kunnen opgelost worden door een nieuwe tabel te maken per productcategorie, maar dit introduceert veel tabellen en relaties (te vergelijken met het verhogen van de normaalvorm).
 	\end{itemize}
 	\section{Het document model}
-	Informatie in een document model wordt in een boomstructuur met one-to-many relaties opgeslagen, en is daarom dus perfect voor \underline{one-to-many relaties}. Een document wordt opgeslagen als één string, meestal in JSON of XML formaat, op deze manier volstaat één enkele query om een hele object, en zijn relaties op te vragen. 
+	Informatie in een document model wordt in een boomstructuur opgeslagen, en is daarom dus perfect voor \underline{one-to-many relaties}. Een document wordt opgeslagen als één string, meestal in JSON of XML formaat, op deze manier volstaat één enkele query om een hele object, en zijn relaties op te vragen. 
 
-	Een extreem voordeel van het document model is dat het geen restricties oplegt aan de data. Er kunnen twee producten zijn die in het systeem herkent worden als "Product" maar een andere interne structuur hebben. Het \underline{document model} wordt dus best \underline{gekenmerkt door}:
+	Een extreem voordeel van het document model is dat het geen restricties oplegt aan de informatie. Er kunnen twee producten zijn die in het systeem herkent worden als "Product" maar een andere interne structuur hebben. Het \underline{document model} wordt dus best \underline{gekenmerkt door}:
 	\begin{itemize}
-		\item[\info]Flexibiliteit in het schemamodel. Dit wordt ook wel "schema-on-read" genoemd aangezien de client niet op voorhand kan weten welke structuur het document zal hebben.
-		\item[\info]Data lokaliteit. Hiermee wordt bedoeld dat een document als één enkelvoudige string wordt opgeslagen, en alle informatie zit dan ook in die string. Er is geen nood aan het join-of indexeringmechanisme. Een document wordt altijd in zijn geheel ingelezen, dit kan een nadeel zijn indien slechts een beperkt aantal informatie van dat document nodig is.
+		\item Flexibiliteit in het schemamodel. Dit wordt ook wel "schema-on-read" genoemd aangezien de client niet op voorhand kan weten welke structuur het document zal hebben.
+		\item Data lokaliteit. Hiermee wordt bedoeld dat een document als één enkelvoudige string wordt opgeslagen, en alle informatie zit dan ook in die string. Er is geen nood aan het join-of indexeringmechanisme. Een document wordt altijd in zijn geheel ingelezen, dit kan een nadeel zijn indien slechts een beperkt aantal informatie van dat document nodig is.
 	\end{itemize}
 
 	\section{Het graaf model}
@@ -31,17 +31,17 @@
 	\end{enumerate}
 	Gekende graafalgoritmen kunnen toegepast worden op dit model. Het \underline{graaf model} heeft een aantal \underline{use cases}:
 	\begin{itemize}
-		\item[\info]\textbf{Transportnetwerk.} Een graaf is de geschikte manier om een wegennet voor te stellen.
-		\item[\info]\textbf{Linkanalyse.} Het zoeken van objecten die gerelateerd zijn aan een ander object (bv vrienden van vrienden zoeken).
+		\item \textbf{Transportnetwerk.} Een graaf is de geschikte manier om een wegennet voor te stellen.
+		\item \textbf{Linkanalyse.} Het zoeken van objecten die gerelateerd zijn aan een ander object (bv vrienden van vrienden zoeken).
 	\end{itemize}
 
 	\section{Het kolomfamilie model}
-	Informatie wordt opgeslagen in tabellen die rijen en kolommen bevatten. Een tabel bevat één of meerdere kolomfamilies, die gedefinieerd worden bij de tabel zelf. Elke kolomfamilie is een verzameling van rijen, geïndexeerd door een rijsleutel. Een rijsleutel moet uniek zijn binnen een kolomfamilie. Elke rij kan een andere verzameling van kolommen hebben. Het kan beter gezien worden als een soort van map met als sleutel de kolomfamilie en als waarde een andere map met als sleutel de rijsleutel.
+	Informatie wordt opgeslagen in tabellen die rijen en kolommen bevatten. Een tabel bevat één of meerdere kolomfamilies die gedefinieerd worden bij de tabel zelf. Elke kolomfamilie is een verzameling van rijen, geïndexeerd door een rijsleutel. Een rijsleutel moet uniek zijn binnen een kolomfamilie. Elke rij kan een andere verzameling van kolommen hebben. Het kan beter gezien worden als een soort van map met als sleutel de kolomfamilie en als waarde een andere map met als sleutel de rijsleutel.
 	\chapter{Opslaan en ophalen van informatie}
 	Er zijn twee soorten opslagmethoden waaruit gekozen moet worden:
 	\begin{enumerate}
-		\item[\info] \textbf{OLTP (Online Transaction Processing):} De databank zal gebruikt worden om vaak queries op uit te voeren. Deze queries zullen slechts een beperkt aantal resultaten teruggeven. De grootste bottleneck is het zoeken naar de juiste records.
-		\item[\info] \textbf{OLAP (Online Analytic Processing):} ($\equiv$ datawarehouse) De databank zal gebruikt worden om slechts een beperkt aantal queries op uit te voeren, maar deze queries zal veel gegevens moeten scannen.
+		\item  \textbf{OLTP (Online Transaction Processing):} De databank zal gebruikt worden om vaak queries op uit te voeren. Deze queries zullen slechts een beperkt aantal resultaten teruggeven. De grootste bottleneck is het zoeken naar de juiste records.
+		\item  \textbf{OLAP (Online Analytic Processing):} ($\equiv$ datawarehouse) De databank zal gebruikt worden om slechts een beperkt aantal queries op uit te voeren, maar deze queries zal veel gegevens moeten scannen.
 	\end{enumerate}
 	De voornaamste verschillen tussen beiden zijn:
 	\begin{table}[ht]
@@ -56,40 +56,41 @@
 		\end{tabular}
 	\end{table}
 
-	\underline{Drie manieren} om informatie naar de schijf weg te schrijven, en maken elk gebruik van \underline{indexen} om de informatie snel terug te vinden. Page- en log-based worden vaak gebruikt bij OLTP systemen terwijl column-based gebruikt wordt bij OLAP systemen.
+	Er bestaan \underline{drie manieren} om informatie naar de schijf weg te schrijven, en ze maken elk gebruik van \underline{indexen} om de informatie snel terug te vinden. Page- en log-based worden vaak gebruikt bij OLTP systemen terwijl column-based gebruikt wordt bij OLAP systemen.
 	\begin{enumerate}
-		\item[\info] \textbf{Page-based:} Deze methode maakt gebruik van de B-tree. In deze context wordt een knoop van een B-tree een "pagina" genoemd. Elke pagina van de B-tree moet in zijn geheel ingeladen worden, met alle bijhorende informatie. Elke pagina bevat ook verwijzingen naar andere pagina's, die op de schijf staan. Informatie updaten komt erop neer de juiste pagina te zoeken \accentuate{(meestal een blad, zie algoritmen II)}, en daarin de waarde aan te passen, gevolgd door de pagina terug naar de schijf te schrijven. Een B-tree heeft maar een beperkte hoogte, maar is eerder breed. Het opzoeken van willekeurige informatie kan hierdoor snel gaan, maar is niet geschikt voor veel schrijfoperaties.
+		\item  \textbf{Page-based:} Deze methode maakt gebruik van de B-tree. In deze context wordt een knoop van een B-tree een "pagina" genoemd. Elke pagina van de B-tree moet in zijn geheel ingeladen worden, met alle bijhorende informatie. Elke pagina bevat ook verwijzingen naar andere pagina's, die op de schijf staan. Informatie updaten komt erop neer de juiste pagina te zoeken \accentuate{(meestal een blad, zie algoritmen II)}, en daarin de waarde aan te passen, gevolgd door de pagina terug naar de schijf te schrijven. Een B-tree heeft maar een beperkte hoogte, maar is eerder breed. Het opzoeken van willekeurige informatie kan hierdoor snel gaan, maar is niet geschikt voor veel schrijfoperaties.
 
-		\item[\info] \textbf{Log-based:} Informatie wordt gesorteerd bewaard in een lijst van bestanden, Sorted String Tables genoemd. Om de juiste waarde te vinden, wordt er in het geheugen een lijst van indexen bijgehouden, samen met hun byte offset in het bestand, die kunnen gebruikt worden tijdens een opzoeking. Bij deze methode wordt er gebruik gemaakt van een zogenaamde \textbf{Log-Structured Merge Tree (LSM Tree)}, om ervoor te zorgen dat de informatie werkelijk gesorteerd blijft. Het principe werkt als volgt:
+		\item  \textbf{Log-based:} Informatie wordt gesorteerd bewaard in een lijst van bestanden, \textbf{Sorted String Tables (SSTable)} genoemd. Om de juiste waarde te vinden, wordt er in het geheugen een lijst van indexen bijgehouden, samen met hun byte offset in het bestand, die kunnen gebruikt worden tijdens een opzoeking. Bij deze methode wordt er gebruik gemaakt van een zogenaamde \textbf{Log-Structured Merge Tree (LSM Tree)} om ervoor te zorgen dat de informatie werkelijk gesorteerd blijft. Het principe werkt als volgt:
 		\begin{itemize}
-			\item[\info] Er wordt in het geheugen een zelf-balancerende boom bijgehouden (rood-zwarte boom, splayboom, ..., zie algoritmen II), waaraan toegevoegd kan worden.
-			\item[\info] Eens een bepaalde treshold overschreden wordt, zal de boom geflushd worden naar de schijf. Dit komt neer op de boom inorder overlopen en de elementen te schrijven naar de schijf. 
-			\item[\info] Een query zal nu eerst in de geheugenboom kijken, dan in de meest recente SStable, enz. 
+			\item  Er wordt in het geheugen een zelf-balancerende boom bijgehouden (rood-zwarte boom, splayboom, ..., zie algoritmen II), waaraan toegevoegd kan worden.
+			\item  Eens een bepaalde treshold overschreden wordt, zal de boom geflushed worden naar de schijf. Dit komt neer op de boom inorder overlopen en de elementen te schrijven naar de schijf. 
+			\item  Een query zal eerst in de geheugenboom kijken, dan in de meest recente SStable, enz. 
 		\end{itemize}
         Een \underline{bloom filter} optimaliseert de toegang tot de SStables op volgende manier:
         \begin{itemize}
-            \item[\info] Er worden meerdere hashfuncties op elke sleutel losgelaten. 
-            \item[\info] De output van deze hashfuncties dienen om bepaalde bits van de bloom filter aan te zetten. 
-            \item[\info] Bij het zoeken naar een sleutel, worden diezelfde hashfuncties losgelaten op de zoeksleutel. Er is 100\% zekerheid dat de sleutel niet in de SStable zit als alle bits voor de outputs niet aanstaan. 
+            \item  Er worden meerdere hashfuncties op elke sleutel losgelaten. 
+            \item  De output van deze hashfuncties dienen om bepaalde bits van de bloom filter aan te zetten. Een bloom filter geldt slechts voor één enkele SSTable.
+            \item  Bij het zoeken naar een sleutel, worden diezelfde hashfuncties losgelaten op de zoeksleutel. Er is 100\% zekerheid dat de sleutel niet in de SStable zit als geen enkele bit aanstaat van de bloom filter voor de zoeksleutel. Ook bestaat de kans dat een andere sleutel exact dezelfde bits van de bloom filter heeft aangezet, zodat er false positives zijn. 
         \end{itemize}
         Bij een te groot aantal SSTables worden deze tabellen \underline{samengevoegd} in één bestand. Verschillende bestanden kunnen dezelfde sleutels bevatten, daarom wordt enkel de meest recente sleutel bijgehouden.
 
-        De voornaamste verschillen tussen een \emph{B-tree} en een \emph{LSM Tree} zijn:
+        De voornaamste verschillen tussen een \emph{B-tree} en een \emph{LSM Tree} worden weergegeven in tabel \ref{table:btree_vs_lsmtree}.
         \begin{table}[ht]
             \centering
-            \begin{tabular}{| l | p{0.3\textwidth} | p{0.3\textwidth}}
+            \begin{tabular}{l | p{0.3\textwidth} | p{0.3\textwidth}}
                 Eigenschap & B-tree & LSM Tree \\
-                \hline
+                \cline{1-3}
                 Extra schrijfoverhead & Eerst naar logbestand schrijven, dan naar pagina. & Samenvoegen van SSTables. \\
-                \hline
                 Schijffragmentatie & Ruimte van een pagina wordt niet altijd helemaal gebruikt & Sequentieel schrijven van gecompresseerde SSTables. \\
             \end{tabular}
+        \caption{Vergelijking B-tree en LSM Tree.}
+        \label{table:btree_vs_lsmtree}
         \end{table}
         Het samenvoegproces van een \underline{LSM Tree} kan de normale schrijfoperaties beïnvloeden, en zou zelfs te traag zijn bij een groot aantal inkomende schrijfoperaties, zodat het aantal niet-samengevoegde delen stijgt.
 
         Een B-tree voldoet beter aan het transactioneel model: elke sleutel komt maar op één plaats voor en er kunnen locks geplaatst worden op de B-tree.
 
-        \item[\info] \textbf{Column-based:} Het uitvoeren van analytische queries, zoals bijvoorbeeld op het sterschema, wordt gerealiseerd met een kolomgeörienteerde methode. In plaats van de waarden van alle attributen van een rij op te halen zoals bij een normale SQL databank, wordt er gekozen om de waarden van één enkele kolom op een apart bestand te zetten. Elke kolom krijgt dan een ander bestand, zodat er efficiënt een beperkt aantal kolommen kan ingelezen worden. Deze manier laat compressie toe aangezien veel waarden in een kolom dezelfde kunnen zijn. 
+        \item  \textbf{Column-based:} Het uitvoeren van analytische queries, zoals bijvoorbeeld op het sterschema, wordt gerealiseerd met een kolomgeörienteerde methode. In plaats van de waarden van alle attributen van een rij op te halen zoals bij een normale SQL databank, wordt er gekozen om de waarden van één enkele kolom op een apart bestand te zetten. Elke kolom krijgt dan een ander bestand, zodat er efficiënt een beperkt aantal kolommen kan ingelezen worden. Deze manier laat compressie toe aangezien veel waarden in een kolom dezelfde kunnen zijn. 
     \end{enumerate}
     
     
@@ -99,16 +100,16 @@
 	\chapter{Gedistribueerde informatie}
 	Waarom is het belangrijk dat informatie op verschillende nodes beschikbaar is?
 	\begin{itemize}
-		\item[\info]\textbf{Schaalbaarheid:} Een toestel heeft maar een maximum aantal geheugen, opslagplaats en schijfoperaties per seconde. Meerdere nodes betekent dat de belasting kan verdeeld worden tussen de nodes.
-		\item[\info]\textbf{Fouttolerantie:} Een backup voorzien voor in het geval dat een andere node uitvalt.
-		\item[\info]\textbf{Latency:} Nodes geografisch verspreiden zodat connecties vanuit andere continenten niet traag zijn.
+		\item \textbf{Schaalbaarheid:} Een toestel heeft maar een maximum aantal geheugen, opslagplaats en schijfoperaties per seconde. Meerdere nodes betekent dat de belasting kan verdeeld worden tussen de nodes.
+		\item \textbf{Fouttolerantie:} Een backup voorzien voor in het geval dat een andere node uitvalt.
+		\item \textbf{Latency:} Nodes geografisch verspreiden zodat connecties vanuit andere continenten niet traag zijn.
 	\end{itemize}
 	Er wordt best gebruik gemaakt van het \underline{horizontaal schaalschema}. Dit heeft als voordeel dat er geen speciale hardware vereist is, en er gewoon machines kunnen bijgekocht worden indien dit nodig zou zijn.
 
 	Er zijn \underline{twee belangrijke patronen} om data de distribueren:
 	\begin{enumerate}
-		\item[\info]\textbf{Replicatie:} Dit is eenvoudig alle data dupliceren op elke verschillende node, zodat ze allemaal dezelfde data bevatten. De \underline{voordelen} zijn: hoge databeschikbaarheid en fouttolerantietegen het uitvallen van een node door de redundantie van de informatie. Het \underline{nadeel} is: hoe moeten we ervoor zorgen dat alle nodes over dezelfde data beschikken (zie sectie \ref{sec:replicatie})? 
-		\item[\info]\textbf{Partitionering (sharding):} De grote hoeveelheid data kan ook gepartitioneerd worden, zodat elke node zijn unieke verzameling van gegevens bevat. Partitionering heeft een aantal \underline{voordelen}: Elke partitie moet slechts zijn beperkte data behandelen. Hoe groter de dataset wordt, hoe minder operaties een bepaalde partitie zal moeten uitvoeren, aangezien er meer patitities zullen ingevoerd worden zodat de data meer verspreidt ligt over alle partities. Het \underline{nadeel} is: hoe kunnen we bepalen op welke node een bepaald stukje informatie moet komen. Idealiter heeft elke node dezelfde workload.
+		\item \textbf{Replicatie:} Dit is eenvoudig alle data dupliceren op elke verschillende node, zodat ze allemaal dezelfde data bevatten. De \underline{voordelen} zijn: hoge databeschikbaarheid en fouttolerantietegen het uitvallen van een node door de redundantie van de informatie. Het \underline{nadeel} is: hoe moeten we ervoor zorgen dat alle nodes over dezelfde data beschikken (zie sectie \ref{sec:replicatie})? 
+		\item \textbf{Partitionering (sharding):} De grote hoeveelheid data kan ook gepartitioneerd worden, zodat elke node zijn unieke verzameling van gegevens bevat. Partitionering heeft een aantal \underline{voordelen}: Elke partitie moet slechts zijn beperkte data behandelen. Hoe groter de dataset wordt, hoe minder operaties een bepaalde partitie zal moeten uitvoeren, aangezien er meer patitities zullen ingevoerd worden zodat de data meer verspreidt ligt over alle partities. Het \underline{nadeel} is: hoe kunnen we bepalen op welke node een bepaald stukje informatie moet komen. Idealiter heeft elke node dezelfde workload. (zie sectie \ref{sec:partitionering}).
 	\end{enumerate}
 	In praktijk worden replicatie en partitionering gecombineerd. Eerst wordt partitionering toegepast, waarna deze partities ook nog gerepliceerd worden.
 
@@ -126,9 +127,9 @@
 
 	Met dit model moeten er zowel \underline{read-after-write consistency} en \underline{monotonic reads} gegarandeerd zijn:
 	\begin{itemize}
-		\item[\info] \textbf{Read-after-write consistency:} Garanderen dat wat er geschreven is naar de databank, direct kan gelezen worden. Dit wordt gerealiseerd door degene die de wijziging heeft gedaan op een item, enkel een query kan sturen naar de leader. Een andere manier is om een timestamp client-side van de laatste schrijfoperatie bij te houden, zodat de replica kan controleren of zijn databank al up to date is.
+		\item  \textbf{Read-after-write consistency:} Garanderen dat wat er geschreven is naar de databank, direct kan gelezen worden. Dit wordt gerealiseerd door degene die de wijziging heeft gedaan op een item, enkel een query kan sturen naar de leader. Een andere manier is om een timestamp client-side van de laatste schrijfoperatie bij te houden, zodat de replica kan controleren of zijn databank al up to date is.
 
-		\item[\info] \textbf{Monotonic reads:} Er moet garantie zijn dat, indien meerdere reads op hetzelfde item worden uitgevoerd, dat de data consistent in de tijd is. Dit wil zeggen dat als een gebruiker een stukje informatie ophaalt, dat het bij de volgende query geen vroegere informatie van die item zal ophalen. Dit kan opgelost worden door dezelfde reads enkel aan dezelfde replica te vragen.
+		\item  \textbf{Monotonic reads:} Er moet garantie zijn dat, indien meerdere reads op hetzelfde item worden uitgevoerd, dat de data consistent in de tijd is. Dit wil zeggen dat als een gebruiker een stukje informatie ophaalt, dat het bij de volgende query geen vroegere informatie van die item zal ophalen. Dit kan opgelost worden door dezelfde reads enkel aan dezelfde replica te vragen.
 	\end{itemize}
 	\subsection{Leaderless model}
 	In dit model \underline{kan er naar elke replica geschreven worden}, meestal met behulp van een coördinator, zodat de client zelf niet de locaties van de replicas moet kennen. De coördinator legt niet de volgorde van de schrijfoperaties vast, het stuurt enkel maar de query naar elke replica. Een update wordt naar elke replica gestuurd en elke replica zal dit aanpassen in zijn databank. Het kan zijn dat een replica op dat moment offline is, zodat hij deze schrijfoperatie niet krijgt. Om te voorkomen dat een query naar een replica gestuurd wordt die geen aangepaste database heeft, wordt een query naar meerdere replicas verstuurd. Een leesoperatie zorgt er ook voor dat elke replica terug een juiste staat heeft, zogenaamd \underline{read repair}:
@@ -143,34 +144,35 @@
 
 	\underline{Hoeveel gefaalde replicas mogen we tolereren?} Dit wordt besproken met behulp van drie notaties:
 	\begin{itemize}
-		\item[\info] \textbf{N:} het aantal replicas dat het systeem wenst te hebben.
-		\item[\info] \textbf{W:} het aantal replicas dat een bepaalde schrijfoperatie moet goedkeuren (effectief schrijven naar de databank).
-		\item[\info] \textbf{R:} het aantal replicas waarnaar een leesoperatie gestuurd wordt.
+		\item  \textbf{N:} het aantal replicas dat het systeem wenst te hebben.
+		\item  \textbf{W:} het aantal replicas dat een bepaalde schrijfoperatie moet goedkeuren (effectief schrijven naar de databank).
+		\item  \textbf{R:} het aantal replicas waarnaar een leesoperatie gestuurd wordt.
 	\end{itemize}
 
 	Vaak wordt als qourum $W + R > N$ genomen, zodat er zeker een overlap is tussen schrijfbare en leesbare replicas (minstens één replica waarnaar geschreven als van gelezen kan worden). Bijhorende restricties zijn:
 	\begin{itemize}
-		\item[\info] $W < N$, zodat er schrijfoperaties mogelijk zijn ook al is er een replica offline.
-		\item[\info] $R < N$, zodat er leesoperaties mogelijk zijn ook al is er een replica offline.
+		\item  $W < N$, zodat er schrijfoperaties mogelijk zijn ook al is er een replica offline.
+		\item  $R < N$, zodat er leesoperaties mogelijk zijn ook al is er een replica offline.
 	\end{itemize}
 	Op deze manier mogen er $W + R - N$ replicas offline zijn, om toch nog aan het qourum te voldoen.
 
 	
 	Er kan gekozen worden voor $W + R <= N$ voor snellere communicatie, maar dan bestaat er een hogere kans voor foute waarden te lezen. 
 
-	\underline{Wat doen als er toch meer dan $W + R - N$ nodes offline zijn?} Men zou kunnen kiezen om de schrijfoperatie toch te accepteren, en te schrijven naar replicas die normaal geen informatie bij voor die sleutel bijhouden. Dit heet een \underline{sloppy quorum}.
+	\underline{Wat doen als er toch meer dan $W + R - N$ nodes offline zijn}? Er zou gekozen kunnen worden om de schrijfoperatie toch te accepteren, en te schrijven naar replicas die normaal geen informatie voor die sleutel bijhouden. Dit heet een \underline{sloppy quorum}.
 
-	\chapter{Partitionering}
-	Vorig hoofdstuk ging over de replicatie van nodes, nu gaat het over de partitionering. Hier wordt bepaald hoe de informatie over de verschillende partities moet verspreidt worden. Er zijn \underline{twee uitdagingen}:
+	\section{Partitionering}
+	\label{sec:partitionering}
+	Hier wordt bepaald hoe de informatie over de verschillende partities moet verspreidt worden. Er zijn \uline{twee uitdagingen}:
 	\begin{itemize}
-		\item[\info] De informatie moet uniform verdeeld worden over elke node.
-		\item[\info] Het aantal nodes minimaliseren vanwaar gelezen moet worden tijdens een query.
+		\item  De informatie moet uniform verdeeld worden over elke node.
+		\item  Het aantal nodes minimaliseren vanwaar gelezen moet worden tijdens een query.
 	\end{itemize}
 	
 	\underline{Methoden om dit te implementeren:}
 	\begin{itemize}
-		\item[\info] \textbf{Partitioneren op sleutelintervallen.} Bij deze methode heeft elke partitie een bepaald sleutelbereik. In het geval van voornamen kan dit bijvoorbeeld $[A-E]$ zijn. Dit heeft als gevolg dat in elke partitie de sleutel gesorteerd bijgehouden kan worden. Het nadeel is direct dat bepaalde sleutels meer voorkomen dan andere. Er zijn meer namen die met een B beginnen dan met een X. Dit heet \underline{data skew} en resulteert in \underline{hotspots}: bepaalde nodes zullen meer werk moeten verrichten dan andere nodes. 
-		\item[\info] \textbf{Partitioneren op de hash van de sleutel.} Dit tracht willekeurige data uniform te verdelen. De nodes zullen dan in plaats van een sleutelinterval, een hashinterval hebben. De informatie is nu wel niet meer gesorteerd. 
+		\item  \textbf{Partitioneren op sleutelintervallen.} Bij deze methode heeft elke partitie een bepaald sleutelbereik. In het geval van voornamen kan dit bijvoorbeeld $[A-E]$ zijn. Dit heeft als gevolg dat in elke partitie de sleutel gesorteerd bijgehouden kan worden. Het nadeel is direct dat bepaalde sleutels meer voorkomen dan andere. Er zijn meer namen die met een B beginnen dan met een X. Dit heet \underline{data skew} en resulteert in \underline{hotspots}: bepaalde nodes zullen meer werk moeten verrichten dan andere nodes. 
+		\item  \textbf{Partitioneren op de hash van de sleutel.} Dit tracht willekeurige data uniform te verdelen. De nodes zullen dan in plaats van een sleutelinterval, een hashinterval hebben. De informatie is nu wel niet meer gesorteerd. 
 
 
 	\end{itemize}
@@ -181,30 +183,77 @@
 
 	\section{Request Routing}
 	Tot slot moet bij een query nog de juiste partitie aangesproken worden. \underline{Request routing} lost dit probleem op, en is eigenlijk gewoon het \emph{service discovery} probleem. \begin{itemize}
-		\item[\info] De client zou zelf kunnen beslissen naar welke node hij de request stuurt. Als de node de partitie niet bevat, dan moet de node het request doorsturen naar de juiste node. Een ander geval is dat de client wel weet waar de partitie zich bevindt, en gewoon die node aanspreekt.
-		\item[\info] Een beter manier, is om een \underline{routing tier} in te voegen, die de client kan aanspreken. De routing tier implementeert de logica bevat om de juiste node te selecteren. Elke node moet zichzelf registreren aan de routing tier.
+		\item  De client zou zelf kunnen beslissen naar welke node hij de request stuurt. Als de node de partitie niet bevat, dan moet de node het request doorsturen naar de juiste node. Een ander geval is dat de client wel weet waar de partitie zich bevindt, en gewoon die node aanspreekt.
+		\item  Een beter manier, is om een \underline{routing tier} in te voegen, die de client kan aanspreken. De routing tier implementeert de logica bevat om de juiste node te selecteren. Elke node moet zichzelf registreren aan de routing tier.
 	\end{itemize}
 
 	
 
-	\chapter{Consistentie en Consensus}
+	\section{Consistentie en Consensus}
 	\underline{Hoe krijgen we de databank in een consistente staat?}
 	\begin{itemize}
-		\item[\info] \textbf{Linearizability:} Deze methode geeft de illusie dat er slechts een enkele kopie is van de informatie. Tijdens een schrijfoperatie kan de waarde van een attribuut veranderen, maar het is niet geweten wanneer exact. Als iemand een query doet die deze waarde opvraagt, kan het ofwel de oude of de nieuwe waarde zijn. Vanaf dat een client de nieuwe waarde heeft ontvangen, moet elke andere client ook deze nieuwe waarde ontvangen bij het uitvoeren van dezelfde query.
-		\todo{wtf is dit zelf}
-		Deze kent een aantal voordelen:
+		\item  \textbf{Lineair systeem:} Deze methode geeft de illusie dat er slechts één enkele kopie is van de informatie. Tijdens een schrijfoperatie kan de waarde van een attribuut veranderen bij en replicatie, maar het is niet geweten wanneer exact en op welke replicatie. Als iemand een query doet die deze waarde opvraagt, kan het ofwel de oude of de nieuwe waarde zijn. Vanaf dat een client de nieuwe waarde heeft ontvangen, moet elke andere client ook deze nieuwe waarde ontvangen bij het uitvoeren van dezelfde query. Een systeem linear maken kent een aantal voordelen:
 		\begin{itemize}
 			\item[\good] Voorkomen dat twee items dezelfde unieke identifier hebben op hetzelfde moment. Slechts één item zal goedgekeurd worden.
-			\item[\good] 
+			\item[\good] Om de leader node bij een leader-follow replicatiesysteem te verkiezen, kan elke node proberen de leader lock te bemachtigen. De node dat het als eerst heeft wordt de leader, en elke andere node moet hierbij akkoord gaan.
+			\item[\good] Voorkomen dat een bepaalde functie opgeroepen wordt vooraleer een andere klaar is (op verschillende systemen).
 		\end{itemize}
 		De nadelen zijn:
 		\begin{itemize}
 			\item[\alert] De eenvoudigste implementatie is werkelijk maar één kopie bijhouden. Als de node uitvalt die deze kopie bijhoudt, vooraleer er naar da databank is geschreven, is de informatie wel verloren.
-			\item[\alert] Bij gepartitioneerde nodes moet elke andere node stoppen met requests te verwerken tot dat 
+			\item[\alert] Bij gepartitioneerde nodes moet elke andere node stoppen met requests te verwerken tot dat de node klaar is, anders is er geen lineair systeem.
 		\end{itemize}
 	\end{itemize}
 
+	Het CAP theorema gaat uit van extreme vormen van consistentie, beschikbaarheid en persistentie.
+	\begin{itemize}
+		\item \emph{\textbf{C}}onsistent systeem zoals het lineair systeem.
+		\item  Het systeem moet altijd \emph{\textbf{A}}vailable zijn.
+	\end{itemize}
 	
+	\todo{saai}
+	
+	\chapter{Data-analyse}
+	Ruwe data is informatie dat niet kan afgeleid worden van een ander informatie en moet altijd constant zijn. Het overschrijven van informatie betekent dat dit verloren gaat en is ook niet bestendig tegen menselijke fouten. Ruwe data wordt in een "vijver" gedumpt, die alle informatie van een systeem bevat en waarop interessante queries op kunnen uitgevoerd worden. Het voorkomt dat speciale informatie zoals bestanden of video's niet moeten omgezet worden maar kunnen gewoon in de vijver geplaatst worden. 
+	
+	Hadoop is een voorbeeld van zo een vijver. Het laat toe om relationele informatie, log bestanden, documenten, streams, ... te dumpen in het systeem. Elke categorie van data vraagt een ander soort adapter die met hadoop verbonden moet worden. Deze informatie komt dan terecht in meerdere \textbf{Business Intelligence (BI)} toepassingen zoals \emph{Apache Spark}. Apache Spark laat enerzijds toe om machine learning uit te voeren op de informatie en anderzijds om de informatie op te slaan in een \underline{data warehouse}. 
+	
+	\section{Gedistribueerd bestandssysteem}
+	Er wordt geen databank gebruikt om de informatie op te slaan. Er wordt gekozen voor om de informatie op te slaan als bestanden aangezien die elk datamodel aankunnen. \textbf{Hadoop Distributed File System (HDFS)} is een voorbeeld van zo een gedistribueerd bestandssysteem. De enigste schrijfoperatie is het toevoegen van nieuwe informatie. Een update of delete kan niet uitgevoerd worden. HDFS voorziet interfaces voor applicaties om zich dichter bij de informatie te zetten. Dit zorgt ervoor dat het netwerkverkeer tussen de applicatie en een HDFS node minder wordt. HDFS kan dit enkel aanbieden als een systeem aan volgende voorwaarden voldoet:
+	\begin{itemize}
+		\item Applicaties die gebruik maken van HDFS moeten streamgebaseerde toegang aan de dataset mogelijk maken. HDFS is ontworpen om in bulk informatie op te halen.
+		\item Applicaties die gebruik maken van HDFS moeten veel informatie hebben. De informatie moet in bestanden zitten van minstens een aantal gigabyte groot. Kleine bestanden vertraagt het systeem (zie laterq). 
+		\item HDFS applicaties moeten garanderen dat, eens een bestand aangemaakt wordt, deze niet meer aangepast zal worden. In het uitzonderlijke geval kan toegevoegd worden aan het bestand.
+	\end{itemize}
+	\subsection{HDFS architectuur}
+	HDFS partitioneerd de bestanden in blokken van gelijke grote. Deze blokken worden enerzijds verspreidt over verschillende \textbf{DataNodes} om parallelle processing toe te laten en anderzijds gerepliceerd voor fouttolerantie. Er is ook nog een \textbf{NameNode} die het bestandssysteem beheert en de toegang tot de bestanden onder controle houdt.  Deze NameNode legt ook vast in welke DataNode een blok moet komen. Het geheel van alle nodes en blokken is een HDFS cluster. 
+	
+	Een schrijfoperatie verloopt in \uline{twee stappen}:
+	\begin{enumerate}
+		\item Een applicatie dat een bestand creëert wilt dit wegschrijven naar een HDFS cluster. Een HDFS Client staat in om de stream van dit bestand te ontvangen. Deze HDFS Client vraagt aan de NameNode op welke verschillende DataNodes het blok geplaatst moet worden. De eerste DataNode in de lijst ontvangt een stream van de informatie.
+		\item Deze stap zal de blokken effectief repliceren naar de andere DataNodes. De eerste DataNode begint nu met kleine stukjes informatie weg te schrijven naar zijn schijf en zal deze stukjes informatie doorsturen naar de volgende replica. Dit proces blijft zich herhalen tot het einde van de lijst bereikt wordt.
+	\end{enumerate}
+
+	Een leesoperatie gebeurd ook via de HDFS Client. Deze vraagt nu aan de NameNode een replica die het gewenste bestand bevat. De NameNode probeert de DataNode te geven die geografisch het dichtst ligt aan de applicatieserver.
+	
+	\underline{Waarom geen kleine bestanden?}
+	
+	Een klein bestand wordt gedefinieerd als een bestand dat een kleinere grootte heeft als de blokgrootte. Toch moet opgepast worden aangezien bestanden die iets groter zijn dan de blokgrootte ook nog te klein zijn. Een blokgrootte van $128 MB$ en bestanden van $136 MB$ zorgt ervoor dat er veel blokken van $8 MB$ zullen zijn. Dit noemt het \underline{small file problem} en heeft een volgende impact:
+	\begin{itemize}
+		\item \textbf{NameNode memory:} Elk bestand, folder en blok is een object in het geheugen van de NameNode. De NameNode moet constant controleren waar elk blok data zich bevindt in het cluster. De NameNode vraagt aan elke DataNode om een beschrijving te maken van hun blokken. Hoe meer blokken een DataNode bevat, hoe meer bandbreedte verloren gaat aan deze extra blokken.
+		\item \textbf{Processing delays:} Een groter aantal bestanden vraagt een groter aantal schijfoperaties. Dit heeft een negatieve impact op applicaties die queries willen uitvoeren.
+	\end{itemize}
+
+	\section{Batch Processing}
+	Batch Processing verwacht als input veel informatie. Deze informatie wordt echter niet gewijzigd, maar er worden nieuwe soorten informatie uit afgeleidt. Het Map-Reduce concept dient om batch processing te implementeren en verloopt in \underline{vier stappen}:
+	\begin{enumerate}
+		\item De inputbestanden worden opgesplitst in records aan de hand van een bepaalde record seperator. Deze records worden uniform gedistribueerd over verschillende mappers.
+		\item De mappers extraheren de sleutel en een waarde voor elk record. 
+		\item Alle sleutels van alle mappers worden gesorteerd. Deze gesorteerde lijst wordt ook uniform gedistribueerd over verschillende reducers.
+		\item Deze reducers itereren over de gesorteerde lijst en kunnen op die manier waarden die dezelfde sleutel hebben combineren.
+	\end{enumerate}
+	
+
 
 
 	

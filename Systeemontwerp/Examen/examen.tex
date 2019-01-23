@@ -1,0 +1,101 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[dutch]{babel}
+\usepackage{color}
+\usepackage{listings}
+
+\usepackage[a4paper, total={7in, 8in}]{geometry}
+
+
+\def\warning#1{\color{red} #1 \color{black}}
+\def\note#1{\color{cyan} #1 \color{black}}
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{0.5cm}%
+\begin{document}
+\pagenumbering{gobble}
+\title{Examen Systeemontwerp}
+\date{21 januari 2019}
+\author{}
+\maketitle
+
+\part*{Examen - Theorie}
+\section*{Theorievragen}
+\begin{enumerate}
+	\item Leg de vier componenten van het "4+1" model uit.
+	\item Apache Spark. 
+	\begin{itemize}
+		\item Leg het verschil uit tussen transformaties en acties bij Apache Spark.
+		\item Waarom maakt Apache Spark gebruik van verschillende stages?
+	\end{itemize}
+	\item Cassandra.
+	\begin{itemize}
+		\item Leg het principe achter een Log Structured Merge Tree uit. Geef een voorbeeld van een lees- en schrijfoperatie. Is een LSMT eerder geschikt voor leesoperaties, schrijfoperaties of beiden?
+		\item In Cassandra is het mogelijk om per lees-en schrijfoperatie een qourum in te stellen:
+		
+		\def\arraystretch{2}
+		\begin{table}[ht]
+			\centering
+			\begin{tabular}{| l | l |}
+				\hline
+				ALL & \begin{minipage}{0.7\textwidth}
+					Write: A write must be written on all replica nodes. \\
+					Read: Returns the record after all replicas have responded. 
+				\end{minipage} \\
+				\hline
+				QOURUM & \begin{minipage}{0.7\textwidth}
+					Write: A write must be written on a quorum of replica nodes.\\
+					Read: Returns the record after a quorum of replicas.
+				\end{minipage}\\ 	
+				\hline 
+				ONE/TWO & \begin{minipage}{0.7\textwidth}
+					Write:  A write must be written to at least one/two replica node(s).\\
+					Read: Returns the response from the closest/two closest replica(s).
+				\end{minipage}\\
+				\hline
+			\end{tabular}
+		\end{table}
+		
+		Veronderstel nu een replicatie-factor = 5 en een item met sleutel A dat toegevoegd wordt met consistentieniveau QOURUM. Het toevoegen verloopt perfect. Het cluster bestaat uit 15 nodes, maar door een breuk in de switch wordt deze cluster onderverdeeld in twee groepen van 7 en 8 nodes. Leg uit:
+		\begin{enumerate}
+			\item Met welk qourum krijg ik zeker de recentste versie van A terug?
+			
+			 Onder deze veronderstelling, is dit altijd zo of slechts onder beperkte voorwaarden?
+			\item Met welk qourum krijg ik mogelijks een foute versie van A terug?
+			
+			 Onder deze veronderstelling, is dit altijd zo of slechts onder beperkte voorwaarden?
+			\item Met welk qourum krijg ik een foutmelding? 
+			
+			Onder deze veronderstelling, is dit altijd zo of slechts onder beperkte voorwaarden?
+		\end{enumerate}
+	\end{itemize}
+	\item Command Query Responsibility Segregation is een techniek dat kan gebruikt worden bij microservice architectuur.
+	\begin{itemize}
+		\item Leg dit patroon uit.
+		\item Geef de voor- en nadelen.
+	\end{itemize}
+	\item Cloud services.
+	\begin{itemize}
+		\item Leg het verschil uit tussen software-as-a-service en platform-as-a-service.
+		\item Leg de begrippen \textbf{elastisch} en \textbf{horizontaal} schalen uit.
+	\end{itemize}
+\end{enumerate}
+\section*{Designoefening}
+Het bedrijf \emph{HouseFlippers} wil hun ICT infrastructuur vernieuwen. Het bedrijf is gespecialiseerd in het opkopen van leegstaande panden, ze op te knappen en door ze daarna te verkopen. Een softwarearchitect zit samen met een domeinexpert waaruit volgende informatie gevolgd is.
+
+De inkoopafdeling is verantwoordelijk om leegstaande panden te zoeken. Deze afdeling bestaat uit experts die de panden inspecteren en rapporteren opmaken voor elk pand.
+
+Er is ook een afdeling werfopvolging. Deze afdeling bevat werfleiders die het werfmanagement op zich nemen: ze beheren de planning, zoeken aannemers en volgen de werf op.
+
+De sales afdeling bevat een salesteam die de panden proberen te verkopen.
+
+Tot slot is er een finance afdeling die de betalingen afhandelen.
+
+\subsection*{User Story 1: Aankoop pand}
+Wanneer een werknemer een nieuw leegstaand pand gevonden heeft, kan hij dit pand registreren in het systeem. Experts gaan dan langs om een rapport op te maken. Dit rapport bevat taken die moeten uitgevoerd worden vooraleer het pand terug te koop kan gesteld worden. De inkoopafdeling maakt een schatting van de prijs op basis van historische data. Het sales department maakt ook een schatting van de prijs
+\subsection*{User Story 2: Renoveren pand}
+
+\subsection*{User Story 3: Verkopen pand}
+
+
+\part*{Examen - Oefening}
+\end{document}

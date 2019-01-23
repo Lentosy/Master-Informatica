@@ -8,11 +8,11 @@
 }
 
 \begin{itemize}
-    \item[\info] Importeren type library:
+    \item Importeren type library:
     \begin{lstlisting}
 use Win32::OLE::Const 'Active DS Type Library';
     \end{lstlisting}
-    \item[\info] Binden van een object:
+    \item Binden van een object:
     \begin{lstlisting}
 sub bind_object {
     my $parameter = shift;
@@ -36,13 +36,13 @@ sub bind_object {
 
     \end{lstlisting}
 
-    \item[\info] Printen attribuut:
+    \item Printen attribuut:
     \begin{lstlisting}
 my $object = bind_object(...);
 print $object->{attribuut};
     \end{lstlisting}
 
-    \item[\info] Op een klasse filteren in een container:
+    \item Op een klasse filteren in een container:
     \begin{lstlisting}
 my $object = bind_object(...);
 $object->{Filter} = ['user'];
@@ -51,7 +51,7 @@ for (in $object){ # zal enkel AD-objecten bevatten van type 'user'
 }
     \end{lstlisting}
 
-    \item[\info] Property Cache initialiseren (belangrijk bij binding RootDSE)
+    \item Property Cache initialiseren (belangrijk bij binding RootDSE)
     \begin{lstlisting}
 my $root = bind_object('RootDSE');
 $root->GetInfo();
@@ -61,39 +61,43 @@ $root->GetInfo();
 (my $root = bind_object('RootDSE'))->GetInfo();
     \end{lstlisting}
 
-    \item[\info] Verschillende contexts:
+    \item Verschillende contexts:
     \begin{itemize}
-        \item[\info] DefaultNamingContext
-        \item[\info] ConfigurationNamingContext
-        \item[\info] SchemaNamingContext
+        \item DefaultNamingContext
+        \item ConfigurationNamingContext
+        \item SchemaNamingContext
     \end{itemize}
 
-    \item[\info] Belangrijke functies:
+    \item Belangrijke functies:
     \begin{itemize}
-        \item[\info] \$Object\(\rightarrow \)Get(''attribuut'') \# equivalent met \$Object\(\rightarrow \)\{attribuut\}
-        \item[\info] \$Object\(\rightarrow \)GetEx() \# bedoeld voor multivalued attributen te verwerken, geeft altijd een referentie naar een array terug, ook al is er maan één waarde.
-        \item[\info] \$Object\(\rightarrow \)GetInfo() \# Voor de meeste attributen te initialiseren.
-        \item[\info] \$Object\(\rightarrow \)GetInfoEx([referentie naar een array van attributen], 0) \# expliciet zeggen welke properties moeten geinitialiseerd worden
-        \item[\info] \$Object\(\rightarrow \)SetInfo()
+        \item \$Object\(\rightarrow \)Get(''attribuut'') \# equivalent met \$Object\(\rightarrow \)\{attribuut\}
+        \item \$Object\(\rightarrow \)GetEx() \# bedoeld voor multivalued attributen te verwerken, geeft altijd een referentie naar een array terug, ook al is er maan één waarde.
+        \item \$Object\(\rightarrow \)GetInfo() \# Voor de meeste attributen te initialiseren.
+        \item \$Object\(\rightarrow \)GetInfoEx([referentie naar een array van attributen], 0) \# expliciet zeggen welke properties moeten geinitialiseerd worden
+        \item \$Object\(\rightarrow\)Put(property, nieuweWaarde)
+        \item \$Object\(\rightarrow\)PutEx(ADS\_PROPERTY\_OPERATION\_ENUM, property, nieuweWaarde) \# wordt eerder gebruikt voor multi-valued attributen. De 'nieuweWaarde' is dan ook een referentie naar een array van waarden.
+        \item \$Object\(\rightarrow \)SetInfo() \# opslaan van informatie, moet altijd na Put() of PutEx()
+        \item \$Object\(\rightarrow\)Create(klasse, relativeDistinguishedName) \# De naam van de klasse en de relatieve naam. Relatieve naam kan bv cn=* of ou=* zijn.
+        \item \$Object\(\rightarrow\)Delete(klasseNaam, relativeDistinguishedName) \# De naam van de klasse en de relatieve naam. Relatieve naam kan bv cn=* of ou=* zijn.
     \end{itemize}
 
-    \item[\info] Gebruik maken van \textbf{IADsPropertyList}:
+    \item Gebruik maken van \textbf{IADsPropertyList}:
     \begin{lstlisting}
 my $object = bind_object(...);
 $object->GetInfo();
 while(my $attribuut = $object->Next()){
     # toegang tot Name, ADsType en Values attributen van $attribuut
-    # ,dat eigenlijk een instantie is van IADsPropertyEntry.
+    # dat eigenlijk een instantie is van IADsPropertyEntry.
     for my $waarde (@{$attribuut->{Values}}){
-        # Heel rare manier om de waarde van $waarde op te halen
-        # verwacht het ADsType dat $waarde zou moeten bevatten 
-        # Elke waarde van $attribuut->{Values} IS van hetzelfde type
-        # Meestal is er ook slechts maar 1 waarde
+        # Heel rare manier om de waarde van $waarde op te halen.
+        # Verwacht het ADsType dat $waarde zou moeten bevatten.
+        # Elke waarde van $attribuut->{Values} IS van hetzelfde type.
+        # Meestal is er ook slechts maar 1 waarde.
         print $waarde->GetObjectProperty($atribuut->{ADsType});
     }
 }
     \end{lstlisting}
-    \item[\info] In schemacontext kan het handig zijn om filteren op attributeSchema of classSchema:
+    \item In schemacontext kan het handig zijn om filteren op attributeSchema of classSchema:
     \begin{lstlisting}
 my $root = bind_object('RootDSE');
 my $schema = bind_object($root->Get("schemanamingcontext"));
@@ -102,7 +106,7 @@ $schema->{Filter} = ["attributeSchema"];
 # $schema->{Filter} = ["classSchema]";
     \end{lstlisting}
 
-    \item[\info] Enumereren met $ADODBConnection$ en $ADODBCommand$:
+    \item Enumereren met $ADODBConnection$ en $ADODBCommand$:
     \begin{lstlisting}
 my $connection = Win32::OLE->new("ADODB.Connection");
    $connection->{Provider} = "ADsDSOObject";
@@ -121,12 +125,14 @@ until($resultset->{EOF}){
 }
 $resultset->Close();
     \end{lstlisting}
-    \item[\info] Objectcategory waarden:
+    \item Objectcategory waarden:
     \begin{enumerate}
         \item[0] abstracte klasse
         \item[1] structurele klasse
         \item[2] abstracte klasse
         \item[3] hulpklasse
     \end{enumerate}
+
+	
 \end{itemize}
 \end{document}
