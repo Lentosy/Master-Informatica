@@ -1157,7 +1157,91 @@ sub reeks8 {
         my $root = bind_object("RootDSE");
         my $container = bind_object("OU=Custom Container,OU=Bert De Saffel,OU=Labo,$root->{defaultNamingContext}");
         $container->{Filter} = ["organizationalUnit"];
+    }
 
+    sub r8_o14 {
+        my $root = bind_object("RootDSE");
+        my $domain = bind_object($root->Get("DefaultNamingContext"));
+
+        my $base = $domain->{AdsPath};
+        my $filter = "(&(objectCategory=group)(member=*))";
+        my $attributes = "distinguishedname,member,cn";
+        my $scope = "subtree";
+
+        my $command = get_command();
+        $command->{CommandText} = "<$base>;$filter;$attributes;$scope";
+        $command->{Properties}->{"Sort On"} = "cn";
+        my $resultset = $command->Execute();
+
+        my %groepen;
+        my $teller = 1;
+        until($resultset->{EOF}){
+           # my $groupDN = $resultset->Fields('distinguishedname')->{Value};
+            my $cn = $resultset->Fields('cn')->{Value};
+            my $leden = $resultset->Fields('member')->{Value};
+            $groepen{$teller} = $leden;
+            printf "%3d. %40s | aantal leden: %d\n", $teller++, $cn, scalar @{$leden};
+            
+            $resultset->MoveNext();
+        }
+        
+        printf "Kies een nummer van 1 tot %d om de leden van de corresponderende groep te tonen: ", $teller - 1;
+        chomp (my $keuze =  <STDIN>);
+        print join "\n", @{$groepen{$keuze}};
+        $resultset->Close();
+        close_command($command);
+    }
+
+    sub r8_o15 {
+        my $root = bind_object("RootDSE");
+        my $domain = bind_object($root->Get("DefaultNamingContext"));
+
+        my $base = $domain->{AdsPath};
+        my $filter = "(&(objectClass=user)(objectCategory=person)(samAccountName=*))";
+        my $attributes = "SamAccountName,distinguishedname";
+        my $scope = "subtree";
+
+        my $command = get_command();
+        $command->{CommandText} = "<$base>;$filter;$attributes;$scope";
+        $command->{Properties}->{"Sort On"} = "SamAccountName";
+        my $resultset = $command->Execute();
+
+
+        my %users = ();
+        until($resultset->{EOF}){
+            $users{$resultset->Fields('samAccountName')->{Value}} = $resultset->Fields('distinguishedname')->{Value};
+            $resultset->MoveNext();
+        }
+        $resultset->Close();
+        
+        my $it=0;
+        printf "%-21s%s", $_, ++$it%4 ? "" : "\n" for sort keys %users;
+        print "\nGeef de samAccountName op van een user: ";
+        chomp(my $samAccountName = <STDIN>);
+        my $user = bind_object($users{$samAccountName});
+
+        my $primarygroupnr = $user->Get("PrimaryGroupId");
+        $filter = "(objectclass=group)";
+        $attributes = "primaryGroupToken,samAccountName";
+
+        $command->{CommandText} = "<$base>;$filter;$attributes;$scope";
+        $resultset = $command->Execute();
+        my $primarygroup; # Naam van de primaire groep.
+        until($resultset->{EOF}){
+            my $groupnr = $resultset->Fields('primaryGroupToken')->{Value};
+            if($groupnr == $primarygroupnr){
+                $primarygroup = $resultset->Fields('samAccountName')->{Value};
+                last;
+            }
+            $resultset->MoveNext();
+        }
+        $resultset->Close();
+        close_command($command);   
+
+        printf "Primaire groep: %s\n", $primarygroup;
+        print "Behoort ook tot de volgende groepen: \n";
+        print join "\n", @{$user->GetEx("memberOf")};
+        
     }
 }
 
