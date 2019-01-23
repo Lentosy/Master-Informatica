@@ -1243,6 +1243,126 @@ sub reeks8 {
         print join "\n", @{$user->GetEx("memberOf")};
         
     }
+
+    sub r8_o16 {
+        my $samAccountName = $ARGV[1] or die "Geef samAccountName op.\n";
+        sub getUser {
+            my $root = bind_object('RootDSE');
+            my $domain = bind_object($root->Get("defaultnamingcontext"));
+            my $samAccountName = shift;
+            # Controle of $samAccountName al bestaat.
+            my $base = $domain->{AdsPath};
+            my $filter = "(samAccountName=$samAccountName)";
+            my $attributes = "samAccountName,distinguishedname";
+            my $scope = "subtree";
+            my $command = get_command();
+            $command->{Commandtext} = "<$base>;$filter;$attributes;$scope";
+            my $resultset = $command->Execute();
+            my $object;
+            if($resultset->{RecordCount} == 0){
+                printf "Nieuwe user aanmaken met samAccountName=$samAccountName? (j of n)";
+                chomp(my $keuze = <STDIN>);
+                if($keuze eq 'n'){
+                    print "Er wordt geen nieuwe gebruiker aangemaakt.\n";
+                    exit 0;
+                } else {
+                    # Todo: nieuwe gebruiker aanmaken in eigen domein
+                    my $ou = bind_object("OU=Custom Container,OU=Bert De Saffel,OU=Labo,$root->{defaultNamingContext}");
+                    my $user = $ou->Create("user", "cn=$samAccountName");
+                    $user->PutInfo("SamAccountName", $samAccountName);
+                    $user->SetInfo();
+                    $object = $user;
+                }
+            }else {
+                $object = bind_object($resultset->Fields('distinguishedname')->{Value});
+            }
+            
+            $resultset->Close();
+            close_command($command);
+            return $object;
+
+        }
+        my $user = getUser($samAccountName);
+        my $keuze;
+        do{
+            # Op dit moment bestaat user met samAccountName
+            print "\n1. Kies een andere gebruiker.\n";
+            print "2. Voeg een telefoonnummmer toe aan $user->{cn}.\n";
+            print "3. Toon overzicht van de groepen van $user->{cn}.\n";
+            print "4. Verwijder $user->{cn} van een groep.\n";
+            print "5. Voeg $user->{cn} toe aan een groep.\n";
+            print "6. Verwijder $user->{cn}.\n";
+            print "7. Afsluiten.\n";
+            print "Geef een keuze op: ";
+            chomp($keuze = <STDIN>);
+
+            my %opties = (
+                "1" => sub {
+                    print "Geef nieuw samAccountNaam op: ";
+                    chomp(my $samAccountName = <STDIN>);
+                    $user = getUser($samAccountName);
+                },
+                "2" => sub {
+                    print "Geef het telefoonnummer op: ";
+                    (my $telefoonnummer = <STDIN>);
+                    $user->Put("telephoneNumber", $telefoonnummer);
+                    $user->SetInfo();
+                },
+                "3" => sub {
+                    print "Groepen van $user->{cn}: \n";
+                    print join "\n", @{$user->GetEx("MemberOf")};
+                },
+                "4" => sub {
+                    print "geen zin meer.";
+                },
+                "5" => sub {
+                    print "Een overzicht van alle groepen: \n";
+                    my $root = bind_object("RootDSE");
+                    my $domain = bind_object($root->Get("DefaultNamingContext"));
+
+                    my $base = $domain->{AdsPath};
+                    my $filter = "(objectCategory=group)";
+                    my $attributes = "cn,distinguishedname";
+                    my $scope = "subtree";
+                    my $command = get_command();
+                    $command->{CommandText} = "<$base>;$filter;$attributes;$scope";
+                    my $resultset = $command->Execute();
+                    my %groups = ();
+                    until($resultset->{EOF}){
+                        print $resultset->Fields('cn')->{Value} . "\n";
+                        $groups{$resultset->Fields('cn')->{Value}} = $resultset->Fields('distinguishedname')->{Value};
+                        $resultset->MoveNext();
+                    }
+
+                    print "Geef de naam van de groep waaran $user->{cn} moet toegevoegd worden: ";
+                    chomp(my $name = <STDIN>);
+                    my $group = bind_object($groups{$name});
+                    my @members = ($user->{DistinguishedName});
+                    $group->PutInfoEx($ADS_PROPERTY_OPERATION_ENUM{ADS_PROPERTY_APPEND}, "member", \@members);
+                    $group->SetInfo();
+
+                },
+                "6" => sub {
+                    print "User $user->{cn} wordt verwijdert.\n";
+                    # Onderstaande 2 lijnen zijn gevaarlijk. Beter niet uitvoeren.
+                   # my $ou = bind_object("OU=Custom Container,OU=Bert De Saffel,OU=Labo,$root->{defaultNamingContext}");
+                   # $ou->Delete("user", $user->{cn});
+                    print "Geef nieuw samAccountNaam op: ";
+                    chomp(my $samAccountName = <STDIN>);
+                    $user = getUser($samAccountName);
+                },
+                "7" => sub {
+                    print "Afsluiten...\n";
+                }
+            );
+
+            $opties{$keuze}->();
+
+            
+        }until($keuze == "7");
+
+
+    }
 }
 
 
@@ -1252,7 +1372,7 @@ sub valueattribuut {
     my $tabel = $object->GetEx($attribuut);
 
     if (Win32::OLE->LastError() == Win32::OLE::HRESULT(0x8000500D)){
-	$object->GetInfoEx([$attribuut], 0);
+	    $object->GetInfoEx([$attribuut], 0);
         $tabel = $object->GetEx($attribuut);
     }
     return ["<niet ingesteld>"] if Win32::OLE->LastError() == Win32::OLE::HRESULT(0x8000500D);
