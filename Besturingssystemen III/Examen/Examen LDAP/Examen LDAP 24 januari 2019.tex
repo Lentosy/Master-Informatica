@@ -1,0 +1,37 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{color}
+\usepackage{listings}
+\usepackage[margin=0.5in]{geometry}
+
+\def\warning#1{\color{red} #1 \color{black}}
+\def\note#1{\color{cyan} #1 \color{black}}
+
+\begin{document}
+\pagenumbering{gobble}
+\title{Examen Besturingssystemen III LDAP}
+\date{24 januari 2019}
+\author{}
+\maketitle
+
+\section*{Voorbereiding}
+\begin{itemize}
+	\item Voorzie een bind\_object() subroutine. Enkel in deze subroutine mag de servernaam \textbf{SATAN} (of het IP-adres 192.168.16.16) hardgecodeerd worden. Maak altijd gebruik van serverless binding.
+	
+	\item Er moet minstens gebruik gemaakt worden van één zinvolle LDAP query.
+\end{itemize}
+
+\section*{Vraag 1} 
+Geef een overzicht van alle LDAP-attributen die als waarde een 'GUID' kunnen bevatten. In eerste instantie kunnen zulke attributen bepaald worden door het feit dat hun syntax de string 'octet' bevat. Indien dit niet het geval is, geldt de bijkomende voorwaarde upperRange=lowerRange. Beperk vervolgens de output tot de attributen die behoren tot de klassen die opgegeven worden als argument van het script.
+
+\section*{Vraag 2}
+De \textbf{configuration} partitie bevat een \textbf{Extended-Partitions} container waarin \textbf{controlAccessRight} objecten zitten. Stel een \textbf{dsquery} opdracht op dat de \textbf{displayName} en \textbf{rightsGuid} attributen van alle \textit{controlAccessRight} objecten in deze container uitprint.
+
+\section*{Vraag 3}
+\textbf{Vooraf:} zoek in AdsiEdit één \textit{controlAccessRight} object waarvan de \textit{rightsGuid} van dit object het \textit{attributeSecurityGUID} is van een willekeurig \textit{attributeSchema} object. Merk op dat de waarde hetzelfde, maar de syntax anders is.
+\subsection*{3a}
+Schrijf de \textbf{cn} van beide objecten in het script. De uitvoer moet de koppeling tussen deze twee objecten aantonen. Connecteer hiervoor met beide objecten, en schrijf de relevante attributen uit. Om een OctetString uit te schrijven kan je gebruik maken van \texttt{sprinf "\%*v02x", "", \$waarde}. Zoek zelf uit hoe je de waarde van het \textit{rightsGuid} attribuut kan converteren naar de waarde van het \textit{attributeSecurityGUID} attribuut.
+\subsection*{3b}
+Schrijf een veralgemening van de vorige oefening. Ga voor elk \textit{controlAccessRight} object na welke \textit{attributeSchema} objecten dit \textit{contralAccessRight} object als default hebben (via \textit{attributeSecurityGUID}. 
+\end{document}

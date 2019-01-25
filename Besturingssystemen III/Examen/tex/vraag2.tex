@@ -62,16 +62,13 @@
 		}
 		
 		\vraag { Hoe kan men detecteren op welk niveau een Active Directory omgeving zicht bevindt? } { 
-			\begin{itemize}
-				\item Het attribuut \textbf{msDS-Behaviour-Version} geeft voor zowel op domeinniveau als forestniveau aan welk functioneel niveau beschikbaar is.
-			\end{itemize}
+			 Het attribuut \textbf{msDS-Behaviour-Version} geeft voor zowel op domeinniveau als forestniveau aan welk functioneel niveau beschikbaar is.
 		}
 		
 		\vraag { Op welke diverse manieren kan men het functionele niveau verhogen of verlagen? } {
-			\begin{itemize}
-				\item Omschakelen naar een bepaald functioneel niveau gebeurd steeds manueel en kan enkel opwaarts: het is niet mogelijk om een hoger niveau om te vormen naar een lager niveau. Er moet steeds rekening gehouden worden met de restricties die elk niveau oplegt, indien deze niet voldaan zijn heeft het geen zin om te verhogen, en zal dit ook met een gepaste foutmelding getoond worden. Een niveau aanpassen kan enerzijds rechtstreeks, door de attributen van het domeinobject te manipuleren, ofwel via een GUI met behulp van de Active Directory Domains and Trust snap-in, beschikbaar in \textbf{domain.msc}.  
+			 Omschakelen naar een bepaald functioneel niveau gebeurt steeds manueel en kan enkel opwaarts: het is niet mogelijk om een hoger niveau om te vormen naar een lager niveau. Er moet steeds rekening gehouden worden met de restricties die elk niveau oplegt, indien deze niet voldaan zijn heeft het geen zin om te verhogen, en zal dit ook met een gepaste foutmelding getoond worden. Een niveau aanpassen kan enerzijds rechtstreeks, door de attributen van het domeinobject te manipuleren, ofwel via een GUI met behulp van de Active Directory Domains and Trust snap-in, beschikbaar in \textbf{domain.msc}.  
 				
-			\end{itemize}	
+				
 		}
 
 	\end{enumerate}
@@ -79,21 +76,30 @@
 	\section{Active Directory replicatie \accentuate{(§2.5)}}
 	\begin{enumerate}
 		\vraag { Wat is de bedoeling van \textit{replicatie}? } {
-			\begin{itemize}
-				\item Gebruikers en services moeten op elk gewenst moment vanaf elke computer in het forest toegang kunnen krijgen tot de directory gegevens. Een domein zonder actieve domeincontrollers functioneert niet langer naar gebruikers toe. Doordat in één domein met meerdere domeincontrollers kan gewerkt worden, worden de \underline{fouttolerantie} en de \underline{belastingsverdelingen} verbetert.
-			\end{itemize}
+			Gebruikers en services moeten op elk gewenst moment vanaf elke computer in het forest toegang kunnen krijgen tot de directory gegevens. Een domein zonder actieve domeincontrollers functioneert niet langer naar gebruikers toe. Doordat in één domein met meerdere domeincontrollers kan gewerkt worden, worden de \underline{fouttolerantie} en de \underline{belastingsverdelingen} verbetert.
+			
 		}
 		
-		\vraag { Hoe wordt dit in Windows Server (ondermeer ten opzichte van NT 4.0) gerealiseerd: bespreek de verschillende \textit{technische kenmerken} en \textit{concepten} van Windows Server replicatie, en hoe men specifieke problemen vermijdt of oplost. } { 
+		\vraag { Hoe wordt dit in Windows Server (onder meer ten opzichte van NT 4.0) gerealiseerd: bespreek de verschillende \textit{technische kenmerken} en \textit{concepten} van Windows Server replicatie, en hoe men specifieke problemen vermijdt of oplost. } { 
 			\begin{itemize}
-				\item Active Directory maakt gebruik van \underline{multi-master} replicatie, zodat de directory kan bijgewerkt worden vanaf elke domeincontroller, behalve read-only domeincontrollers. NT 4.0 daarentegen maakt gebruik van een master-slave model met primaire domeincontrollers en back-up domeincontrollers die gebruikt worden om de SAM gegevens, de policies, de gebruikersprofielen en de logon scripts te distribueren. In het master-slave model had slechts één enkele server, de primaire domeincontroller, een wijzigbare kopie van de directory. De andere domeincontrollers werden ingeschakelt voor het afhandelen van aanvragen, inclusief aanvragen van gebruikers voor wijzigingen. In huidige Windows Server systemen zijn alle Windows Server domeincontrollers equivalent. Dit biedt meer fouttolerantie omdat met meerdere domeincontrollers de replicatie kan voortgezet worden als één of meerdere andere domeincontrollers uitvallen. 
-				\item Een ander verschil met de replicatietechniek van NT 4 wordt \underline{store-and-forward} replicatie genoemd. Elke verandering op een domeincontroller wordt slechts uitgewisseld met enkele ander domeincontrollers, die op hun beurt de wijzigingen communiceren met nog enkele andere domeincontrollers. Hoe de domeincontrollers weten naar welke andere domeincontrollers ze hun wijzigingen moeten doorsturen, gebeurd via de \textbf{KCC (Knowledge Concistency Checker)} software die op elke Active Directory domeincontroller beschikbaar is. De KCC's proberen steeds een topologie te vormen die ten minste twee paden met elke domeincontroller mogelijk maakt, waarbij elke controller maximaal met drie andere controllers rechtstreeks is verbonden, en waarbij het aantal hops tussen twee willekeurige domeincontrollers hoogstens drie is. Deze replicatietopologie wordt periodiek of via een trigger (bv een domeincontroller wordt toegevoegd) vernieuwd. 
-				\item Het laatste verschil tussen NT 4 en Windows Server is de \underline{kleinste replicatie eenheid}. In NT 4 is dat altijd het volledig object. In forests met Windows 2000 functioneel niveau de volledige waarde van een individueel attribuut, en in forests met minimaal Windows Server 2008 functioneel niveau zelfs de atomaire waarde van het attribuut. 
-				\item Windows Server replicatie gebruikt een \underline{pull mechanisme}.  Elke domeincontroller brengt wel zijn intra-site replicatiepartners op de hoogte indien er wijzigingen in de eigen directory aangebracht zijn, maar hij stuurt deze wijzigingen niet op eigen initiatief door. Het opvragen van de gegevens wordt geïnitieerd door de replicatiepartners. Deze methode is zeer foutbestendig. Indien een update mislukt, vraagt de domeincontroller gewoon opnieuw om de gegevens. Verder wordt er niet bij elke wijziging de replicatiepartners verwittigd. De wijzigingen worden gegroepeerd in een bepaald tijdsinterval. Dit heeft als voordeel dat het netwerk minder belast zal worden. Dit wordt \underline{propagation damping} of \underline{replication latency} genoemd. Active Directory garandeerd daarom niet dat elke domeincontroller over de meest actuele directory beschikt, maar dat ze uiteindelijk wel zal convergeren, daarom noemt men dit een \underline{loose consistency} model. Propagation damping is uitgeschakeld voor sommige attributen die te maken hebben met beveiliging. Gewijzigde lockout kenmerken en wachtwoorden worden bijvoorbeeld binnen de 15 seconden gerepliceerd. Dit noemt men \underline{urgent replication} en wordt in eerste instantie met de PDC emulator uitgevoerd. 
-				\item Windows Server Replicatie is \underline{multi-threaded}: een domeincontroller kan simultaan repliceren met diverse partners. Bij replicatie tussen controllers in dezelfde site worden gegevens niet gecomprimeerd om de verwerkingskracht van de domeincontrollers minder te belasten. 
-				\item Een obstakel is het replicatieverkeer, dat moet relatief beperkt blijven. Daarom wordt in Active Directory enkel gewijzigde directory gegevens gerepliceerd. Om te voorkomen dat een domeincontroller meerdere malen dezelfde wijziging zal doorvoeren, wordt zijn \textbf{USN (Update Sequence Number)} verhoogd. De combinatie van USN en GUID van een domeincontroller wordt zijn Up-To-Dateness Vector (UTD vector) genoemd. Elke domeincontroller meldt bij elke wijziging aan een object zijn huidige UTD vector aan de andere domeincontrollers, en houdt in de eigen UTD vectortabel de meest recente UTD vector bij die hij van elke andere controller heeft ontvangen, en waarvan hij de wijzigingen heeft verwerkt.
-				\item Een ander probleem doet zich voor wanneer dat hetzelfde kenmerk van een object op meer dan één domeincontroller quasi tegelijkertijd gewijzigd wordt. De domeincontroller die conflicterende wijzigingen detecteert, lost dit op door naar het tijdstip van wijziging te kijken, en de wijziging met het oudere tijdstip te negeren. Zijn de tijdstippen gelijk, wordt enkel de wijziging van de domeincontroller met het hoogste GUID geaccepteerd. Voor sommige objecten, waarvoor de kans op conflicten klein is door bovenstaande methode, is dit nog altijd niet toelaatbaar, en wordt er beroep gedaan op slechts één domeincontroller, de operations master om de wijzigingen door te voeren.
-				\item Men moet vermijden dat een object opnieuw gecreëerd wordt door replicatie wanneer deze verwijdert wordt. Daarom wordt een object niet onmiddellijk uit Active Directory verwijderd, maar eerst als tombstone gemarkeerd en in een hidden container, \textit{Deleted Items}, geplaatst. Na 60 dagen (180 dagen in Windows Server 2008+ domeinen) wordt een object definitief verwijderd. 
+				\item \textbf{Realisatie.}
+				\begin{itemize}
+					\item Active Directory maakt gebruik van \underline{multi-master} replicatie, zodat de directory kan bijgewerkt worden vanaf elke domeincontroller, behalve read-only domeincontrollers. NT 4.0 daarentegen maakt gebruik van een master-slave model met primaire domeincontrollers en back-up domeincontrollers die gebruikt worden om de SAM gegevens, de policies, de gebruikersprofielen en de logon scripts te distribueren. In het master-slave model had slechts één enkele server, de primaire domeincontroller, een wijzigbare kopie van de directory. De andere domeincontrollers werden ingeschakeld voor het afhandelen van aanvragen, inclusief aanvragen van gebruikers voor wijzigingen. In huidige Windows Server systemen zijn alle Windows Server domeincontrollers equivalent. Dit biedt meer fouttolerantie omdat met meerdere domeincontrollers de replicatie kan voortgezet worden als één of meerdere andere domeincontrollers uitvallen. 
+					\item Een ander verschil met de replicatietechniek van NT 4 wordt \underline{store-and-forward} replicatie genoemd. Elke verandering op een domeincontroller wordt slechts uitgewisseld met enkele ander domeincontrollers, die op hun beurt de wijzigingen communiceren met nog enkele andere domeincontrollers. Hoe de domeincontrollers weten naar welke andere domeincontrollers ze hun wijzigingen moeten doorsturen, gebeurd via de \textbf{KCC (Knowledge Consistency Checker)} software die op elke Active Directory domeincontroller beschikbaar is. De KCC's proberen steeds een topologie te vormen die ten minste twee paden met elke domeincontroller mogelijk maakt, waarbij elke controller maximaal met drie andere controllers rechtstreeks is verbonden, en waarbij het aantal hops tussen twee willekeurige domeincontrollers hoogstens drie is. Deze replicatietopologie wordt periodiek of via een trigger (bv een domeincontroller wordt toegevoegd) vernieuwd. 
+					
+					\item Windows Server replicatie gebruikt een \underline{pull mechanisme}.  Elke domeincontroller brengt wel zijn intra-site replicatiepartners op de hoogte indien er wijzigingen in de eigen directory aangebracht zijn, maar hij stuurt deze wijzigingen niet op eigen initiatief door. Het opvragen van de gegevens wordt geïnitieerd door de replicatiepartners. Deze methode is zeer foutbestendig: indien een update mislukt, vraagt de domeincontroller gewoon opnieuw om de gegevens. Verder wordt er niet bij elke wijziging de replicatiepartners verwittigd. De wijzigingen worden gegroepeerd in een bepaald tijdsinterval. Dit heeft als voordeel dat het netwerk minder belast zal worden. Dit wordt \underline{propagation damping} of \underline{replication latency} genoemd. Active Directory garandeerd daarom niet dat elke domeincontroller over de meest actuele directory beschikt, maar dat ze uiteindelijk wel zal convergeren, daarom noemt men dit een \underline{loose consistency} model. Propagation damping is uitgeschakeld voor sommige attributen die te maken hebben met beveiliging. Gewijzigde lockout kenmerken en wachtwoorden worden bijvoorbeeld binnen de 15 seconden gerepliceerd. Dit noemt men \underline{urgent replication} en wordt in eerste instantie met de PDC emulator uitgevoerd. 
+					\item Windows Server Replicatie is \underline{multi-threaded}: een domeincontroller kan simultaan repliceren met diverse partners. 
+					\item Bij replicatie tussen controllers in dezelfde site worden gegevens \underline{niet gecomprimeerd} om de verwerkingskracht van de domeincontrollers minder te belasten. 
+					\item Het laatste verschil tussen NT 4 en Windows Server is de \underline{kleinste replicatie eenheid}. In NT 4 is dat altijd het volledig object. In forests met Windows 2000 functioneel niveau de volledige waarde van een individueel attribuut, en in forests met minimaal Windows Server 2008 functioneel niveau zelfs de atomaire waarde van het attribuut. 
+				\end{itemize}
+				\item \textbf{Obstakels.}
+				\begin{itemize}
+					\item Een obstakel is het replicatieverkeer, dat moet relatief beperkt blijven. Daarom wordt in Active Directory enkel gewijzigde directory gegevens gerepliceerd. Om te voorkomen dat een domeincontroller meerdere malen dezelfde wijziging zal doorvoeren, wordt zijn \textbf{USN (Update Sequence Number)} verhoogd. De combinatie van USN en GUID van een domeincontroller wordt zijn Up-To-Dateness Vector (UTD vector) genoemd. Elke domeincontroller meldt bij elke wijziging aan een object zijn huidige UTD vector aan de andere domeincontrollers, en houdt in de eigen UTD vectortabel de meest recente UTD vector bij die hij van elke andere controller heeft ontvangen, en waarvan hij de wijzigingen heeft verwerkt.
+					\item Een ander probleem doet zich voor wanneer dat hetzelfde kenmerk van een object op meer dan één domeincontroller quasi tegelijkertijd gewijzigd wordt. De domeincontroller die conflicterende wijzigingen detecteert, lost dit op door naar het tijdstip van wijziging te kijken, en de wijziging met het oudere tijdstip te negeren. Zijn de tijdstippen gelijk, wordt enkel de wijziging van de domeincontroller met het hoogste GUID geaccepteerd. Voor sommige objecten, waarvoor de kans op conflicten klein is door bovenstaande methode, is dit nog altijd niet toelaatbaar, en wordt er beroep gedaan op slechts één domeincontroller, de operations master om de wijzigingen door te voeren.
+					\item Men moet vermijden dat een object opnieuw gecreëerd wordt door replicatie wanneer deze verwijdert wordt. Daarom wordt een object niet onmiddellijk uit Active Directory verwijderd, maar eerst als tombstone gemarkeerd en in een hidden container, \textit{Deleted Items}, geplaatst. Na 60 dagen (180 dagen in Windows Server 2008+ domeinen) wordt een object definitief verwijderd. 
+				\end{itemize}
+				
+
 			\end{itemize}
 		}
 		
@@ -117,8 +123,8 @@
 		
 		\vraag { Hoe wordt bepaald \textit{tot welke site} computers, servers in het bijzonder, behoren? \accentuate{(laatste paragraaf §2.6.2 en fractie §2.6.3)} } { 
 			\begin{itemize}
-				\item Computers worden aan sites toegewezen op basis van de locatie in een IP subnet. Een site kan dus beschouwd worden als een verzameling computers in een of meer IP subnetten. Alle computers die geadresseerd worden door hetzelfde IP subnet maken automatisch deel uit van dezelfde site.
-				\item Voor een server wordt de locatie bepaald door de vraag tot welke site in de directory het server object van de domeincontroller behoort. Elke site heeft een container met de naam Servers, die alle domeincontrollerobjecten bevatten die in deze site zijn geplaatst. Tijdens de promotie van een server tot domeincontroller wordt de server automatisch toegevoegd aan de site waaraan het subnet, waartoe de server behoort, is gekoppeld. De site van een server ligt hierdoor vast, en kan enkel manueel veranderd worden met \textbf{dssite.msc}.
+				\item Computers worden aan sites toegewezen op basis van de locatie in een IP subnet. Een site kan dus beschouwd worden als een verzameling computers in één of meer IP subnetten. Alle computers die geadresseerd worden door hetzelfde IP subnet maken automatisch deel uit van dezelfde site.
+				\item Voor een server wordt de locatie bepaald door de vraag tot welke site in de directory het server object van de domeincontroller behoort. Elke site heeft een container met de naam Servers, die alle domeincontroller objecten bevatten die in deze site zijn geplaatst. Tijdens de promotie van een server tot domeincontroller wordt de server automatisch toegevoegd aan de site waaraan het subnet, waartoe de server behoort, is gekoppeld. De site van een server ligt hierdoor vast, en kan enkel manueel veranderd worden met \textbf{dssite.msc}.
 			\end{itemize}
 		}
 	\end{enumerate}
@@ -138,7 +144,7 @@
                 
                 Op een werkpost kan gekozen worden tussen twee methoden:
                 \begin{itemize}
-                    \item Passieve caching: Netwerkbestanden worden automatisch, maar tijdelijk, gecacht van zodra ze worden gebruiket. Bij het overschijven van de toegestane limiet, zal client-side-caching automatisch de oudste gecachte bestanden verwijderen.
+                    \item Passieve caching: Netwerkbestanden worden automatisch, maar tijdelijk, gecacht van zodra ze worden gebruikt. Bij het overschijven van de toegestane limiet, zal client-side-caching automatisch de oudste gecachte bestanden verwijderen.
                     \item Actieve caching: Deze methode laat de gebruiker toe om individuele bestanden te cachen, door dit expliciet aan te geven op het bestand zelf.
                 \end{itemize}
 
@@ -158,7 +164,7 @@
 				\item \textbf{NTFS 1.2}
 					\begin{itemize}
 						\item \textbf{Beveiliging tot op bestandsniveau}: NTFS is het enige Windows bestandssysteem dat voldoende beveiliging biedt voor gebruikers die zich lokaal aanmelden.
-						\item \textbf{Logging van schijfactiviteiten}: Schijfactiviteiten worden vastgelegd in logboekbestanden, kan de oorspronkelijke situatie na een stroomonderbreking herstelt worden.
+						\item \textbf{Logging van schijfactiviteiten}: Schijfactiviteiten worden vastgelegd in logboekbestanden waardoor de oorspronkelijke situatie na een stroomonderbreking kan herstelt worden.
 						\item \textbf{Grotere volumes, zonder performantiedegradatie}: Naarmate de stationsgrootte toeneemt, nemen de prestaties met NTFS niet af zoals met FAT.
 						\item \textbf{Compressie}: Alleen NTFS volumes ondersteunen compressie. Via het commando \texttt{compact} kan je bestanden of folders compresseren. \accentuate{Voer zelf het commando 'compact /?' uit en studeer de opties /C, /F, /I en /S}.
 						\item \textbf{Hardlinks}: Je kan diverse mappen in een volume hetzelfde bestand laten bevatten, zonder dit bestand fysiek te dupliceren. Om een hard link naar een bestand te creëren gebruik je ofwel \texttt{fsutil hardlink create \emph{linkbestand} \emph{bronbestand}} of anders \texttt{mklink /H \emph{linkbestand} \emph{bronbestand}}
@@ -176,8 +182,8 @@
 					\end{itemize}
 				\item \textbf{NTFS 3.1}
 					\begin{itemize}
-						\item \textbf{Historische versies van bestanden}: De Volume Shadow Copy service (VSS), geïntroduceerd door Windows Server 2003+, gecombineerd met de reparsepunt technologie van NTFS 3+ biedt de Shadow Copy Restore functionaliteit aan. VSS neemt periodieke snapshots van alle bestanden in een volume, en houdt een databank bij van incrementele wijzigingen aan deze bestanden. Deze databank wordt bijgehouden in een verborgen en geëncrypteerde map System Volume Information.Om VSS in te stellen gebruik je het \texttt{vsadmin} commando.
-						\item \textbf{Self-healing correctie van corrupties}: Eventuele corrupties worden online opgespoord en gecorrigeerd, waardoor de continue beschikbaarheid van het systeem verhoog, en gegevensverlies geminimaliseerd wordt.
+						\item \textbf{Historische versies van bestanden}: De Volume Shadow Copy service (VSS), geïntroduceerd door Windows Server 2003+, gecombineerd met de reparsepunt technologie van NTFS 3+ biedt de Shadow Copy Restore functionaliteit aan. VSS neemt periodieke snapshots van alle bestanden in een volume, en houdt een databank bij van incrementele wijzigingen aan deze bestanden. Deze databank wordt bijgehouden in een verborgen en geëncrypteerde map System Volume Information. Om VSS in te stellen gebruik je het \texttt{vsadmin} commando.
+						\item \textbf{Self-healing correctie van corrupties}: Eventuele corrupties worden online opgespoord en gecorrigeerd, waardoor de continue beschikbaarheid van het systeem verhoogt, en gegevensverlies geminimaliseerd wordt.
 						\item \textbf{Ondersteuning van transacties}: Een transactie is een reeks opeenvolgende bewerkingen op hetzelfde volume. Een transactie is atomair, zodat op het einde van een transactie ofwel alle wijzigingen doorgevoerd worden, of dat alle wijzigingen ongedaan gemaakt worden. Dit systeem vereenvoudigt de implementaties van transacties door RDBMS'en zoals SQL Server. 
 						\item \textbf{Globale diskquota op mapniveau}: Deze diskqouta's kunnen gelden op individuele mappen, maar zijn onafhankelijk van de eigenaar. Elke individuele bijdrage van een gebruiker tot de map zal een impact hebben op het al dan niet overschrijden van de limiet. Een lijst van mapquota's kan opgevgraagd worden met \texttt{dirquota template list}. Om een mapquota aan te maken gebruik je dan \texttt{dirquota quota add /path:map}
 						\item \textbf{File Screens}: Een file screen verhindert dat in een specifieke maphiërarchie bestanden met bepaalde extensies kunnen opgeslagen worden, en kunnen reacties triggeren als een gebruiker poogt dat toch te doen. OM file screens te beheren kan gebruikt gemaakt worden van het commando \texttt{filescrn}. 
@@ -191,8 +197,7 @@
 	\section{Machtigingen op bestandstoegang \accentuate{(§3.3)}}
 	\begin{enumerate}
 		\vraag { Welke rol spelen machtigingen bij de beveiliging van bronnen? Geef een gedetailleerd overzicht van het \textit{algemeen} (op alle windows objecten toegepast) mechanisme van \textit{machtigingen}. } {
-			\begin{itemize}
-				\item Bij elke bron moet er bepaald worden wie er toegang heeft tot welke gegevens, en wat die er mee kan doen. Elk object in Active Directory, elk object van een NTFS volume, elke registersleutel, elk proces en ook elke service heeft een security descriptor. Deze bevat:
+			Bij elke bron moet er bepaald worden wie er toegang heeft tot welke gegevens, en wat die er mee kan doen. Elk object in Active Directory, elk object van een NTFS volume, elke registersleutel, elk proces en ook elke service heeft een security descriptor. Deze bevat:
 				\begin{itemize}
 					\item een machtigingsset = Access Control List,
 					\item de System Access Control List definieert welke acties van welke gebruikers door het auditing systeem gelogd worden,
@@ -207,13 +212,11 @@
 					\item Overgenomen machtigingen worden doorgegeven door een bovenliggend object in de hiërarchie. 
 				\end{itemize}
 				De expliciete machtigingen hebben steeds voorrang op overgenomen machtigingen, zelfs op machtigingen die ontkent worden.
-			\end{itemize}
 
 		}
 		
 		\vraag { Bespreek hoe het mechanisme van machtigingen \textit{specifiek} (en op diverse niveaus) \textit{toegepast} wordt op \textit{bestandstoegang}. Geef de verschillende soorten machtigingen, hun onderlinge relaties, en hoe deze kunnen \textit{geanalyseerd} en \textit{ingesteld} worden. Toon hierbij aan dat je zelf met deze configuratietools geëxperimenteerd hebt. } { 
-			\begin{itemize}
-				\item Voor bestandstoegang kunnen zowel machtigingen ingesteld worden op share niveau als op NTFS niveau. Verzoeken van gebruikers kunnen onafhankelijk van de NTFS machtigingen door de share machtiging geweigerd worden. 
+			Voor bestandstoegang kunnen zowel machtigingen ingesteld worden op share niveau als op NTFS niveau. Verzoeken van gebruikers kunnen onafhankelijk van de NTFS machtigingen door de share machtiging geweigerd worden. 
 				\item \textbf{Share niveau}
 				
 				Bestandstoegang op share niveau vormt de eerste beveiligingslaag. Elke share heeft toegewezen machtigingen. Om die te bekijken of wijzigen moet de Permissions Editor opgestart worden, bv door \texttt{compmgmt.msc} op te starten, de properties opvragen van een share, de tabpagina Sharing selecteren en de Advanced Sharing en Permissions knoppen te selecteren.
@@ -232,27 +235,24 @@
 					\item \textbf{De moleculaire machtigingen}: Dit niveau omvat zes veel gebruikte combinaties van atomaire machtigingen. \accentuate{ ook hier moeten de opties niet gekend zijn.}
 				\end{itemize}
 
-				NTFS machtigingen kunnen ingesteld worden met de ACL editor, die kan opgeroepen worden via de Security tabpagina van een wilekeurige map of bestand. De security tabpagina bevat een lijst van gebruikers of groepen waarop een ACL gedefinieerd is voor het geselecteerde object. Op een gebruiker of groep klikken geeft de overeenkomstige moleculaire machtigingen in een andere lijst. Grijze selectievakjes duiden overgeërfde machtigingen aan. De knop advanced geeft een nieuw venster met 3 tabbladen:
+				NTFS machtigingen kunnen ingesteld worden met de ACL editor, die kan opgeroepen worden via de Security tabpagina van een willekeurige map of bestand. De security tabpagina bevat een lijst van gebruikers of groepen waarop een ACL gedefinieerd is voor het geselecteerde object. Op een gebruiker of groep klikken geeft de overeenkomstige moleculaire machtigingen in een andere lijst. Grijze selectievakjes duiden overgeërfde machtigingen aan. De knop advanced geeft een nieuw venster met 3 tabbladen:
 				\begin{itemize}
-					\item \textbf{Permissions}: Dit tabblad geeft opnieuw de lijst van gebruikers of groepen. Er kunnen gebruikers of groepen toegevoegd, verwijderd, of geinspecteerd worden. Door een gebruiker of groep te selecteren en vervolgens op View te klikken, komen terug de 6 moleculaire machtigingen tevoorschijn. Om de atomaire machtigingen te zien klik je op Show Advanced Permissions.
+					\item \textbf{Permissions}: Dit tabblad geeft opnieuw de lijst van gebruikers of groepen. Er kunnen gebruikers of groepen toegevoegd, verwijderd, of geïnspecteerd worden. Door een gebruiker of groep te selecteren en vervolgens op View te klikken, komen terug de 6 moleculaire machtigingen tevoorschijn. Om de atomaire machtigingen te zien klik je op Show Advanced Permissions.
 					\item \textbf{Auditing}: Dit laat toe om de SACL in te stellen voor het specifieke object. Elke atomaire machtiging kan ingesteld worden, en ook of dat de machtiging gelukt of gefaald is.
 					\item \textbf{Effective Access}: Dit tabblad laat toe om de machtigingen van een bepaalde gebruiker of groep te bekijken via hetzelfde algoritme dat de Security Reference Monitor hanteert om de uiteindelijke machtigingen op een object na te gaan.
-				\end{itemize}
-			\end{itemize}
+				\end{itemize} 
 		}
 		
 		\vraag { Wat gebeurt er met de machtigingen bij het \textit{verplaatsen} van een bestand? Wat gebeurt er met de machtigingen bij het \textit{kopiëren} van een bestand? } { 
+			In beide gevallen wordt de gebruiker die de verplaats- of kopieeropdracht uitvoert, automatisch de eigenaar van de objecten. 
 			\begin{itemize}
-				\item In beide gevallen wordt de gebruiker die de verplaats- of kopieeropdracht uitvoert, automatisch de eigenaar van de objecten. 
 				\item \textbf{Verplaatsen}: Een bestand of map verplaatsen naar een container binnen hetzelfde volume heeft geen impact op de explicitie machtigingen die zijn toegewezen aan het object, en blijfen dus behouden. Indien deze verplaatst worden naar een andere container binnen een ander volume, dan krijgen de objecten dezelfde machtigingen als hun doelcontainer.
 				\item \textbf{Kopiëren}: Een bestand of map kopiëren naar een container op hetzelfde of een ander volume, vervallen de expliciete machtigingen, en worden de machtigingen van de doelcontainer overgenomen.
 			\end{itemize}
 		}
 		
 		\vraag { Op welke \textit{andere objecten} zijn machtigingen van toepassing? } { 
-			\begin{itemize}
-				\item Op elk object in Active Directory, elke registersleutel, elk proces en elke service.
-			\end{itemize}
+			Op elk object in Active Directory, elke registersleutel, elk proces en elke service.
 		}
 		
 		\vraag { Wie is \textit{in principe} verantwoordelijk voor het configureren van machtigingen? Door welke instelling is dit zo vastgelegd? Hoe kan ervoor gezorgd worden dat enkel \textit{administrators} verantwoordelijk gesteld worden voor het configureren van machtigingen? } { \todo{Oplossen}}
@@ -271,8 +271,8 @@
 		{
 			\begin{itemize}
 				\item \textbf{Lokale veiligheidsgroep:} Lokale groepen kunnen leden uit elk domein van het forest of een ander trusted domein bevatten. Lokale groepen zijn enkel zichtbaar en geldig in het eigen domein. Lokale groepen worden dan ook niet gekopieerd naar de global catelog. Lokale groepen kunnen behalve gebruikers, ook globale en universele groepen uit om het even welk domein van het forest omvatten, maar enkel lokale groepen uit hetzelfde domein.
-				\item \textbf{Globale veiligheidsgroep:} Globale groepen kunnen alleen gebruikers en andere globale groepen uit hetzelfde domein omvatten. Ze zijn zichtbaar in elk domein van het forest of een ander trusting domein. Lokale en universele groepen kunnen geen deel uitmaken van een globale groep. Deze groep wordt vaak gebruikt als container voor gebruikers die dezelfde machtigingen of rechten nodig zullen hebben.
-				\item \textbf{Universele veiligheidsgroep:} Universele groepen kunnen leden hebben uit elk domein van het forest, maar niet uit een ander trusted domein, en zijn zichtbaar in elk domein van het forest, maar niet in een ander trusting domein. Een universele groep word, zoals een lokale groep, typisch gebruikt om rechten en machtigingen toe te kennen, maar bieden er tegenover het voordeel dat ze in alle domeinen tegelijkertijd geldig zijn, en bijgevolg slechts éénmaal moeten gedefinieerd worden. Een universele groep kan andere universele groepen, en gebruikers en globale groepen uit alle domeinen van het forest bevatten. Lokale groepen mogen niet opgenomen worden.
+				\item \textbf{Globale veiligheidsgroep:} Globale groepen kunnen alleen gebruikers en andere globale groepen uit hetzelfde domein omvatten. Ze zijn zichtbaar in elk domein van het forest of een ander trusting domein. Lokale en universele groepen kunnen geen deel uitmaken van een globale groep.
+				\item \textbf{Universele veiligheidsgroep:} Universele groepen kunnen leden hebben uit elk domein van het forest, maar niet uit een ander trusted domein, en zijn zichtbaar in elk domein van het forest, maar niet in een ander trusting domein. Een universele groep kan andere universele groepen, en gebruikers en globale groepen uit alle domeinen van het forest bevatten. Lokale groepen mogen niet opgenomen worden.
 			\end{itemize}
 		}
 		\vraag { Hoe en waarom worden deze soorten groepen \textit{in de praktijk} best gebruikt, al dan niet gecombineerd? Van welke omstandigheden is dit afhankelijk? Illustreer aan de hand van concrete voorbeelden.  } 
@@ -280,21 +280,30 @@
 			\begin{itemize}
 				\item \textbf{Lokale groepen} worden typisch gebruikt om rechten en machtigingen toe te kennen, door voor elke bron of verzameling bronnen één of meerdere lokale groepen te creëren en de toegang tot die bron in te stellen door één keer toegang te verlenen aan de lokale groep. De toegang tot de bron wordt nadien enkel gewijzigd door het lidmaatschap te manipuleren. Lokale groepen zijn niet alleen zichtbaar op domeincontrollers, maar ook op alle werkposten en lidservers. Dit neemt de noodzaak weg om uit veiligheidsoverwegingen alle lidservers te configureren als domeincontrollers.
 
-				\item \textbf{Globale groepen} worden eerder gebruikt ales container voor gebruikers die dezelfde machtigingen of rechten nodig zullen hebben. Als een verzameling gebruikers, afkomstig uit een ander domein toegang wil krijgen tot een bepaalde bron, dan wordt deze verzameling gebruikers best gegroepeerd in een globale groep van het andere domein. Deze groep moet dan lid gemaakt worden van een lokale groep die gekoppeld is aan de bron.
+				\item \textbf{Globale groepen} worden eerder gebruikt als container voor gebruikers die dezelfde machtigingen of rechten nodig zullen hebben. Als een verzameling gebruikers, afkomstig uit een ander domein toegang wil krijgen tot een bepaalde bron, dan wordt deze verzameling gebruikers best gegroepeerd in een globale groep van het andere domein. Deze groep moet dan lid gemaakt worden van een lokale groep die gekoppeld is aan de bron.
 
 				\item \textbf{Universele groepen} worden net als lokale groepen typisch gebruikt om rechten en machtigingen toe te kennen, maar bieden het voordeel dat ze in alle domeinen tegelijkertijd geldig zijn en dus slechts eenmaal moeten gedefinieerd worden. Zowel de namen als de leden van universele groepen worden in de global catalog opgenomen en kan vrij groot worden. Bij voorkeur bevatten universele groepen enkel globale groepen.
 			\end{itemize}
 		}
 		
 		\vraag { Waar en hoe wordt het (volledige) lidmaatschap van een \textit{user} object tot een groep bijgehouden? Op welke diverse manieren kan men dit lidmaatschap \textit{configureren}? Op welke diverse manieren kan men de volledige verzameling van objecten, die deel uitmaken van een specifieke groep, of de volledige verzameling van groepen, waar een specifiek object deel van uitmaakt, achterhalen? \accentuate{ (partim §4.1.2 en §4.2.3)} } {
-			\begin{itemize}
-				\item In het properties venster van een gebruikersaccount kan in het tabblad \emph{Member Of} de lidmaatschap tot groepen geconfigureerd worden. Het \emph{memberOf} attribuut dat hiervoor gebruikt wordt, is gelinkt aan het member attribuut van de groep en is hier de back-link. Dit kan niet rechtstreeks gewijzigd worden, maar enkel via het member attribuut van de groep. In het properties venster van een groep kan in het tabblad \emph{Members} de groep bevolkt worden. De groep kan zelf deel uitmaken van een andere groep door dit aan te passen in het tabblad \emph{Member Of} van de groep. De lijst van members wordt steeds opgeslagen in een link-kenmerk met in de groep de forward-link members, en in het object dat deel uitmaakt van de groep de back-link \emph{memberOf}. 
+			In het properties venster van een gebruikersaccount kan in het tabblad \emph{Member Of} de lidmaatschap tot groepen geconfigureerd worden. Het \emph{memberOf} attribuut dat hiervoor gebruikt wordt, is gelinkt aan het member attribuut van de groep en is hier de back-link. Dit kan niet rechtstreeks gewijzigd worden, maar enkel via het member attribuut van de groep. In het properties venster van een groep kan in het tabblad \emph{Members} de groep bevolkt worden. De groep kan zelf deel uitmaken van een andere groep door dit aan te passen in het tabblad \emph{Member Of} van de groep. De lijst van members wordt steeds opgeslagen in een link-kenmerk met in de groep de forward-link members, en in het object dat deel uitmaakt van de groep de back-link \emph{memberOf}. 
 
 				Groepsleden kunnen ook uit een trusted domein geselecteerd worden. Active Directory maakt hiervoor een phantomobject aan, dat het object uit het trusted domein representeert. Deze phantomobjecten komen terecht in de container ForeignSecurityPrincipals en kunnen lid worden van lokale groepen in het domein.
-			\end{itemize}
+
 			 }
 		
-		\vraag { Door \textit{wie} wordt het lidmaatschap van de diverse groeptypes bij voorkeur ingesteld? } { \todo{Oplossen}}
+		\vraag { Door \textit{wie} wordt het lidmaatschap van de diverse groeptypes bij voorkeur ingesteld? } 
+		{ 
+			Dit kan best door de beheerder zelf gedaan worden. Lidmaatschap bij een groep kan bepaalde machtigingen met zich meebrengen en het is de taak van de beheerder om ervoor te zorgen dat gebruikers niet meer rechten hebben dat dat ze nodig hebben. In grote organisaties kan een deel van de beheerstaken gedelegeerd worden naar andere personen. Zij kunnen dan bijvoorbeeld rechten hebben om een bepaalde subtak of organisatie-eenheid te beheren. Bij subscriptiegroepen kunnen gebruikers zich zelf in- en uitschrijven.
+		}
 		
-		\vraag { Op welke diverse manieren kan men het beheer van Active Directory objecten, specifieke attributen van groepsobjecten in het bijzonder, \textit{delegeren aan niet-Administrators}? Bespreek een aantal technieken om dit delegeren \textit{zo eenvoudig mogelijk} uit te voeren. \accentuate{(partim §4.1.2, en §4.4.2)}  } { \todo{Oplossen}}
+		\vraag { Op welke diverse manieren kan men het beheer van Active Directory objecten, specifieke attributen van groepsobjecten in het bijzonder, \textit{delegeren aan niet-Administrators}? Bespreek een aantal technieken om dit delegeren \textit{zo eenvoudig mogelijk} uit te voeren. \accentuate{(partim §4.1.2, en §4.4.2)}  } { 
+			In Active Directory kunnen de beheerstaken van een organisatie-eenheid gedelegeerd worden aan een groep gebruikers. De ACLs van de organisatie-eenheid moet dan wel aangepast worden. Er zijn drie technieken:
+			\begin{itemize}
+				\item \textbf{Delegation of Control Wizard:} De wizard zal aan de hand van een GUI het proces doorlopen om beheerstaken te delegeren aan groepen of gebruikers. De wizard toont een lijst van vaak voorkomende beheerstaken die voor delegatie in aanmerking komen. Er kunnen ook eigen beheerstaken opgesteld worden.
+				\item \textbf{Organisatie-eenheid properties:} De organisatie-eenheid kan direct aangepast worden, door naar het security tabblad te navigeren van de properties van de organisatie-eenheid. Hier kunnen zowel taken gedelegeerd worden als de instellingen van reeds gedelegeerde taken gewijzigd worden.
+				\item \textbf{Command Prompt:} Met de opdrachten \textbf{acldiag} en \textbf{dsacls} opdrachten. Terug intrekken van gedelegeerde taken kan met \textbf{dsrevoke}.
+			\end{itemize}
+		}
 	\end{enumerate}

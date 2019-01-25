@@ -811,7 +811,7 @@ sub reeks7 {
     }
 
     sub r7_o18 {
-        my @objectcategories = @ARGV[1 .. $#ARGV] or die "geef minstens één objectCategory (DnsNode, printQueue, person, computer, ...) mee";
+        my @objectcategories = @ARGV[1 .. $#ARGV] or die "geef minstens 1 objectCategory (DnsNode, printQueue, person, computer, ...) mee";
         print join "-", @objectcategories;
 
         my $root = bind_object('RootDSE');
@@ -834,7 +834,7 @@ sub reeks7 {
             until($resultset->{EOF}){
                 # custom code voor deze oefening
                 my $object = bind_object(substr $resultset->Fields("adspath")->{Value}, 22, length $resultset->Fields("adspath")->{Value}); # omdat ik in bind_object zelf LDAP en het IP adres al toevoeg
-                my $class = $object->{class};
+                my $class = $object->{Class};
                 printf "%${padding}s : %s\n", "class", $class;
                 # al de rest komt van de print_resultset methode
                 for (in $resultset->{Fields}){
@@ -1285,7 +1285,7 @@ sub reeks8 {
         my $user = getUser($samAccountName);
         my $keuze;
         do{
-            # Op dit moment bestaat user met samAccountName
+            # Op dit moment bestaat ufser met samAccountName
             print "\n1. Kies een andere gebruiker.\n";
             print "2. Voeg een telefoonnummmer toe aan $user->{cn}.\n";
             print "3. Toon overzicht van de groepen van $user->{cn}.\n";
@@ -1362,6 +1362,30 @@ sub reeks8 {
         }until($keuze == "7");
 
 
+    }
+
+    sub r8_o17 {
+        shift @ARGV; # get rid of mandatory argument to call this exercise
+
+        my $startline = $ARGV[0] or die "Give startline.\n";
+        my $endline = $ARGV[1] or die "Give endline.\n";
+        my $file = "stdinwe.out";
+        open my $FH, "<", $file;
+        my @lines;
+        while(<$FH>){
+            chomp;
+            if($. >= $startline && $. <= $endline){
+                push @lines, $_;
+            }
+        }
+        close $FH;
+        for my $line (@lines){
+            my @split = split  ':', $line;
+            # 19952511:wimvdb:Wim:Van den Breen:9030:A:Mariakerke:0:10/07/74:Gent:Oudewal 14:004:INF2:IIINFO000401
+            my ($samAccountName, $cn, $fullName, $postalCode,) = @split;
+            print $cn;
+            print "\n";
+        }
     }
 }
 

@@ -30,7 +30,7 @@
 					\item Een willekeurige maar een op voorhand gedefinieerde naam.
 				\end{itemize}
 
-				Er bestaat ook een alternatieve vorm, om compatibiliteit met vroegere NT versies te behouden. Men kan de NetBIOS naam van het domein en de SAM accountnaam van de gebruiker, aan elkaar gekoppeld door het \textbackslash-teken te gebruiken.  
+				Er bestaat ook een alternatieve vorm om compatibiliteit met vroegere NT versies te behouden. Men kan de NetBIOS naam van het domein en de SAM accountnaam van de gebruiker, aan elkaar gekoppeld door het \textbackslash-teken gebruiken.  
 				
 				\item Een \textbf{computeraccount} bevat drie extra attributen:
 				\begin{itemize}
@@ -68,9 +68,8 @@
 	\section{attributeSchema objecten \accentuate{ (\textsection 2.2.4 en \textsection 2.2.5)}}
 	\begin{enumerate}
 		\vraag { Bespreek het \textit{doel} en de \textit{werking} van attributeSchema objecten. Hoe kunnen deze objecten het best \textit{geraadpleegd} en \textit{gewijzigd} worden? } { 
-			\begin{itemize}
-				\item Het attributeSchema bevat alle kenmerken die in het schema voorkomen. Een kenmerk is zelf een object. Zo een kenmerk wordt éénmaal gedefinieerd en kan meerdere malen gebruikt worden bij verschillende klassen, wat voor consistentie zorgt. Een goed voorbeeld hiervan is het description kenmerk. Om op een eenvoudige manier objecten te raadplegen of wijzigen, kan men met het schema snap-in mechanisme werken. \textbf{Active Directory Schema} is zo een snap-in, dat eenvoudig in twee vensters zowel de kenmerken als de klassen weergeeft. Dubbelklikken op een item geeft de meest relevante eigenschappen van het object, en de mogelijkheid om deze in te stellen. Er kan ook gebruikt gemaakt worden van de opdracht \textbf{dsquery *}. Deze opdracht kan om het even welke kenmerken tonen van één enkel object, of van alle objecten in een container, zowel niet-recursief als recursief.
-			\end{itemize}
+			Het attributeSchema bevat alle kenmerken die in het schema voorkomen. Een kenmerk is zelf een object. Zo een kenmerk wordt éénmaal gedefinieerd en kan meerdere malen gebruikt worden bij verschillende klassen, wat voor consistentie zorgt. Een goed voorbeeld hiervan is het description kenmerk. Om op een eenvoudige manier objecten te raadplegen of wijzigen, kan men met het schema snap-in mechanisme werken. \textbf{Active Directory Schema} is zo een snap-in, dat eenvoudig in twee vensters zowel de kenmerken als de klassen weergeeft. Dubbelklikken op een item geeft de meest relevante eigenschappen van het object, en de mogelijkheid om deze in te stellen. Er kan ook gebruikt gemaakt worden van de opdracht \textbf{dsquery *}. Deze opdracht kan om het even welke kenmerken tonen van één enkel object, of van alle objecten in een container, zowel niet-recursief als recursief.
+
 		}
 		
 		\vraag { Bespreek de \textit{diverse naamgevingen}, specifiek voor attributeSchema objecten. } { 
@@ -129,19 +128,16 @@
 	\section{classSchema objecten \accentuate{ (\textsection 2.2.4 en \textsection 2.2.6)}}
 	\begin{enumerate}
 		\vraag { Bespreek het \textit{doel} en de \textit{werking} van classSchema objecten. } { 
-			\begin{itemize}
-				\item Voor elke klasse is er een classSchema object waarmee de klasse kan ingesteld worden. De kenmerken van classSchema objecten definiëren de klasse, en bevatten twee soorten regels: met structuurregels worden mogelijke hiërarchische relaties tussen klassen of objecten gedefinieerd, terwijl met inhoudsregels kenmerken definiëren die beschikbaar zijn voor een exemplaar van die klasse.
-			\end{itemize}	
+			 Voor elke klasse is er een classSchema object waarmee de klasse kan ingesteld worden. De kenmerken van classSchema objecten definiëren de klasse, en bevatten twee soorten regels: met structuurregels worden mogelijke hiërarchische relaties tussen klassen of objecten gedefinieerd, terwijl met inhoudsregels kenmerken definiëren die beschikbaar zijn voor een exemplaar van die klasse.	
 		}
 		
 		\vraag { Hoe benadert Active Directory het mechanisme van \textit{overerving}? } {
-			\begin{itemize}
-				\item Een klasse die een andere klasse (de superklasse) overeft, neemt de kenmerken van deze superklasse over, inclusief de structuurregels en de inhoudsregels. Deze overerving werkt recursief: de subklasse erft alle gegevens van opeenvolgende superklassen. Een klasse kan echter maar van één superklasse overerven, en eventueel van speciaal hiervoor bestemde hulpklassen, die zelf geen instanties kunnen bevatten. Vanaf Windows Server 2003 is het mogelijk om dynamische objecten te definiëren. Hierdoor is het mogelijk om hulpklassen dynamisch te gebruiken: tijdens de create van een object kunnen extra dynamische hulpklassen gegenereerd worden, die enkel voor die instantie geldig zijn, door aanvullingen van het objectClass attribuut. Na de creatie kan dit attribuut niet meer gewijzigd worden.
+			 Een klasse die een andere klasse (de superklasse) overeft, neemt de kenmerken van deze superklasse over, inclusief de structuurregels en de inhoudsregels. Deze overerving werkt recursief: de subklasse erft alle gegevens van opeenvolgende superklassen. Een klasse kan echter maar van één superklasse overerven, en eventueel van speciaal hiervoor bestemde hulpklassen, die zelf geen instanties kunnen bevatten. Vanaf Windows Server 2003 is het mogelijk om dynamische objecten te definiëren. Hierdoor is het mogelijk om hulpklassen dynamisch te gebruiken: tijdens de create van een object kunnen extra dynamische hulpklassen gegenereerd worden, die enkel voor die instantie geldig zijn, door aanvullingen van het objectClass attribuut. Na de creatie kan dit attribuut niet meer gewijzigd worden.
 
 				Het kenmerk \texttt{objectClassCategory} geeft de categorie van de klasse aan: structurele klasse, abstracte klasse en hulpklasse. Er kunnen geen instanties aangemaakt worden van een abstracte klasse, maar ze bevatten wel een verzameling kenmerken die door subklassen die van de klasse afgeleid zijn, overgeërfd worden. 
 
 				De hiërarchische relaties tussen objecten van klassen wordt gedefinieerd in de kenmerken \texttt{possSuperiors} en \texttt{systemPossSuperiors}. 
-			\end{itemize}	
+				
 		}
 		
 		\vraag { Bespreek de diverse \textit{naamgevingen}, specifiek voor classSchema objecten. } { 
@@ -180,8 +176,7 @@
 		}
 		
 		\vraag { Hoe en met welke middelen kan het Active Directory schema uitgebreid worden? Waarom moet je en hoe kan je hierbij \textit{voorzichtig} te werk gaan? \accentuate{ (o.a. \textsection 2.2.8, ldifde fractie \textsection 2.2.3)} } { 
-			\begin{itemize}
-				\item Wanneer onvoorzichtig uitbreidingen aan het schema worden toegevoegd, kan dit nefaste gevolgen hebben op domein en forestniveau. Een domein kan beschadigd geraken of zelfs uitschakelen. Bovendien gelden de wijzigingen voor het gehele forest.
+			 Wanneer onvoorzichtig uitbreidingen aan het schema worden toegevoegd, kan dit nefaste gevolgen hebben op domein en forestniveau. Een domein kan beschadigd geraken of zelfs uitschakelen. Bovendien gelden de wijzigingen voor het gehele forest.
 				
 				De veiligste manier om uitbreidingen op het schema te ontwikkelen en uit te testen is een geïsoleerd netwerk van een testomgeving. Bovendien worden schemaobjecten beveiligd door Access Control Lists, zodat enkel gemachtigde gebruikers aanpassingen kunnen doen. Verder kunnen ook nog volgende richtlijnen gehanteerd worden:
 				\begin{itemize}
@@ -190,16 +185,15 @@
 				\end{itemize}
 				
 				Een schema uitbreiden heeft echter veel potentieel. De aanbevolen manier om het Active Directory op grote schaal uit te breiden is via de \textbf{ldifde} opdracht, aangezien één ldifde inputbestand meerdere aanpassingen ineens kan bevatten. Zo een inputbestand heeft als formaat het LDAP Data Interchange Format. Aanpassingen op kleine schaal kunnen eerder gebeuren met de Active Directory Schema snap-in. Om op een veilige manier kenmerken toe te voegen aan objecten, maakt men eerst de kenmerken aan in het attributeSchema, vervolgt door het aanmaken van een hulpklasse die deze kenmerken bevat. De nieuwe hulpklasse kan dan geassocieerd worden met de klasse waaraan de kenmerken moeten toegevoegd worden.
-			\end{itemize}
+		
 		}
 	\end{enumerate}
 	
 	\section{Active Directory domeinstructuren \accentuate{(§2.4.4, laatste paragraaf §2.4.5 en §2.4.6)}}
 	\begin{enumerate}
 		\vraag { Wat is de bedoeling van \textit{vertrouwensrelaties}? } {
-			\begin{itemize}
-				\item Tussen twee domeinen kan er een vertrouwensrelatie tot stand gebracht worden, zodat gebruikers in het vertrouwd domein kunnen geverifieerd worden door de domeincontroller in het vertrouwend domein. Een gebruiker kan slechts domeinbronnen van een ander domein raadplegen indien er een vertrouwenspad bestaat tussen de twee domeinen. Dit wil niet zeggen dat de gebruiker automatisch toegang heeft tot de bronnen in dat domein.
-			\end{itemize}
+			 Tussen twee domeinen kan er een vertrouwensrelatie tot stand gebracht worden, zodat gebruikers in het vertrouwd domein kunnen geverifieerd worden door de domeincontroller in het vertrouwend domein. Een gebruiker kan slechts domeinbronnen van een ander domein raadplegen indien er een vertrouwenspad bestaat tussen de twee domeinen. Dit wil niet zeggen dat de gebruiker automatisch toegang heeft tot de bronnen in dat domein.
+		
 		}
 		
 		\vraag { Bespreek de verschillende \textit{soorten} vertrouwensrelaties. } { 
@@ -232,17 +226,39 @@
 			\end{itemize}
 		}
 		
-		\vraag { Welke verschillen zijn er in praktijk tussen \textit{NT 4.0} en \textit{Windows Server} domeinstructuren? Bespreek onder andere telkens de noodzaak om meerdere domeinen in te voeren. Bespreek de alternatieve mogelijkheden bij de \textit{conversie van een NT 4.0 domeinstructuur} naar een Windows Server omgeving. } { \todo{Oplossen}}
+		\vraag { Welke verschillen zijn er in praktijk tussen \textit{NT 4.0} en \textit{Windows Server} domeinstructuren? Bespreek onder andere telkens de noodzaak om meerdere domeinen in te voeren. Bespreek de alternatieve mogelijkheden bij de \textit{conversie van een NT 4.0 domeinstructuur} naar een Windows Server omgeving. } { 
+		Een eerste verschil is het conceptueel onderscheid tussen master domeinen en resource domeinen uit NT 4.0. Een master domein bevat gebruikers en groepen, terwijl een resource domein lidservers bevat die diensten aanbieden aan de gebruikers, en zelf nauwelijks gebruikers bevat. De NT 4.0 domeinstructuren bestaan vaak slechts uit enkele master domeinen, en meerdere resource domeinen. Er worden bi-directionele vertrouwensrelaties gelegd tussen master domeinen onderling, en unidirectionele vertrouwensrelaties waarbij elk resourcedomein elk masterdomein vertrouwd. De conversie van een NT 4.0 domeinstructuur naar een Windows Server omgeving heeft als voordeel dat het aantal domeinen verminderd wordt. De organisatie-eenheden van Active Directory vervangen het concept van master en resource domeinen. De conversie begint eerst bij alle master domeinen en wordt daarna pas gevolgd door de resource domeinen. De organisatiestructuur van de bestaande domeinen kunnen gesimuleerd worden door corresponderende organisatie-eenheden in Windows Server. Wanneer een NT 4.0 meerdere domeinstructuren meerdere master domeinen heeft, ligt dat waarschijnlijk aan de volgende redenen:
+		\begin{itemize}
+			\item Er zijn teveel gebruikers en groepen in één NT 4.0 domein. SAM databanken met een grootte boven 40 MB blijken onstabiel te zien.
+			\item Het netwerk heeft verschillende geografische locaties, aan elkaar gekoppeld door trage verbindingen, waarover geen replicatieverkeer gewenst is.
+			\item Men wil een specifiek wachtwoordbeleid voor diverse groepen gebruikers.
+			\item De domeinstructuur weerspiegeld de structuur van het bedrijf, waarbij verschillende bedrijfseenheden controle moeten hebben over hun eigen gebruikers en bronnen.
+		\end{itemize}
+		Het eerste argument is direct opgelost aangezien Active Directory schaalbaar is. Het tweede argument kan opgelost worden met sites, die in staat zijn om de netwerkinfrastructuur te modeleren om zo beter replicatieverkeer te beheren. Het replicatieverkeer kan nog beter beperkt worden door Read-Only domeincontrollers in te schakelen. Het derde argument kan opgelost worden door in een domein met Windows Server 2008 functioneel niveau, fine-grained password policies toe te passen. Voor het vierde argument is het aangewezen om aparte domeinen in de verschillende sites te behouden. Hierbij kan elk NT 4.0 master domein geupgrade worden naar een root domein van een Windows Server tree in hetzelfde forest. Om een aantal NT 4.0 domeinen samen te voegen tot één Windows Server domein, dan is het eenvoudiger om eerst al de oude domeinen samen te voegen , het samengevoegde domein te upgraden naar Windows Server, en vervolgens de oorspronkelijke domeinen omzetten in organisatie-eenheden.
+		}
 	\end{enumerate}
 	
 	\section{Active Directory server rollen \accentuate{(§2.4.7, §2.3 en fractie §2.4.2)}}
-	Welke vragen moet men zich stellen na de initiële installatie van een Windows Server toestel, in verband met \textit{bijzondere functies} die de server kan vervullen met betrekking tot Active Directory? Formuleer bij het beantwoorden van deze vragen telkens (voor zover relevant): 
-	\begin{itemize}
-		\item  Hoe bepaald wordt \textit{welke servers} een dergelijke specifieke functie vervullen? \textit{Hoeveel} zijn er nodig (in termen van: \textit{minimaal/exact/maximaal} \#, \textit{in functie van} ...), en waarom?
-		\item  \textit{Eigenschappen} zoals bedoeling, noodzaak, kriticiteit, inhoud, synchronisatie, voor welke Windows versie(s) van toepassing, ...? 
-		\item  De \textit{eventuele relatie} tussen de diverse functies. Vermeld bijvoorbeeld welke functies al dan niet door dezelfde server \textit{kunnen} vervuld worden, of misschien wel juist wel door dezelfde server \textit{moeten} vervuld worden. 
-		\item  Hoe kan achterhaald worden welk(e) toestel(len) de bijzondere functie vervult, en op welke diverse manieren men de \textit{toewijzing} ervan kan instellen, wijzigen en/of ongedaan maken? 
-		
-		\todo{oplossen}
-		
-	\end{itemize}	
+	\begin{enumerate}
+		\vraag{Welke vragen moet men zich stellen na de initiële installatie van een Windows Server toestel, in verband met \textit{bijzondere functies} die de server kan vervullen met betrekking tot Active Directory? Formuleer bij het beantwoorden van deze vragen telkens (voor zover relevant): 
+			\begin{itemize}
+				\item  Hoe bepaald wordt \textit{welke servers} een dergelijke specifieke functie vervullen? \textit{Hoeveel} zijn er nodig (in termen van: \textit{minimaal/exact/maximaal} \#, \textit{in functie van} ...), en waarom?
+				\item  \textit{Eigenschappen} zoals bedoeling, noodzaak, kriticiteit, inhoud, synchronisatie, voor welke Windows versie(s) van toepassing, ...? 
+				\item  De \textit{eventuele relatie} tussen de diverse functies. Vermeld bijvoorbeeld welke functies al dan niet door dezelfde server \textit{kunnen} vervuld worden, of misschien wel juist wel door dezelfde server \textit{moeten} vervuld worden. 
+				\item  Hoe kan achterhaald worden welk(e) toestel(len) de bijzondere functie vervult, en op welke diverse manieren men de \textit{toewijzing} ervan kan instellen, wijzigen en/of ongedaan maken? 
+		\end{itemize}}{
+			\begin{itemize}
+				\item \textbf{Wordt de server opgenomen in het domein?} Een server dat niet opgenomen wordt in het domein wordt een zelfstandige server genoemd. Zulke servers kunnen de voordelen van Active Directory niet gebruiken. Bij een reeds bestaande Active Directory domeinstructuur is de keuze snel gemaakt.
+				\item \textbf{Vervult de in de domein opgenomen server de rol van domeincontroller?} Een server die de functie van een domeincontroller niet vervult, wordt een lidserver genoemd. Zulke lidservers kunnen in Windows Server 2008 drie categorieën van functionaliteiten aanbieden:
+				\begin{itemize}
+					\item \textbf{Server rollen:} rollen die relevant zijn voor webservers, DNS, DHCP, enz. 
+					\item \textbf{Role Services:} optionele, meer complexe server rollen.
+					\item \textbf{Features:} Ondersteunende functionaliteit zoals backups of SNMP.
+				\end{itemize}
+				Er moet minimaal 1 domeincontroller in een domein zitten. Doorgaans wordt er maar een beperkt aantal servers als domeincontrollers ingesteld aangezien domeincontrollers veel netwerkverkeer veroorzaken. Domeincontrollers moeten over genoeg geheugen beschikken, zoniet zal er nagenoeg voortdurend schijfactiviteit zijn.
+				\item \textbf{Indien gekozen wordt voor een domeincontroller, moet ook de functie van globale catalogus ondersteund worden?} Als er slechts één domein in een forest is, dan mogen alle domeincontrollers tot global catalog gepromoveerd worden. De promotie 
+				\item \textbf{Welke domeincontrollers worden als Read-Only domeincontrollers ingesteld?}
+				\item \textbf{Welke domeincontrollers vervullende de operations master rollen?} Elke operation master rol kan slechts vervult worden door één domeincontroller.
+			\end{itemize}
+		}
+	\end{enumerate}
