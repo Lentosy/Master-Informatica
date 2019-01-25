@@ -8,22 +8,22 @@ Deze repository bevat mijn samenvattingen, testvragen en examenvragen van de ver
 
 ## Semester I
 
-[Gevorderde algoritmen](https://github.com/Lentosy/Master-Informatica/tree/master/Gevorderde%20algoritmen)
+[Gevorderde algoritmen](https://github.com/Lentosy/Master-Informatica/tree/master/Semester%20I/Gevorderde%20algoritmen)
 
-[Besturingssystemen III](https://github.com/Lentosy/Master-Informatica/tree/master/Besturingssystemen%20III)
+[Besturingssystemen III](https://github.com/Lentosy/Master-Informatica/tree/master/Semester%20I/Besturingssystemen%20III)
 
-[Beveiliging van netwerken en computers](https://github.com/Lentosy/Master-Informatica/tree/master/Beveiliging%20van%20netwerken%20en%20computers)
+[Beveiliging van netwerken en computers](https://github.com/Lentosy/Master-Informatica/tree/master/Semester%20I/Beveiliging%20van%20netwerken%20en%20computers)
 
-[Systeemontwerp](https://github.com/Lentosy/Master-Informatica/tree/master/Systeemontwerp)
+[Systeemontwerp](https://github.com/Lentosy/Master-Informatica/tree/master/Semester%20I/Systeemontwerp)
 
-[Gedistribueerde toepassingen](https://github.com/Lentosy/Master-Informatica/tree/master/Gedistribueerde%20toepassingen)
+[Gedistribueerde toepassingen](https://github.com/Lentosy/Master-Informatica/tree/master/Semester%20I/Gedistribueerde%20toepassingen)
 
-[Computergrafiek](https://github.com/Lentosy/Master-Informatica/tree/master/Computergrafiek)
+[Computergrafiek](https://github.com/Lentosy/Master-Informatica/tree/master/Semester%20I/Computergrafiek)
 
 ## Semester II
 
-[Kunstmatige intelligentie](https://github.com/Lentosy/Master-Informatica/tree/master/Kunstmatige%20intelligentie)
+[Kunstmatige intelligentie](https://github.com/Lentosy/Master-Informatica/tree/master/Semester%20II/Kunstmatige%20intelligentie)
 
-[Computervisie](https://github.com/Lentosy/Master-Informatica/tree/master/Computervisie)
+[Computervisie](https://github.com/Lentosy/Master-Informatica/tree/master/Semester%20II/Computervisie)
 
-[Compilers](https://github.com/Lentosy/Master-Informatica/tree/master/Compilers)
+[Compilers](https://github.com/Lentosy/Master-Informatica/tree/master/Semester%20II/Compilers)
