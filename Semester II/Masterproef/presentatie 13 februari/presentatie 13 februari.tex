@@ -1,0 +1,104 @@
+\documentclass[notes]{beamer}
+
+\usepackage{lipsum}
+
+\usepackage[dutch]{babel}
+\uselanguage{dutch}
+\languagepath{dutch}
+
+\usetheme{AnnArbor}
+\usecolortheme{beaver}
+
+\title[Actieherkenning met de Kinect sensor]{Live actieherkenning met de Kinect sensor in Python}
+\author{Bert De Saffel}
+\date{13 februari 2019}
+\subtitle{Master of Science in de industriële wetenschappen: informatica}
+
+
+\AtBeginSection[]
+{
+	\begin{frame}
+		\tableofcontents[currentsection]
+	\end{frame}
+}
+
+\AtBeginSubsection[]{
+	\begin{frame}
+		\tableofcontents[currentsection,currentsubsection]
+	\end{frame}
+}
+
+\begin{document}
+	\frame{\titlepage}
+	
+	\section{Inleiding}
+	
+	\begin{frame}
+	\frametitle{Inleiding}
+		\begin{itemize}
+			\item<1- > Onderzoek naar menselijke actieherkenning
+			\item<2- > Kinect Sensor 
+			\begin{itemize}
+				\item<3- > Genereert skelet via dieptebeelden
+				\item<4- > Skelet gebruiken voor actieherkenning
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	
+	\section{Probleem- en doelstellingen}
+	\begin{frame}
+	\frametitle{Probleem- en doelstellingen}
+		\begin{itemize}
+			\item Problemen:  		
+				\begin{enumerate}
+					\item 
+				\end{enumerate}
+			\item Doelen:
+				\begin{enumerate}
+					\item Python implementatie voor de Kinect sensor
+					\item Live actieherkenning via machinaal leren
+				\end{enumerate}
+		\end{itemize}
+	\end{frame}
+	\note[itemize]{
+		\item Python implementatie: live mapping van beelden + opslaan in toegankelijk videoformaat
+		\item Live actieherkenning: 	
+	}
+	\begin{frame}
+	\frametitle{Impact}
+	
+	\end{frame}
+
+	\section{Plan van aanpak}
+	\subsection{Literatuurstudie}
+	\begin{frame}
+	\frametitle{Literatuurstudie}
+		\begin{itemize}
+			\item<1- > Mogelijkheden en limitaties van de kinect sensor
+			\item<2- > Bestaande actieherkenningsalgoritmen bestuderen
+			\item<3- > (Bestuderen bestaande implementaties)
+		\end{itemize}
+	\end{frame}
+
+	\subsection{Python wrapper}
+	\begin{frame}
+	\frametitle{Python wrapper}
+		\begin{itemize}
+			\item Twee hoofdfunctionaliteiten:
+			\begin{itemize}
+				\item<1- > Live mapping van de Kinect sensoren.
+				\item<2- > Opslaan beelden in toegankelijk videoformaat
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+	\subsection{Actieherkenning met machine learning}
+		\begin{frame}
+		\frametitle{Actieherkenning met machine learning}
+		\begin{itemize}
+			\item ...
+		\end{itemize}
+	\end{frame}
+
+\end{document}

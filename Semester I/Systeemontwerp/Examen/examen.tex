@@ -4,7 +4,7 @@
 \usepackage{color}
 \usepackage{listings}
 
-\usepackage[a4paper, total={7in, 8in}]{geometry}
+\usepackage[a4paper, total={7in,10in}]{geometry}
 
 
 \def\warning#1{\color{red} #1 \color{black}}
@@ -91,11 +91,52 @@ De sales afdeling bevat een salesteam die de panden proberen te verkopen.
 Tot slot is er een finance afdeling die de betalingen afhandelen.
 
 \subsection*{User Story 1: Aankoop pand}
-Wanneer een werknemer een nieuw leegstaand pand gevonden heeft, kan hij dit pand registreren in het systeem. Experts gaan dan langs om een rapport op te maken. Dit rapport bevat taken die moeten uitgevoerd worden vooraleer het pand terug te koop kan gesteld worden. De inkoopafdeling maakt een schatting van de prijs op basis van historische data. Het sales department maakt ook een schatting van de prijs
+Wanneer een werknemer een nieuw leegstaand pand gevonden heeft, kan hij dit pand registreren in het systeem. Experts gaan dan langs om een rapport op te maken. Dit rapport bevat taken die moeten uitgevoerd worden vooraleer het pand terug te koop kan gesteld worden. De inkoopafdeling maakt een schatting van de prijs op basis van historische data. Het sales department maakt ook een schatting van de prijs. De combinatie van deze twee schattingen bepaald of al dan niet het pand gekocht zal worden.
 \subsection*{User Story 2: Renoveren pand}
+Wanneer een pand gekocht wordt, worden de taken gedelegeerd aan de werfleiders. Wanneer een werfleider een bepaalde taak heeft voltooid, wordt dit aan het finance department gemeld. Het finance department betaalt de werfleider afhankelijk van de uitgevoerde taak. 
 
 \subsection*{User Story 3: Verkopen pand}
+Wanneer alle taken van een pand afgewerkt is, wordt dit gemeld aan het sales department. Het sales department wordt dan verantwoordelijk voor het effectief verkopen van het pand. Een verkoper kan bezoeken inplannen voor geïnteresseerde kopers in het pand. Uiteraard kunnen er geen meerdere bezoeken op hetzelfde moment in een bepaald pand plaatsvinden. Een verkocht pand wordt gemeld aan de finance department.
 
 
 \part*{Examen - Oefening}
+\section*{Spring Boot}
+% Project constructionSiteManagement
+% constructionsite had ID, 
+% heeft een RestController met methode:
+% construction_sites    = toon alle construction sites
+% assign_contractor?id=<id>     = contractor toekennen aan constructionsite met id. De contractor met laagste avgJobCost moet gekozen worden
+
+% Project constractors
+% contractor heeft avgJobCost, id, constructionSiteId
+
+Zorg ervoor dat het project aan volgende voorwaarden voldoet:
+\begin{itemize}
+	\item Het \textbf{contractors} project bevat testdat.
+	\item 
+\end{itemize}
+
+\section*{Docker}
+
+dunno
+
+Je hebt volgende images nodig:
+\begin{itemize}
+	\item \textbf{openjdk:8-alpine}
+	\item \textbf{mysql}. Je moet zelf de omgevingsvariabelen instellen.
+	\item \textbf{confluentinc/cp-zookeeper} met volgende omgevingsvariabelen:
+	\begin{itemize}
+		\item \texttt{ZOOKEEPER\_CLIENT\_PORT}: 2181
+	\end{itemize}
+	\item \textbf{confluentinc/cp-kafka} met volgende omgevingsvariabelen:
+	\begin{itemize}
+		\item \texttt{KAFKA\_BROKER\_ID}: 1
+		\item \texttt{KAFKA\_ZOOKEEPER\_CONNECT}: $<$zookeeper service name$>$: 2181
+		\item \texttt{KAFKA\_ADVERTISED\_LISTENERS}: PLAINTEXT://$<$kafka service name$>$: 9092
+		\item \texttt{KAFKA\_OFFSETS\_TOPIC\_REPLICATION\_FACTOR}: 1
+	\end{itemize}
+		
+\end{itemize}
+openjdk-8-alpine, mysql, zookeeper, kafka
+
 \end{document}
