@@ -1,7 +1,6 @@
 # Woord vooraf
 
-Deze repository bevat mijn samenvattingen, testvragen en examenvragen van de verplichte vakken (plus een paar keuzevakken: computergrafiek, computervisie, compilers en kunstmatige intelligentie), en (zo goed mogelijke) opgeloste oefeningen. Dit blijft een work in progress.
-
+Deze repository bevat mijn samenvattingen, testvragen en examenvragen van de verplichte vakken (plus een paar keuzevakken: computergrafiek, computervisie, compilers en kunstmatige intelligentie), en (zo goed mogelijke) opgeloste oefeningen. 
 # Master of Science in de industriële wetenschappen: informatica, academiejaar 2018-2019
 
 [Studieprogramma](https://studiegids.ugent.be/2018/NL/FACULTY/E/MABA/EM7INF/EM7INF.html)
