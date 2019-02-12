@@ -1,4 +1,4 @@
-\documentclass[handout]{beamer}
+\documentclass[]{beamer}
 
 \usepackage{lipsum}
 \usepackage{pgfpages}
@@ -27,7 +27,7 @@
 	\author[Bert De Saffel]{
 				\begin{tabular}{rcr}
 				prof. dr. ir. Peter Veelaert &\&& prof. dr. ir. Wilfried Philips \\
-				Sanne Roegiers &\&& Dimitri van Cauwelaer
+				ing. Sanne Roegiers &\&& ing. Dimitri van Cauwelaert
 				\end{tabular}
 	}
 	
@@ -40,12 +40,12 @@
 	\begin{frame}
 	\frametitle{Context}
 		\begin{itemize}
-			\item<1- > Onderzoek naar menselijke actieherkenning
-			\item<2- > Kinect Sensor 
+			\item<2- > Onderzoek naar menselijke actieherkenning
+			\item<3- > Kinect Sensor 
 			\begin{itemize}
 				\item<3- > Genereert skelet via dieptebeelden
-				\item<4- > Skelet wordt getransformeerd tot features
-				\item<5- > Features worden gebruikt om pose of actie te classificeren
+				\item<3- > Skelet wordt getransformeerd tot features
+				\item<3- > Features worden gebruikt om pose of actie te classificeren
 			\end{itemize}
 		\end{itemize}
 		\begin{figure}
@@ -96,8 +96,8 @@
 				\end{itemize}
 			\item<2- > Waarom nuttig?
 				\begin{itemize}
-				\item<2- > Uitbreidmogelijkheden: gebarentaal aanleren, analyseren fitnessoefeningen, ...
-				\item<2- > Attractie op opendeurdag
+				\item<2- > Uitbreidmogelijkheden: interactie mens-robot, analyseren fitnessoefeningen, ...
+				\item<2- > Demonstratie op opendeurdag
 				\end{itemize}
 			
 		\end{itemize}
@@ -105,8 +105,8 @@
 	\note[itemize]{
 		\item Wat? Prototype $\rightarrow$ snelle eenvoudige actieherkenning in robuuste omgeving (bv opendeurdag: veel mensen) $\rightarrow$ tonen op scherm $\rightarrow$ informatie (de beelden) beschikbaar in databank $\rightarrow$ toegankelijk videoformaat (vs .xef in Kinect Studio: neemt te veel schijfruimte in)
 		\item Waarom nuttig? 
-			Uitbreidmogelijkheden: gebarentaal aanleren, analyseren fitnessoefeningen, ...
-			Attractie op opendeurdag
+			Uitbreidmogelijkheden: interactie mens-robot, analyseren fitnessoefeningen, ...
+			Demonstratie op opendeurdag
 	}
 
 	\section{Plan van aanpak}
@@ -119,8 +119,9 @@
 		\end{figure}
 		\begin{itemize}
 			\item<1- > Mogelijkheden en limitaties van de kinect sensor
-			\item<2- > Bestaande actieherkenningsalgoritmen bestuderen
-			\item<3- > Bestuderen bestaande implementaties Kinect code
+			\item<1- > Bestaande actieherkenningsalgoritmen bestuderen
+			\item<1- > Bestuderen bestaande implementaties Kinect code
+			\item<1- > Klaarzetten werkomgeving
 		\end{itemize}
 	\end{frame}
 	\note[itemize]{
@@ -136,11 +137,12 @@
 		\end{figure}
 		\begin{itemize}
 			\item<1- > Kinect sensor aanspreken vanuit Python
-			\item<2- > Twee hoofdfunctionaliteiten:
+			\item<1- > Twee hoofdfunctionaliteiten:
 			\begin{itemize}
-				\item<2- > Live mapping van de Kinect sensoren
-				\item<2- > Opslaan beelden in toegankelijk videoformaat
+				\item<1- > Live mapping van de Kinect sensoren
+				\item<1- > Opslaan beelden in toegankelijk videoformaat
 			\end{itemize}
+			\item<1- > Testen
 		\end{itemize}
 	\end{frame}
 	\note[itemize]{
@@ -152,12 +154,16 @@
 	\subsection{Actieherkenning met machine learning}
 		\begin{frame}
 		\frametitle{Actieherkenning met machine learning}
-		Planning: 18/mrt - 12/mei
+		Planning: 18/mrt - 26/mei
 		\begin{figure}
 		\includegraphics[width=\textwidth]{actieherkenning}
 		\end{figure}
 		\begin{itemize}
 			\item<1- > Toepassen/uitbreiden van bestaande actieherkenningalgoritmen
+			\begin{itemize}
+				\item Op één enkel persoon
+				\item Op meerdere personen
+			\end{itemize}
 			\item<2- > Training data: bestaande datasets
 		\end{itemize}
 	\end{frame}
@@ -172,7 +178,11 @@
 	}
 	
 	\begin{frame}
+	\frametitle{Buffer}
 	Overige weken: 27/mei - 10/jun
+	\begin{figure}
+		\includegraphics[width=\textwidth]{buffer}
+	\end{figure}
 	\begin{itemize}
 	\item Bufferperiode
 	\item Afwerken scriptie

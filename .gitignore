@@ -559,20 +559,16 @@ ASALocalRun/
 
 # Local History for Visual Studio
 .localhistory/
-/Gedistribueerde toepassingen/Labo/05_Netwerkprogrammatie In Java/TicTacToe/nbproject/private/
-/Gedistribueerde toepassingen/Labo/05_Netwerkprogrammatie In Java/TicTacToe/build/
-/Gedistribueerde toepassingen/Labo/06_JMS en NIO/JMS en NIO/nbproject/private/
-/Gedistribueerde toepassingen/Labo/06_JMS en NIO/JMS en NIO/build/
-/Gedistribueerde toepassingen/Labo/06_JMS en NIO/JMS en NIO/dist/
-/Gedistribueerde toepassingen/Labo/02_SOAP-webservices/Oplossing_Zelf/ConsoleApplicatie/nbproject/private/
-/Gedistribueerde toepassingen/Labo/02_SOAP-webservices/Oplossing_Zelf/ConsoleApplicatie/build/
-/Gedistribueerde toepassingen/Labo/02_SOAP-webservices/Oplossing_Zelf/Applicatie/nbproject/private/
-/Gedistribueerde toepassingen/Labo/02_SOAP-webservices/Oplossing_Zelf/Applicatie/build/
-/Gedistribueerde toepassingen/Labo/02_SOAP-webservices/Oplossing_Zelf/PlantService/nbproject/private/
-/Gedistribueerde toepassingen/Labo/02_SOAP-webservices/Oplossing_Zelf/PlantService/build/
-/Gedistribueerde toepassingen/Labo/05_Netwerkprogrammatie_in_Java/Oplossing_Zelf/TicTacToeClient/nbproject/private/
-/Gedistribueerde toepassingen/Labo/05_Netwerkprogrammatie_in_Java/Oplossing_Zelf/TicTacToeClient/build/
-/Gedistribueerde toepassingen/Labo/05_Netwerkprogrammatie_in_Java/Oplossing_Zelf/TicTacToe/nbproject/private/
-/Gedistribueerde toepassingen/Labo/05_Netwerkprogrammatie_in_Java/Oplossing_Zelf/TicTacToe/build/
-/Gedistribueerde toepassingen/Labo/06_JMS_en_NIO/Oplossing_Zelf/AuctionHouse/nbproject/private/
-/Gedistribueerde toepassingen/Labo/06_JMS_en_NIO/Oplossing_Zelf/AuctionServer/nbproject/private/
+
+# CMake
+CMakeLists.txt.user
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Testing
+Makefile
+cmake_install.cmake
+install_manifest.txt
+compile_commands.json
+CTestTestfile.cmake
+_deps
