@@ -62,12 +62,71 @@
 		\item Kwaliteitscontrole.
 	\end{itemize}
 	\item \uline{Probleemgestuurd}: uitgaande van een probleem een oplossing zoeken.
-	\item \uline{Datagestuurd}: vanuit bestaande informatie problemen zoeken die ermee opgelost kunnen worden.
+	\item \uline{Datagestuurd}: vanuit bestaande informatie problemen zoeken die ermee opgelost kunnen worden. Dit wordt ook data mining genoemd. Vaak moet de data eerst gereorganiseerd worden vooraleer de informatie nuttig wordt.
 \end{itemize}
 \section{Leren}
-
+\begin{itemize}
+	\item Moderne AI houdt zich bezig met systemen met een zeer groot aantal aanpasbare parameters. Zulke systemen noemt men \textbf{massief lerende systemen}.
+	\item \textbf{Voorbeelden} van massief lerende systemen:
+	\begin{itemize}
+		\item Neurale netwerken: trachten het biologische denksysteem na te bootsen.
+		\item Hidden Markov Model: wordt gebruikt bij de analyse van allerhande sequenties, waarbij de toestand soms onbekend is.
+	\end{itemize}
+	\item Parameters hebben niet noodzakelijk een betekenis, en is daarom ook onmogelijk om ze met de hand in te voeren. Daarom laat men een systeem leren, met behulp van \textbf{drie methoden}:
+	\begin{itemize}
+		\item Algoritmisch leren: Er wordt gedemonstreerd hoe een bepaalde actie moet uitgevoerd worden. Het systeem kan hierna deze actie inoefenen door het herhalen van deze instructies. Deze vorm komt goed overeen met het programmeren van een computer.
+		\item Leren met supervisie: Hier wordt er geen gebruik gemaakt van een algoritme maar eerder van voorbeelden. Deze voorbeelden worden een leerverzameling genoemd en bevatten inputgegevens die het systeem moet leren herkennen, met de daarbij horende resultaten. Er wordt een verband opgelegd tussen een bepaalde input en output.
+		\item Leren zonder supervisie: Dit gebeurt gedeeltelijk algoritmisch aangezien er enige instructies nodig zijn om de machine op gang te krijgen. De machine zal nadien zelf experimenteren wat er gebeurd bij het aanpassen van verschillende parameters. Het leren gebeurt dus niet met voorbeelden, maar uit eigen ervaring. Hier is er dan ook geen verband tussen het resultaat en de verschillende deeltaken, maar er is wel een algemeen idee wat er aangeleerd moet worden.
+	\end{itemize}
+\end{itemize}
 \section{Classificatie}
-\section{informatie en beslissingsbomen}
+\begin{itemize}
+	\item Classificatie is het mappen van een bepaalde input op een klasse.
+	\item We spreken van een \textbf{item} dat we moeten klasseren.
+	\item Dit item wordt gekarakteriseerd door een aantal \textbf{meetwaarden}.
+	\item \todo{vector shit}
+\end{itemize}
+
+\section{Informatie en beslissingsbomen}
+\begin{itemize}
+	\item Een \textbf{beslissingsboom} is een klassiek hulpmiddel bij classificatie:
+	\begin{itemize}
+		\item Elke knoop dat geen blad is bevat een vraag met een beperkt mogelijk aantal antwoorden.
+		\item Elk mogelijk antwoord verwijst naar een kind van de knoop.
+		\item Een item klasseren is een pad vanuit de wortel naar een blad, waarin de klasse staat.
+	\end{itemize}
+	\item De \textbf{informatie-inhoud} van een bericht:
+	\begin{itemize}
+		\item Een bericht is enkel nuttig indien ontvanger een betekenis kan geven aan het bericht. De belangrijke elementen voor de informatie-inhoud is dus het bericht zelf en de kennis van de ontvanger.
+		\item Met de kennis kan aan elk mogelijk bericht $B$ een waarschijnlijkheid $P(B)$ toekennen. De informatie-inhoud wordt dan gedefinieerd door
+		$$-\log_2(P(B))\; \hbox{bits}$$ 
+		Voor $P(B) = 1$ is de informatie-inhoud 0 bits, wat logisch is aangezien de ontvanger niets heeft bijgeleerd van dit bericht.
+		\alert De informatie-inhoud van een bericht is niet altijd een geheel getal.
+		\alert De informatie-inhoud is nooit negatief.
+		\item \underline{Voorbeeld:} Stel dat een byte verwacht wordt, maar er is geen idee welke byte. Elke byte is even waarschijnlijk met kans $1/256$. De informatie-inhoud van de byte die dan binnenkomt is $-\log_2 (1/256)\;\hbox{bits} = 8 \;\hbox{bits}$.
+		\item \underline{Voorbeeld:} Stel een alfabet van 4 letters: A, C, G en T. De waarschijnlijkheid dat ze voorkomen wordt weergegeven in tabel \ref{table:example_entropy}.
+		\begin{table}[h]
+			\centering
+			\begin{tabular}{l | r}
+				A & 70,71 \% \\
+				C & 12,50 \% \\
+				G &  8,39 \% \\
+				T & 8,39 \% \\
+			\end{tabular}
+			\caption{De waarschijnlijkheden voor de letters A, C, G en T.}
+			\label{table:example_entropy}
+		\end{table}
+		Als de ontvanger dit weet dan wordt de informatie-inhoud voor elke letter:
+		\begin{equation*}
+			\begin{split}
+				A: -\log_2(0,7071) & = 0,5 \\
+				C: -\log_2(0,1250) & = 3,0 \\
+				G: -\log_2(0,0839) & = 3,575\\
+				T: -\log_2(0,0839) & = 3,575
+			\end{split}
+		\end{equation*}
+	\end{itemize}
+\end{itemize}
 \section{Klasseren zonder leren}
 \section{Een toepassing: Watson}
 \end{document}
