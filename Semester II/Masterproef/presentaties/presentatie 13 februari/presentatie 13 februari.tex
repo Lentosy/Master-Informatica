@@ -34,18 +34,19 @@
 	\subtitle{Master of Science in de industriële wetenschappen: informatica \\ \vspace{0.2cm} Bert De Saffel}
 	\date{13 februari 2019}
 	\frame{\titlepage}
-	
+
 	\section{Context}
+	
 	
 	\begin{frame}
 	\frametitle{Context}
 		\begin{itemize}
-			\item<2- > Onderzoek naar menselijke actieherkenning
-			\item<3- > Kinect Sensor 
+			\item<1- > Onderzoek naar menselijke actieherkenning
+			\item<2- > Kinect Sensor 
 			\begin{itemize}
-				\item<3- > Genereert skelet via dieptebeelden
-				\item<3- > Skelet wordt getransformeerd tot features
-				\item<3- > Features worden gebruikt om pose of actie te classificeren
+				\item<2- > Genereert skelet via dieptebeelden
+				\item<2- > Skelet wordt getransformeerd tot features
+				\item<2- > Features worden gebruikt om pose of actie te classificeren
 			\end{itemize}
 		\end{itemize}
 		\begin{figure}
@@ -62,9 +63,10 @@
 		\begin{enumerate}
 			\item<1- > Invariant zijn van de features, onafhankelijk van o.a.:
 				\begin{itemize}
-				\item verschillen in lichaamsbouw
+				\item verschillen in lichaamsbouw (kind of volwassen)
 				\item actie-uitvoering
 				\item camerahoek
+				\item snelheid (trage of snelle actie)
 				\end{itemize}
 			\item<2- > Python implementatie voor de Kinect sensor
 				\begin{itemize}
@@ -91,7 +93,7 @@
 			\item<1- > Wat? 
 				\begin{itemize}
 				\item<1- > Prototype
-				\item<1- > Snelle, eenvoudige actieherkenning in robuuste omgeving
+				\item<1- > Snelle herkenning van eenvoudige acties
 				\item<1- > Beelden beschikbaar in toegankelijk videoformaat
 				\end{itemize}
 			\item<2- > Waarom nuttig?
@@ -121,7 +123,6 @@
 			\item<1- > Mogelijkheden en limitaties van de kinect sensor
 			\item<1- > Bestaande actieherkenningsalgoritmen bestuderen
 			\item<1- > Bestuderen bestaande implementaties Kinect code
-			\item<1- > Klaarzetten werkomgeving
 		\end{itemize}
 	\end{frame}
 	\note[itemize]{
@@ -143,6 +144,10 @@
 				\item<1- > Opslaan beelden in toegankelijk videoformaat
 			\end{itemize}
 			\item<1- > Testen
+			\begin{itemize}
+				\item Handmatige testen
+				\item Performantietesten 
+			\end{itemize}
 		\end{itemize}
 	\end{frame}
 	\note[itemize]{
@@ -164,7 +169,8 @@
 				\item Op één enkel persoon
 				\item Op meerdere personen
 			\end{itemize}
-			\item<2- > Training data: bestaande datasets
+			\item<2- > Supervised learning
+			\item<3- > Training data: bestaande datasets
 		\end{itemize}
 	\end{frame}
 	\note[itemize]{
