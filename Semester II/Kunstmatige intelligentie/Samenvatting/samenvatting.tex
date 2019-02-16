@@ -84,17 +84,45 @@
 	\item Classificatie is het mappen van een bepaalde input op een klasse.
 	\item We spreken van een \textbf{item} dat we moeten klasseren.
 	\item Dit item wordt gekarakteriseerd door een aantal \textbf{meetwaarden}.
-	\item \todo{vector shit}
+	\item \underline{Twee soorten meetwaarden}:
+	\begin{itemize}
+		\item Sommige metingen kunnen een groot aantal waarden opleveren die voorgesteld kunnen worden als een getal.
+		\item Andere metingen hebben maar een beperkt aantal waarden, zoals de indeling van van categorieën. 
+		\begin{itemize}
+			\item Deze kunnen omgezet worden zodat ze antwoorden zijn op ja-nee vragen, zoals het gevolg dat ze geconverteerd kunnen worden naar 0 of 1.
+			\good Nu zijn alle meetwaarden getallen.	
+		\end{itemize}
+	\end{itemize}
+	\item Aangezien dat alle meetwaarden getallen zijn $\rightarrow$ standaardvorm: de computer heeft een aantal klassen en moet een getallenrij die de meetwaarden voor een bepaal item bevat toewijzen aan één van de klassen.
+	\item Hoe worden de getallenrijen weergegeven? Een aantal notaties:
+	\begin{itemize}
+		\item De $n$-dimensionale Euclidische ruimte is de de verzameling vectoren met $n$ reële coördinaten.
+		\item Zo een vector wordt voorgesteld door een vette letter: $\textbf{v} = (v_1, ..., v_n)$.
+		\item Soms vanaf 0 beginnen, zodat we $n+1$-dimensionale vectoren hebben: $\textbf{v} = (v_0, v_1, ..., v_n)$. De waarde $v_0$ krijgt een speciale betekenis.
+		\item Reeële getallen die niet deel uitmaken van een vector worden weergegeven met hoofdletters: A, B, ...
+		\item De nulvector: 0 = (0, ..., 0).
+		\item Het inproduct:
+		$$\textbf{v}\cdot\textbf{u} = \sum_{i}^{n}v_iu_i$$
+		Het inproduct is lineair: $(A\textbf{v})\cdot \textbf{u} = A(\textbf{v}\cdot\textbf{u})$ en $(\textbf{u} + \textbf{v})\cdot\textbf{x} = \textbf{u} \cdot \textbf{x} + \textbf{v} \cdot \textbf{x}$.
+		
+		Hieruit volgt de norm $|| \cdot ||$: 
+		$$||u||^2 = \textbf{u} \cdot \textbf{u}$$
+		\item $d(u,v) = ||\textbf{u} -\textbf{v}||$ is de lengte van de kortste weg van \textbf{u} naar \textbf{v}
+		 Hieruit volgt:
+		$$||\textbf{u} + \textbf{v}|| \leq ||\textbf{u}||+||\textbf{v}||$$
+		 Het kwadraat van beide kanten geeft:
+		 $$\textbf{u} \cdot \textbf{v} \leq ||\textbf{u}||\;||\textbf{v}||$$
+		 Aangezien dat 
+		 $$\cos(\textbf{u}, \textbf{v}) = \frac{\textbf{u} \cdot \textbf{v}}{||\textbf{u} ||\;|| \textbf{v} ||}$$
+		 kan dit omgevormd worden tot de volgende ongelijkheid:
+		 $$-1 \leq \frac{\textbf{u} \cdot \textbf{v}}{||\textbf{u} ||\;|| \textbf{v} ||} \leq 1$$
+		 \item De afstand en de cosinus geven vaak een goede indruk in hoeverre twee vectoren op elkaar lijken. De cosinus geeft een goede maat voor de afstand tussen twee genormaliseerde vectoren:
+		 $$d\bigg(\frac{\textbf{u}}{||\textbf{u}||}, \frac{\textbf{v}}{||\textbf{v}||}\bigg)^2 = 2 - 2\cos(\textbf{u}, \textbf{v})$$
+	\end{itemize}
 \end{itemize}
 
 \section{Informatie en beslissingsbomen}
 \begin{itemize}
-	\item Een \textbf{beslissingsboom} is een klassiek hulpmiddel bij classificatie:
-	\begin{itemize}
-		\item Elke knoop dat geen blad is bevat een vraag met een beperkt mogelijk aantal antwoorden.
-		\item Elk mogelijk antwoord verwijst naar een kind van de knoop.
-		\item Een item klasseren is een pad vanuit de wortel naar een blad, waarin de klasse staat.
-	\end{itemize}
 	\item De \textbf{informatie-inhoud} van een bericht:
 	\begin{itemize}
 		\item Een bericht is enkel nuttig indien ontvanger een betekenis kan geven aan het bericht. De belangrijke elementen voor de informatie-inhoud is dus het bericht zelf en de kennis van de ontvanger.
@@ -125,6 +153,28 @@
 				T: -\log_2(0,0839) & = 3,575
 			\end{split}
 		\end{equation*}
+	\end{itemize}
+	\item Een \textbf{beslissingsboom} is een klassiek hulpmiddel bij classificatie:
+	\begin{itemize}
+		\item Elke knoop dat geen blad is bevat een vraag met een beperkt mogelijk aantal antwoorden.
+		\item Elk mogelijk antwoord verwijst naar een kind van de knoop.
+		\item Een item klasseren is een pad vanuit de wortel naar een blad, waarin de klasse staat.
+		\item Beslissingsboom opstellen die de ontbrekende informatie oplevert:
+		\begin{itemize}
+			\item Stel $k$ klassen $K_1, K_2, ... K_k$.
+			\item Stel een verzameling $S$ van items waarbij:
+			\begin{itemize}
+				\item $A(S, i)$ het aantal elementen horend bij $K_i$ is in de verzameling en,
+				\item $|S| = \sum_{i = 1}^k A(S,i)$ het totaal aantal element is van $S$.
+			\end{itemize} 
+			\item De informatie geleverd door een correcte klassering van alle element is dan:
+			\begin{equation*}
+				\begin{split}
+					E(S) & = \sum_{i = 1}^{k} A(S, i) \bigg(-log_2 \bigg( \frac{A(S, i)}{|S|}\bigg) \bigg) \\
+					     & = |S|log_2(|S|) +  \sum_{i = 1}^{k} A(S, i)(-log_2(A(S, i)))
+				\end{split}
+			\end{equation*}
+		\end{itemize}
 	\end{itemize}
 \end{itemize}
 \section{Klasseren zonder leren}
