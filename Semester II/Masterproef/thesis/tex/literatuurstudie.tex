@@ -2,6 +2,7 @@
 
 \begin{itemize}
 	\item Bron \cite{real-time-human-pose-recognition-in-parts-from-a-single-depth-image}
+	gaat eerder over hoe het skelet bepaalt wordt
 	\begin{itemize}
 		\item voorstel van een methode om op een accurate manier de 3D posities van de joints te bepalen, vanuit slechts één dieptebeeld, zonder temporale informatie
 		\item Het bepalen van lichaamsdelen is invariant van pose, lichaamsbouw, kleren, etc...
@@ -16,7 +17,14 @@
 		\item[$\vee$] Bevat bruikbare datasets van skelet-, diepte- en kleurenbeelden
 		\item Ook hier praten ze over de vaak voorkomende uitdagingen: Intra-en interklasse variaties, de omgeving en de grootte van de verzameling van acties die er eigenlijk bestaan.
 		\item Hier tonen ze ook weer het nut van de kinect sensor aan, en gebruiken de kinect
-		\item Ze geven een nieuw algoritme om menselijke actieherkenning uit te voeren vanuit een dieptebeeld, een view-invariante representatie van poses en het systeem werkt \underline{real-time}.
+		\item Ze geven een nieuw algoritme om menselijke actieherkenning uit te voeren vanuit een dieptebeeld, een view-invariante representatie van poses en het systeem werkt \underline{real-time}. 
+		
+		{\color{red}! Het real-time component bevat drie zaken:
+			\begin{itemize}
+				\item Het verkrijgen van de 3D locaties van de joints $\rightarrow$ via bron \cite{real-time-human-pose-recognition-in-parts-from-a-single-depth-image}
+				\item Het berekenen van HOJ3D (histogram)
+				\item Classificatie
+			\end{itemize} }
 		\item Histogram gebaseerde representatie van 3D poses (HOJ3D genoemd) = partitie van 3D ruimte in $n$ "bins", gebruik maken van een bolcoördinatensysteem. Selectie van 12 joints die een compacte representatie van het skelet weergeven. (hand en pols, voet en enkel worden gecombineerd).
 		\item Het centrum van deze 3D ruimte is de de heup joint. Er is ook een vector $\alpha$, parallel met de grond, door de heup (van links naar rechts), en een vector $\theta$ loodrecht op de grond en door het centrum
 			\begin{figure}[ht]
@@ -45,25 +53,56 @@
 			
 			\item Linear discriminant analysis (LDA) wordt toegepast om dominante features eruit deze histogram te halen.
 			
+			\item {\color{green}Ze stellen voor om kleurenbeelden te combineren met dieptebeelden om algoritmen te ontdekken met beter herkenning}
 			
 			\item Ze beweren sneller te zijn dan bron \cite{action-recognition-based-bag-3d-points}
 		\end{itemize}
-	\item Bron \cite{action-recognition-based-bag-3d-points}
+	\item Bron \cite{action-recognition-based-bag-3d-points} (pre-kinect era)
 	\begin{itemize}
 		\item Actieherkenning met behulp van reeksen van dieptebeelden
 		\item Gaan ervan uit dat efficiënte tracking van skeletbeelden nog niet mogelijk is. (is gepubliceerd zelfde jaar dat Kinect beschikbaar was, 2010)
 		\item Hun oplossing is dus niet gebaseerd op het tracken van de skeletbeelden
 	\end{itemize}
 
-
-
-	\item Bron \cite{keep-it-simple-and-sparse-real-time-action-recognition}
+	\item Bron \cite{detecting-complex-3d-human-motions-with-body-model-low-rank-representation-foror-real-time-smart-activity-monitoring-system}
 	\begin{itemize}
-		\item s
+		\item real time activity recognition systeem, om routines te herkennen. Ze stellen zelf voor om het in een smart home te gebruiken.
+		\item Systeem is gebaseerd op twee categorieën:
+		\begin{itemize}
+			\item Informatie verzamelen met dieptebeelden
+			\item Feature extraction gebaseerd op \underline{joint informatie} en trainen van activiteiten.
+		\end{itemize}
 	\end{itemize}
 
-	\item Bron \cite{enhanced-computer-vision-with-microsoft-kinect-sensor}
+	\item Bron \cite{Temporal-Action-Detection-with-Structured-Segment-Networks}
 	\begin{itemize}
-		\item 
+		\item Probleem: output van de actiecategorie EN de start en eind tijd van de actie. 
+		\item Ze beweren dat actieherkenning reeds goed opgelost is, maar niet actiedetectie. Hun definities zijn:
+		\begin{itemize}
+			\item Actieherkenning: De effectieve actieherkenning indien het systeem weet wanneer hij moet herkennen
+			\item Actiedetectie: een langdurige video, waarbij de start en stop van een actie niet gedefinieerd zijn = untrimmed video ( videos waarbij er meerdere acties op hetzelfde moment kunnen voorkomen, alsook een irrelevante achtergrond). {\color{green} sluit heel goed aan op onze masterproef}
+		\end{itemize}
+		\item Uitdaging in bestaande oplossingen: groot aantal onvolledige actiefragmenten. Voorbeelden:
+		\begin{itemize}
+			\item Bron \cite{singh2016untrimmed}:
+			\begin{itemize}
+				\item maakt gebruik van untrimmed classificatie: 
+			\end{itemize}
+				\item Bron \cite{Temporal-Action-Localization-with-Pyramid-of-Score-Distribution-Features}:
+			\begin{itemize}
+				\item Spreekt over de onzekerheid van het voorkomen van een actie en de moeilijkheid van het gebruik van de continue informatie
+
+				\item Pyramid of Score Distribution Feature (PSDF) om informatie op meerdere resoluties op te vangen
+				\item PSDF in combinatie met Recurrent Neural networks bieden performantiewinst in untrimmed videos.
+				\item Onbekende parameters: actielabel, actieuitvoering, actiepositie, actielengte
+				\item Oplossing? Per frame een verzameling van actielabels toekennen, gebruik makend van huidige frame actie-informatie en inter-frame consistentie = PSDF
+	
+			\end{itemize}
+		\item De moeilijkheid is: start, einde en duur van de actie te bepalen.
+		\end{itemize}
+		
 	\end{itemize}
+
+
+
 \end{itemize}

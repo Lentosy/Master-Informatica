@@ -1,0 +1,26 @@
+\documentclass{report}
+\usepackage{ugentstyle}
+\usepackage{listings}
+
+
+\lstset{
+	frame=single
+}
+
+% commando om vraag-antwoord situaties te behandelen
+\newcommand{\QA}[2]{
+	\noindent\fbox{
+		\parbox{\textwidth}{
+			\textbf{Q:} #1
+			
+			\textbf{A:} #2
+		}
+	}
+}
+
+\begin{document}
+	\maketitle{Compilers}
+	\tableofcontents
+	\include{tex/inleiding}
+	\include{tex/lexicale_analyse}
+\end{document}
