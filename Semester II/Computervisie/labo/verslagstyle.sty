@@ -1,0 +1,52 @@
+%----------------------------------------------------------------------------------------
+%	PACKAGE LOADING
+%----------------------------------------------------------------------------------------
+\usepackage[dutch]{babel} % Language packs. Currently loading the follow languages: dutch.
+\usepackage{graphicx} % Allows importing images.
+\usepackage{ulem} % Allows new lines in underlined text. Usage: \uline{<text>}.
+\usepackage{sectsty} % Allows the styling of section headers.
+\usepackage{xcolor} % Allows to make use and define many colors.
+\usepackage[a4paper, total={6in, 9in}]{geometry} % Defines the overall layout of the document.
+\usepackage{amsfonts} % Math fonts.
+\usepackage{amsmath} % Extra math possibilities.
+
+\graphicspath{{./img/}}
+%----------------------------------------------------------------------------------------
+
+
+
+%----------------------------------------------------------------------------------------
+%	CUSTOM DEFINITIONS/COMMANDS
+%----------------------------------------------------------------------------------------
+
+\definecolor{ugentblue}{RGB}{30, 100, 200} % The blue color typical for UGent.
+\definecolor{ugentdarkblue}{RGB}{15, 25, 60} % A darker variant of the UGent color
+
+\newcommand{\todo}[1]{\color{red}\_ToDo: #1 \color{black}}
+\newcommand{\accentuate}[1]{{\color{purple} #1}}
+\renewcommand{\textbf}[1]{{\color{ugentdarkblue} \bf #1}}
+
+\setlength{\parindent}{0cm}
+\setlength{\parskip}{0.25cm}
+%----------------------------------------------------------------------------------------
+%	ITEMIZE REDEFINITIONS
+%----------------------------------------------------------------------------------------
+\renewcommand{\labelitemi}  {\textcolor{ugentblue}{\bf{$\bullet$}}}
+\renewcommand{\labelitemii} {\textcolor{ugentblue}{\bf{$\circ$}}}
+\renewcommand{\labelitemiii}{\textcolor{ugentblue}{\bf{$\diamond$}}}
+\renewcommand{\labelitemiv} {\textcolor{ugentblue}{\bf{$\ast$}}}
+
+\newcommand{\good}  {\item[\bf{\textcolor{green}\checkmark}]}
+\newcommand{\alert} {\item[\bf{\textcolor{red}!}]}
+%----------------------------------------------------------------------------------------
+
+
+%----------------------------------------------------------------------------------------
+%	SECTION HEADER COLORS
+%----------------------------------------------------------------------------------------
+\partfont		  {\color{ugentblue}}
+\chapterfont	  {\color{ugentblue}}
+\sectionfont      {\color{ugentblue}}
+\subsectionfont   {\color{ugentblue}}
+\subsubsectionfont{\color{ugentblue}}
+%----------------------------------------------------------------------------------------
