@@ -3,14 +3,11 @@
 \usepackage{listings}
 
 
-\lstset{
-	frame=single
-}
 
 % commando om vraag-antwoord situaties te behandelen
 \newcommand{\QA}[2]{
 	\noindent\fbox{
-		\parbox{\textwidth}{
+		\parbox{\linewidth}{
 			\textbf{Q:} #1
 			
 			\textbf{A:} #2
@@ -23,4 +20,5 @@
 	\tableofcontents
 	\include{tex/inleiding}
 	\include{tex/lexicale_analyse}
+	\include{tex/parsing}
 \end{document}

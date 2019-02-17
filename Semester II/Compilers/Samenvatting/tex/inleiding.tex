@@ -2,7 +2,13 @@
 \section{Compilers}
 Voorbeelden van functies die een statische compiler moet bevatten:
 	\begin{itemize}
-		\item Broncode omzetten in uitvoerbare fouten.
+		\item Broncode omzetten in uitvoerbare fouten:
+		\begin{itemize}
+			\item met dezelfde semantiek
+			\item zo snel mogelijk
+			\item en/of zo compact, debugbaar, portable, veilig, ... mogelijk
+			\item en linkbaar.
+		\end{itemize}
 		\item Syntaxfouten moeten herkent worden.
 	\end{itemize}
 
@@ -28,7 +34,7 @@ De eerste stap van elke compiler is het omvormen van de broncode naar een \textb
 	\label{fig:abstract_syntax_tree}
 \end{figure}
 
-\subsection{Generatieve grammatica's}
+\subsection{Contextvrije grammatica's}
 Om een AST op te stellen moet de notie van tokens ingevoerd worden. Een token is eenvoudig gezien een bepaald symbool dat een betekenis heeft. De tokens van de code uit figuur \ref{fig:abstract_syntax_tree} zijn te zien in tabel \ref{table:tokens}
 \begin{table}[h]
 	\centering
@@ -57,7 +63,7 @@ Uit de theorie van de generatieve grammatica's weten we dat er zowel terminale a
 	\item \textbf{Niet-terminale tokens}, kortweg niet-terminalen genoemd, zijn de regels die de taal definiëren en zijn de niet-bladeren van de AST. Niet-terminalen hebben als eigenschap dat ze letters van het alfabet kunnen genereren.
 \end{itemize}
 Op figuur \ref{fig:contextvrije_grammatica} zijn een aantal terminalen en niet-terminalen te zien. De niet-terminale token \textit{CompoundStm} bestaat bijvoorbeeld uit twee \textit{Stm} tokens, gescheiden door een punt komma. Deze twee \textit{Stm} tokens kunnen in deze vereenvoudigde programmeertaal enkel een \textit{AssignStm} of \textit{PrintStm} zijn. Bij \textit{AssignStm} wordt er een terminale token verwacht in de vorm van een variabele identifier, gevolgd door de toekenningsoperator en een \textit{Exp} token. Enkel deze \textit{Exp} kan nog vier vormen aanneemen: \textit{IdExp}, \textit{NumExp}, enz...
-
+{
 \begin{figure}[h]
 	\definecolor{cvred}{RGB}{215,149,146}
 	\definecolor{cvblue}{RGB}{145,202,219}
@@ -66,8 +72,8 @@ Op figuur \ref{fig:contextvrije_grammatica} zijn een aantal terminalen en niet-t
 	\caption{De rood omkaderde symbolen zijn {\color{cvred} terminalen} terwijl de blauw omkaderde {\color{cvblue}niet-terminalen} zijn.} 
 	\label{fig:contextvrije_grammatica}
 \end{figure}
-
-Dit wordt uitgewerkt op figuur \ref{fig:abstract_syntax_tree} voor de eerste toekenningsoperatie op figuur \ref{fig:contextvrije_grammatica_voorbeeld}.
+}
+Dit wordt uitgewerkt voor de eerste toekenningsoperatie uit figuur \ref{fig:abstract_syntax_tree} en is te zien op figuur \ref{fig:contextvrije_grammatica_voorbeeld}.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.8\textwidth]{contextvrije_grammatica_voorbeeld}
@@ -88,7 +94,7 @@ Een AST kan nu \textbf{bottom-up} opgemaakt worden door volgende procedure uit t
 		\item een union voor de verschillende combinaties van tokens in het rechter lid en,
 		\item pointers naar kindknopen.
 	\end{itemize}
-	Dit wordt geïllustreerd in code \ref{lst:code}.
+	Dit wordt geïllustreerd in code \ref{lst:vb_struct_AST}.
 	\begin{lstlisting}[caption={Voorbeeld van een struct voor een AST.},label={lst:vb_struct_AST}, captionpos=b]
 typedef char * string;
 typedef struct A_stm_ * A_stm;
@@ -115,10 +121,32 @@ A_stm A_CompoundStm(A_stm stm1, A_stm stm2){
 }
 	\end{lstlisting}
 	
-Op deze manier zou de boom uit figuur \ref{fig:abstract_syntax_tree} hardgecodeerd kunnen worden, wat natuurlijk geen goede manier is. Het is de taak van een \uline{lexer} en \uline{parser} om de constructie van een AST te automatiseren, \todo{refereren naar volgende hoofdstukken}
+Op deze manier zou de boom uit figuur \ref{fig:abstract_syntax_tree} hardgecodeerd kunnen worden, wat natuurlijk geen goede manier is. Het is de taak van een \uline{lexer} en \uline{parser} om de constructie van een AST te automatiseren, die respectievelijk in hoofdstuk \ref{ch:lexicale_analyse} en \ref{ch:parsing} behandelt worden.
 
 \subsection{Interpreter}
-\todo{Stukje over interpreter}
+Uit een AST kan een eenvoudige interpreter geschreven worden. Dit stuk is informatief, en wordt niet gevraagd op het examen.
+\begin{itemize}
+	\item Door de boom postorder diepte-eerst te overlopen, wordt de boom in de juiste manier behandelt.
+	\item Het bijhouden van de waarden van variabelen kan via een gelinkte lijst:
+	\begin{lstlisting}
+typedef struct table * Table_;
+struct table {string id; int value; Table_ tail;};
+Table_ Table(string id; int value; Table_ tail) {
+	Table_ t = malloc(sizeof(*t));
+	t->id = id;
+	t->value = value;
+	t->tail = tail;
+	return t;
+}
+	\end{lstlisting}
+	\item Stel nu dat dit de eerste drie regels van een programma zijn:
+	\begin{lstlisting}
+a := 2;
+b := 3;
+a := 3;
+	\end{lstlisting}
+	\todo{onbelangrijk}
+\end{itemize}
 
 \end{enumerate}
 
