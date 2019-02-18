@@ -1,6 +1,31 @@
 \chapter{Gerelateerde werken}
 
 \begin{itemize}
+		\item Bron \cite{Review-of-Action-Recognition-and-Detection-Methods}
+	\begin{itemize}
+		\item Actieherkenning = het herkennen van een actie binnen een goed gedefinieerde omgeving 
+		\item Actiedetectie = het herkennen en lokaliseren van acties(begin, duratie en einde) in de ruimte en de tijd
+		\item training set = wordt gebruikt om classifier te trainen
+		\item validation set = optioneel, bevat andere data dan de training set om de classifier te optimaliseren
+		\item testing set = testen van de classifier (performance)
+		\item Drie manieren om dataset op te splitsen in deze drie sets:
+		\begin{itemize}
+			\item voorgedefinieerde split: De dataset wordt opgesplitst  in twee of drie delen zoals de auteurs van die dataset dat vermelden
+			\item n-voudige cross-validatie: Verdeeld de dataset in n gelijkvoudige stukken. Hierbij worden er (n-1)/n  percentage van de videos gebruikt om te trainen, en dan de overige 1/n om te testen. Dit proces wordt n keer herhaald, zodat elke video éénmaal gebruikt werd voor te testen
+			\item leave-one-out cross-validatie:
+		\end{itemize}
+		
+		
+		\item  om actieklasse te bepalen = features extraheren en in classifier steken => classifier bepaalt actieklasse
+		\item Temporally untrimmed video = delen van de video bevatten GEEN ENKELE actie. Variaties van dezelfde actie kan op hetzelfde moment voorkomen
+		
+		\item THUMOS challenge:
+		\item 2015 => slechts één team heeft detection challenge geprobeerd
+		
+		\item 	Classificatietaak: de lijst van acties geven die in een lange, niet getrimde video voorkomen
+		\item 	Detectietaak: ook de lijst van acties geven PLUS de plaats in tijd waar ze voorkomen
+	\end{itemize}
+
 	\item Bron \cite{real-time-human-pose-recognition-in-parts-from-a-single-depth-image}
 	gaat eerder over hoe het skelet bepaalt wordt
 	\begin{itemize}
@@ -53,7 +78,7 @@
 			
 			\item Linear discriminant analysis (LDA) wordt toegepast om dominante features eruit deze histogram te halen.
 			
-			\item {\color{green}Ze stellen voor om kleurenbeelden te combineren met dieptebeelden om algoritmen te ontdekken met beter herkenning}
+			\item Ze stellen voor om kleurenbeelden te combineren met dieptebeelden om algoritmen te ontdekken met beter herkenning
 			
 			\item Ze beweren sneller te zijn dan bron \cite{action-recognition-based-bag-3d-points}
 		\end{itemize}
@@ -64,20 +89,10 @@
 		\item Hun oplossing is dus niet gebaseerd op het tracken van de skeletbeelden
 	\end{itemize}
 
-	\item Bron \cite{detecting-complex-3d-human-motions-with-body-model-low-rank-representation-foror-real-time-smart-activity-monitoring-system}
-	\begin{itemize}
-		\item real time activity recognition systeem, om routines te herkennen. Ze stellen zelf voor om het in een smart home te gebruiken.
-		\item Systeem is gebaseerd op twee categorieën:
-		\begin{itemize}
-			\item Informatie verzamelen met dieptebeelden
-			\item Feature extraction gebaseerd op \underline{joint informatie} en trainen van activiteiten.
-		\end{itemize}
-	\end{itemize}
-
 	\item Bron \cite{Temporal-Action-Detection-with-Structured-Segment-Networks}
 	\begin{itemize}
 		\item Probleem: output van de actiecategorie EN de start en eind tijd van de actie. 
-		\item Ze beweren dat actieherkenning reeds goed opgelost is, maar niet actiedetectie. Hun definities zijn:
+		\item Ze beweren dat actieherkenning reeds goed opgelost is, maar niet actiedetectie. Hun definities zijn: 
 		\begin{itemize}
 			\item Actieherkenning: De effectieve actieherkenning indien het systeem weet wanneer hij moet herkennen
 			\item Actiedetectie: een langdurige video, waarbij de start en stop van een actie niet gedefinieerd zijn = untrimmed video ( videos waarbij er meerdere acties op hetzelfde moment kunnen voorkomen, alsook een irrelevante achtergrond). {\color{green} sluit heel goed aan op onze masterproef}
@@ -86,7 +101,7 @@
 		\begin{itemize}
 			\item Bron \cite{singh2016untrimmed}:
 			\begin{itemize}
-				\item maakt gebruik van untrimmed classificatie: 
+				\item maakt gebruik van \textbf{untrimmed classificatie}: de top $k = 3$ (bepaalt via cross-validation) labels worden voorspelt door globale video-level features. Daarna worden frame-level binaire classifiers gecombineerd met dynamisch programmeren om de activity proposals (die getrimmed zijn) te genereren. Elke proposal krijgt een label, gebaseerd op de globale label.
 			\end{itemize}
 				\item Bron \cite{Temporal-Action-Localization-with-Pyramid-of-Score-Distribution-Features}:
 			\begin{itemize}
@@ -98,10 +113,28 @@
 				\item Oplossing? Per frame een verzameling van actielabels toekennen, gebruik makend van huidige frame actie-informatie en inter-frame consistentie = PSDF
 	
 			\end{itemize}
-		\item De moeilijkheid is: start, einde en duur van de actie te bepalen.
-		\end{itemize}
 		
+		\end{itemize}
+		\item De moeilijkheid is: start, einde en duur van de actie te bepalen.
+		\item Hun oplossing is \textbf{Structured Segment Network}:
+		\begin{itemize}
+			\item input: video
+			\item output: actiecategorieën en de tijd wanneer deze voorkomen
+			\item Drie stappen:
+			\begin{enumerate}
+				\item Een "proposal method",  om een verzameling van "temporal proposals", elk met een variërende duur en hun eigen start en eind tijd.  Elke proposal heeft drie stages: \textit{starting, course} en \textit{ending}. 
+				\item Voor elke proposal wordt er STPP (structured temporal pyramid pooling) toegepast door (1) de proposal op te splitsen in drie delen; (2) temporal pyramidal representaties te maken voor elk deel; (3) een globale representatie maken voor de hele proposal.
+				\item Twee classifiers worden gebruikt: herkennen van de actie en de "volledigheid" van de actie nagaan.
+			\end{enumerate}
+		\end{itemize}
 	\end{itemize}
+
+	\item Bron \cite{Self-Adaptive-Proposal-Model-for-Temporal-Action-Detection-Based-on-Reinforcement-Learning}
+	\begin{itemize}
+		\item Temporal action detection = moet enerzijds detecteren of al dan niet een actie voorkomt, en anderzijds hoelang deze actie duurt, wat een uitdaging is bij untrimmed videos.
+		\item Veel moderne aanpakken gaan als volgt te werk: eerst wordt er klasse-onafhankelijke proposals gegenereerd door 
+	\end{itemize}
+
 
 
 
