@@ -17,7 +17,6 @@ cv2.namedWindow(path)
 
 # DEFAULT
 defaultImage = cv2.imread(filePath)
-print(defaultImage.data)
 cv2.imshow(path, defaultImage)
 cv2.waitKey()
 

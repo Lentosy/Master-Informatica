@@ -1,0 +1,30 @@
+import cv2
+import sys
+import os.path   
+
+try:
+    fullPath = sys.argv[1]
+except IndexError:
+    print("One parameter required: the path of an image.")
+    exit(1)
+
+if (not os.path.isfile(fullPath)):
+    print("'" + fullPath + "' is not an existing file.")
+    exit(2)
+
+filepath, filename = os.path.split(fullPath) # seperate path and extension:  [/path/to/file].[extension]
+cv2.namedWindow(filename)
+
+image = cv2.imread(fullPath)
+
+grayScaleImage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+
+sobelImage = cv2.Sobel(grayScaleImage, -1, 1, 0)
+result = cv2.hconcat((image, sobelImage))
+cv2.imshow(filename, result)
+cv2.waitKey()
+
+filename, extension = filename.split(".")
+savePath = filepath + "\\" + filename + "SOBEL." + extension
+print("Saving as: " + savePath)
+cv2.imwrite(savePath, sobelImage)
