@@ -145,7 +145,9 @@ a := 2;
 b := 3;
 a := 3;
 	\end{lstlisting}
-	\todo{onbelangrijk}
+	\item Voor de eerste toekenning bevat de gelinkte lijst slechts één knoop met als sleutel \textit{a} en waarde \textit{2}. 
+	\item Bij de tweede toekenning wordt de originele gelinkte lijst meegegeven via de variabele \textit{tail}. Na deze constructor zal de gelinkte lijst twee knopen bevatten.
+	\item Na deze constructor bevat de gelinkte lijst drie knopen. Merk op dat er twee knopen zijn met sleutel \textit{a}, maar dat ze elk een verschillende waarde hebben. Aangezien een nieuwe knoop vooraan wordt toegevoegd, zal de interpreter enkel de meest recentste waarde opvragen.
 \end{itemize}
 
 \end{enumerate}

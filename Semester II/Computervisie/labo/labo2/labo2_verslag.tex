@@ -9,14 +9,22 @@
 	\maketitle
 	
 	\section{Oplosmethode}
+	De gebruikte programmeertaal is Python. Elke oefening is een apart bestand \texttt{labo2\_ex$[2-7]$.py}. Om de afbeeldingen te vergelijken wordt er gekozen om de functie \textbf{hconcat} (uitleg in sectie 2) te gebruiken. Op die manier kunnen er meerdere images in dezelfde window getoond worden.
 	
 	\section{Gebruikte functies}
 	\begin{itemize}
 		 \item \textbf{GuassianBlur(src, ksize, sigmaX[, dst[, sigmaY[, borderType]]]) $\rightarrow$ dst}
+		 
+		 Deze functie is in staat om een figuur te vervagen volgens een twee-dimensionale normaalverdeling. Het \textit{ksize} attribuut is een paar van getallen die de dimensies van de zogenaamde kernel, een matrix met gewichten, bevat. De gewichten worden gekozen aan de hand van de twee-dimensionale normaalverdeling rond de middelste pixel, en kan voorgesteld worden door volgende functie:
+		 $$G(x, y) = \frac{1}{2\pi\sigma^2}e^{-\frac{x^2 + y^2}{2\sigma^2}}$$
+		 
+		 Elke pixel wordt dan vervangen door het gewogen gemiddelde van zijn naburige pixels. 
 		
 		 \item \textbf{medianBlur(src, ksize[, dst]) $\rightarrow$ dst}
 		 
 		 \item \textbf{Sobel(src, ddepth, dx, dy[, dst[, ksize[, scale[, delta[, borderType]]]]]) $\rightarrow$ dst}
+		 
+		 Deze functie is in staat om de eerste, tweede en derde orde afgeleiden te bereken van een figuur. In het labo is enkel de eerste orde afgeleide nodig. De eerste orde afgeleide is in staat om randen van objecten in een figuur te detecteren. Naargelang dat $dx = 1$ of $dy = 1$ zal de functie respectievelijk verticale of horizontale randen detecteren. Intern werkt de 
 		 
 		 \item \textbf{filter2D(src, ddepth, kernel[, dst[, anchor[, delta[, borderType]]]]) $\rightarrow$ dst}
 		

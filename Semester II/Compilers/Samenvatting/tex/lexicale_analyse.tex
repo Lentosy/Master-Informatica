@@ -178,7 +178,12 @@ int edges[][256] = { /* ... 0 1 2 ... - ... e f g h i j ... */
       (*$\hbox{states[j,c]} \leftarrow p$*)
 (*$j \leftarrow j +1$*)
 	\end{lstlisting}
-	De gegenereerde DFA is suboptimaal: vanuit sommige toestanden worden identiek dezelfde strings aanvaard. 
+	De gegenereerde DFA is suboptimaal: vanuit sommige toestanden worden identiek dezelfde strings aanvaard. Volgende optimalisaties kunnen nog doorgevoerd worden:
+	\begin{itemize}
+		\item Knopen samenvoegen waarvoor geldt dat 
+		$$\forall c \in \Sigma: \hbox{trans}[s_1, c] = \hbox{trans}[s_2, c]$$
+		\item Staten $s_1$ en $s_2$ zijn equivalent als ze beiden niet finaal of finaal zijn voor dezelfde tokens.
+	\end{itemize}
 \end{itemize}
 
 

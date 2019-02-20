@@ -2,6 +2,7 @@ import cv2
 import sys
 import os.path
 
+#whitenoise.png
 try:
     fullPath = sys.argv[1]
 except IndexError:
@@ -12,7 +13,7 @@ if (not os.path.isfile(fullPath)):
     print("'" + fullPath + "' is not an existing file.")
     exit(2)
 
-filepath, filename = os.path.split(fullPath) # seperate path and extension:  [/path/to/file].[extension]
+filepath, filename = os.path.split(fullPath)
 cv2.namedWindow(filename)
 
 image = cv2.imread(fullPath)
@@ -22,7 +23,8 @@ result = cv2.hconcat((image, gaussianBlurredImage))
 cv2.imshow(filename, result)
 cv2.waitKey()
 
+
 filename, extension = filename.split(".")
-savePath = filepath + "\\" + filename + "GAUSSIANBLUR." + extension
+savePath = filepath + "\\" + filename + "EX2." + extension
 print("Saving as: " + savePath)
 cv2.imwrite(savePath, gaussianBlurredImage)

@@ -1,0 +1,302 @@
+\chapter{Kunstmatige intelligentie}
+	\begin{itemize}
+		\item Twee doelen van kunstmatige intelligentie:
+			\begin{itemize}
+			\item Het laten overnemen, door machines, van taken waarvoor intelligentie vereist is.
+			\item Studie van natuurlijke intelligentie.
+			\end{itemize}
+		\item Twee vormen om kennis in te brengen in een computersysteem:
+			\begin{itemize}
+				\item Expliciete kennis.
+				\item Kennis kan zelf verworven worden.
+			\end{itemize}
+	\end{itemize}
+\section{Kunnen machines denken?}
+\begin{itemize}
+	\item Twee voorbeelden.
+	\begin{itemize}
+		\item ELIZA:
+		\begin{itemize}
+			\item Computerprogramma dat zich voordoet als een pyschotherapeut.
+			\item Maakt gebruik van simpele vervangingsregels.
+			\item Probeert de conversatie zo te sturen zodat de echte persoon het meest moet vertellen.
+		\end{itemize} 
+		\item Chinese kamer:
+		\begin{itemize}
+			\item Denkrichting die aantoont dat een entiteit eerst iets moet begrijpen, vooraleer er van intelligentie sprake is. 
+			\begin{enumerate}
+				\item Iemand die geen Chinees kent wordt in een kamer gebracht.
+				\item Door een luik krijgt hij briefjes in het Chinees aangereikt, en de bedoeling is dat hij daar schriftelijk een zinnige antwoord op teruggeeft.
+				\item De persoon krijgt handboeken waarin conversieregels staan.
+			\end{enumerate}
+			\item De proefpersoon volgt mechanisch de regels vanuit het handboek, zodat hij wel intelligent gedrag vertoont, maar de berichten niet begrijpt.
+		\end{itemize}
+	\end{itemize}
+	\item \textbf{Denken is elke vorm van complexe informatieverwerking waarvan de onderliggende mechanismen niet volledig gekend zijn.}
+	\item \textbf{Turingtest}:
+	\begin{itemize}
+		\item Proefpersoon kan contact maken met twee entiteiten: een mens en een machine, maar hij weet niet wie de mens of machine is.
+		\item De proefpersoon kan eender welke vragen stellen aan beide entiteiten.
+		\item Als de proefpersoon er niet in slaagt om na zijn vragenronde de entiteit aan te duiden die een machine is, dan is de machine geslaagd voor de Turingtest.
+	\end{itemize} 
+\end{itemize}
+\section{Toepassingen van AI en data mining}
+\begin{itemize}
+	\item \textbf{Classificatie:} 
+	\begin{itemize}
+		\item Stel een verzameling van $k$ klassen.
+		\item Een bepaalde invoer met gelinkt worden aan één van die klassen.
+		\item \uline{Harde classificatie:} beperkt aantal duidelijk van elkaar gescheiden klassen. Hier spreekt men ook van patroonherkenning.
+		\item \uline{Zachte classificatie:} continue overgang van de klassen. 
+	\end{itemize}
+	\item Toepassingen:
+	\begin{itemize}
+		\item Aanbevelingssystemen.
+		\item Kwaliteitscontrole.
+	\end{itemize}
+	\item \uline{Probleemgestuurd}: uitgaande van een probleem een oplossing zoeken.
+	\item \uline{Datagestuurd}: vanuit bestaande informatie problemen zoeken die ermee opgelost kunnen worden. Dit wordt ook data mining genoemd. Vaak moet de data eerst gereorganiseerd worden vooraleer de informatie nuttig wordt.
+\end{itemize}
+\section{Leren}
+\begin{itemize}
+	\item Moderne AI houdt zich bezig met systemen met een zeer groot aantal aanpasbare parameters. Zulke systemen noemt men \textbf{massief lerende systemen}.
+	\item \textbf{Voorbeelden} van massief lerende systemen:
+	\begin{itemize}
+		\item Neurale netwerken: trachten het biologische denksysteem na te bootsen.
+		\item Hidden Markov Model: wordt gebruikt bij de analyse van allerhande sequenties, waarbij de toestand soms onbekend is.
+	\end{itemize}
+	\item Parameters hebben niet noodzakelijk een betekenis, en is daarom ook onmogelijk om ze met de hand in te voeren. Daarom laat men een systeem leren, met behulp van \textbf{drie methoden}:
+	\begin{itemize}
+		\item Algoritmisch leren: Er wordt gedemonstreerd hoe een bepaalde actie moet uitgevoerd worden. Het systeem kan hierna deze actie inoefenen door het herhalen van deze instructies. Deze vorm komt goed overeen met het programmeren van een computer.
+		\item Leren met supervisie: Hier wordt er geen gebruik gemaakt van een algoritme maar eerder van voorbeelden. Deze voorbeelden worden een leerverzameling genoemd en bevatten inputgegevens die het systeem moet leren herkennen, met de daarbij horende resultaten. Er wordt een verband opgelegd tussen een bepaalde input en output.
+		\item Leren zonder supervisie: Dit gebeurt gedeeltelijk algoritmisch aangezien er enige instructies nodig zijn om de machine op gang te krijgen. De machine zal nadien zelf experimenteren wat er gebeurd bij het aanpassen van verschillende parameters. Het leren gebeurt dus niet met voorbeelden, maar uit eigen ervaring. Hier is er dan ook geen verband tussen het resultaat en de verschillende deeltaken, maar er is wel een algemeen idee wat er aangeleerd moet worden.
+	\end{itemize}
+\end{itemize}
+\section{Classificatie}
+\begin{itemize}
+	\item Classificatie is het mappen van een bepaalde input op een klasse.
+	\item We spreken van een \textbf{item} dat we moeten klasseren.
+	\item Dit item wordt gekarakteriseerd door een aantal \textbf{meetwaarden}.
+	\item \underline{Twee soorten meetwaarden}:
+	\begin{itemize}
+		\item Sommige metingen kunnen een groot aantal waarden opleveren die voorgesteld kunnen worden als een getal.
+		\item Andere metingen hebben maar een beperkt aantal waarden, zoals de indeling van van categorieën. 
+		\begin{itemize}
+			\item Deze kunnen omgezet worden zodat ze antwoorden zijn op ja-nee vragen, zoals het gevolg dat ze geconverteerd kunnen worden naar 0 of 1.
+			\good Nu zijn alle meetwaarden getallen.	
+		\end{itemize}
+	\end{itemize}
+	\item Aangezien dat alle meetwaarden getallen zijn $\rightarrow$ standaardvorm: de computer heeft een aantal klassen en moet een getallenrij die de meetwaarden voor een bepaal item bevat toewijzen aan één van de klassen.
+	\item Hoe worden de getallenrijen weergegeven? Een aantal notaties:
+	\begin{itemize}
+		\item De $n$-dimensionale Euclidische ruimte is de de verzameling vectoren met $n$ reële coördinaten.
+		\item Zo een vector wordt voorgesteld door een vette letter: $\textbf{v} = (v_1, ..., v_n)$.
+		\item Soms vanaf 0 beginnen, zodat we $n+1$-dimensionale vectoren hebben: $\textbf{v} = (v_0, v_1, ..., v_n)$. De waarde $v_0$ krijgt een speciale betekenis.
+		\item Reeële getallen die niet deel uitmaken van een vector worden weergegeven met hoofdletters: A, B, ...
+		\item De nulvector: 0 = (0, ..., 0).
+		\item Het inproduct:
+		$$\textbf{v}\cdot\textbf{u} = \sum_{i}^{n}v_iu_i$$
+		Het inproduct is lineair: $(A\textbf{v})\cdot \textbf{u} = A(\textbf{v}\cdot\textbf{u})$ en $(\textbf{u} + \textbf{v})\cdot\textbf{x} = \textbf{u} \cdot \textbf{x} + \textbf{v} \cdot \textbf{x}$.
+		
+		Hieruit volgt de norm $|| \cdot ||$: 
+		$$||\textbf{u}||^2 = \textbf{u} \cdot \textbf{u}$$
+		\item $d(u,v) = ||\textbf{u} -\textbf{v}||$ is de lengte van de kortste weg van \textbf{u} naar \textbf{v}.
+		 Hieruit volgt:
+		$$||\textbf{u} + \textbf{v}|| \leq ||\textbf{u}||+||\textbf{v}||$$
+		 Het kwadraat van beide kanten geeft:
+		 $$\textbf{u} \cdot \textbf{v} \leq ||\textbf{u}||\;||\textbf{v}||$$
+		 Aangezien dat 
+		 $$\cos(\textbf{u}, \textbf{v}) = \frac{\textbf{u} \cdot \textbf{v}}{||\textbf{u} ||\;|| \textbf{v} ||}$$
+		 kan dit omgevormd worden tot de volgende ongelijkheid:
+		 $$-1 \leq \frac{\textbf{u} \cdot \textbf{v}}{||\textbf{u} ||\;|| \textbf{v} ||} \leq 1$$
+		 \item De afstand en de cosinus geven vaak een goede indruk in hoeverre twee vectoren op elkaar lijken. De cosinus geeft een goede maat voor de afstand tussen twee genormaliseerde vectoren:
+		 $$d\bigg(\frac{\textbf{u}}{||\textbf{u}||}, \frac{\textbf{v}}{||\textbf{v}||}\bigg)^2 = 2 - 2\cos(\textbf{u}, \textbf{v})$$
+	\end{itemize}
+\end{itemize}
+
+\section{Informatie en beslissingsbomen}
+\subsection{Informatie-inhoud}
+	\begin{itemize}
+		\item Een bericht is enkel nuttig indien ontvanger een betekenis kan geven aan het bericht. De belangrijke elementen voor de informatie-inhoud is dus het bericht zelf en de kennis van de ontvanger.
+		\item Met de kennis kan aan elk mogelijk bericht $B$ een waarschijnlijkheid $P(B)$ toekennen. De informatie-inhoud wordt dan gedefinieerd door
+		$$-\log_2(P(B))\; \hbox{bits}$$ 
+		Voor $P(B) = 1$ is de informatie-inhoud 0 bits, wat logisch is aangezien de ontvanger niets heeft bijgeleerd van dit bericht.
+		\alert De informatie-inhoud van een bericht is niet altijd een geheel getal.
+		\alert De informatie-inhoud is nooit negatief.
+		\item \underline{Voorbeeld:} Stel dat een byte verwacht wordt, maar er is geen idee welke byte. Elke byte is even waarschijnlijk met kans $1/256$. De informatie-inhoud van de byte die dan binnenkomt is $-\log_2 (1/256)\;\hbox{bits} = 8 \;\hbox{bits}$.
+		\item \underline{Voorbeeld:} Stel een alfabet van 4 letters: A, C, G en T. De waarschijnlijkheid dat ze voorkomen wordt weergegeven in tabel \ref{table:example_entropy}.
+		\begin{table}[h]
+			\centering
+			\begin{tabular}{l | r}
+				A & 70,71 \% \\
+				C & 12,50 \% \\
+				G &  8,39 \% \\
+				T & 8,39 \% \\
+			\end{tabular}
+			\caption{De waarschijnlijkheden voor de letters A, C, G en T.}
+			\label{table:example_entropy}
+		\end{table}
+	
+		Als de ontvanger dit weet dan wordt de informatie-inhoud voor elke letter:
+		
+		\begin{equation*}
+			\begin{split}
+				A: -\log_2(0,7071) & = 0,5 \\
+				C: -\log_2(0,1250) & = 3,0 \\
+				G: -\log_2(0,0839) & = 3,575\\
+				T: -\log_2(0,0839) & = 3,575
+			\end{split}
+		\end{equation*}
+	\end{itemize}
+\subsection{Beslissingsboom}
+	\begin{itemize}
+		\item Elke knoop dat geen blad is bevat een vraag met een beperkt mogelijk aantal antwoorden.
+		\item Elk mogelijk antwoord verwijst naar een kind van de knoop.
+		\item Een item klasseren is een pad vanuit de wortel naar een blad, waarin de klasse staat.
+		\item Hoeveel informatie kan een beslissingsboom geven?
+		\begin{itemize}
+			\item Stel $k$ klassen $K_1, K_2, ... K_k$.
+			\item Stel een verzameling $S$ van items waarbij:
+			\begin{itemize}
+				\item $A(S, i)$ het aantal elementen horend bij $K_i$ is in de verzameling en,
+				\item $|S| = \sum_{i = 1}^k A(S,i)$ het totaal aantal element is van $S$.
+			\end{itemize} 
+			\item De informatie geleverd door een correcte klassering van alle element is dan:
+			\begin{equation*}
+				\begin{split}
+					E(S) & = \sum_{i = 1}^{k} A(S, i) \bigg(-log_2 \bigg( \frac{A(S, i)}{|S|}\bigg) \bigg) \\
+					     & = |S|log_2(|S|) +  \sum_{i = 1}^{k} A(S, i)(-log_2(A(S, i)))
+				\end{split}
+			\end{equation*}
+		\end{itemize}
+		\end{itemize}
+		\begin{itemize}
+			\item Het \textbf{Iterative Dichotomiser 3 (ID3)} algoritme is een \underline{inhalig} algoritme dat een beslissingsboom opstelt vanuit een bepaalde dataset.
+			\begin{itemize}
+				\item De wortel bevat de vraag die het meeste informatie oplevert.
+				\item Als het $j$-de attribuut de leerverzameling $L$ in de deelverzamelingen $L_{j,1}, L_{j,2},...,L_{j,n}$ opdeelt, dan is de informatie geleverd door dit attribuut gelijk aan:
+				$$I(j) = E(L) - \sum_{m = 1}^{n_j} E(L_{j, m})$$
+				\item Het attribuut wordt gekozen waarvoor $I(j)$ maximaal wordt.
+				\alert Als $I(j) = 0$, dan behoren ofwel alle items tot dezelfde klasse, ofwel kan er op basis van het attribuut geen klassering gemaakt worden.
+				\item Na de constructie van de wortel moeten nog $n_j$ deelbomen geconstrueerd worden.
+				\item \underline{Voorbeeld:}
+				\begin{itemize}
+					\item Veronderstel volgende informatie:
+					\begin{table}[ht]
+						\centering
+						\begin{tabular}{| c c c c | r |}
+							\hline
+							Beroepscategorie & Jonger dan 20? & Fraudeur? & risico? & frequentie \\
+							\hline
+							A & ja & ja & veilig & 10 \\
+							A & ja & nee & riskant & 11 \\
+							A & nee & ja & riskant & 18 \\
+							A & nee & nee & veilig & 100 \\
+							\hline
+							B & ja & ja & veilig & 180 \\
+							B & ja & nee & riskant & 8 \\
+							B & nee & ja & riskant & 1 \\
+							B & nee & nee & veilig & 90 \\
+							\hline
+						 	C & ja & ja & veilig & 50 \\
+							C & ja & nee & riskant & 5 \\
+							C & nee & ja & riskant & 5 \\
+							C & nee & nee & veilig & 50 \\	
+							\hline		
+							\multicolumn{2}{|r}{}&\multicolumn{2}{l}{Totaal veilig:}	 & 480	 \\
+							\multicolumn{2}{|r}{}&\multicolumn{2}{l}{Totaal riskant:}	 & 48	 \\
+							\multicolumn{2}{|r}{}&\multicolumn{2}{l}{Algemeen totaal:}	 & 528	\\
+							\hline		
+						\end{tabular}
+					\end{table}
+					\item Voor elk attribuut kan de resulterende verdeling afgeleidt worden (tabel \ref{table:resulterende_verdeling}):
+					\begin{table}[ht]
+						\centering
+						\begin{tabular}{|l | l |rr|}
+							\hline	
+							Attribuut & waarde & \# veilig & \# riskant \\
+							\hline	
+							\multirow{3}{*}{(1) Beroepscategorie} & A & 110 & 29 \\
+							& B & 270 & 9  \\
+							& C & 100 & 10 \\
+							\hline	
+							\multirow{2}{*}{(2) Jonger dan 20?} & ja & 240 & 24 \\
+							& nee & 240 & 24 \\
+							\hline	
+							\multirow{2}{*}{(3) Fraudeur?} & ja & 240 & 24 \\
+							& nee & 240 & 24 \\
+							\hline			
+						\end{tabular}
+						\caption{Resulterende verdeling.}
+						\label{table:resulterende_verdeling}
+					\end{table}
+					\item Voor elk attribuut kan nu $I(j)$ berekent worden, hier uitgewerkt voor de beroepscategorie:	
+					\begin{equation*}
+						\begin{split}
+							I(1) & = E(L) - \sum_{m = 1}^{n_1} E(L_{1, m})\\ 
+							     & = E(L) - (E(L_A) + E(L_B) + E(L_C)) \\	
+							     & \hbox{met} \\
+							     E(L) & = 480(-\log_2(480/528)) + 48(-log_2(48/528)) \\
+							          & = 232.054 \\
+							     E(L_A) & = 110(-log_2(110/139)) + 29(-log_2(29/139)) \\
+							            & = 102.702 \\
+							     E(L_B) & = 270(-log_2(270/279)) + 9(-log_2(9/279))\\
+							     		&  = 57.3603 \\
+							     E(L_C) & = 100(-log_2(100/110)) + 10(-log_2(10/110)) \\
+									     & = 48.3447\\ 
+									     & \hbox{zodat} \\
+							I(1) & =  E(L) - (E(L_A) + E(L_B) + E(L_C)) \\
+							 	 & = 232.054 - 102.702 - 57.3603 - 48.3447 = 23.647							         	     
+						\end{split}
+					\end{equation*}
+					\item Voor $I(2)$ en $I(3)$ bedragen beide uitkomsten $0$, aangezien er op basis van die attributen geen informatie kan achterhaald worden. Dit is logisch aangezien de verhouding veilige/risicohoudende klanten voor zowel leeftijd als fraudeur 10:1 is.
+					\item Als wortel van de beslissingsboom wordt als criterium de beroepscategorie genomen.
+					\item Voor zowel $L_A$, $L_B$ en $L_C$ moet apart dezelfde methode uitgevoerd worden. Het kan perfect mogelijk zijn dat op het tweede niveau bij keuze $A$ eerst wordt gecheckt op fraude, maar bij keuze $C$ eerst op leeftijd. 
+					\alert Bij $L_C$ levert geen enkel van de twee attributen informatie op, zodat er random moet gekozen worden:
+					\begin{table}[ht]
+						\centering
+						\begin{tabular}{|l | l |rr|}
+							\hline	
+							Attribuut & waarde & \# veilig & \# riskant \\
+							\hline	
+							\multirow{2}{*}{(2) Jonger dan 20?} & ja & 50 & 5 \\
+							& nee & 50 & 5 \\
+							\hline	
+							\multirow{2}{*}{(3) Fraudeur?} & ja & 50 & 5 \\
+							& nee & 50 & 5 \\
+							\hline			
+						\end{tabular}
+					\end{table}
+					\item \underline{Verfijningen:}
+					\begin{itemize}
+						\item Invoeren van een drempelwaarde voor de informatiewinst. Als deze te klein is wordt er niet meer opgesplitst. Een blad kan dan meerdere klassen bevatten, elk met een waarschijnlijkheid.
+						\item Voor elk mogelijk paar van attributen de informatiewinst berekenen en, als deze te groot is, knopen maken met twee attributen.
+						\item Bij effectieve getallen kan ook een drempelwaarde ingevoerd worden. Alle items met een waarde kleiner dan deze drempelwaarde gaan naar links, de andere naar rechts.
+					\end{itemize}
+				\end{itemize}
+			\end{itemize}
+			
+		\end{itemize}
+
+\section{Klasseren zonder leren}
+\begin{itemize}
+	\item Klassen worden niet vooraf gegeven.
+	\alert Geen leerverzameling aanwezig.
+	\item Een \textbf{groep} van punten is wat door een expert als een groep beschouwd wordt.
+	\begin{enumerate}
+		\item Twee punten behoren waarschijnlijk tot dezelfde groep als ze zeer dicht bij elkaar liggen. De expert definieert de afstandsfunctie.
+		\item Deze eigenschap wordt \textbf{transitief} verdergezet. Twee punten \textbf{x} en \textbf{z} behoren tot dezelfde groep als een rij punten $\textbf{y_1},...,\textbf{y_n}$ bestaat zodanig dat \textbf{x} zeer dicht bij $\textbf{y_1}$ ligt, $\textbf{y_1}$ zeer dicht bij $\textbf{y_2}$ ligt,..., en $\textbf{y_n}$ zeer dicht bij \textbf{z} ligt. 
+	\end{enumerate}
+\end{itemize}
+\subsection{$k$ zwaartepunten}
+\begin{itemize}
+	\item Op voorhand opgeven dat er $k$ klassen zijn.
+	\alert Een zwakte, aangezien men nu moet weten hoeveel klassen er op voorhand zijn. \underline{Twee problemen:}
+	\begin{itemize}
+		\item \underline{Het aantal gekozen klassen is te groot} zodat samenhangende groepen worden opgesplitst. Dit kan opgelost worden samenhorende groepen op het einde samen te nemen.
+		\item \underline{Het aantal gekozen klassen is te klein} zodat verschillende groepen samen worden genomen. Dit wordt opgelost door het algoritme meerdere malen uit te voeren met verschillende initialisaties. 
+	\end{itemize}
+	\item \textbf{$k$ zwaartepunten} poogt een leerverzameling $L$ op te delen in $k$ groepen $G_1, ..., G_k$, waarbij $k$ vooraf opgegeven is. Een klasse wordt voorgesteld door haar zwaartepunt $m_i$:
+	$$m_i = \frac{1}{n_i}\sum_{x \in G_i} \textbf{x}$$
+\end{itemize}
+\section{Een toepassing: Watson}
