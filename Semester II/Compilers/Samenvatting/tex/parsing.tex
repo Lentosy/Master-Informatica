@@ -1,2 +1,129 @@
 \chapter{Parsing}
 \label{ch:parsing}
+
+\newcommand{\placeholderIMG}[1]{\todo{image #1 plaatsen}}
+
+\QA{Waarom gaan we context-vrije grammatica gebruiken?}{
+	Reguliere expressies kan geen recurise uitdrukken.
+}
+
+
+\section{Inleiding}
+String van tokens: met parser kijken of dat deze geldig is en daarmee een abstract syntax tree op te stellen.
+
+\section{Context-vrije grammatica}
+\begin{itemize}
+	\item Een \textbf{taal} is een verzameling \textbf{strings}.
+	\item Een \textbf{string} is een eindige sequentie \textbf{symbolen} uit een \textbf{alfabet}.
+	\item Context-brije grammatica definieert de \textbf{syntax}.
+\end{itemize}
+
+\placeholderIMG{GRAMMAR 3.1}
+
+Een voorbeeld van een zin is:
+
+$$\texttt{id := num ; id := id + (id := num + num, id)}$$
+
+\subsection{Afleiden van een zin}
+Beginnen van een startsymbool is ofwel het eerste symbool expliciet aanduiden, of met \$, het stopsymbool.
+
+\placeholderIMG{DERIVATION 3.1}
+\QA{Is dit een linkse of een rechtste afleiding}{
+Geen van beide, omdat er eerst eens links, en dan eens rechts afgeleidt wordt.
+}
+
+Tree opbouwen om te weten wat de productieregels zijn. Alle terminals zijn de bladeren van de boom.
+Als je sequentie van bladeren hebt, wat is dan de bijhorende boom? Dat is de taak van de parser.
+
+\section{Ambigue grammatica}
+Veronderstel grammatica \placeholderIMG{GRAMMER 3.1}
+
+\QA{Wat gebeurt er voor het statement \texttt{a := {\color{red}(}x + {\color{blue}(}y{\color{red}(} + z{\color{blue})}}}{
+Ambigue grammatica, aangezien haakjes belangrijk zijn, maar we weten dit niet. (linkse boom staan haakjes links, maar rechtse boom staan haakjes rechts)
+}
+
+Bij plus-operatie zou je nog kunnen zeggen dat het associatief is, maar met vermenigvuldiging niet: $1 + 2 * 3$.
+
+\section{Grammatica disambiguëren}
+\begin{itemize}
+	\item * en / voorrang geven op + en -.
+	\item a + b + c = (a + b) + c
+	
+	Dus + is links associatief
+	\item Termen en factoren invoeren.
+\end{itemize}
+Is moeilijk te automatiseren, hangt ervan af welke semantiek je wilt.
+
+Een grammatica die niet ambigue is kan eenvoudiger geparsed worden.
+
+\section{Predictive Parsing}
+Eenvoudig te implementeren aan de hand van een \textbf{recursive descent parser}.
+
+Functie getToken spreekt de lexer aan. Geeft de volgende teken van de input string.
+
+Voor elk van de non-terminals is er één functie. Binnen elke functie staat er een switch statement op  basis van de token. Terminals worden getest en verwerkt. Non-terminals worden recursief geparsed.
+
+\QA{Hoe wordt de AST opgebouwd?}{
+	Elke functie returned een knoop van de boom, die dan aan elkaar kunnen gehangen worden.
+}
+
+
+\begin{itemize}
+	\item \textbf{nullable($X$)} $\rightarrow$ boolean: true als $X$ de lege string kan afleiden.
+	\item \textbf{first($\gamma$)}: verzameling terminals waarmee strings kunnen beginnen die van expressie $\gamma$ kunnen afgeleid worden.
+	\item \textbf{follow($X$)}: is de verzameling van terminals $t$ die meteen op $X$ kunnen volgen, dus waarvoor de afleiding $X_t$ bestaat. 
+\end{itemize}
+
+Algoritme 3.13 is ook een fixpoint algoritme die de first, follow en nullable berekent.
+
+\subsection{Opstellen Predictive Parsing Tabel}
+Uitbreiden definitie van first naar strings:
+\begin{itemize}
+	\item \texttt{FIRST($W\gammma$)} = \texttt{FIRST($W$)} als niet nullable($W$)
+	\item \texttt{FIRST($W\gammma$)} = \texttt{FIRST($W$)} $\cup$ \texttt{FIRST($\gamma$)} 
+\end{itemize}
+
+
+Er zijn drie gevallen waarbij er twee keuzes zijn. Moeten we $X \rightarrow a$ of $X \rightarrow Y$ nemen? De string $d$ levert minstens twee parse tree op. De grammatica was zelfs ambigu. Dit kan nooit geparsed worden.
+
+\section{LL(1) Parsers}
+\begin{itemize}
+	\item Elk vak in de tabel bevat slechts 1 productieregel.
+	\item Left-to-right parse: begin vooraan in broncode en verwerk van links naar rechts. 
+	\item Leftmost-derivation: 
+	\item 1-symbol lookahead: Er wordt slechts één symbool vooraf bekeken.
+	\item LL($k$):
+	\begin{itemize}
+		\item $k$ symbolen vooraf bekijken. De first sets bevatten sequenties van $k$ terminals.
+	\end{itemize}
+	\alert Mogelijke problemen:
+	\begin{itemize}
+		\item Linkse recursie.
+		\begin{itemize}
+			\item Probleem: zekerheid van meerdere productieregels in een vak want $\texttt{FIRST(T)} \in \texttt{FIRST(E - T)}$. 
+			\item Oorzaak: $E$ verschijnt links in de rechterkant van een $E$-productie.
+			\item Oplossing: 
+		\end{itemize} 
+		\item Linkse factorisatie.
+		\begin{itemize}
+			\item Probleem: De parser kan geen onderscheid maken tussen twee gelijkaardige strings.
+			\item Oplossing: grammatica herschrijven.
+		\end{itemize}
+	\end{itemize}
+	\item Error recovery is mogelijk.
+	\alert Beslissing nemen na $k$ symbolen blijft een zwakte.
+	
+\end{itemize}
+
+\subsection{Error Recovery}
+Probleem: pseudocode voor error. We willen geen compiler die geen nuttige foutboodschappen kan geven. Compiler mag ook niet stoppen bij eerste fout, omdat meerdere fouten nog verder kunnen voorkomen.
+\begin{itemize}
+	\item Gewoon een print statement = vrij slechte methode aangezien er geen tokens opgegeten worden. De parser doet voort alsof hij F en Tprime al geparsed heeft. De parser komt in foute toestand.
+	\item Print statement combineren met de skipto functie, die tokens zal opeten totdat er een token tegenkomt die in de follow set zit. Alle karakters die niet in de follow zitten, zal nog deel uitmaken van de subexpressie. 
+\end{itemize}
+
+\section{LR(1) parser}
+\begin{itemize}
+	\item Left-to-right parse
+	\item Rightmost-deviation
+\end{itemize}
