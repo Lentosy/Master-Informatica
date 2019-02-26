@@ -1,92 +1,233 @@
 \chapter{Parsing}
 \label{ch:parsing}
 
-\newcommand{\placeholderIMG}[1]{\todo{image #1 plaatsen}}
-
-\QA{Waarom gaan we context-vrije grammatica gebruiken?}{
-	Reguliere expressies kan geen recurise uitdrukken.
-}
-
-
 \section{Inleiding}
-String van tokens: met parser kijken of dat deze geldig is en daarmee een abstract syntax tree op te stellen.
+Het basisidee van parsing is om een string van tokens te analyseren en kijken of deze syntactisch geldig zijn.
+
+\QA{Waarom gaan we context-vrije grammatica gebruiken in plaats van reguliere expressies om de tokens van een lexer te parsen?}{Reguliere expressies kan geen recurise uitdrukken. Ook kan de eis voor gebalanceerde haakjes niet uitgedrukt worden met reguliere expressies.
+}
 
 \section{Context-vrije grammatica}
 \begin{itemize}
 	\item Een \textbf{taal} is een verzameling \textbf{strings}.
 	\item Een \textbf{string} is een eindige sequentie \textbf{symbolen} uit een \textbf{alfabet}.
-	\item Context-brije grammatica definieert de \textbf{syntax}.
+	\item Analogie met een parser:
+	\begin{itemize}
+		\item De broncode levert de strings op via lexicale analyse.
+		\item De lexicale tokens zijn de symbolen.
+		\item Het alfabet is de verzameling tokentypes die gegenereerd worden door de lexicale analyzer.
+	\end{itemize}
+	\item De taal van een context-vrije
+	\item Context-vrije grammatica definieert de \textbf{syntax} van de taal.
 \end{itemize}
-
-\placeholderIMG{GRAMMAR 3.1}
-
-Een voorbeeld van een zin is:
-
-$$\texttt{id := num ; id := id + (id := num + num, id)}$$
 
 \subsection{Afleiden van een zin}
-Beginnen van een startsymbool is ofwel het eerste symbool expliciet aanduiden, of met \$, het stopsymbool.
+Grammatica \ref{fig:vb_grammatica_1} toont een voorbeeldsyntax voor lusloze programma's. Een voorbeeld van een zin is:
 
-\placeholderIMG{DERIVATION 3.1}
-\QA{Is dit een linkse of een rechtste afleiding}{
-Geen van beide, omdat er eerst eens links, en dan eens rechts afgeleidt wordt.
+\begin{grammarfigure}
+	\includegraphics[width=\textwidth]{vb_grammatica_1}
+	\caption{Een syntax voor een lusloos programma.}
+	\label{fig:vb_grammatica_1}
+\end{grammarfigure}
+
+
+\begin{equation}\label{eqn:voorbeeldzin}
+\texttt{id := num ; id := id + (id := num + num, id)}
+\end{equation}
+
+
+die bijvoorbeeld afgeleidt is door de lexer van:
+$$\texttt{a := 7; b := c + (d := 5 + 6, d)}$$
+
+Het afleiden van een zin start altijd met een \textbf{startsymbool}, die twee vormen kan aannemen:
+\begin{enumerate}
+	\item Het startsymbool kan enerzijds het eerste symbool zijn.
+	\item Anderzijds wordt het startsymbool expliciet aangeduid zoals bijvoorbeeld $P \rightarrow S\$$, met \$ het stopsymbool.
+\end{enumerate}
+
+\begin{lstlisting}[caption={Het afleidingsproces.},label={lst:vb_afleiding},captionpos=b,escapeinside={(*}{*)}]
+(*\uline{S}*)
+S ; (*\uline{S}*)
+(*\uline{S}*) ; id := E
+id := (*\uline{E}*) ; id := E
+id := num ; id := (*\uline{E}*)
+id := num ; id := E + (*\uline{E}*)
+id := num ; id := (*\uline{E}*) + (S, E)
+id := num ; id := id + ((*\uline{S}*), E)
+id := num ; id := id + (id := (*\uline{E}*), E)
+id := num ; id := id + (id := E + E, (*\uline{E}*))
+id := num ; id := id + (id := (*\uline{E}*) + E, id)
+id := num ; id := id + (id := num + (*\uline{E}*), id)
+id := num ; id := id + (id := num + num, id)
+\end{lstlisting}
+
+Code \ref{lst:vb_afleiding} toont een illustratie van hoe het afleidingsproces te werk gaat, toegepast op voorbeeldzin \ref{eqn:voorbeeldzin}. Bij elke iteratie wordt het niet-terminale token dat onderlijnt is verwerkt.
+
+\QA{Is dit een linkse of een rechtste afleiding?}{Geen van beide, omdat er gekozen kan worden om zowel de meest linkse als de meest rechtse token te verwerken.
 }
 
-Tree opbouwen om te weten wat de productieregels zijn. Alle terminals zijn de bladeren van de boom.
-Als je sequentie van bladeren hebt, wat is dan de bijhorende boom? Dat is de taak van de parser.
+Figuur \ref{fig:vb_tree_1} toont de bijhorende parse tree. Hier zijn de bladeren ook een verzameling van terminale tokens. De taak van een parser is om de bijhorende boom op te stellen, uitgaande van enkel de bladeren.
 
-\section{Ambigue grammatica}
-Veronderstel grammatica \placeholderIMG{GRAMMER 3.1}
+\begin{figure}
+	\includegraphics[width=\textwidth]{vb_tree_1}
+	\caption{De bijhorende parse tree voor voorbeeldzin \ref{eqn:voorbeeldzin}.}
+	\label{fig:vb_tree_1}
+\end{figure}
 
-\QA{Wat gebeurt er voor het statement \texttt{a := {\color{red}(}x + {\color{blue}(}y{\color{red}(} + z{\color{blue})}}}{
-Ambigue grammatica, aangezien haakjes belangrijk zijn, maar we weten dit niet. (linkse boom staan haakjes links, maar rechtse boom staan haakjes rechts)
+
+\subsection{Ambigue grammatica}
+\QA{Stel dat we Grammatica \ref{fig:vb_grammatica_1} hebben. Wat gebeurt er voor het statement \texttt{a := {\color{red}(}x + {\color{blue}(}y{\color{red})} + z{\color{blue})}}?}{Dit is een voorbeeld van een ambigue grammatica. Aan de hand van de grammatica is het onmogelijk om slechts één parse tree op te bouwen. Figuur \ref{fig:ambigious_grammar_tree} toont beide parse trees voor het statement. Bij de linkse boom worden de rode haakjes gebruikt terwijl be de rechtse boom de blauwe haakjes gebruikt worden.
 }
 
-Bij plus-operatie zou je nog kunnen zeggen dat het associatief is, maar met vermenigvuldiging niet: $1 + 2 * 3$.
+\begin{figure}
+	\includegraphics[width=\textwidth]{ambigious_grammar_tree}
+	\caption{Voor Grammatica \ref{fig:vb_grammatica_1} kunnen er twee parse trees opgebouwd worden voor het statement \texttt{a := x + y + z}.} 
+	\label{fig:ambigious_grammar_tree}
+\end{figure}
 
-\section{Grammatica disambiguëren}
+Bij een plus-operatie is dit niet heel belangrijk aangezien het toch associatief is, maar bij niet-associatieve operaties is dit duidelijk niet goed.
+
+\subsection{Grammatica disambiguëren}
+Een grammatica hoeft niet perse de regels van de wiskunde te volgen. Daarom is het automatiseren ook moeilijk, omdat het afhangt van welke semantiek gewenst is. Er kan bijvoorbeeld gesteld worden dat:
 \begin{itemize}
-	\item * en / voorrang geven op + en -.
-	\item a + b + c = (a + b) + c
-	
-	Dus + is links associatief
-	\item Termen en factoren invoeren.
+	\item * en / voorrang heeft op + en -,
+	\item a + b + c = (a + b) + c, dus + is links associatief.
 \end{itemize}
-Is moeilijk te automatiseren, hangt ervan af welke semantiek je wilt.
+Om dit te realiseren worden er \textbf{termen} en \textbf{factoren} ingevoerd. Op die manier kan Grammatica \ref{grammar:3_5} omgevormd worden tot \ref{grammar:3_8}.
 
-Een grammatica die niet ambigue is kan eenvoudiger geparsed worden.
+\begin{grammarfigure}
+	\centering
+	\includegraphics[width=0.25\textwidth]{grammar_3_5}
+	\caption{Een ambigue grammatica. Hier wordt de regel dat * en / voorrang heeft op + en - niet gerespecteerd. }
+	\label{grammar:3_5}
+\end{grammarfigure}
+\begin{grammarfigure}
+	\centering
+	\includegraphics[width=\textwidth]{grammar_3_8}
+	\caption{Grammatica \ref{grammar:3_5} kan hervormt worden, door termen $T$ en factoren $F$ in te voeren. Deze termen dwingen de volgorde van operaties en associativiteit vast.}
+	\label{grammar:3_8}
+\end{grammarfigure}
+
 
 \section{Predictive Parsing}
-Eenvoudig te implementeren aan de hand van een \textbf{recursive descent parser}.
+Sommige grammatica's kunnen eenvoudig geparsed worden met een \textbf{recursive descent parser}. Voor elke niet-terminal is er een overeenkomstige functie. In elke functie is er een switch clause voor elke productieregel die door de niet-terminal kan gegenereerd worden. Niet-terminals worden recursief aangeroepen terwijl terminals verwerkt worden.
 
-Functie getToken spreekt de lexer aan. Geeft de volgende teken van de input string.
+Code \ref{code:recursive_descent_parser} toont een voorbeld van zo een recursive descent parser toegepast op Grammatica \ref{grammar:3_11}.
 
-Voor elk van de non-terminals is er één functie. Binnen elke functie staat er een switch statement op  basis van de token. Terminals worden getest en verwerkt. Non-terminals worden recursief geparsed.
+\begin{grammarfigure}
+	\includegraphics[width=\textwidth]{grammar_3_11}
+	\caption{}
+	\label{grammar:3_11}
+\end{grammarfigure}
 
-\QA{Hoe wordt de AST opgebouwd?}{
-	Elke functie returned een knoop van de boom, die dan aan elkaar kunnen gehangen worden.
+\begin{lstlisting}[caption={Een recursive descent parser gebaseerd op Grammatica \ref{grammar:3_11}},label={code:recursive_descent_parser},captionpos=b]
+enum token {IF, THEN, ELSE, BEGIN, END, PRINT, SEMI, NUM, EQ};
+extern enum token getToken(void);
+
+enum token tok;
+void advance() {tok = getToken();}
+void eat(enum Token t) {if (tok==t) advance(); else error();}
+
+void S(void) {switch(tok){
+	case IF:    eat(IF); E(); eat(THEN); S(); eat(ELSE); S(); break;
+	case BEGIN: eat(BEGIN); S(); L(); break;
+	case PRINT: eat(PRINT); E(); break;
+	default:    error();
+}}
+	
+void L(void) {switch(tok){
+	case END:  eat(END); break;
+	case SEMI: eat(SEMI); S(); L(); break;
+	default:   error();
+}}
+
+void E(void) {
+	eat(NUM) ; eat(EQ) ; eat(NUM);
 }
+\end{lstlisting}
 
+Een recursive descent parser werkt enkel als het eerste terminale symbool van een subexpressie genoeg informatie oplevert.
 
+\subsection{First and follow sets}
+Om de begrippen \textbf{first set} en \textbf{follow set} uit te leggen wordt Grammatica \ref{grammar:3_12} gebruikt.
+\begin{grammarfigure}
+	\includegraphics[width=\textwidth]{grammar_3_12}
+	\caption{}
+	\label{grammar:3_12}
+\end{grammarfigure}
 \begin{itemize}
 	\item \textbf{nullable($X$)} $\rightarrow$ boolean: true als $X$ de lege string kan afleiden.
-	\item \textbf{first($\gamma$)}: verzameling terminals waarmee strings kunnen beginnen die van expressie $\gamma$ kunnen afgeleid worden.
-	\item \textbf{follow($X$)}: is de verzameling van terminals $t$ die meteen op $X$ kunnen volgen, dus waarvoor de afleiding $X_t$ bestaat. 
+	
+	We zien dat nullable($Y$) zeker waar is voor Grammatica \ref{grammar:3_12}. We kunnen echter vanuit $X$ ook naar de lege string gaan via $X \rightarrow Y \rightarrow \epsilon$, maar niet vanuit $Z$.
+	
+	\begin{table}[h]
+		\centering
+		\begin{tabular}{c | c c c}
+	      & nullable & FIRST & FOLLOW \\
+	      \hline
+		X & yes & & \\
+		Y & yes & & \\
+		Z & no & & 
+		\end{tabular}
+	\end{table}
+	
+	\item \textbf{FIRST($\gamma$)}: verzameling terminals waarmee strings kunnen beginnen die van expressie $\gamma$ kunnen afgeleid worden.
+	
+	Uitgewerkt voor de drie startsymbolen:
+	\begin{itemize}
+		\item[$X:$] Vanuit $X$ zijn er twee mogelijkheden: $X \rightarrow a$ en $X \rightarrow Y$. We zien dat $a$ een terminal is dus die behoort al zeker tot de FIRST set. Vanuit $Y$ kan ook nog de lege string en $c$ bereikt worden. Hieruit volgt FIRST($X$) = $\{a\;c\}$.
+		\item[$Y:$] Vanuit $Y$ kan enkel $c$ bereikt worden: FIRST($Y$) = $\{c\}$.
+		\item[$Z:$] In eerste instantie kan $Z$ direct $d$ bereiken, dus die zit zeker in de FIRST set. Aangezien ook de productieregel $Z \rightarrow X\;Y\;Z$ bestaat en zowel $X$ als $Y$ nullable zijn, kan zowel de FIRST set van $X$ als van $Y$ overgenomen worden.
+		
+		FIRST($Z$) = $\{a\;c\;d\}$
+	\end{itemize}
+
+	\begin{table}[h]
+	\centering
+	\begin{tabular}{c | c c c}
+			& nullable & FIRST & FOLLOW \\
+			\hline
+			X & yes & a c & \\
+			Y & yes & c & \\
+			Z & no & a c d & 
+		\end{tabular}
+	\end{table}
+	
+	\item \textbf{FOLLOW($X$)}: is de verzameling van terminals $t$ die meteen op $X$ kunnen volgen, dus waarvoor de afleiding $X_t$ bestaat. 
 \end{itemize}
 
-Algoritme 3.13 is ook een fixpoint algoritme die de first, follow en nullable berekent.
+Algoritme \ref{algo:first_follow_nullable} is een fixpoint algoritme die de first, follow en nullable berekent.
+
+\begin{lstlisting}[caption={Iteratieve berekening van FIRST, FOLLOW en nullable},label={algo:first_follow_nullable},captionpos=b,escapeinside={(*}{*)}]
+(*\textbf{for}*) each terminal symbol Z
+  FIRST[Z] (*$\leftarrow$*) {Z}
+(*\textbf{repeat}*) 
+  (*\textbf{for}*) each production (*$X \rightarrow Y_1Y_2...Y_k$*)
+    (*\textbf{for}*) each (*$i$*) from 1 to (*$k$*), each (*$j$*) from (*$i + 1$*) to (*$k$*),
+      (*\textbf{if}*) all the (*$Y_i$*) are nullable
+        (*\textbf{then}*) nullable[X] (*$\leftarrow$*) true
+      (*\textbf{if} $Y_1 \cdot\cdot\cdot Y_{i - 1}$*) are all nullable 
+        (*\textbf{then}*) FIRST[X] (*$\leftarrow$*) FIRST[X] (*$\cup$*) FIRST[(*$Y_i$*)]
+      (*\textbf{if} $Y_{i + 1} \cdot\cdot\cdot Y_{k}$*) are all nullable 
+        (*\textbf{then}*) FOLLOW[(*$Y_i$*)] (*$\leftarrow$*) FOLLOW[(*$Y_i$*)] (*$\cup$*) FOLLOW[(*$X$*)]
+      (*\textbf{if} $Y_{i + 1} \cdot\cdot\cdot Y_{j - 1}$*) are all nullable 
+        (*\textbf{then}*) FOLLOW[(*$Y_i$*)] (*$\leftarrow$*) FOLLOW[(*$Y_i$*)] (*$\cup$*) FIRST[(*$Y_i$*)]
+(*\textbf{until}*) FIRST, FOLLOW and nullable did not change in this iteration
+\end{lstlisting}
+
+
 
 \subsection{Opstellen Predictive Parsing Tabel}
 Uitbreiden definitie van first naar strings:
 \begin{itemize}
-	\item \texttt{FIRST($W\gammma$)} = \texttt{FIRST($W$)} als niet nullable($W$)
-	\item \texttt{FIRST($W\gammma$)} = \texttt{FIRST($W$)} $\cup$ \texttt{FIRST($\gamma$)} 
+	\item \texttt{FIRST($W\gamma$)} = \texttt{FIRST($W$)} als niet nullable($W$)
+	\item \texttt{FIRST($W\gamma$)} = \texttt{FIRST($W$)} $\cup$ \texttt{FIRST($\gamma$)} 
 \end{itemize}
 
 
 Er zijn drie gevallen waarbij er twee keuzes zijn. Moeten we $X \rightarrow a$ of $X \rightarrow Y$ nemen? De string $d$ levert minstens twee parse tree op. De grammatica was zelfs ambigu. Dit kan nooit geparsed worden.
 
-\section{LL(1) Parsers}
+\subsection{LL(1) Parsers}
 \begin{itemize}
 	\item Elk vak in de tabel bevat slechts 1 productieregel.
 	\item Left-to-right parse: begin vooraan in broncode en verwerk van links naar rechts. 

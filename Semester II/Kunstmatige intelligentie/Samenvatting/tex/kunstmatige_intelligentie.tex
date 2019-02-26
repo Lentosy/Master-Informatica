@@ -296,7 +296,16 @@
 		\item \underline{Het aantal gekozen klassen is te groot} zodat samenhangende groepen worden opgesplitst. Dit kan opgelost worden samenhorende groepen op het einde samen te nemen.
 		\item \underline{Het aantal gekozen klassen is te klein} zodat verschillende groepen samen worden genomen. Dit wordt opgelost door het algoritme meerdere malen uit te voeren met verschillende initialisaties. 
 	\end{itemize}
-	\item \textbf{$k$ zwaartepunten} poogt een leerverzameling $L$ op te delen in $k$ groepen $G_1, ..., G_k$, waarbij $k$ vooraf opgegeven is. Een klasse wordt voorgesteld door haar zwaartepunt $m_i$:
+	\item \textbf{$k$ zwaartepunten} poogt een leerverzameling $L$ op te delen in $k$ groepen $G_1, ..., G_k$, waarbij $k$ vooraf opgegeven is. Een klasse wordt voorgesteld door haar zwaartepunt $m_i$, waarbij $n_i$ het aantal vectoren in $G_i$ is:
 	$$m_i = \frac{1}{n_i}\sum_{x \in G_i} \textbf{x}$$
+	\item Een punt $\textbf{z}$ wordt toegewezen aan een groep als volgt:
+	\begin{enumerate}
+		\item Zoek uit de zwaartepunten $\textbf{m_1}, ..., \textbf{m_k}$ datgene dat het dichtst bij $\textbf{z}$ ligt.
+		\item $\textbf{z}$ wordt dan toebedeeld aan de bijhorende klasse.
+	\end{enumerate}
+	\item Het resultaat is een \textbf{Voronoi-diagram}. Het negatieve aan zo een diagram is dat het enkele convexe groepen toelaat.
+	\alert Groepen die niet convex zijn worden door dit algoritme niet goed ingedeeld.
+	\item Gebaseerd 
+	
 \end{itemize}
 \section{Een toepassing: Watson}

@@ -19,17 +19,19 @@ cv2.namedWindow(filename)
 
 image = cv2.imread(fullPath)
 
-
-matrix = numpy.zeros((15, 15)) # de matrix zal de figuur uitsmeren naar rechtsonder
+size = 15
+kernel = numpy.zeros((size, size)) # de matrix zal de figuur uitsmeren naar rechtsonder
 for i in range(0, 7):
-    matrix[i][i] = 1/7
+    kernel[i][i] = 1/7
 
 filteredImage = cv2.imread(fullPath)
-cv2.filter2D(image, -1, matrix, filteredImage, (14, 14))
+cv2.filter2D(image, -1, kernel, filteredImage, (size - 1, size - 1))
 result = cv2.hconcat((image, filteredImage))
 cv2.imshow(filename, result)
 cv2.waitKey()
 
-
 filename, extension = filename.split(".")
-cv2.imwrite(filepath + "\\" + filename + "EX6." + extension, filteredImage)
+savePath = filepath + "\\" + filename + "EX6." + extension
+print("Saving as: " + savePath)
+cv2.imwrite(savePath, filteredImage)
+

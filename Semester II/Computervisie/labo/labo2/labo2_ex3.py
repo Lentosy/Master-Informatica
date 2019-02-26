@@ -20,7 +20,7 @@ cv2.namedWindow(filename)
 image = cv2.imread(fullPath)
 
 #unsharp mask procedure
-blurredImage = cv2.GaussianBlur(image, (51, 51), 0) # grote waarden gebruiken om te overdrijven
+blurredImage = cv2.GaussianBlur(image, (19, 19), 0) # grote waarden gebruiken om te overdrijven
 diff = cv2.absdiff(image, blurredImage)
 unsharpImage = cv2.add(diff, image)
 

@@ -18,7 +18,7 @@ cv2.namedWindow(filename)
 
 image = cv2.imread(fullPath)
 
-gaussianBlurredImage = cv2.GaussianBlur(image,(5, 3), 1)
+gaussianBlurredImage = cv2.GaussianBlur(image, (5, 5), 3)
 result = cv2.hconcat((image, gaussianBlurredImage))
 cv2.imshow(filename, result)
 cv2.waitKey()

@@ -21,8 +21,8 @@ image = cv2.imread(fullPath)
 grayScaleImage = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
 
 sobelImage = cv2.Sobel(grayScaleImage, -1, 0, 1)
-#result = cv2.hconcat((image, sobelImage))
-cv2.imshow(filename, sobelImage)
+result = cv2.hconcat((grayScaleImage, sobelImage))
+cv2.imshow(filename, result)
 cv2.waitKey()
 
 filename, extension = filename.split(".")

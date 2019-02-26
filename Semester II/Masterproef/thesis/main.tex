@@ -8,19 +8,27 @@
 \usepackage[utf8]{inputenc}
 \usepackage{pdfpages}
 \usepackage{ulem}
+\usepackage{amsmath}
 
 \graphicspath{{./img/}}
 
 \setlength{\parindent}{0cm} 
 \setlength{\parskip}{1em} 
 
+
+\newcommand{\todo}[1]{\color{red}\_ToDo: #1 \color{black}}
+
 \title{Titel}
 \author{Bert De Saffel}
 
 \begin{document}
 	\includepdf{voorblad.pdf} 
+	\include{tex/abstract}
 	\tableofcontents
+	
+	\include{tex/methodologie}
 	\include{tex/literatuurstudie}
+	
 	
 	
 	\bibliographystyle{IEEEtran}

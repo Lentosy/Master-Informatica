@@ -1,4 +1,4 @@
-\chapter{Gerelateerde werken}
+\chapter{Literatuur}
 
 \begin{itemize}
 		\item Bron \cite{Review-of-Action-Recognition-and-Detection-Methods}
@@ -140,6 +140,113 @@
 		\item Sliding window: laatste 30 frames bijhouden in buffer om hoge zekerheid van classificatie te voorzien; met majority voting de actie bepalen die het meeste voorkomt. 
 		\item Classifier: random forests. Beslissingsbomen aanmaken via ID3 algoritme
 	\end{itemize}
+
+	\item Bron \cite{Action-Recognition-using-Key-Frame-Features-of-Depth-Sequence-and-ELM}
+	\begin{itemize}
+		\item Depth-based action recognition.
+		\item \textit{key frames} worden geproduceerd uit skeletsequenties door gebruik te maken van de joints als \textbf{spatial-temporal interest points (STIPs)}. Deze worden gemapt in een dieptesequentie om een actie sequentie te representeren. De contour van de persoon wordt per frame bepaald. Op basis van deze contour en de tijd worden features opgehaald. Als classifier gebruiken ze een \textit{extreme learning machine}
+		\item Voordeel van key frames: ze bevatten de meest informatieve frames. Twee methodieken om de key frames op te halen:
+		\begin{enumerate}
+			\item \textbf{Interframe difference}: een nieuwe key-frame wordt gekozen als het verschil tussen twee frames een bepaald threshold overschrijft.
+			\item \textbf{Clustering}: groeperen van frames die op elkaar lijken op basis van low-level features. Uit die groep wordt dan de keyframe genomen, die het dichtst bij het centrum van dat cluster ligt.
+		\end{enumerate}
+		\item Zij gebruiken het 'opgenomen verschil': Een positie van een joint $P_{i,j}$ met $i$ het frame index en $j$ de joint index, kan gelijkgesteld worden als  $P_{i, j} = {x_{i, j}, y_{i, j}, z_{i, j}}$
+		
+		Het opgenomen verschil is dan:
+		
+		$$D_i = \sum_{j = 1}^{n} || P_{i, j} - P_{i - 1, j}||^2$$
+		met $||\cdot||$ de euclidische afstand en $n$ het aantal joints.
+		
+		\item key frames worden dan gekozen op basis van maximum of minimum $D_i$ binnen een sliding window. Een probleem: $D_i$ is vrij laag voor de eerste en laatste aantal frames. De key frames worden dus eerder gecentraliseerd en kan de sequentie niet accuraat bepaalt worden. Stapsgewijze oplossing:
+		\begin{enumerate}
+			\item Voor een video met $N$ frames: neem de som van $D_i$ van $i = 2$ tot $i = N$:
+			$$D_N = \sum_{i = 2}^{N}D_i$$
+			\item Bepaal een aantal key frames $K$ en bereken het gemiddelde van incrementen:
+			
+			$$D_{avg} = D_N / K$$
+			
+			\item Voor $i = 2$ tot $i = L$ wordt het verschil berekent:
+			
+			$$W_L = D_L - k * D_{avg}, k \in K$$
+			
+			zodat er een verzameling ${W_L}$ is. Het minimum van deze set wordt de key frame.
+		\end{enumerate}
+		\item Features op basis van contour
+	\end{itemize}
+
+	\item Bron \cite{Action-Recognition-by-Shape-Matching-to-Key-Frames}
+	\begin{itemize}
+		\item Een bepaalde actie kan onderverdeeld worden in een sequentie van poses.
+	\end{itemize}	
+\end{itemize}
+
+\chapter{Machine learning}
+\section{Features}
+\begin{itemize}
+	\item Een \textbf{feature} is een individueel, meetbare eigenschap of karakteristiek van een object dat geobserveerd wordt.
+	\item Het kiezen van \textit{informatieve, discriminative en onafhankelijke} features is belangrijk.
+	\begin{itemize}
+		\item Informatief: de informatiewinst van de feature moet hoog zijn
+		\item Discriminative: op basis van de feature moet het eenvoudig zijn het onderscheid te maken tussen de verschillende klassen
+		\item Onafhankelijk: De feature op zich mag van geen andere feature afhangen.
+	\end{itemize}
+	\item \textbf{Feature extraction} ($\equiv$ dimensionality reduction) is het verzamelen van features uit ruwe data zodat deze kunnen gebruikt worden als feature vector bij een classifier. 
+	\item Een \textbf{feature vector} is een $n$-dimensionale vector van \underline{numerieke} features.
+	\item De \textbf{feature space} ($\equiv$ vectorruimte) beschrijft de ruimte waarin de features zich bevinden. (bv 3 verschillende features = $\mathcal{R}^3$)
+	\item \textbf{Feature construction} is het maken van nieuwe features op basis van reeds bestaande features. De mapping is een functie $\phi$, van $\mathcal{R}^n$ naar $\mathcal{R}^{n + 1}$, met $f$ de geconstrueerde feature op basis van bestaande features, bv $f = x_1/x_2$.
 	
+	$$\phi(x_1, x_2, ..., x_n) = (x_1, x_2, ... x_n, f)$$
 
 \end{itemize}
+\section{Classifier}
+\begin{itemize}
+	\item Identificeren tot welke klasse een \underline{nieuwe} observatie behoort, gebaseerd op een training set waarvan de klassen wel gekend zijn.
+	\item \textbf{Lineaire classifiers} geven aan elke klasse $k$ een score op basis van de combinatie van de feature vector met een gewichtenvector met het scalair product.  De gekozen klasse is dan die met de hoogste score. Eenvoudiger geschreven:	
+	$$
+	score(X_i, k) = \beta_k \cdot X_i
+	$$
+	\begin{itemize}
+		\item $X_i$ = de feature vector voor instantie $i$
+		\item $\beta_k$ = de gewichtenvector voor klasse $k$
+	\end{itemize}
+	\item \todo{later onderzoeken}
+	\item \textbf{Support Vector machines}
+	\item \textbf{Random forests}
+	\item \textbf{Boosting}
+\end{itemize}
+
+
+
+
+\section{Hidden Markov Model}
+\label{sec:hidden_markov_model}
+	\begin{itemize}
+	\item Markov process = stochastisc process met volgende eigenschappen:
+	\begin{itemize}
+		\item Aantal toestanden is eindig.
+		\item Een toestand is enkel afhankelijk van de vorige toestand.
+		\item De waarschijnlijk is constant in de tijd.
+	\end{itemize}
+	\item HMM = Veronderstelt een markov process met verborgen toestanden
+	\item Bij een gewoon markov model: elke toestand is zichtbaar. Dus enkel de kans om van toestand $x$ naar $y$ te gaan zijn de enige parameters. 
+	\item Bij een HMM: de staat is niet zichtbaar, maar de output is wel zichtbaar.
+	\item Vaak voorkomende problemen die opgelost kunnen worden met HMM:
+	\begin{itemize}
+		\item Gegeven de parameters en geobserveerde data, benader de optimale sequentie van verborgen toestanden.
+		\item Gegeven de parameters en geobserveerde data, bereken de kans op die data. $\rightarrow$ Wordt het 'decoding' probleem genoemd en wordt gebruikt bij continue actieherkenning.
+		\item Gegeven de geobserveerde data, benader de parameters.
+	\end{itemize}
+	\item Het \textbf{decoding probleem}: \url{http://jedlik.phy.bme.hu/~gerjanos/HMM/node8.html}
+	\begin{itemize}
+		\item Zoek de meest waarschijnlijke toestandensequentie voor een verzameling van observaties $O = o_1, o_2, ..., o_T$ en een model $\lambda = (A, B, \pi)$.
+		\item Hoe 'meest waarschijnlijke toestandensequentie' definiëren. Een mogelijke manier is om de meest waarschijnlijke staat $q_t$ voor $t$t te berekenen, en alle $q_t$ dier daar aan voldoen te concateneren.
+		Andere manier is \textbf{Viterbi algoritme} die de hele toestandensequentie met de grootste waarschijnlijkheid teruggeeft.
+		
+		\item Hulpvariabele:
+		
+		$$\delta_t(i) = \max_{\substack{q_1, q_2, ... q_{t-1}}} p\{q_1, q_2, ... q_{t - 1}, q_t = i, o_1, o_2, ... o_{t - 1} | \lambda \}$$
+		
+		die de hoogste kans beschrijft dat een partiele observatie en toestandensequentie tot $t = t$ kan hebben, wanneer de huidige staat $i$ is.
+	\end{itemize}
+\end{itemize}
+

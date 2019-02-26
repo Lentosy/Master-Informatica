@@ -1,7 +1,16 @@
 \documentclass{report}
 \usepackage{ugentstyle}
-\usepackage{listings}
 
+
+\newenvironment{grammarfigure} % Environment that changes the caption name to "Grammatica" for figures
+{
+	\renewcommand{\figurename}{Grammatica}
+	\begin{figure}[h]
+}
+{
+	\end{figure}
+	\renewcommand{\figurename}{Figuur}
+}
 
 
 % commando om vraag-antwoord situaties te behandelen
