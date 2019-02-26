@@ -5,20 +5,22 @@
 	year    = {2009}
 }
 
-@inproceedings{xia2012view,
-	title		= {View invariant human action recognition using histograms of 3D joints},
-	author		= {Xia, L. and Chen, C.C. and Aggarwal, JK},
-	booktitle	= {Computer Vision and Pattern Recognition Workshops (CVPRW), 2012 IEEE Computer Society Conference on},
-	year		= {2012},
-	organization= {IEEE}
-} 
+@InProceedings{Xia2012,
+  author       = {Xia, L. and Chen, C.C. and Aggarwal, JK},
+  title        = {View invariant human action recognition using histograms of 3D joints},
+  booktitle    = {Computer Vision and Pattern Recognition Workshops (CVPRW), 2012 IEEE Computer Society Conference on},
+  year         = {2012},
+  organization = {IEEE},
+}
 
-@Inproceedings {real-time-human-pose-recognition-in-parts-from-a-single-depth-image,
-	author = {Shotton, Jamie and Fitzgibbon, Andrew and Blake, Andrew and Kipman, Alex and Finocchio, Mark and Moore, Bob and Sharp, Toby},
-	title = {Real-Time Human Pose Recognition in Parts from a Single Depth Image},
-	year = {2011},
-	month = {June},
-	abstract = {
+@InProceedings{Shotton2011,
+  author    = {Shotton, Jamie and Fitzgibbon, Andrew and Blake, Andrew and Kipman, Alex and Finocchio, Mark and Moore, Bob and Sharp, Toby},
+  title     = {Real-Time Human Pose Recognition in Parts from a Single Depth Image},
+  year      = {2011},
+  month     = {June},
+  publisher = {IEEE},
+  note      = {Best Paper Award},
+  abstract  = {
 	
 	We propose a new method to quickly and accurately predict 3D positions of body joints from a single depth image, using no temporal information. We take an object recognition approach, designing an intermediate body parts representation that maps the difficult pose estimation problem into a simpler per-pixel classification problem. Our large and highly varied training dataset allows the classifier to estimate body parts invariant to pose, body shape, clothing, etc. Finally we generate confidence-scored 3D proposals of several body joints by reprojecting the classification result and finding local modes.
 	
@@ -26,10 +28,8 @@
 	
 	
 	},
-	publisher = {IEEE},
-	url = {https://www.microsoft.com/en-us/research/publication/real-time-human-pose-recognition-in-parts-from-a-single-depth-image/},
-	edition = {CVPR},
-	note = {Best Paper Award},
+  edition   = {CVPR},
+  url       = {https://www.microsoft.com/en-us/research/publication/real-time-human-pose-recognition-in-parts-from-a-single-depth-image/},
 }
 {
 	keep-it-simple-and-sparse-real-time-action-recognition,
@@ -37,14 +37,14 @@
 	title = {Keep It Simple And Sparse: Real-Time Action Recognition},
 	year = {2013}
 }
-@article{human-action-recognition-with-extremities-as-semantic-posture-representation,
-	author = {Yu, Elden and Aggarwal, J.K.},
-	year = {2009},
-	month = {06},
-	pages = {},
-	title = {Human action recognition with extremities as semantic posture representation},
-	journal = {2009 IEEE Conference on Computer Vision and Pattern Recognition, CVPR 2009},
-	doi = {10.1109/CVPRW.2009.5204242}
+
+@Article{Elden2009,
+  author  = {Yu, Elden and Aggarwal, J.K.},
+  title   = {Human action recognition with extremities as semantic posture representation},
+  journal = {2009 IEEE Conference on Computer Vision and Pattern Recognition, CVPR 2009},
+  year    = {2009},
+  month   = {06},
+  doi     = {10.1109/CVPRW.2009.5204242},
 }
 {doi:10.4218/etrij.11.0110.0314,
 	author = {Uddin, Md. Zia and Thang, Nguyen Duc and Kim, Jeong Tai and Kim, Tae-Seong},
@@ -60,98 +60,97 @@
 	abstract = {This paper presents a novel approach for human activity recognition (HAR) using the joint angles from a 3D model of a human body. Unlike conventional approaches in which the joint angles are computed from inverse kinematic analysis of the optical marker positions captured with multiple cameras, our approach utilizes the body joint angles estimated directly from time-series activity images acquired with a single stereo camera by co-registering a 3D body model to the stereo information. The estimated joint-angle features are then mapped into codewords to generate discrete symbols for a hidden Markov model (HMM) of each activity. With these symbols, each activity is trained through the HMM, and later, all the trained HMMs are used for activity recognition. The performance of our joint-angle–based HAR has been compared to that of a conventional binary and depth silhouette-based HAR, producing significantly better results in the recognition rate, especially for the activities that are not discernible with the conventional approaches.},,
 	year = {2011}
 }
-@Inproceedings {action-recognition-based-bag-3d-points,
-	author = {Li, Wanqing and Zhang, Zhengyou and Liu, Zicheng},
-	title = {Action Recognition Based on a Bag of 3D Points},
-	year = {2010},
-	month = {June},
-	abstract = {This paper presents a method to recognize human actions from sequences of depth maps. Specifically, we employ an action graph to model explicitly the dynamics of the actions and a bag of 3D points to characterize a set of salient postures that correspond to the nodes in the action graph. In addition, we propose a simple, but effective projection based sampling scheme to sample the bag of 3D points from the depth maps. Experimental results have shown that over 90% recognition accuracy were achieved by sampling only about 1% 3D points from the depth maps. Compared to the 2D silhouette based recognition, the recognition errors were halved. In addition, we demonstrate the potential of the bag of points posture model to deal with occlusions through simulation.},
-	publisher = {IEEE},
-	url = {https://www.microsoft.com/en-us/research/publication/action-recognition-based-bag-3d-points/},
-	pages = {9-14},
-	edition = {2010 IEEE Computer Society Conference on Computer Vision and Pattern Recognition-Workshops},
+
+@InProceedings{Li2010,
+  author    = {Li, Wanqing and Zhang, Zhengyou and Liu, Zicheng},
+  title     = {Action Recognition Based on a Bag of 3D Points},
+  year      = {2010},
+  pages     = {9-14},
+  month     = {June},
+  publisher = {IEEE},
+  abstract  = {This paper presents a method to recognize human actions from sequences of depth maps. Specifically, we employ an action graph to model explicitly the dynamics of the actions and a bag of 3D points to characterize a set of salient postures that correspond to the nodes in the action graph. In addition, we propose a simple, but effective projection based sampling scheme to sample the bag of 3D points from the depth maps. Experimental results have shown that over 90% recognition accuracy were achieved by sampling only about 1% 3D points from the depth maps. Compared to the 2D silhouette based recognition, the recognition errors were halved. In addition, we demonstrate the potential of the bag of points posture model to deal with occlusions through simulation.},
+  edition   = {2010 IEEE Computer Society Conference on Computer Vision and Pattern Recognition-Workshops},
+  url       = {https://www.microsoft.com/en-us/research/publication/action-recognition-based-bag-3d-points/},
 }
 
-@article{enhanced-computer-vision-with-microsoft-kinect-sensor,
-	author={J. {Han} and L. {Shao} and D. {Xu} and J. {Shotton}},
-	journal={IEEE Transactions on Cybernetics},
-	title={Enhanced Computer Vision With Microsoft Kinect Sensor: A Review},
-	year={2013},
-	volume={43},
-	number={5},
-	pages={1318-1334},
-	keywords={computer vision;gesture recognition;image sensors;object recognition;object tracking;Microsoft Kinect sensor;RGB sensing;Kinect-based computer vision algorithm;object tracking;object recognition;human activity analysis;hand gesture analysis;indoor 3D mapping;Computer vision;Data integration;Sensors;Algorithm design and analysis;Cameras;Object recognition;Feature extraction;Computer vision;depth image;information fusion;Kinect sensor;Actigraphy;Actigraphy;Algorithms;Artificial Intelligence;Computer Peripherals;Computer Simulation;Image Enhancement;Image Enhancement;Imaging, Three-Dimensional;Pattern Recognition, Automated;Transducers;Video Games;Whole Body Imaging;Whole Body Imaging},
-	doi={10.1109/TCYB.2013.2265378},
-	ISSN={2168-2267},
-	month={Oct}
+@Article{Han2013,
+  author   = {J. {Han} and L. {Shao} and D. {Xu} and J. {Shotton}},
+  title    = {Enhanced Computer Vision With Microsoft Kinect Sensor: A Review},
+  journal  = {IEEE Transactions on Cybernetics},
+  year     = {2013},
+  volume   = {43},
+  number   = {5},
+  pages    = {1318-1334},
+  month    = {Oct},
+  issn     = {2168-2267},
+  doi      = {10.1109/TCYB.2013.2265378},
+  keywords = {computer vision;gesture recognition;image sensors;object recognition;object tracking;Microsoft Kinect sensor;RGB sensing;Kinect-based computer vision algorithm;object tracking;object recognition;human activity analysis;hand gesture analysis;indoor 3D mapping;Computer vision;Data integration;Sensors;Algorithm design and analysis;Cameras;Object recognition;Feature extraction;Computer vision;depth image;information fusion;Kinect sensor;Actigraphy;Actigraphy;Algorithms;Artificial Intelligence;Computer Peripherals;Computer Simulation;Image Enhancement;Image Enhancement;Imaging, Three-Dimensional;Pattern Recognition, Automated;Transducers;Video Games;Whole Body Imaging;Whole Body Imaging},
 }
 
-@conference{Real-time-Human-Motion-Analysis-by-Image-Skeletonization,
-	author = {Hironobu Fujiyoshi and Alan Lipton},
-	title = {Real-time Human Motion Analysis by Image Skeletonization},
-	booktitle = {Proc. of the Workshop on Application of Computer Vision},
-	year = {1998},
-	month = {October},
-} 
+@Conference{Fujiyoshi1998,
+  author    = {Hironobu Fujiyoshi and Alan Lipton},
+  title     = {Real-time Human Motion Analysis by Image Skeletonization},
+  booktitle = {Proc. of the Workshop on Application of Computer Vision},
+  year      = {1998},
+  month     = {October},
+}
 
-@Article{detecting-complex-3d-human-motions-with-body-model-low-rank-representation-foror-real-time-smart-activity-monitoring-system,
+@Article{Jalal2018,
   author = {Ahmad Jalal and Shaharyar Kamal and Dong-Seong Kim},
   title  = {Detecting Complex 3D Human Motions with Body Model Low-Rank Representation for Real-Time Smart Activity Monitoring System},
   year   = {2018},
   month  = {March},
 }
 
-@Article{Temporal-Action-Detection-with-Structured-Segment-Networks,
+@Article{Zhao2017,
   author = {Yue Zhao and Yuanjun Xiong and Limin Wang and Zhirong Wu and Xiaoou Tang and Dahua Lin},
   title  = {Temporal Action Detection with Structured Segment Networks},
   year   = {2017},
 }
 
-@article{singh2016untrimmed,
-	title={Untrimmed Video Classification for Activity Detection: submission to ActivityNet Challenge},
-	author={Singh, Gurkirt and Cuzzolin, Fabio},
-	journal={arXiv preprint arXiv:1607.01979},
-	year={2016}
+@Article{Singh2016,
+  author  = {Singh, Gurkirt and Cuzzolin, Fabio},
+  title   = {Untrimmed Video Classification for Activity Detection: submission to ActivityNet Challenge},
+  journal = {arXiv preprint arXiv:1607.01979},
+  year    = {2016},
 }
 
-@inproceedings{Temporal-Action-Localization-with-Pyramid-of-Score-Distribution-Features,
-	author = {Yuan, Jun and Ni, Bingbing and Yang, Xiaokang and Kassim, Ashraf},
-	year = {2016},
-	month = {06},
-	pages = {3093-3102},
-	title = {Temporal Action Localization with Pyramid of Score Distribution Features},
-	doi = {10.1109/CVPR.2016.337}
+@InProceedings{Yuan2016,
+  author = {Yuan, Jun and Ni, Bingbing and Yang, Xiaokang and Kassim, Ashraf},
+  title  = {Temporal Action Localization with Pyramid of Score Distribution Features},
+  year   = {2016},
+  pages  = {3093-3102},
+  month  = {06},
+  doi    = {10.1109/CVPR.2016.337},
 }
 
-@article{A-survey-of-human-motion-analysis-using-depth-imagery,
-	author = {Chen, Lulu and Wei, Hong and Ferryman, James},
-	year = {2013},
-	month = {11},
-	pages = {1995-2006},
-	title = {A survey of human motion analysis using depth imagery},
-	volume = {34},
-	journal = {Pattern Recognition Letters},
-	doi = {10.1016/j.patrec.2013.02.006}
+@Article{Chen2013,
+  author  = {Chen, Lulu and Wei, Hong and Ferryman, James},
+  title   = {A survey of human motion analysis using depth imagery},
+  journal = {Pattern Recognition Letters},
+  year    = {2013},
+  volume  = {34},
+  pages   = {1995-2006},
+  month   = {11},
+  doi     = {10.1016/j.patrec.2013.02.006},
 }
 
-@article{Action-Recognition-Using-Rate-Invariant-Analysis-of-Skeletal-Shape-Trajectories,
-	author = {Ben Amor, Boulbaba},
-	year = {2015},
-	month = {05},
-	pages = {},
-	title = {Action Recognition Using Rate-Invariant Analysis of Skeletal Shape Trajectories},
-	journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence}
+@Article{Ben2015,
+  author  = {Ben Amor, Boulbaba},
+  title   = {Action Recognition Using Rate-Invariant Analysis of Skeletal Shape Trajectories},
+  journal = {IEEE Transactions on Pattern Analysis and Machine Intelligence},
+  year    = {2015},
+  month   = {05},
 }
 
-@article{Review-of-Action-Recognition-and-Detection-Methods,
-	author = {Min Kang, Soo and Wildes, Richard},
-	year = {2016},
-	month = {10},
-	pages = {},
-	title = {Review of Action Recognition and Detection Methods}
+@Article{MinKang2016,
+  author = {Min Kang, Soo and Wildes, Richard},
+  title  = {Review of Action Recognition and Detection Methods},
+  year   = {2016},
+  month  = {10},
 }
 
-@InProceedings{Modeling-Temporal-Structure-of-Decomposable-Motion-Segments-for-Activity-Classification,
+@InProceedings{Niebles2010,
   author = {Niebles, Juan Carlos and Chen, Chih-Wei and Li, Fei Fei},
   title  = {Modeling Temporal Structure of Decomposable Motion Segments for Activity Classification},
   year   = {2010},
@@ -161,13 +160,13 @@
   doi    = {10.1007/978-3-642-15552-9_29},
 }
 
-@paper{Self-Adaptive-Proposal-Model-for-Temporal-Action-Detection-Based-on-Reinforcement-Learning,
-	author = {Jingjia Huang and Nannan Li and Tao Zhang and Ge Li and Tiejun Huang and Wen Gao},
-	title = {SAP: Self-Adaptive Proposal Model for Temporal Action Detection Based on Reinforcement Learning},
-	conference = {AAAI Conference on Artificial Intelligence},
-	year = {2018},
-	keywords = {Computer vision; Action detection; Reinforcement learning},
-	url = {https://www.aaai.org/ocs/index.php/AAAI/AAAI18/paper/view/16109}
+@Paper{Huang2018,
+  author     = {Jingjia Huang and Nannan Li and Tao Zhang and Ge Li and Tiejun Huang and Wen Gao},
+  title      = {SAP: Self-Adaptive Proposal Model for Temporal Action Detection Based on Reinforcement Learning},
+  year       = {2018},
+  conference = {AAAI Conference on Artificial Intelligence},
+  keywords   = {Computer vision; Action detection; Reinforcement learning},
+  url        = {https://www.aaai.org/ocs/index.php/AAAI/AAAI18/paper/view/16109},
 }
 
 @InProceedings{DeboeverieCIG2016,
@@ -185,19 +184,48 @@
 	url         = {http://ieeexplore.ieee.org/document/7860414/},
 }
 
-@Article{Action-Recognition-using-Key-Frame-Features-of-Depth-Sequence-and-ELM,
+@Article{Suolan2017,
   author  = {Suolan Liu and Hongyuan Wang},
-  title   = {Action Recognition using Key-Frame Features of Depth Sequence and ELM},
+  title   = {Action recognition using key-frame features of depth sequence and ELM},
   journal = {(IJACSA) International Journal of Advanced Computer Science and Applications, Vol. 8, No. 10, 2017},
   year    = {2017},
 }
 
-@Article{Action-Recognition-by-Shape-Matching-to-Key-Frames,
+@Article{Carlsson2001,
   author  = {Carlsson, Stefan and Sullivan, Josephine},
-  title   = {Action Recognition by Shape Matching to Key Frames},
+  title   = {Action recognition by shape matching to key frames},
   journal = {Workshop on Models versus Exemplars in Computer Vision},
   year    = {2001},
   month   = jan,
+}
+
+@Article{Vezzani2010,
+  author = {Roberto Vezzani and Davide Baltieri and Rita Cucchiara},
+  title  = {HMM Based Action Recognition with Projection Histogram Features},
+  year   = {2010},
+}
+
+@Article{Ramage2007,
+  author = {Daniel Ramage},
+  title  = {Hidden Markov Models Fundamentals},
+  year   = {2007},
+}
+
+@Article{Chen2017,
+  author  = {Chen, Chen},
+  title   = {Action recognition using 3D histograms of texture and a multi-class boosting classifier},
+  journal = {IEEE Transactions on Image Processing},
+  year    = {2017},
+  month   = {06},
+}
+
+@inproceedings{Mendoza2007,
+	author = {Mendoza, Maria and Perez de la Blanca, Nicolas},
+	year = {2007},
+	month = {06},
+	pages = {394-401},
+	title = {HMM-Based Action Recognition Using Contour Histograms},
+	doi = {10.1007/978-3-540-72847-4_51}
 }
 
 @Comment{jabref-meta: databaseType:bibtex;}

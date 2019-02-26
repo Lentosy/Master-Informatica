@@ -1,34 +1,72 @@
 \documentclass{report}
+
+
+
+%%---------- Packages ---------------------------------------------------------
 \usepackage[a4paper,includeheadfoot,margin=2.50cm]{geometry}
-
-\usepackage{hyperref}
-\usepackage[dutch]{babel} % nederlandse versie van hoofdingen, ...
+\usepackage[utf8]{inputenc}  % Accenten gebruiken in tekst (vb. é ipv \'e)
+\usepackage{amsfonts}        % AMS math packages: extra wiskundige
+\usepackage{amsmath}        
+\usepackage{amssymb}
+\usepackage[dutch]{babel}    % Taalinstellingen: woordsplitsingen,
+                             % commando's voor speciale karakters
+\usepackage{graphicx}        % Invoegen van tekeningen
+	\graphicspath{{./img/}}
+\usepackage{subcaption}
+\usepackage{hyperref}        % PDF krijgt klikbare links & verwijzingen in de inhoudstafel
+\usepackage{pdfpages}        % Laat het importeren van PDFs toe
+\usepackage[acronym,toc]{glossaries} % Woordenschat
+	\hypersetup{
+		colorlinks,
+		citecolor=black,
+		filecolor=black,
+		linkcolor=black,
+		urlcolor=black
+	}
+\usepackage{parskip} % Verwijdert indentatie van de paragrafen
+\usepackage{lipsum}  % Lorem ipsum vultekst
 \usepackage[numbers]{natbib}
-\usepackage{graphicx}
-\usepackage[utf8]{inputenc}
-\usepackage{pdfpages}
 \usepackage{ulem}
-\usepackage{amsmath}
+\usepackage[nottoc]{tocbibind} 
+	
 
-\graphicspath{{./img/}}
-
-\setlength{\parindent}{0cm} 
-\setlength{\parskip}{1em} 
 
 
 \newcommand{\todo}[1]{\color{red}\_ToDo: #1 \color{black}}
+\newcommand{\remark}[1]{\color{purple}\_Opmerking: #1 \color{black}}
 
-\title{Titel}
-\author{Bert De Saffel}
+
+\include{tex/glossaries}
+\makeglossaries
+
+\pagestyle{headings}
 
 \begin{document}
+	
+	
+	
 	\includepdf{voorblad.pdf} 
+	\newpage\thispagestyle{empty}\mbox{}
+	\includepdf{voorblad.pdf} 
+	
+	\include{tex/voorwoord}
 	\include{tex/abstract}
+	%\todo{EXTENDED ABSTRACT}
+	
+	\pagenumbering{gobble} % voorkomen dat table of contents ook een paginanummer krijgt
 	\tableofcontents
 	
+	
+	\include{tex/inleiding}
 	\include{tex/methodologie}
 	\include{tex/literatuurstudie}
+	\include{tex/conclusie}
 	
+	\printglossaries
+	
+
+	\listoffigures
+	\listoftables
 	
 	
 	\bibliographystyle{IEEEtran}

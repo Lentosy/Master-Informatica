@@ -1,7 +1,7 @@
 \chapter{Literatuur}
 
 \begin{itemize}
-		\item Bron \cite{Review-of-Action-Recognition-and-Detection-Methods}
+		\item Bron \cite{MinKang2016}
 	\begin{itemize}
 		\item Actieherkenning = het herkennen van een actie binnen een goed gedefinieerde omgeving 
 		\item Actiedetectie = het herkennen en lokaliseren van acties(begin, duratie en einde) in de ruimte en de tijd
@@ -26,7 +26,7 @@
 		\item 	Detectietaak: ook de lijst van acties geven PLUS de plaats in tijd waar ze voorkomen
 	\end{itemize}
 
-	\item Bron \cite{real-time-human-pose-recognition-in-parts-from-a-single-depth-image}
+	\item Bron \cite{Shotton2011}
 	gaat eerder over hoe het skelet bepaalt wordt
 	\begin{itemize}
 		\item voorstel van een methode om op een accurate manier de 3D posities van de joints te bepalen, vanuit slechts één dieptebeeld, zonder temporale informatie
@@ -37,59 +37,15 @@
 		\item Aangezien tijdsaspect weg is, is er enkel interesse in de statische poses van een frame. Verschillen van pose in twee opeenvolgende frames is miniscuul zodat die genegeerd worden
 	\end{itemize}
 
-	\item Bron \cite{xia2012view}
-	\begin{itemize}
-		\item[$\vee$] Bevat bruikbare datasets van skelet-, diepte- en kleurenbeelden
-		\item Ook hier praten ze over de vaak voorkomende uitdagingen: Intra-en interklasse variaties, de omgeving en de grootte van de verzameling van acties die er eigenlijk bestaan.
-		\item Hier tonen ze ook weer het nut van de kinect sensor aan, en gebruiken de kinect
-		\item Ze geven een nieuw algoritme om menselijke actieherkenning uit te voeren vanuit een dieptebeeld, een view-invariante representatie van poses en het systeem werkt \underline{real-time}. 
-		
-		{\color{red}! Het real-time component bevat drie zaken:
-			\begin{itemize}
-				\item Het verkrijgen van de 3D locaties van de joints $\rightarrow$ via bron \cite{real-time-human-pose-recognition-in-parts-from-a-single-depth-image}
-				\item Het berekenen van HOJ3D (histogram)
-				\item Classificatie
-			\end{itemize} }
-		\item Histogram gebaseerde representatie van 3D poses (HOJ3D genoemd) = partitie van 3D ruimte in $n$ "bins", gebruik maken van een bolcoördinatensysteem. Selectie van 12 joints die een compacte representatie van het skelet weergeven. (hand en pols, voet en enkel worden gecombineerd).
-		\item Het centrum van deze 3D ruimte is de de heup joint. Er is ook een vector $\alpha$, parallel met de grond, door de heup (van links naar rechts), en een vector $\theta$ loodrecht op de grond en door het centrum
-			\begin{figure}[ht]
-				\centering
-			\includegraphics[width=\textwidth]{HOJ3D}
-			\end{figure}
-			Deze 3D ruimte (figuur 3b) wordt opgesplitst in $n$ partities.
-			
-			Voor $\theta$: [0, 15], [15, 45], [45, 75], [75, 105] [105, 135], [165, 180]. (7 bins)
-			
-			Voor $\alpha$: 30 graden voor elke bin, dus 12 bins.
-			
-			in totaal $7 * 12 = 84$ bins
-		
-			
-			Via deze bolcoördinaten kan elke 3D joint gelokaliseerd worden in een unieke bin 
-			\item De 3 joints die gebruikt worden om het bolcoördinatenstelsel te oriënteren staan uiteraard vast. De overige 9 joints worden onderverdeeld in één van de 84 bins. 
-			
-			\item Om de representatie robust te maken, wordt één enkele joint over verschillende, naburige bins verdeeld (8 buren), op basis van gewichtsfunctie:
 
-			
-			\begin{figure}[ht]
-				\centering
-				\includegraphics[width=0.5\textwidth]{HO3D_HISTOGRAM}
-			\end{figure}
-			
-			\item Linear discriminant analysis (LDA) wordt toegepast om dominante features eruit deze histogram te halen.
-			
-			\item Ze stellen voor om kleurenbeelden te combineren met dieptebeelden om algoritmen te ontdekken met beter herkenning
-			
-			\item Ze beweren sneller te zijn dan bron \cite{action-recognition-based-bag-3d-points}
-		\end{itemize}
-	\item Bron \cite{action-recognition-based-bag-3d-points} (pre-kinect era)
+	\item Bron \cite{Li2010} (pre-kinect era)
 	\begin{itemize}
 		\item Actieherkenning met behulp van reeksen van dieptebeelden
 		\item Gaan ervan uit dat efficiënte tracking van skeletbeelden nog niet mogelijk is. (is gepubliceerd zelfde jaar dat Kinect beschikbaar was, 2010)
 		\item Hun oplossing is dus niet gebaseerd op het tracken van de skeletbeelden
 	\end{itemize}
 
-	\item Bron \cite{Temporal-Action-Detection-with-Structured-Segment-Networks}
+	\item Bron \cite{Zhao2017}
 	\begin{itemize}
 		\item Probleem: output van de actiecategorie EN de start en eind tijd van de actie. 
 		\item Ze beweren dat actieherkenning reeds goed opgelost is, maar niet actiedetectie. Hun definities zijn: 
@@ -99,11 +55,11 @@
 		\end{itemize}
 		\item Uitdaging in bestaande oplossingen: groot aantal onvolledige actiefragmenten. Voorbeelden:
 		\begin{itemize}
-			\item Bron \cite{singh2016untrimmed}:
+			\item Bron \cite{Singh2016}:
 			\begin{itemize}
 				\item maakt gebruik van \textbf{untrimmed classificatie}: de top $k = 3$ (bepaalt via cross-validation) labels worden voorspelt door globale video-level features. Daarna worden frame-level binaire classifiers gecombineerd met dynamisch programmeren om de activity proposals (die getrimmed zijn) te genereren. Elke proposal krijgt een label, gebaseerd op de globale label.
 			\end{itemize}
-				\item Bron \cite{Temporal-Action-Localization-with-Pyramid-of-Score-Distribution-Features}:
+				\item Bron \cite{Yuan2016}:
 			\begin{itemize}
 				\item Spreekt over de onzekerheid van het voorkomen van een actie en de moeilijkheid van het gebruik van de continue informatie
 
@@ -129,7 +85,7 @@
 		\end{itemize}
 	\end{itemize}
 
-	\item Bron \cite{Self-Adaptive-Proposal-Model-for-Temporal-Action-Detection-Based-on-Reinforcement-Learning}
+	\item Bron \cite{Huang2018}
 	\begin{itemize}
 		\item Temporal action detection = moet enerzijds detecteren of al dan niet een actie voorkomt, en anderzijds hoelang deze actie duurt, wat een uitdaging is bij untrimmed videos.
 		\item Veel moderne aanpakken gaan als volgt te werk: eerst wordt er klasse-onafhankelijke proposals gegenereerd door 
@@ -141,7 +97,7 @@
 		\item Classifier: random forests. Beslissingsbomen aanmaken via ID3 algoritme
 	\end{itemize}
 
-	\item Bron \cite{Action-Recognition-using-Key-Frame-Features-of-Depth-Sequence-and-ELM}
+	\item Bron \cite{Suolan2017}
 	\begin{itemize}
 		\item Depth-based action recognition.
 		\item \textit{key frames} worden geproduceerd uit skeletsequenties door gebruik te maken van de joints als \textbf{spatial-temporal interest points (STIPs)}. Deze worden gemapt in een dieptesequentie om een actie sequentie te representeren. De contour van de persoon wordt per frame bepaald. Op basis van deze contour en de tijd worden features opgehaald. Als classifier gebruiken ze een \textit{extreme learning machine}
@@ -174,22 +130,36 @@
 		\item Features op basis van contour
 	\end{itemize}
 
-	\item Bron \cite{Action-Recognition-by-Shape-Matching-to-Key-Frames}
+	\item Bron \cite{Carlsson2001}
 	\begin{itemize}
 		\item Een bepaalde actie kan onderverdeeld worden in een sequentie van poses.
 	\end{itemize}	
+
+	\item Bron \cite{Vezzani2010}
+	\begin{itemize}
+		\item HMM laten toe om de temporale evolutie te modelleren.
+		\item De \textbf{feature set} en \textbf{emission probability function} moeten goed gedefinieerd zijn. 
+		\item Gegeven een set $C$ van actie classes $\Lambda = \lambda^1 ... \lambda^C$, zoek de klasse $\lambda^*$ die de kans op $P(\lambda|O)$ maximaliseert met $O = \{o_1 ... O_T\}$ de frame observaties.
+		\item Een HMM voor elke actie. Classificatie voor een observatiereeks $O$ wordt uitgevoerd door het model te pakken met de hoogste waarschijnlijkheid:
+	\end{itemize}
 \end{itemize}
+
+
 
 \chapter{Machine learning}
 \section{Features}
 \begin{itemize}
 	\item Een \textbf{feature} is een individueel, meetbare eigenschap of karakteristiek van een object dat geobserveerd wordt.
-	\item Het kiezen van \textit{informatieve, discriminative en onafhankelijke} features is belangrijk.
+	\item Eigenschappen:
 	\begin{itemize}
 		\item Informatief: de informatiewinst van de feature moet hoog zijn
-		\item Discriminative: op basis van de feature moet het eenvoudig zijn het onderscheid te maken tussen de verschillende klassen
-		\item Onafhankelijk: De feature op zich mag van geen andere feature afhangen.
+		\item Discriminative: op basis van de feature moet het eenvoudig zijn om het onderscheid te maken tussen de verschillende klassen
+		\item Onafhankelijk: De feature op zich mag van geen andere feature of meetwaarde van dezelfde feature afhangen.
+
+		
+		$$\lambda^* = \arg \max_{1\leq c\leq C} \big[P(O|\lambda^c)\big]$$
 	\end{itemize}
+	\item Een \textbf{sparse feature discriptor} heeft een variabel aantal features. Een \textbf{dense feature descriptor} heeft een vast aantal features.
 	\item \textbf{Feature extraction} ($\equiv$ dimensionality reduction) is het verzamelen van features uit ruwe data zodat deze kunnen gebruikt worden als feature vector bij een classifier. 
 	\item Een \textbf{feature vector} is een $n$-dimensionale vector van \underline{numerieke} features.
 	\item De \textbf{feature space} ($\equiv$ vectorruimte) beschrijft de ruimte waarin de features zich bevinden. (bv 3 verschillende features = $\mathcal{R}^3$)
@@ -220,26 +190,82 @@
 
 \section{Hidden Markov Model}
 \label{sec:hidden_markov_model}
+Bron \cite{Ramage2007}
+\subsection{Markov model}
+
+\begin{itemize}
+	\item Markov process = stochastisch process met volgende eigenschappen:
 	\begin{itemize}
-	\item Markov process = stochastisc process met volgende eigenschappen:
-	\begin{itemize}
-		\item Aantal toestanden is eindig.
-		\item Een toestand is enkel afhankelijk van de vorige toestand.
-		\item De waarschijnlijk is constant in de tijd.
+		\item Het aantal toestanden $S = \{s_1, s_2, ... s_{|S|}\}$ is eindig.
+		\item Observatie van een sequentie over de tijd $\vec{z} \in S^T$
+		
+		Voorbeeld: 
+		
+		$S = \{sun, cloud, rain\}$ met $|S| = 3$ en $\vec{z} = \{z_1=S_{sun},z_2=S_{cloud},z_3=S_{cloud},z_4=S_{rain},z_5=S_{cloud}\}$ met $T = 5$.
+		\item Markov Assumpties:
+		\begin{enumerate}
+			\item Een toestand is enkel afhankelijk van de vorige toestand (\textbf{Markov Property}).
+			
+			$$P(z_t | z_{t - 1},z_{t-2}, ..., z_1) = P(z_t|z_{t-1})$$
+			\item De waarschijnlijk is constant in de tijd
+			
+			$$P(z_t|z_{t - 1}) = P(z_2|z_1); t \in 2 ...T$$
+		\end{enumerate}
+		\item Beginstaat $z_0 \equiv s_0$.
+		\item Transitiematrix $A \in \mathbb{R}^{(|S| + 1)\times(|S| + 1)}$, met $A_{ij} = P(i \rightarrow j)$, :
+		
+		$$A = \begin{matrix}
+		     & s_0 & s_{sun} & s_{cloud} & s_{rain} \\
+		 s_0 & 0 & .33 & .33 & .33 \\
+		 s_{sun} & 0 & .8 & .1 & .1 \\
+		 s_{cloud} & 0 & .2 & .6 & .2 \\
+		 s_{rain} & 0 & .1 & .2 & .7 \\
+		\end{matrix}$$
 	\end{itemize}
-	\item HMM = Veronderstelt een markov process met verborgen toestanden
-	\item Bij een gewoon markov model: elke toestand is zichtbaar. Dus enkel de kans om van toestand $x$ naar $y$ te gaan zijn de enige parameters. 
+
+\end{itemize}
+
+\begin{itemize}
+	\item Twee vragen die een markov model kunnen oplossen:
+	\begin{enumerate}
+		\item Wat is de kans op een bepaalde toestandenvector $\vec{z}$?
+
+				$$	P(\vec{z})  = \prod_{t=1}^{T} A_{z_{t-1}z_t}$$
+
+			Stel $\vec{z} = \{z_1=S_{sun},z_2=S_{cloud},z_3=S_{rain},z_4=S_{rain},z_5=S_{cloud}\}$ dan is $P(\vec{z}) = 0.33 \times 0.1 \times 0.2 \times 0.7 \times 0.2 $
+		\item Gegeven $\vec{z}$, hoe worden best de parameters van $A$ benaderd zodat de kans op $\vec{z}$ maximaal is.
+		$$A_{ij} = \frac{\sum_{t=1}^{T} \{z_{t-1} = s_i \wedge z_t = s_j\}}{\sum_{t=1}^{T} \{z_{t-1} = s_i\}}$$
+		
+		De maximale kans om van staat $i$ naar $j$ te gaan is het aantal transities van $i$ naar $j$ gedeeld door het totaal aantal keer dat we in $i$ zitten. Met andere woorden: Hoeveel \% zaten we in $i$ als we van $j$ komen.
+	\end{enumerate}
+\end{itemize}
+
+\subsection{Hidden Markov Model}
+\begin{itemize}
+	\item \gls{hmm} = Veronderstelt een markov process met verborgen toestanden
 	\item Bij een HMM: de staat is niet zichtbaar, maar de output is wel zichtbaar.
+	\item Formeel:
+	\begin{itemize}
+		\item Sequentie van geobserveerde outputs $x = \{x_1, x_2, ..., x_T\}$  uit een alfabet $V = \{v_1, v_2, ..., v_{|V|}\}$
+		\item Er is ook een sequentie van staten $z =\{z_1, z_2, ... z_T\}$ uit een alfabet $S = \{s_1, s_2, ... s_{|S|}\}$, maar deze zijn \underline{niet zichtbaar}.
+		\item Transitiematrix $A_{ij}$ wel bekend.
+		\item Kans dat een bepaalde output gegenereerd wordt in functie van de verborgen toestanden:
+		
+		$$P(x_t = v_k|z_t = s_j) = P(x_t = v_k | x_1, ..., x_T, z_1, ..., z_T) = B_{jk}$$
+		
+		Matrix $B$ geeft de waarschijnlijkheid dat een verborgen toestand $s_j$ de output $v_k$ teruggeeft.
+	\end{itemize}
 	\item Vaak voorkomende problemen die opgelost kunnen worden met HMM:
 	\begin{itemize}
 		\item Gegeven de parameters en geobserveerde data, benader de optimale sequentie van verborgen toestanden.
-		\item Gegeven de parameters en geobserveerde data, bereken de kans op die data. $\rightarrow$ Wordt het 'decoding' probleem genoemd en wordt gebruikt bij continue actieherkenning.
-		\item Gegeven de geobserveerde data, benader de parameters.
+		\item Gegeven de parameters en geobserveerde data, bereken de kans op die data. $\rightarrow$ Wordt het 'decoding' probleem (\textbf{Viterbi Algoritme}) genoemd en wordt gebruikt bij continue actieherkenning.
+		\item Gegeven de geobserveerde data, benader de parameters van $A$ en $B$.
 	\end{itemize}
 	\item Het \textbf{decoding probleem}: \url{http://jedlik.phy.bme.hu/~gerjanos/HMM/node8.html}
 	\begin{itemize}
-		\item Zoek de meest waarschijnlijke toestandensequentie voor een verzameling van observaties $O = o_1, o_2, ..., o_T$ en een model $\lambda = (A, B, \pi)$.
-		\item Hoe 'meest waarschijnlijke toestandensequentie' definiëren. Een mogelijke manier is om de meest waarschijnlijke staat $q_t$ voor $t$t te berekenen, en alle $q_t$ dier daar aan voldoen te concateneren.
+		\item Zoek de meest waarschijnlijke reeks van toestanden $\vec{z} \in S^T$ voor een verzameling van observaties $\vec{x} \in V^T$.
+		
+		\item Hoe 'meest waarschijnlijke toestandensequentie' definiëren. Een mogelijke manier is om de meest waarschijnlijke staat $s_t$ voor $x_t$ te berekenen, en alle $q_t$ dier daar aan voldoen te concateneren.
 		Andere manier is \textbf{Viterbi algoritme} die de hele toestandensequentie met de grootste waarschijnlijkheid teruggeeft.
 		
 		\item Hulpvariabele:
