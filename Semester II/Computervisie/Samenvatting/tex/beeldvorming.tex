@@ -32,9 +32,46 @@ Figuur \ref{fig:tweedimensionale_transformaties} toont alle transformaties mogel
 	\caption{Eenvoudige twee-dimensionale transformaties.}
 	\label{fig:tweedimensionale_transformaties}
 \end{figure}
-Elke transformatie maakt gebruik van één of andere matrix. De belangrijkste matrix is die van de projectie:
+Elke transformatie maakt gebruik van één of andere matrix. 
+\subsection{Similariteit Transformatie}
+Deze transformatie combineert eigenlijk de rotatie, translatie en schaling met:
+\begin{itemize}
+	\item een schalingsfactor $s$,
+	\item de rotatiehoek $\theta$,
+	\item en deranslatie $t_x$ en $t_y$.
+\end{itemize}
+$$\begin{bmatrix}
+x' \\ y' \\ 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+s\cos\theta & -s\sin\theta & t_x \\
+s\sin\theta & s\cos\theta & t_y \\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+x \\ y \\ 1
+\end{bmatrix}$$
+
+\subsection{Affiene transformatie}
+Deze transformatie laat toe om een figuur scheef te maken terwijl parallellisme bewaart blijft.
+$$\begin{bmatrix}
+x' \\ y' \\ 1
+\end{bmatrix}
+=
+\begin{bmatrix}
+a & b & t_x \\
+c & d & t_y \\
+0 & 0 & 1
+\end{bmatrix}
+\begin{bmatrix}
+x \\ y \\ 1
+\end{bmatrix}$$
+
+\subsection{Projectieve transformatie}
+
 $$\begin{pmatrix}
-x' \\ y' \\ z'
+kx' \\ ky' \\ k
 \end{pmatrix}
 =
 \begin{pmatrix}
@@ -43,6 +80,57 @@ h_{21} & h_{22} & h_{23} \\
 h_{31} & h_{32} & h_{33}
 \end{pmatrix}
 \begin{pmatrix}
-x \\ y \\ z
+x \\ y \\ 1
 \end{pmatrix}$$
+
+\section{Drie-dimensionale transformaties}
+Tabel \ref{table:DrieDimensionaleTransformaties} toont de hiërarchie van drie-dimensionale transformaties.
+\begin{table}
+	\centering
+	\begin{tabular}{l l c l }
+		Transformatie & Matrix & Degrees of Freedom & Behoudt \\
+		\hline
+		Translatie & $[ I | t]_{3 \times 4}$ & 3 & Oriëntatie \\
+		Rotatie & $[ I | t]_{3 \times 4}$ & 6 & Lengte \\
+		Similariteit & $[ sR | t]_{3 \times 4}$ & 6 & Hoeken \\
+		Affien & $[ A ]_{3 \times 4}$ & 12 & Parallellisme \\
+		Projectie & $[ \widetilde{H} ]_{4 \times 4}$ & 15 & Rechte lijnen \\
+	\end{tabular}
+	\caption{Hiërarchie van drie-dimensionale transformaties.}
+	\label{table:DrieDimensionaleTransformaties}
+\end{table}
+\subsection{Drie-dimensionale rotatie}
+\begin{itemize}
+	\item Elke rotatie in drie dimensies is rond een as $\textbf{\hat{n}}$
+	\item Een verzameling van rotaties rond verschillende assen kan vervangen worden door één rotatie rond één as.
+	\item Rotaties in drie dimensies is \underline{niet commutatief}.
+	\item Stel:
+	$$[\textbf{\hat{n}}]_\times = \begin{bmatrix}
+		0 & -\hat{n}_z & \hat{n}_y \\
+		\hat{n}_z & 0 & - \hat{n}_x \\
+		-\hat{n}_y & \hat{n}_x & 0
+	\end{bmatrix}$$
+	dan kan elk kruisproduct $\textbf{\hat{n}} \times \textbf{v}$ geschreven worden als
+	$$\textbf{\hat{n}} \times \textbf{v} = [\textbf{\hat{n}}]_\times \textbf{v}$$
+	\item De rotatiematrix rond een as $\textbf{\hat{n}}$ en hoek $theta$:
+	
+	$$R(\textbf{\hat{n}}, \theta) = \textbf{I} + \sin \theta [\textbf{\hat{n}}]_\times + (1 - \cos \theta) [\textbf{\hat{n}}]_\times^2$$ 
+	Dit staat bekend als de \textbf{formule van Rodrigues}.
+	\item Elke beweging van een camera kan geschreven worden als de combinatie van een rotatie met rotatiematrix $\textbf{R}$ en een translatie met translatiematrix $T$: 
+	$$
+	\begin{bmatrix}
+	X_C \\ Y_C \\ Z_C \\ 1
+	\end{bmatrix}
+	= 
+	\begin{bmatrix}
+	\textbf{R} & \textbf{T} \\ 0 & 1
+	\end{bmatrix}
+	\begin{bmatrix}
+	X_W \\ Y_W \\ Z_W \\ 1
+	\end{bmatrix}
+	$$
+\end{itemize}
+
+\section{Pinhole model}
+\todo{rest van hoofdstuk}
 

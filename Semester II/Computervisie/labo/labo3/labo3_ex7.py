@@ -36,3 +36,6 @@ cv2.imwrite(savePath, erosion)
 savePath = filepath + "\\" + filename + "EX7DILATATION." + extension
 print("Saving as: " + savePath)
 cv2.imwrite(savePath, dilation)
+
+
+
