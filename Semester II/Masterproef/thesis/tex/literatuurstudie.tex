@@ -12,7 +12,7 @@
 		\begin{itemize}
 			\item voorgedefinieerde split: De dataset wordt opgesplitst  in twee of drie delen zoals de auteurs van die dataset dat vermelden
 			\item n-voudige cross-validatie: Verdeeld de dataset in n gelijkvoudige stukken. Hierbij worden er (n-1)/n  percentage van de videos gebruikt om te trainen, en dan de overige 1/n om te testen. Dit proces wordt n keer herhaald, zodat elke video éénmaal gebruikt werd voor te testen
-			\item leave-one-out cross-validatie:
+			\item leave-one-out cross-validatie: {\color{green}aangewezen methode indien testdata personen zijn.} 1 persoon wordt als testset beschouwd. De overige $n - 1$ personen is de training set.
 		\end{itemize}
 		
 		
@@ -128,6 +128,7 @@
 			zodat er een verzameling ${W_L}$ is. Het minimum van deze set wordt de key frame.
 		\end{enumerate}
 		\item Features op basis van contour
+		\item Actieherkenning met neurale netwerken (EXTREME LEARNING)
 	\end{itemize}
 
 	\item Bron \cite{Carlsson2001}
@@ -139,8 +140,16 @@
 	\begin{itemize}
 		\item HMM laten toe om de temporale evolutie te modelleren.
 		\item De \textbf{feature set} en \textbf{emission probability function} moeten goed gedefinieerd zijn. 
-		\item Gegeven een set $C$ van actie classes $\Lambda = \lambda^1 ... \lambda^C$, zoek de klasse $\lambda^*$ die de kans op $P(\lambda|O)$ maximaliseert met $O = \{o_1 ... O_T\}$ de frame observaties.
+		\item Gegeven een set $C$ van actie classes $\Lambda = \lambda^1 ... \lambda^C$, zoek de klasse $\lambda^*$ die de kans op $P(\lambda|O)$ maximaliseert met $O = \{o_1 ... o_T\}$ de frame observaties.
 		\item Een HMM voor elke actie. Classificatie voor een observatiereeks $O$ wordt uitgevoerd door het model te pakken met de hoogste waarschijnlijkheid:
+		
+				
+		$$\lambda^* = \arg \max_{1\leq c\leq C} \big[P(O|\lambda^c)\big]$$
+		\item Twee verschillende features gebruikt:
+		\begin{itemize}
+			\item Projection histograms
+			\item Shape descriptors
+		\end{itemize}
 	\end{itemize}
 \end{itemize}
 
@@ -156,8 +165,7 @@
 		\item Discriminative: op basis van de feature moet het eenvoudig zijn om het onderscheid te maken tussen de verschillende klassen
 		\item Onafhankelijk: De feature op zich mag van geen andere feature of meetwaarde van dezelfde feature afhangen.
 
-		
-		$$\lambda^* = \arg \max_{1\leq c\leq C} \big[P(O|\lambda^c)\big]$$
+
 	\end{itemize}
 	\item Een \textbf{sparse feature discriptor} heeft een variabel aantal features. Een \textbf{dense feature descriptor} heeft een vast aantal features.
 	\item \textbf{Feature extraction} ($\equiv$ dimensionality reduction) is het verzamelen van features uit ruwe data zodat deze kunnen gebruikt worden als feature vector bij een classifier. 
