@@ -1,0 +1,45 @@
+\chapter{Semantische analyse}
+\label{ch:semantische_analyse}
+
+\begin{lstlisting}
+int b = 0;
+extern int a;
+void foobar(float b){
+  if(b == 0.0){
+    char * b = malloc(1);
+    *b = 0;
+  }
+}
+\end{lstlisting}
+
+Er wordt een nullbyte weggeschreven naar $b$. Is dit een string, float, 32 bit integer, 64 bit integer? Het algemene probleem is dat er verschillende scopes zijn, en binnen elke scope kan dezelfde variabele identifier gebruikt worden. Via \textbf{symbooltabellen} wordt dit efficiënt opgelost.
+\section{Symbooltabellen}
+Een symbooltabel bestaat uit een \textbf{environment} $\sigma_i$ en een verzameling \textbf{bindings}.
+$$\sigma_1 = \{g \rightarrow string, a \rightarrow int}$$
+
+Elke environment $\sigma_i$ bestaat uit de samenstellingen van zijn specifieke bindings en eventueel de bindings van andere $\sigma_{j}$ voor $j \neq i$. De specifieke bindings van $\sigma_i$ hebben voorrang op de bindings van $\sigma_{j}$.
+
+\underline{Twee implementaties:}
+\begin{itemize}
+	\item \textbf{Imperatieve implementatie:} Er wordt een hashtabel bijgehouden waarin kan toegevoegd en opgezocht worden. Er is geen remove operatie maar wel een pop operatie aangezien elke bucket kan gezien worden als een stapel omdat geneste expressies nooit overlappen. Elke bucket van de hashtabel is een scope.
+\item \textbf{Functionele implementatie:} Kopieërt niet de hele hashtabel, maar enkel de pointers naar de relevante buckets. Kan met hashtabel, maar (zelfbalanserende) binaire zoekbomen zijn efficiënter.
+\end{itemize}
+\subsection{Efficiëntere symbooltabellen}
+Tabel aanmaken met pointers naar identifier tijdens het parsen., in plaats van "a" op AST figuur 1.4 wordt de pointer bijgehouden in de knoop.   
+(slide 15)
+
+
+\section{Type Checking}
+Kijken of de gebruikte veranderlijken:
+\begin{itemize}
+	\item gedeclareerd zijn
+	\item ze van het juiste type zijn
+	\item of de types van expressies correct zijn
+\end{itemize}
+Door de abstract syntax tree in postorder te overlopen kan dit geïmplementeerd worden. Er zullen altijd eerst declaraties bezocht worden. Er zijn verschillende visitors 
+\subsection{Expressies}
+
+\subsection{Variabelen}
+
+\subsection{Declaraties}
+

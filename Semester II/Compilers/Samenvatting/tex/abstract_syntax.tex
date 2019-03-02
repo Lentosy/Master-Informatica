@@ -1,0 +1,45 @@
+\chapter{Abstracte syntax}
+\label{ch:abstract_syntax}
+Abstract syntax tree stelt eerder semantiek voor, parse trees de constructieregels. De abstract syntax tree wordt opgebouwd tijdens het parsen.
+\section{Semantische acties}
+
+
+Een parser voert syntactische acties uit zoals shift en reduce. Een semantische actie heeft betrekking tot de betekenis van de expressies. Het bereken van semantische waarden kan bv zijn:
+\begin{itemize}
+	\item het type van het linkerlid van de expressie $a = 5 + 3$ bepalen.
+\end{itemize}
+
+
+\subsection{Voorbeeld}
+\begin{enumerate}
+	\item Rekenmachine: Specifieren tokens van verschillende types (bv token type id komt overeen met strings). 
+	
+	Eerst $a = 5$, dan $c = a + b$, dan moet $a$ eerst opgezocht worden (lookup).
+	
+	Elke terminal heeft een type semantische waarde, en is dan ook returntype van de functie voor die terminal.
+	
+	
+	\item Betere rekenmachine: niet manueel implementeren maar met tool (bv Yacc)
+	
+	\$\$ is de semantische waarde van het linkerlid
+	
+	\$1 is de semantische waarde van de eerste expressie in de tokenlijst.
+	
+	Figuur 4.3
+	
+	Semantische waarde van $exp$ is semantische waarde van $INT$
+	
+	Opt einde: reductie van \texttt{exp TIMES exp}
+	\item Interpreter
+\end{enumerate}
+In feite kan compilatie uitgevoerd worden met semantische acties, maar wordt in de praktijk afgeraden:
+\begin{itemize}
+	\item Analyse kan enkel uitgevoerd worden in de volgorde dat de inputstream geparsed wordt. 
+	\item Code genereren op basis van parse tree, maar zo een tree is niet geschikt. Er zit te veel nutteloze informatie in zoals := operator, en dient eerder om de syntax uit te drukken en niet semantiek.
+\end{itemize}
+
+\section{Abstract Parse Tree Construction}
+
+Grammatica 4.5 is ambigue. Binaire operator specificeert geen associativiteit. Dit is geen probleem, aangezien de parser dit al beslist heeft. Dus de grammatica die de parser gebruikt mag niet ambigue zijn, wel die van de abstract syntax tree, aangezien die dient om de semantiek te definiëren.
+\subsection{Posities}
+Als je tree opbouwt, wordt deze geanalyseerd om bv types te checken. Bij foutboodschappen moet de compiler weten waar in de inputstroom deze fout gegenereerd wordt. Er kan een \textbf{positiestack} bijgehouden worden die de positie van elke token bevat.

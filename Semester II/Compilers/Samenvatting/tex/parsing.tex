@@ -263,8 +263,23 @@ Probleem: pseudocode voor error. We willen geen compiler die geen nuttige foutbo
 	\item Print statement combineren met de skipto functie, die tokens zal opeten totdat er een token tegenkomt die in de follow set zit. Alle karakters die niet in de follow zitten, zal nog deel uitmaken van de subexpressie. 
 \end{itemize}
 
-\section{LR(1) parser}
+\section{LR($k$) parser}
 \begin{itemize}
-	\item Left-to-right parse
-	\item Rightmost-deviation
+	\item Left-to-right parse.
+	\item \underline{Rightmost}-derivation.
+	\item $k$-token lookahead.
+	\item Werkt met een inputstroom en een stapel.
+	\item Twee mogelijke acties:
+	\begin{itemize}
+		\item \textbf{Shift:} verplaats een token van de inputstroom op een stapel.
+		\item \textbf{Reduce:} kies een regel $X \rightarrow A B C$; Stel dat de stapel $[C, B, A]$ bevat, kunnen deze alle drie gepopt en vervangen worden door $X$.
+	\end{itemize}
+	\item Toestandsautomaat:
+	\begin{itemize}
+		\item Stapel houdt token bij en toestand.
+		\item Toestand en $k$ lookahead symbolen in de input bepalen de volgende actie.
+		\item Implementeren aan de hand van een toestandstransitietabel.
+	\end{itemize}
 \end{itemize}
+
+\section{Local Error Recovery}
