@@ -2,7 +2,8 @@
 \pagenumbering{arabic}
 \chapter{Inleiding}
 \label{ch:Inleiding}
-Menselijke actieherkenning is het proces dat op een automatische manier (I) detecteert dat een persoon een bepaalde actie uitvoert en (II) herkennen welke actie dit is. Voorbeelden van zulke acties zijn lopen, stappen, zwaaien, springen, bukken, enz. Actieherkenning kent tal van toepassingen zoals 
+Menselijke actieherkenning is het proces dat op een automatische manier (I) detecteert dat een persoon een bepaalde actie uitvoert en (II) herkennen welke actie dit is. Voorbeelden van zulke acties zijn lopen, stappen, zwaaien, springen, bukken, enz. Actieherkenning kent tal van toepassingen, voornamelijk bij de interactie tussen mens en computer, zoals fysiotherapie \cite{Deboeverie2017}, lichaamsanalyse \cite{Devi2015} en 
+
 
 
 
@@ -19,11 +20,11 @@ Actieherkenning en actiedetectie blijft moeilijk te realiseren in een real-time 
 
 
 \section{De Kinect}
-De Kinect (figuur \ref{fig:KinectSensorVersies}) is origineel ontworpen als manier om de gebruiker zelf als controller te beschouwen. De Kinect bevat een kleurencamera, dieptesensor, \todo{eens experimenteren met kinect}. Door de goedkope technologie wordt de Kinect vaak gebruikt bij onderzoek naar menselijke actieherkenning. De kleurencamera en dieptesensor kunnen elk bijdragen tot actieherkenning. Enerzijds kunnen de kleurencamera en dieptesensor gecombineerd worden om RGB-D data te bekomen. Anderzijds kan vanuit het dieptebeeld een skelet gegenereerd worden via de methode van Shotton et al. \cite{Shotton2011}, die reeds ingebouwd zit in de Kinect.
+De Kinect (figuur \ref{fig:KinectSensorVersies}) is origineel ontworpen als manier om de gebruiker zelf als spelcontroller te beschouwen. De Kinect bevat een kleurencamera, dieptesensor, \todo{eens experimenteren met kinect}. Door de goedkope technologie die de Kinect aanbiedt wordt de Kinect vaak gebruikt bij onderzoek in de computervisie. Voor actieherkenning kunnen zowel de kleurencamera als dieptesensor bijdragen tot actieherkenning. Enerzijds kunnen de kleurencamera en dieptesensor gecombineerd worden om RGB-D data te bekomen. Anderzijds kan vanuit het dieptebeeld een skelet gegenereerd worden via de methode van Shotton et al. \cite{Shotton2011}, die reeds ingebouwd zit in de Kinect.
 \begin{figure}
 	\begin{subfigure}[t]{0.48\textwidth}
 		\includegraphics[width=\linewidth]{KinectSensor360}
-		\caption{De originele Kinect sensor, ontwikkeld voor de Xbox 360 in 2010.}
+		\caption{De originele Kinect sensor, ontwikkeld int 2010 voor de Xbox 360.}
 	\end{subfigure}
 	\begin{subfigure}[t]{0.48\textwidth}
 		\includegraphics[width=\linewidth]{KinectSensorOne}

@@ -1,7 +1,76 @@
 
-
 \chapter{Literatuur}
+\section{Feature extraction}
+\cite{Luo2014}
+= ervoor zorgen dat er een verzameling van features gekozen worden die de ruwe data op een compacte manier kunnen voorstellen.
+\subsection{RGB}
+\begin{itemize}
+	\item global feature extraction
+	\begin{enumerate}
+		\item lokaliseren van persoon door \underline{background subtraction} of \underline{tracking}
+		\item de interesseregio wordt geëncodeerd.
+	\end{enumerate}
+	\item local feature extraction
+	\begin{enumerate}
+		\item Detecteren van lokale space-time interesse punten
+		\item rond deze punten worden lokale regio's berekent. De verzameling van deze regio's kan een video beschrijven.
+		\item {\color{green} aangewezen methode voor actieherkenning met RGB beelden aangezien minder gevoelig aan ruis en er moet strikt gezien geen background subtraction of tracking toegepast worden}
+	\end{enumerate}
+\end{itemize}
 
+\subsubsection{feature detectors}
+= elke pixel nagaan en kijken of een feature aanwezig is. Ze maken allemaal gebruik van een 'responsefunctie' die de temporale en spatiale verandering modelleren. Meestal zijn de interessepunten degene waarvoor deze responsefunctie lokaal maximaal wordt.
+\begin{itemize}
+	\item Harris3D \cite{Laptev2003}
+	\begin{itemize}
+		\item Extensie van de Harris hoekdetectie in zowel ruimte en tijd.
+	\end{itemize}
+	\item Cuboid detector \cite{Dollar2005}
+	\begin{itemize}
+		\item twee onafhankelijke lineaire filters in zowel de ruimte als de tijd
+	\end{itemize}
+	
+\end{itemize}
+
+\subsubsection{feature descriptors}
+het beschrijven van de gedetecteerde regio's zodat ze invariant zijn ten opzichte van achtergrond, lichaamsbouw en camerahoek.
+\begin{itemize}
+	\item Cuboid \cite{Dollar2018}
+	\begin{itemize}
+		\item Wordt gebruikt in combinatie met de cuboid detector
+	\end{itemize}
+	\item HOG/HOF \cite{Laptev2003}
+\end{itemize}
+
+\subsection{Dieptebeelden}
+\begin{itemize}
+	\item Bag of 3D points \cite{Li2010}
+	\item Random occupied Patterns \cite{Wang2012a}
+	\item Skeleton joints \cite{Xia2012}, \cite{Wang2012b}. Aangezien joints 3D zijn, moet het tijdelijke aspect nog gemodelleerd worden
+	\begin{itemize}
+		\item Hidden Markov Modellen \cite{Xia2012}, \cite{Gu2010} 
+		\item Conditional random field \cite{Han2010}
+		\item Dynamic temporal warping \cite{Muller2006}
+		\item Fourier Temporal Pyramid \cite{Wang2012b}
+	\end{itemize}
+\end{itemize}
+
+\section{Feature representation}
+= het voorstellen van een video als een verzameling van features.
+\begin{itemize}
+	\item Bag of words
+	\begin{itemize}
+		\item $k$-means clustering, waarbij elk centrum een 'woord' voorstelt.
+		\item Elke video is een verzameling van features
+		\item Het tijdelijke aspect gebeurd met pyramid matching
+	\end{itemize}
+	\item sparse coding
+	\begin{itemize}
+		\item 
+	\end{itemize}
+\end{itemize}
+
+\section{papers}
 \begin{itemize}
 	\item Bron \cite{Wang2014}
 	\begin{itemize}
