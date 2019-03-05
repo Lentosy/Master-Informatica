@@ -154,4 +154,42 @@ In plaats van breedte-eerst zoeken te gebruiken zou ook een manier kunnen gebrui
 	\end{enumerate}
 \todo{efficientie}
 \end{itemize}
+
+\subsubsection{Relaxatieheuristieken}
+\begin{itemize}
+	\item Bekomen door het originele probleem sterk te vereenvoudigen.
+	\item Er worden verbindingen toegevoegd in de graaf, wat overeenkomt met het schrappen van acties in de premisse.
+	\item Het kortste pad in nieuwe graaf is zeker niet langer dan het kortste pad in de originele graaf. Deze heuristiek is dan ook $A^*$.
+\end{itemize}
+
 \section{Spelbomen}
+\begin{itemize}
+	\item Wat doen indien er geen volledige kennis is over het resultaat van acties?
+	\item Een \textbf{nulsomspel} (Engels: two player zero sum game)
+	\begin{itemize}
+		\item Twee spelers.
+		\item Enkel winst mogelijk ten koste van de andere speler.
+		\item De winst van de ene speler is gelijk aan het verlies van de andere speler.
+		\item Elke speler probeert zijn winst te maximaliseren.
+	\end{itemize}
+	\item \underline{Voorbeeld van een nulsomspel:}
+	\begin{itemize}
+		\item Op een tafel tussen twee spelers liggen een aantal stapels jetons.
+		\item De speler die aan de zet is moet een stapel nemen, en deze verdelen in twee ongelijke stapels.
+		\item De speler die niet meer kan zetten verliest.
+		\item De winnaar krijgt als winst het aantal punten gelijk aan het aantal overblijvende stapels, en de verliezer verliest dan ditzelfde aantal punten.
+		\item Er kan een bijhorende boom (figuur \ref{fig:spelboom}) opgesteld worden die alle mogelijke zetten beschrijft.
+		\begin{figure}
+			\includegraphics[width=\textwidth]{spelboom}
+			\caption{Een spelboom.}
+			\label{fig:spelboom}
+		\end{figure}
+		\item Noem de speler die begint \textit{Max}, en de andere speler \textit{Min}.
+		\item Bij elke eindpositie is de winst of verlies van Max berekent bij een startsituatie van slechts één stapel met 7 jetons.
+		\item De overige posities kunnen van onder naar boven opgesteld worden:
+		\begin{enumerate}
+			\item Als Max aan zet is dan nemen we de grootste score.
+			\item Als min aan zet is nemen we de kleinste score.
+		\end{enumerate} 
+	\end{itemize}
+\end{itemize}

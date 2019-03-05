@@ -1,0 +1,54 @@
+\chapter{Expertsystemen}
+\begin{itemize}
+	\item Kennis van een \textbf{echte expert} overnemen in een programma.
+	\item De \textbf{gebruiker} moet ook enigszins kennis hebben. Hij moet de conclusies begrijpen en toepassen.
+	\item \textbf{MYCIN}: een expertsysteem om te helpen bij de diagnose van bepaalde besmettelijke bloedziekten.
+	\begin{itemize}
+		\item Is in staat om een betere diagnose te stellen dan een arts die geen expert is in het gebied.
+		\item De gebruiker moet wel een arts zijn die de diagnose begrijpt.
+	\end{itemize}
+	\item Een expertsysteem maakt gebruik van \textbf{vuistregels}, waarop later nog \textbf{verfijningen} ingevoerd worden:
+	\begin{enumerate}
+		\item werken met \textbf{onzekere conclusies}. Dit wordt ingevoerd om contradicties te behandelen indien deze voorkomen.
+		\item De invoering van \textbf{frames}. Zorgt voor een betere orderning voor grote hoeveelheden kennis.
+	\end{enumerate}
+\end{itemize}
+\section{Eenvoudige systemen}
+\begin{itemize}
+	\item Een expertsysteem bestaat uit \underline{twee hoofdcomponenten}
+	\begin{enumerate}
+		\item Een \textbf{kennisbank}:
+		\begin{itemize}
+			\item bevat \textbf{feiten}: dit zijn uitspraken die waar zijn.
+			\item bevat \textbf{regels}: dit heeft de vorm \textbf{als$<$premisse$>$dan$<$conclusie$>$}
+			\begin{equation*}
+				\begin{split}
+					\hbox{\textbf{als} AS=rond \textbf{en} MATERIAAL=staal} \\
+					\hbox{\textbf{dan} SMERING=olie} 
+				\end{split}
+			\end{equation*}
+		\end{itemize}
+		\item Een \textbf{afleidingssysteem}:
+		\begin{itemize}
+			\item Elk probleem bestaat uit begingegevens en een doel.
+			\item Deze gegevens vormen een lijst van feiten die gekend zijn.
+			\item Het doel is ook een lijst van uitspraken.
+			\item Het doel is bereikt als één uitspraak uit de lijst is afgeleid uit de gegevens.
+		\end{itemize}
+	\end{enumerate}
+	\item Het afleidingssysteem kan op \underline{twee manieren} werken.
+	\begin{itemize}
+		\item \textbf{Forward chaining:}
+		\begin{itemize}
+			\item Alle regels overlopen tot een regel gevonden wordt waarvoor alle uitspraken uit de premisse tot de gegevens behoren.
+			\item 
+		\end{itemize}
+		
+		\item \textbf{Backward chaning:}
+	\end{itemize}
+\end{itemize}
+\section{De constructie van een expertsysteem}
+
+\section{Onzekerheid}
+
+\section{Frames en regelschema's}
