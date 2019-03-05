@@ -87,8 +87,9 @@ In plaats van breedte-eerst zoeken te gebruiken zou ook een manier kunnen gebrui
 	\begin{enumerate}
 		\item De gekende kost $g(k)$ van de knoop: 
 		\begin{itemize}
-			\item Wordt berekend door bij de kost van zijn voorganger $v$ de kost $c(v \rightarrow k)$ van de actie die $v$ omzet in $k$ op te tellen.
-			\item Deze functie is een schatting van de werkelijke kost $g^*(k)$ van het kortste pad van de startknoop naar $k$.
+			\item Deze functie is een schatting van de werkelijke kost $g^*(k)$ van het kortste  pad van de startknoop naar $k$.
+			\item Wordt berekend door bij de kost van zijn voorganger $v$ de kost $c(v \rightarrow k)$ opgeteld van de actie die $v$ omzet in $k$.
+
 			\item Er geldt steeds $g(k) \geq g^*(k)$.
 		\end{itemize} 
 		\item De heuristische kost $h(k)$ van de knoop:
@@ -113,7 +114,7 @@ In plaats van breedte-eerst zoeken te gebruiken zou ook een manier kunnen gebrui
 \subsubsection{A* heuristieken}
 \begin{itemize}
 	\item Een heuristiek is $A*$ als $h(k) \leq h^*(k)$.
-	\item \underline{Bewijs:} Elke $A*$ heuristiek is toelaatbaar als er slechts een eindig aantal knopen $k_i$, met $g^*(k_i) \leq g^*(D)$ is.
+	\item \underline{Bewijs:} elke $A*$ heuristiek is toelaatbaar als er slechts een eindig aantal knopen $k_i$, met $g^*(k_i) \leq g^*(D)$ is.
 	\begin{itemize}
 		\item Neem een $A*$ heuristiek $h$ en bewijs dat er steeds een knoop $k'$ is die voldoet aan de volgende voorwaarden:
 		\begin{enumerate}
@@ -152,6 +153,20 @@ In plaats van breedte-eerst zoeken te gebruiken zou ook een manier kunnen gebrui
 		\item Een monotone heuristiek is $A*$.
 		\item Een knoop $k$ wordt nooit ontwikkeld voor $g^*(k)$ gekend is.
 	\end{enumerate}
-\todo{efficientie}
+	\item Efficiëntie
+	\begin{itemize}
+		\item Voor $h = 0$ krijgen we breedte-eerst zoeken.
+		\item Voor $h = h*$ krijgen we de optimale heuristiek, die rechtstreeks naar het doel leidt, en die ook monotoon is.
+		\item Hoe bepalen of een willekeurige monotone heuristiek beter is dan een andere?
+		\begin{itemize}
+			\item Laatste ontwikkelde knoop is altijd $d$ met $g^*(d) = g^*(D)$ en $h(d) = 0$.
+			\item Voor een monotone heuristiek moeten alle knopen ontwikkeld worden waarvoor $g^*(k) + h(k) < g^*(D)$, en geen enkele waarvoor $g^*(k) + h(k) > g^*(D)$.
+			\item Een monotone heuristiek $h_1$ ontwikkelt minder knopen dan een monotone heuristiek $h_2$ als $h_1(k) > h_2(k)$. 
+			\item Als voor sommige $k$ geldt dat $h_1(k) < h_2(k)$ en voor andere $k$ $h_1(k) > h_2(k)$, kan een betere heuristiek opgebouwd worden:
+			
+			$$h_3 = \max\{h_1(k), h_2(k)\}$$
+		\end{itemize}
+		
+	\end{itemize}
 \end{itemize}
 \section{Spelbomen}

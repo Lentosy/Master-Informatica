@@ -132,5 +132,38 @@ Tabel \ref{table:DrieDimensionaleTransformaties} toont de hiërarchie van drie-d
 \end{itemize}
 
 \section{Pinhole model}
-\todo{rest van hoofdstuk}
+\begin{figure}[h]
+	\includegraphics[width=\textwidth]{pinhole_model}
+	\caption{Het pinhole model, uitgewerkt voor de yz-vlak.}
+	\label{fig:pinhole_model}
+\end{figure}
+\begin{itemize}
+	\item Er wordt een oogpunt $C$ verondersteld.
+	\item Op een afstand $f$ bevindt er zicht een projectievlak $p$. 
+	Op een lengte $Z$ en hoogte $Y$ bevindt er zich een punt in drie dimensies (analoog voor het xz-vlak, maar dan met lengte $Z$ en hoogte $X$).
+	\item Dit driedimensionaal punt kan op het projectievlak geprojecteerd worden door $y = f\frac{Y}{Z}$ en $x = f\frac{X}{Z}$.
+	\item Als we nu rekening houden met homogene coördinaten:
+	
+	$$Z\textbf{x} = Z\begin{pmatrix}
+	x \\ y \\ 1
+	\end{pmatrix}
+	=
+	\begin{pmatrix}
+	f & 0 & 0 & 0 \\
+	0 & f & 0 & 0 \\
+	0 & 0 & 1 & 0
+	\end{pmatrix}
+	\begin{pmatrix}
+	X \\ Y \\ Z \\ 1
+	\end{pmatrix}
+	=
+	K_f\textbf{X}$$
+	
+	De deling door $Z$ verdwijnt en de projectie is nu een lineaire transformatie.
+\end{itemize}
+
+\section{Projectieve transformaties}
+\begin{itemize}
+	\item 
+\end{itemize}
 

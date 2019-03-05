@@ -1,0 +1,51 @@
+\chapter{ROC curves}
+\section{Inleiding}
+\begin{itemize}
+	\item ROC = Receiver Operating Characteristic.
+	\item Een eenvoudige manier om classifiers te evalueren.
+\end{itemize}
+
+\section{Classifiers}
+\begin{itemize}
+	\item Het toekennen van een klasse uit een verzameling van voorgedefinieerde klassen aan een object.
+	\item Een \textbf{Binaire classifier} kent slechts twee klassen. 
+\end{itemize}
+
+\section{Binaire classifiers}
+\begin{itemize}
+	\item Stel twee klassen $\alpha$ en $\beta$. We zijn nu geïnteresseerd of een object in klasse $\alpha$ zit.
+	\item Een \textbf{False Positive} komt voor wanneer het object de klasse $\alpha$ krijgt, terwijl hij $\beta$ is.
+	\item Een \textbf{False Negative} komt voor wanneer het object de klasse $\beta$ krijgt, terwijl hij $\alpha$ is.
+	\item Binaire \textbf{confusion matrix}:
+
+	\begin{table}[h]
+		\centering
+		\begin{tabular}{| l | l | l |}
+			\hline
+		Klasse & \multicolumn{2}{l |}{Voorspelde klasse} \\
+		       & positief & negatief \\
+		       \hline
+		positief (\#P) & \#TP & \#FN \\
+		positief (\#N) & \#FP & \#TN \\
+		\hline
+		\end{tabular}
+	\end{table}
+
+	\begin{table}[h]
+		\centering
+		\begin{tabular}{| l | l | l |}
+			\hline
+			Klasse & \multicolumn{2}{l |}{Voorspelde klasse} \\
+			& positief & negatief \\
+			\hline
+			positief (\#P) & \#TP & \#P - \#TP \\
+			positief (\#N) & \#FP & \#N - \#FP \\
+			\hline
+		\end{tabular}
+	\end{table}
+	\item De \textbf{true positive rate (TPR)} is: 
+	$$TPR = \frac{\#TP}{\#P}$$
+	\item De \textbf{false positive rate (FPR)} is: 
+	$$FPR = \frac{\#FP}{\#N}$$
+	
+\end{itemize}

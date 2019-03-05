@@ -1,7 +1,17 @@
+
+
 \chapter{Literatuur}
 
 \begin{itemize}
-		\item Bron \cite{MinKang2016}
+	\item Bron \cite{Wang2014}
+	\begin{itemize}
+		\item Actieherkenning en actiedetectie systeem voor temporally untrimmed videos door de combinatie van motion en appearance features.
+		\begin{itemize}
+			\item Motion feature = Fisher vector representatie met dense trajectories
+			\item Appearance feature: deep convolutional neural network
+		\end{itemize}
+	\end{itemize}
+	\item Bron \cite{MinKang2016}
 	\begin{itemize}
 		\item Actieherkenning = het herkennen van een actie binnen een goed gedefinieerde omgeving 
 		\item Actiedetectie = het herkennen en lokaliseren van acties(begin, duratie en einde) in de ruimte en de tijd
@@ -16,11 +26,11 @@
 		\end{itemize}
 		
 		
-		\item  om actieklasse te bepalen = features extraheren en in classifier steken => classifier bepaalt actieklasse
+		\item  om actieklasse te bepalen = features extraheren en in classifier steken $\rightarrow$ classifier bepaalt actieklasse
 		\item Temporally untrimmed video = delen van de video bevatten GEEN ENKELE actie. Variaties van dezelfde actie kan op hetzelfde moment voorkomen
 		
 		\item THUMOS challenge:
-		\item 2015 => slechts één team heeft detection challenge geprobeerd
+		\item 2015 $\rightarrow$ slechts één team heeft detection challenge geprobeerd
 		
 		\item 	Classificatietaak: de lijst van acties geven die in een lange, niet getrimde video voorkomen
 		\item 	Detectietaak: ook de lijst van acties geven PLUS de plaats in tijd waar ze voorkomen
@@ -129,6 +139,14 @@
 		\end{enumerate}
 		\item Features op basis van contour
 		\item Actieherkenning met neurale netwerken (EXTREME LEARNING)
+		\item \textbf{Samenvatting:}
+		\begin{itemize}
+			\item Actionherkenningsmethode voor kinect.
+			\item Features op basis van menselijke contour van een keyframe uit een dieptebeeld. Als constraint is er het temporaal verschil.
+			\item 'multi-hidden layer extreme learning machine' voor classificatie
+		
+		\end{itemize}
+		
 	\end{itemize}
 
 	\item Bron \cite{Carlsson2001}

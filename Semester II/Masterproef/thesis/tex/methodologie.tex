@@ -1,13 +1,41 @@
 \chapter{Methodologie}
 \label{ch:methodologie}
 
+Ieder persoon heeft een eigen interpretatie van een bepaalde actie. Er kunnen verschillen zijn in snelheid, de positie relatief tot het hele lichaam en \todo{nog iets?}. 
+Elk van deze variaties in een algoritme steken is dan ook onbegonnen werk. Daarom maakt elk actieherkenningsalgoritme op één of andere manier gebruik van machine learning. Op basis van training data wordt een classifier getraind die kan voorspellen tot welke klasse een nieuwe observatie behoort. Observaties bij een Kinect kunnen RGB beelden of dieptebeelden zijn. 
+
+Zulke observaties worden getransformeerd naar \textit{features}. Dit zijn meetbare eigenschappen of karakteristieken van het object dat geobserveerd wordt. Deze eigenschappen moeten bovendien voldoende onderscheidend zijn zodat het mogelijk is om de observatie te klasseren. Een feature tracht de originele observatie te reduceren tot bruikbare informatie om op een eenvoudigere manier classificatie uit te voeren. Een \textit{feature vector} vormt een $n$-dimensionale wiskundige vector van features. Elke dimensie van deze vector is een individuele feature en vormt de \textit{feature space}. Via bestaande features kunnen er nieuwe features aangemaakt worden via \textit{feature construction}. Het proces om een observatie om te vormen tot een feature vector wordt gerealiseerd met een \textit{feature descriptor}.
+
+Een \textit{classifier} verwacht als input zo een feature vector. Het is de taak van een classifier om te bepalen tot welke klasse een nieuwe observatie behoort. In het geval van actieherkenning is de klasse een bepaalde actie, zoals zwaaien, bukken of springen. Een classifier zal bij het bepalen van een klasse ook een zogenaamde \textit{score} geven. Dit is de waarschijnlijkheid dat de voorspelde klasse correct is. Een eenvoudige \textit{lineaire classifier} berekent de score op basis van een lineaire combinatie door het kruisproduct te nemen tussen de feature vector en een speciale gewichtenvector, specifiek voor die klasse en gebaseerd op de training data. De voorspelde klasse is dan die met de hoogste score. Er bestaan zowel \textit{supervised} als \textit{unsupervised} classificatiemodellen. Beiden maken gebruik van een leerverzameling; een collectie van voorbeelden. Voor een supervised model wordt het gewenste resultaat meegegeven aan elk object in de leerverzameling. Bij een unsupervised model is dit niet zo, maar er is wel een algemeen idee van wat er moet aangeleerd worden.
+
+Een supervised model wordt vaak toegepast op actieherkenning: de leerverzameling bevat videobeelden waarin acties door personen worden uitgevoerd, samen met de gelabelde klasse. Voor actieherkenning speelt het tijdelijke aspect een grote rol. Het is daarom dan ook minder interessant om slechts voor één frame de juiste actie te classificeren. Wel interessant is om voor een verzameling van frames na te gaan welke actie deze frames voorstellen. 
+
+\todo{eigen inbreng vanaf nu}
+
+
 \begin{itemize}
-	\item Basisidee: \textit{key frames} = kan zeker voordeel brengen
+	\item Basisidee: \textit{key frames} = kan zeker voordeel brengen.
+	
 	\begin{itemize}
 		\item Welke acties herkennen?  
 		\item Wat is 'te weinig verschil'? Zie bv \cite{Suolan2017}.
-		\item Wanneer gebruikte frames weggooien? 
+		\item Wanneer gebruikte frames weggooien? Ik beslis welke frames niet opgenomen worden, dus er is vrij veel bias.
 		\item Studie hidden markov model $\rightarrow$ zie \ref{sec:hidden_markov_model}
+	\end{itemize}
+
+	\item Waarom? 
+	\begin{itemize}
+		\item Live actieherkenning vereist snelle classificatie
+		\item Verlagen van computationele kost
+		\item Op voorwaarde dat bepalen van keyframes sneller is dan gewoon elke frame in beschouwing te nemen. 
+		\item Wat is live actieherkenning? 
+		\begin{itemize}
+			\item Er is geen default pose
+			\item Er is niet altijd een actor in beeld. Een actor is een persoon waarvan de skeletinformatie beschikbaar is, dus als de kinect correct het skelet kan bepalen van een persoon.
+			\item Vanaf dat een actor een actie uitvoert, moet deze vroeg genoeg herkend kunnen worden ($< 1$ seconde, liefst sneller)
+			\item De classificatie moet ook kunnen omgaan met het tijdsaspect van de uitgevoerde actie.
+		\end{itemize}
+
 	\end{itemize}
 	\item Classificatiemodel pas vastleggen nadat verschillende mogelijkheden getest zijn op dataset.
 	\begin{itemize}
@@ -15,4 +43,17 @@
 		\item ensemble methoden
 		\item \remark{nog geen prioriteit}
 	\end{itemize}
+
+\remark{misschien kijken welke features het snelst zijn en sowieso die gebruiken?}
+
+\section{Implementatie}
+Om enigszins het aantal geschreven code tot een minimum te houden wordt er gekozen om Python te gebruiken in combinatie met scikit-learn.
+
+(voor mezelf, dingen die ik zeker nog op laptop moet uitvoeren:)
+\begin{itemize}
+	\item \texttt{python -m pip install --upgrade pip}
+	\item \texttt{python -m pip install -U matplotlib}
+	\item \texttt{pip install -U scikit-learn}
+	\item Zorgen dat tkinter gecheckt is bij installatie (eventueel installatie opnieuw uitvoeren met MODIFIY)
+\end{itemize}
 \end{itemize}
