@@ -7,7 +7,7 @@ import numpy
 try:
     fullPath = sys.argv[1]
 except IndexError:
-    print("One parameter required: the path of an image.")
+    print("One parameter required: the path of an image. (shadow.png)")
     exit(-1)
 
 if (not os.path.isfile(fullPath)):
@@ -17,6 +17,7 @@ if (not os.path.isfile(fullPath)):
 filepath, filename = os.path.split(fullPath)
 cv2.namedWindow(filename)
 image = cv2.imread(fullPath)
+
 
 shear_factor = -0.2
 M = numpy.float32([[1, shear_factor, 50], [0, 1, 0]])

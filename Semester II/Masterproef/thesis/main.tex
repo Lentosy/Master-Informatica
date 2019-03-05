@@ -1,11 +1,11 @@
-\documentclass{report}
+\documentclass[11pt,a4paper,twoside, openany]{book}
 
 
 
 %%---------- Packages ---------------------------------------------------------
 \usepackage[a4paper,includeheadfoot,margin=2.50cm]{geometry}
 \usepackage[utf8]{inputenc}  % Accenten gebruiken in tekst (vb. é ipv \'e)
-\usepackage{amsfonts}        % AMS math packages: extra wiskundige
+\usepackage{amsfonts}        % AMS math packages: extra wiskundige symbolen enz
 \usepackage{amsmath}        
 \usepackage{amssymb}
 \usepackage[dutch]{babel}    % Taalinstellingen: woordsplitsingen,
@@ -28,6 +28,8 @@
 \usepackage[numbers]{natbib}
 \usepackage{ulem}
 \usepackage[nottoc]{tocbibind} 
+
+
 	
 
 
@@ -50,7 +52,7 @@
 	\includepdf{voorblad.pdf} 
 	
 	\include{tex/voorwoord}
-	\include{tex/abstract}
+%	\include{tex/abstract}
 	%\todo{EXTENDED ABSTRACT}
 	
 	\pagenumbering{gobble} % voorkomen dat table of contents ook een paginanummer krijgt
