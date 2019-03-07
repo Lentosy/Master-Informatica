@@ -16,27 +16,21 @@
 \usepackage{hyperref}        % PDF krijgt klikbare links & verwijzingen in de inhoudstafel
 \usepackage{pdfpages}        % Laat het importeren van PDFs toe
 \usepackage[acronym,toc]{glossaries} % Woordenschat
-	\hypersetup{
-		colorlinks,
-		citecolor=black,
-		filecolor=black,
-		linkcolor=black,
-		urlcolor=black
-	}
+%	\hypersetup{
+%		colorlinks,
+%		citecolor=black,
+%		filecolor=black,
+%		linkcolor=black,
+%		urlcolor=black
+%	}
 \usepackage{parskip} % Verwijdert indentatie van de paragrafen
 \usepackage{lipsum}  % Lorem ipsum vultekst
 \usepackage[numbers]{natbib}
 \usepackage{ulem}
 \usepackage[nottoc]{tocbibind} 
 
-
-	
-
-
-
 \newcommand{\todo}[1]{\color{red}\_ToDo: #1 \color{black}}
 \newcommand{\remark}[1]{\color{purple}\_Opmerking: #1 \color{black}}
-
 
 \include{tex/glossaries}
 \makeglossaries
@@ -62,9 +56,10 @@
 	\include{tex/inleiding}
 	\include{tex/methodologie}
 	\include{tex/literatuurstudie}
+	\include{tex/notities}
 %	\include{tex/conclusie}
 	
-%	\printglossaries
+	\printglossaries
 	
 
 %	\listoffigures

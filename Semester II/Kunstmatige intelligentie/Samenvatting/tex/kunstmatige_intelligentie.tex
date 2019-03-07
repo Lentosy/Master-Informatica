@@ -98,8 +98,18 @@
 		$$\textbf{v}\cdot\textbf{u} = \sum_{i}^{n}v_iu_i$$
 		Het inproduct is lineair: $(A\textbf{v})\cdot \textbf{u} = A(\textbf{v}\cdot\textbf{u})$ en $(\textbf{u} + \textbf{v})\cdot\textbf{x} = \textbf{u} \cdot \textbf{x} + \textbf{v} \cdot \textbf{x}$.
 		
-		Hieruit volgt de norm $|| \cdot ||$: 
-		$$||\textbf{u}||^2 = \textbf{u} \cdot \textbf{u}$$
+		Het kan ook gedefinieerd worden als 
+		$$\textbf{v}\cdot\textbf{u} = || \textbf{v} ||\;|| \textbf{u} || \cos\theta$$
+		met $\theta$ de hoek tussen vector $\textbf{v}$ en $\textbf{u}$.
+		
+		Als $\textbf{v}$ en $\textbf{u}$ orthogonaal zijn, dan is het inwendig product, aangezien $\cos(\pi/2) = 0$;
+		$$\textbf{v}\cdot\textbf{u} = 0$$
+		
+		Als $\theta = 0$, dan 
+		$$\textbf{v}\cdot\textbf{u} = || \textbf{v} ||\; ||\textbf{u} ||$$
+		
+		Hieruit volgt 
+		$$\textbf{u} \cdot \textbf{u} = ||\textbf{u}||^2$$
 		\item $d(u,v) = ||\textbf{u} -\textbf{v}||$ is de lengte van de kortste weg van \textbf{u} naar \textbf{v}.
 		 Hieruit volgt:
 		$$||\textbf{u} + \textbf{v}|| \leq ||\textbf{u}||+||\textbf{v}||$$

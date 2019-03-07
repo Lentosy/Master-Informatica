@@ -1,373 +1,79 @@
+\chapter{Features}
+In dit hoofdstuk wordt bestaande literatuur voor actieherkenning verkent en besproken. De voornaamste methoden maken enerzijds gebruik van kleurenbeelden \cite{Laptev2005}, \cite{Dollar2005}, \cite{Willems2008}, \cite{Wang2011} en anderzijds van dieptebeelden \cite{Li2010}, \cite{Wang2012a}, \cite{Xia2012}, \cite{Gu2010}. Onafhankelijk van welke beelden die gekozen worden, moeten er features geëxtraheerd worden. Volgende sectie bespreekt kort de voornaamste manieren om features te bepalen uit zowel kleuren- als dieptebeelden.
+\section{Features uit kleurenbeelden}
+In het geval van kleurenbeelden kan het bepalen van features in twee categorieën onderverdeeld worden: \textit{globale feature extraction} en \textit{lokale feature extraction} \cite{Poppe2010}. Bij een globale aanpak wordt een persoon eerst gelokaliseerd met behulp van background subtraction of tracking gevolgd door het encoderen van de interesseregio's. Deze representatie kan veel informatie bevatten, maar door de nood aan background subtraction of tracking is deze methode gevoelig aan ruis.
 
-\chapter{Literatuur}
-\section{Feature extraction}
-\cite{Luo2014}
-= ervoor zorgen dat er een verzameling van features gekozen worden die de ruwe data op een compacte manier kunnen voorstellen.
-\subsection{RGB}
+Een lokale aanpak tracht deze problemen te vermijden door eerst lokale interessepunten, in de literatuur \gls{ac:stip} genoemd, te bepalen. Deze interessepunten kunnen zowel het tijdelijke als het ruimtelijke aspect modelleren. Rond deze interessepunten worden patches berekent, afhankelijk van gekozen parameters. De verzameling van zulke patches is de representatie. Deze methode geniet de voorkeur omdat background subtraction of tracking niet strikt noodzakelijk is zodat het minder gevoelig is aan ruis.
+ 
+feature detectors:
+\todo{harris3D \cite{Laptev2005}}
+\todo{cuboid \cite{Dollar2005}} 
+\todo{Hessian \cite{Willems2008}}
+\todo{dense trajectory \cite{Wang2011}}
+
+feature descriptors:
+\todo{cuboid descriptor: \cite{Dollar2005}}
+\todo{hog/hof \cite{Laptev2005}}
+ 
+\section{Features uit dieptebeelden}
+De methoden die bruikbaar zijn op kleurenbeelden zijn niet bruikbaar op dieptebeelden. Recente literatuur over feature extraction op dieptebeelden levert vaak algoritmen \cite{Xia2012}, \cite{Wang2012b}, \cite{Yang2012} op die gebruik maken van skeletbeelden gegeneerd met methode \cite{Shotton2011} waarop de skelettracker van de Kinect op gebaseerd is. De skeletbeelden van de Kinect geven de drie-dimensionale coördinaten van 25 punten, \textit{joints} genoemd, die belangrijke kenmerken van het menselijk lichaam voorstellen \todo{figuur van de joints}. Zo een skelettracker neemt de taak van een feature detector op zich, zodat algoritmen die gebruik maken van skeletbeelden enkel feature descriptors moeten implementeren. Deze joints bevatten echter geen tijdelijke informatie zodat dit op een andere manier moet gemodelleerd worden. Vaak gebruikte modellen zijn \gls{ac:hmm} (\cite{Xia2012}, \cite{Gu2010}),  \gls{ac:crf} (\cite{Han2010}), \gls{ac:dtw} (\cite{Muller2006}) en \gls{ac:ftp} (\cite{Wang2012b}). Al deze modellen zijn temporale classifiers en worden kort besproken in sectie \ref{subsec:temporale_modellen}.
+
+Het gebruik van de Kinect is geen vereiste om actieherkenning met dieptebeelden uit te voeren. \cite{Li2010} stelt elke frame voor als een verzameling van 3D punten, geëxtraheerd uit de silhouetten dat de dieptebeelden geven en maken gebruik van een \gls{ac:hmm} om het tijdelijke aspect te modelleren. \cite{Wang2012a} 
+
+In volgende onderdelen worden een aantal belangrijke feature descriptors beschreven.
+\subsection{Histograms of 3D Joints (HOJ3D)}
+Het werk van \cite{Xia2012} toont aan hoe een histogram van drie-dimensionale punten aan real-time actieherkenning kan doen. Ze transformeren het skeletbeeld gegenereerd door de Kinect om in bolcoördinaten. Als oorsprong wordt de heup joint genomen. De horizontale referentievector $\vec{\alpha}$ wordt parallel met de grond genomen door de oorsprong. De verticale referentievector $\vec{\theta}$ staat loodrecht op $\vec{\alpha}$ en gaat ook door de oorsprong. De drie-dimensionale ruimte wordt opgesplitst in $84$ deelruimten. Elke joint zal zich dan in één van die 84 deelruimte bevinden. Een histogram wordt opgemaakt door elke joint te wegen in 8 naburige deelruimten via een Gaussische functie:
+
+$$p(X, \mu, \Sigma) = \frac{1}{(2\pi)^{n/2}|\Sigma|^{1/2}}e^{-\frac{1}{2}(X - \mu)^T\Sigma^{-1}(X - \mu)}$$
+
+Via \gls{ac:lda} wordt uit het bekomen histogram features geëxtraheerd.
+
+
+
+\chapter{Classificatie}
+Op het moment dat een feature vector opgebouwd is voor een individuele frame of een verzameling van frames is het actieherkenningprobleem gereduceerd tot een classificatieprobleem. De bekomen feature vector wordt als input aan een classifier gegeven die dan tracht de juiste klasse toe te kennen op basis van de leerverzameling. Voor actieherkenning kunnen drie algemene methoden beschreven worden:
+\begin{enumerate}
+	\item Classificeren zonder de tijdelijke dimensie expliciet te modelleren, \textit{directe classificatie};
+	\item Classificeren waarbij de tijdelijke dimensie wel gemodelleerd wordt, \textit{temporale modellen};
+	\item Algemene classificatie zonder de actie te modelleren, \textit{actiedetectie}.
+\end{enumerate}
+
+\section{Directe classificatie}
+Wanneer het tijdelijke aspect verworpen wordt zijn er maar twee mogelijkheden: alle geobserveerde frames vervatten in één enkele representatie of actieherkenning uitvoeren op elke individuele frame. Een voorbeeld van zo een algoritme is $k$-nearest neighbours. Deze methode maakt gebruik van de afstand van de geobserveerde feature vector tot elke andere feature vector uit de leerverzameling. Uit de $k$ dichtste buren wordt dan de klasse genomen die het meest voorkomt. Deze operatie vraagt voor een grote leerverzameling veel rekenkost omdat elke feature vector gecontroleerd moet worden. Deze methode kan zowel op frame-niveau als op sequentieniveau werken. In het tweede geval wordt er met bijvoorbeeld majority voting de klasse gekozen die het meest voorkomt in een sequentie van frames.
+
+
+\section{Temporale modellen}
+\label{subsec:temporale_modellen}
+Bij temporale modellen zijn er twee grote klassen te onderscheiden: \textit{generatieve} en \textit{discriminerende} modellen. Een generatief algoritme modelleert hoe een input $x$ wordt gegenereerd om zo een actieklasse $y$ toe te kennen en maakt gebruik van de gezamenlijke kansverdeling $P(x, y) = P(x|y)P(y)$. Een generatief model zal dus de kansverdeling van de leerverzameling modelleren en zal bij een nieuwe observatie. Een discriminerend model zal de kans $P(y|x)$ direct modelleren zodat een directe mapping van $x$ op $y$ beschikbaar is. De onderliggende kansverdelingen worden dan ook niet berekent.
+ 
+Er bestaat een grote discussie over welk van deze twee modellen nu de voorkeur krijgen. Er is aangetoond \cite{Andrew2002} dat discriminerende modellen de voorkeur genieten.
+
+\subsection{Generatieve modellen}
+
+Een \gls{ac:hmm} is een typisch voorbeeld van een generatief model. Een \gls{ac:hmm} is een uitbreiding van een Markov model waarbij de staat van elke toestand nu verborgen is. De toestanden zijn hier de verschillende fasen van een bepaalde actie. Een \gls{ac:hmm} gaat uit van twee assumpties:
+\begin{enumerate}
+	\item Een verandering van toestand hangt enkel af van de vorige toestand. Dit wordt ook de \textit{Markov eigenschap} genoemd.
+	\item De observatie behorend bij een toestand is onafhankelijk van elke andere observatie.
+\end{enumerate}
+
+Voor een verzameling met $n$ klassen $\Lambda = \lambda^1 ... \lambda^n$ en een verzameling met $k$ observaties $O = \{o_1 ... o_k\}$, moet de juiste klasse $\lambda$ geselecteerd worden die de kans op $P(\lambda | O)$ maximaliseert.
+
+$$\lambda = \arg\max_{\substack{1 \leq i \leq n}} P(O|\lambda^i) $$
+
+
+\subsection{Discriminerende modellen}
+\subsubsection{Conditional Random Fields}
+Een \gls{ac:hmm} gaat ervan uit de observaties onafhankelijk zijn van elkaar, wat niet altijd het geval is. Een \gls{ac:crf} is een voorbeeld van een discriminerend model. Een discriminerende classifier houdt rekening met meerdere observaties in de tijd en is geschikt voor de classificatie van een reeks van observaties. Een \gls{ac:crf} gaat ervan uit dat de volgorde van observaties wel degelijk een impact heeft op de betekenis van deze observaties.
+
+\subsubsection{Dynamic Time Warping}
+\gls{ac:dtw} is een algoritme dat de gelijkenis tussen twee sequenties bestudeerd, die verschillend kunnen zijn in snelheid. In actieherkenning lost dit het probleem van verschillen in actiesnelheid op. Een persoon die trager of sneller zwaait dan een persoon in de leerverzameling, kan via \gls{ac:dtw} toch herkent worden. Veronderstel twee verzamelingen van feature vectoren $X = \{x_1, x_2, ... x_N\}$ en $Y = \{y_1, y_2, ..., y_M\}$, een kostfunctie $c(x, y)$ die de kost bepaald tussen twee feature vectoren en $p = \{p_1, ..., p_L\}$ met $p_l = (n_l, m_l)$  
+
+Een \gls{ac:dtw} heeft bepaalde restricties:
 \begin{itemize}
-	\item global feature extraction
-	\begin{enumerate}
-		\item lokaliseren van persoon door \underline{background subtraction} of \underline{tracking}
-		\item de interesseregio wordt geëncodeerd.
-	\end{enumerate}
-	\item local feature extraction
-	\begin{enumerate}
-		\item Detecteren van lokale space-time interesse punten
-		\item rond deze punten worden lokale regio's berekent. De verzameling van deze regio's kan een video beschrijven.
-		\item {\color{green} aangewezen methode voor actieherkenning met RGB beelden aangezien minder gevoelig aan ruis en er moet strikt gezien geen background subtraction of tracking toegepast worden}
-	\end{enumerate}
-\end{itemize}
-
-\subsubsection{feature detectors}
-= elke pixel nagaan en kijken of een feature aanwezig is. Ze maken allemaal gebruik van een 'responsefunctie' die de temporale en spatiale verandering modelleren. Meestal zijn de interessepunten degene waarvoor deze responsefunctie lokaal maximaal wordt.
-\begin{itemize}
-	\item Harris3D \cite{Laptev2003}
-	\begin{itemize}
-		\item Extensie van de Harris hoekdetectie in zowel ruimte en tijd.
-	\end{itemize}
-	\item Cuboid detector \cite{Dollar2005}
-	\begin{itemize}
-		\item twee onafhankelijke lineaire filters in zowel de ruimte als de tijd
-	\end{itemize}
-	
-\end{itemize}
-
-\subsubsection{feature descriptors}
-het beschrijven van de gedetecteerde regio's zodat ze invariant zijn ten opzichte van achtergrond, lichaamsbouw en camerahoek.
-\begin{itemize}
-	\item Cuboid \cite{Dollar2018}
-	\begin{itemize}
-		\item Wordt gebruikt in combinatie met de cuboid detector
-	\end{itemize}
-	\item HOG/HOF \cite{Laptev2003}
-\end{itemize}
-
-\subsection{Dieptebeelden}
-\begin{itemize}
-	\item Bag of 3D points \cite{Li2010}
-	\item Random occupied Patterns \cite{Wang2012a}
-	\item Skeleton joints \cite{Xia2012}, \cite{Wang2012b}. Aangezien joints 3D zijn, moet het tijdelijke aspect nog gemodelleerd worden
-	\begin{itemize}
-		\item Hidden Markov Modellen \cite{Xia2012}, \cite{Gu2010} 
-		\item Conditional random field \cite{Han2010}
-		\item Dynamic temporal warping \cite{Muller2006}
-		\item Fourier Temporal Pyramid \cite{Wang2012b}
-	\end{itemize}
-\end{itemize}
-
-\section{Feature representation}
-= het voorstellen van een video als een verzameling van features.
-\begin{itemize}
-	\item Bag of words
-	\begin{itemize}
-		\item $k$-means clustering, waarbij elk centrum een 'woord' voorstelt.
-		\item Elke video is een verzameling van features
-		\item Het tijdelijke aspect gebeurd met pyramid matching
-	\end{itemize}
-	\item sparse coding
-	\begin{itemize}
-		\item 
-	\end{itemize}
-\end{itemize}
-
-\section{papers}
-\begin{itemize}
-	\item Bron \cite{Wang2014}
-	\begin{itemize}
-		\item Actieherkenning en actiedetectie systeem voor temporally untrimmed videos door de combinatie van motion en appearance features.
-		\begin{itemize}
-			\item Motion feature = Fisher vector representatie met dense trajectories
-			\item Appearance feature: deep convolutional neural network
-		\end{itemize}
-	\end{itemize}
-	\item Bron \cite{MinKang2016}
-	\begin{itemize}
-		\item Actieherkenning = het herkennen van een actie binnen een goed gedefinieerde omgeving 
-		\item Actiedetectie = het herkennen en lokaliseren van acties(begin, duratie en einde) in de ruimte en de tijd
-		\item training set = wordt gebruikt om classifier te trainen
-		\item validation set = optioneel, bevat andere data dan de training set om de classifier te optimaliseren
-		\item testing set = testen van de classifier (performance)
-		\item Drie manieren om dataset op te splitsen in deze drie sets:
-		\begin{itemize}
-			\item voorgedefinieerde split: De dataset wordt opgesplitst  in twee of drie delen zoals de auteurs van die dataset dat vermelden
-			\item n-voudige cross-validatie: Verdeeld de dataset in n gelijkvoudige stukken. Hierbij worden er (n-1)/n  percentage van de videos gebruikt om te trainen, en dan de overige 1/n om te testen. Dit proces wordt n keer herhaald, zodat elke video éénmaal gebruikt werd voor te testen
-			\item leave-one-out cross-validatie: {\color{green}aangewezen methode indien testdata personen zijn.} 1 persoon wordt als testset beschouwd. De overige $n - 1$ personen is de training set.
-		\end{itemize}
-		
-		
-		\item  om actieklasse te bepalen = features extraheren en in classifier steken $\rightarrow$ classifier bepaalt actieklasse
-		\item Temporally untrimmed video = delen van de video bevatten GEEN ENKELE actie. Variaties van dezelfde actie kan op hetzelfde moment voorkomen
-		
-		\item THUMOS challenge:
-		\item 2015 $\rightarrow$ slechts één team heeft detection challenge geprobeerd
-		
-		\item 	Classificatietaak: de lijst van acties geven die in een lange, niet getrimde video voorkomen
-		\item 	Detectietaak: ook de lijst van acties geven PLUS de plaats in tijd waar ze voorkomen
-	\end{itemize}
-
-	\item Bron \cite{Shotton2011}
-	gaat eerder over hoe het skelet bepaalt wordt
-	\begin{itemize}
-		\item voorstel van een methode om op een accurate manier de 3D posities van de joints te bepalen, vanuit slechts één dieptebeeld, zonder temporale informatie
-		\item Het bepalen van lichaamsdelen is invariant van pose, lichaamsbouw, kleren, etc...
-		\item Kan runnen aan 200 fps
-		\item Wordt effectief gebruikt in de Kinect software (onderzoeksteam is van Microsoft)
-		\item Een dieptebeeld wordt gesegmenteerd in verschillende lichaamsdelen, aangegeven door een kleur, op basis van een kansfunctie; Elke pixel van het lichaam wordt apart behandeld en gekleurd. Een verzameling van dezelfde kleuren wordt een joint
-		\item Aangezien tijdsaspect weg is, is er enkel interesse in de statische poses van een frame. Verschillen van pose in twee opeenvolgende frames is miniscuul zodat die genegeerd worden
-	\end{itemize}
-
-
-	\item Bron \cite{Li2010} (pre-kinect era)
-	\begin{itemize}
-		\item Actieherkenning met behulp van reeksen van dieptebeelden
-		\item Gaan ervan uit dat efficiënte tracking van skeletbeelden nog niet mogelijk is. (is gepubliceerd zelfde jaar dat Kinect beschikbaar was, 2010)
-		\item Hun oplossing is dus niet gebaseerd op het tracken van de skeletbeelden
-	\end{itemize}
-
-	\item Bron \cite{Zhao2017}
-	\begin{itemize}
-		\item Probleem: output van de actiecategorie EN de start en eind tijd van de actie. 
-		\item Ze beweren dat actieherkenning reeds goed opgelost is, maar niet actiedetectie. Hun definities zijn: 
-		\begin{itemize}
-			\item Actieherkenning: De effectieve actieherkenning indien het systeem weet wanneer hij moet herkennen
-			\item Actiedetectie: een langdurige video, waarbij de start en stop van een actie niet gedefinieerd zijn = untrimmed video ( videos waarbij er meerdere acties op hetzelfde moment kunnen voorkomen, alsook een irrelevante achtergrond). {\color{green} sluit heel goed aan op onze masterproef}
-		\end{itemize}
-		\item Uitdaging in bestaande oplossingen: groot aantal onvolledige actiefragmenten. Voorbeelden:
-		\begin{itemize}
-			\item Bron \cite{Singh2016}:
-			\begin{itemize}
-				\item maakt gebruik van \textbf{untrimmed classificatie}: de top $k = 3$ (bepaalt via cross-validation) labels worden voorspelt door globale video-level features. Daarna worden frame-level binaire classifiers gecombineerd met dynamisch programmeren om de activity proposals (die getrimmed zijn) te genereren. Elke proposal krijgt een label, gebaseerd op de globale label.
-			\end{itemize}
-				\item Bron \cite{Yuan2016}:
-			\begin{itemize}
-				\item Spreekt over de onzekerheid van het voorkomen van een actie en de moeilijkheid van het gebruik van de continue informatie
-
-				\item Pyramid of Score Distribution Feature (PSDF) om informatie op meerdere resoluties op te vangen
-				\item PSDF in combinatie met Recurrent Neural networks bieden performantiewinst in untrimmed videos.
-				\item Onbekende parameters: actielabel, actieuitvoering, actiepositie, actielengte
-				\item Oplossing? Per frame een verzameling van actielabels toekennen, gebruik makend van huidige frame actie-informatie en inter-frame consistentie = PSDF
-	
-			\end{itemize}
-		
-		\end{itemize}
-		\item De moeilijkheid is: start, einde en duur van de actie te bepalen.
-		\item Hun oplossing is \textbf{Structured Segment Network}:
-		\begin{itemize}
-			\item input: video
-			\item output: actiecategorieën en de tijd wanneer deze voorkomen
-			\item Drie stappen:
-			\begin{enumerate}
-				\item Een "proposal method",  om een verzameling van "temporal proposals", elk met een variërende duur en hun eigen start en eind tijd.  Elke proposal heeft drie stages: \textit{starting, course} en \textit{ending}. 
-				\item Voor elke proposal wordt er STPP (structured temporal pyramid pooling) toegepast door (1) de proposal op te splitsen in drie delen; (2) temporal pyramidal representaties te maken voor elk deel; (3) een globale representatie maken voor de hele proposal.
-				\item Twee classifiers worden gebruikt: herkennen van de actie en de "volledigheid" van de actie nagaan.
-			\end{enumerate}
-		\end{itemize}
-	\end{itemize}
-
-	\item Bron \cite{Huang2018}
-	\begin{itemize}
-		\item Temporal action detection = moet enerzijds detecteren of al dan niet een actie voorkomt, en anderzijds hoelang deze actie duurt, wat een uitdaging is bij untrimmed videos.
-		\item Veel moderne aanpakken gaan als volgt te werk: eerst wordt er klasse-onafhankelijke proposals gegenereerd door 
-	\end{itemize}
-
-	\item Bron \cite{DeboeverieCIG2016}
-	\begin{itemize}
-		\item Sliding window: laatste 30 frames bijhouden in buffer om hoge zekerheid van classificatie te voorzien; met majority voting de actie bepalen die het meeste voorkomt. 
-		\item Classifier: random forests. Beslissingsbomen aanmaken via ID3 algoritme
-	\end{itemize}
-
-	\item Bron \cite{Suolan2017}
-	\begin{itemize}
-		\item Depth-based action recognition.
-		\item \textit{key frames} worden geproduceerd uit skeletsequenties door gebruik te maken van de joints als \textbf{spatial-temporal interest points (STIPs)}. Deze worden gemapt in een dieptesequentie om een actie sequentie te representeren. De contour van de persoon wordt per frame bepaald. Op basis van deze contour en de tijd worden features opgehaald. Als classifier gebruiken ze een \textit{extreme learning machine}
-		\item Voordeel van key frames: ze bevatten de meest informatieve frames. Twee methodieken om de key frames op te halen:
-		\begin{enumerate}
-			\item \textbf{Interframe difference}: een nieuwe key-frame wordt gekozen als het verschil tussen twee frames een bepaald threshold overschrijft.
-			\item \textbf{Clustering}: groeperen van frames die op elkaar lijken op basis van low-level features. Uit die groep wordt dan de keyframe genomen, die het dichtst bij het centrum van dat cluster ligt.
-		\end{enumerate}
-		\item Zij gebruiken het 'opgenomen verschil': Een positie van een joint $P_{i,j}$ met $i$ het frame index en $j$ de joint index, kan gelijkgesteld worden als  $P_{i, j} = {x_{i, j}, y_{i, j}, z_{i, j}}$
-		
-		Het opgenomen verschil is dan:
-		
-		$$D_i = \sum_{j = 1}^{n} || P_{i, j} - P_{i - 1, j}||^2$$
-		met $||\cdot||$ de euclidische afstand en $n$ het aantal joints.
-		
-		\item key frames worden dan gekozen op basis van maximum of minimum $D_i$ binnen een sliding window. Een probleem: $D_i$ is vrij laag voor de eerste en laatste aantal frames. De key frames worden dus eerder gecentraliseerd en kan de sequentie niet accuraat bepaalt worden. Stapsgewijze oplossing:
-		\begin{enumerate}
-			\item Voor een video met $N$ frames: neem de som van $D_i$ van $i = 2$ tot $i = N$:
-			$$D_N = \sum_{i = 2}^{N}D_i$$
-			\item Bepaal een aantal key frames $K$ en bereken het gemiddelde van incrementen:
-			
-			$$D_{avg} = D_N / K$$
-			
-			\item Voor $i = 2$ tot $i = L$ wordt het verschil berekent:
-			
-			$$W_L = D_L - k * D_{avg}, k \in K$$
-			
-			zodat er een verzameling ${W_L}$ is. Het minimum van deze set wordt de key frame.
-		\end{enumerate}
-		\item Features op basis van contour
-		\item Actieherkenning met neurale netwerken (EXTREME LEARNING)
-		\item \textbf{Samenvatting:}
-		\begin{itemize}
-			\item Actionherkenningsmethode voor kinect.
-			\item Features op basis van menselijke contour van een keyframe uit een dieptebeeld. Als constraint is er het temporaal verschil.
-			\item 'multi-hidden layer extreme learning machine' voor classificatie
-		
-		\end{itemize}
-		
-	\end{itemize}
-
-	\item Bron \cite{Carlsson2001}
-	\begin{itemize}
-		\item Een bepaalde actie kan onderverdeeld worden in een sequentie van poses.
-	\end{itemize}	
-
-	\item Bron \cite{Vezzani2010}
-	\begin{itemize}
-		\item HMM laten toe om de temporale evolutie te modelleren.
-		\item De \textbf{feature set} en \textbf{emission probability function} moeten goed gedefinieerd zijn. 
-		\item Gegeven een set $C$ van actie classes $\Lambda = \lambda^1 ... \lambda^C$, zoek de klasse $\lambda^*$ die de kans op $P(\lambda|O)$ maximaliseert met $O = \{o_1 ... o_T\}$ de frame observaties.
-		\item Een HMM voor elke actie. Classificatie voor een observatiereeks $O$ wordt uitgevoerd door het model te pakken met de hoogste waarschijnlijkheid:
-		
-				
-		$$\lambda^* = \arg \max_{1\leq c\leq C} \big[P(O|\lambda^c)\big]$$
-		\item Twee verschillende features gebruikt:
-		\begin{itemize}
-			\item Projection histograms
-			\item Shape descriptors
-		\end{itemize}
-	\end{itemize}
+	\item $p_1 = (1, 1)$ en $p_L = (N, M)$.
+	\item $n_1 \leq n_2 \leq ... \leq n_L$ en $m_1 \leq m_2 \leq ... \leq m_L$.
 \end{itemize}
 
 
-
-\chapter{Machine learning}
-\section{Features}
-\begin{itemize}
-	\item Een \textbf{feature} is een individueel, meetbare eigenschap of karakteristiek van een object dat geobserveerd wordt.
-	\item Eigenschappen:
-	\begin{itemize}
-		\item Informatief: de informatiewinst van de feature moet hoog zijn
-		\item Discriminative: op basis van de feature moet het eenvoudig zijn om het onderscheid te maken tussen de verschillende klassen
-		\item Onafhankelijk: De feature op zich mag van geen andere feature of meetwaarde van dezelfde feature afhangen.
-
-
-	\end{itemize}
-	\item Een \textbf{sparse feature discriptor} heeft een variabel aantal features. Een \textbf{dense feature descriptor} heeft een vast aantal features.
-	\item \textbf{Feature extraction} ($\equiv$ dimensionality reduction) is het verzamelen van features uit ruwe data zodat deze kunnen gebruikt worden als feature vector bij een classifier. 
-	\item Een \textbf{feature vector} is een $n$-dimensionale vector van \underline{numerieke} features.
-	\item De \textbf{feature space} ($\equiv$ vectorruimte) beschrijft de ruimte waarin de features zich bevinden. (bv 3 verschillende features = $\mathcal{R}^3$)
-	\item \textbf{Feature construction} is het maken van nieuwe features op basis van reeds bestaande features. De mapping is een functie $\phi$, van $\mathcal{R}^n$ naar $\mathcal{R}^{n + 1}$, met $f$ de geconstrueerde feature op basis van bestaande features, bv $f = x_1/x_2$.
-	
-	$$\phi(x_1, x_2, ..., x_n) = (x_1, x_2, ... x_n, f)$$
-
-\end{itemize}
-\section{Classifier}
-\begin{itemize}
-	\item Identificeren tot welke klasse een \underline{nieuwe} observatie behoort, gebaseerd op een training set waarvan de klassen wel gekend zijn.
-	\item \textbf{Lineaire classifiers} geven aan elke klasse $k$ een score op basis van de combinatie van de feature vector met een gewichtenvector met het scalair product.  De gekozen klasse is dan die met de hoogste score. Eenvoudiger geschreven:	
-	$$
-	score(X_i, k) = \beta_k \cdot X_i
-	$$
-	\begin{itemize}
-		\item $X_i$ = de feature vector voor instantie $i$
-		\item $\beta_k$ = de gewichtenvector voor klasse $k$
-	\end{itemize}
-	\item \todo{later onderzoeken}
-	\item \textbf{Support Vector machines}
-	\item \textbf{Random forests}
-	\item \textbf{Boosting}
-\end{itemize}
-
-
-
-
-\section{Hidden Markov Model}
-\label{sec:hidden_markov_model}
-Bron \cite{Ramage2007}
-\subsection{Markov model}
-
-\begin{itemize}
-	\item Markov process = stochastisch process met volgende eigenschappen:
-	\begin{itemize}
-		\item Het aantal toestanden $S = \{s_1, s_2, ... s_{|S|}\}$ is eindig.
-		\item Observatie van een sequentie over de tijd $\vec{z} \in S^T$
-		
-		Voorbeeld: 
-		
-		$S = \{sun, cloud, rain\}$ met $|S| = 3$ en $\vec{z} = \{z_1=S_{sun},z_2=S_{cloud},z_3=S_{cloud},z_4=S_{rain},z_5=S_{cloud}\}$ met $T = 5$.
-		\item Markov Assumpties:
-		\begin{enumerate}
-			\item Een toestand is enkel afhankelijk van de vorige toestand (\textbf{Markov Property}).
-			
-			$$P(z_t | z_{t - 1},z_{t-2}, ..., z_1) = P(z_t|z_{t-1})$$
-			\item De waarschijnlijk is constant in de tijd
-			
-			$$P(z_t|z_{t - 1}) = P(z_2|z_1); t \in 2 ...T$$
-		\end{enumerate}
-		\item Beginstaat $z_0 \equiv s_0$.
-		\item Transitiematrix $A \in \mathbb{R}^{(|S| + 1)\times(|S| + 1)}$, met $A_{ij} = P(i \rightarrow j)$, :
-		
-		$$A = \begin{matrix}
-		     & s_0 & s_{sun} & s_{cloud} & s_{rain} \\
-		 s_0 & 0 & .33 & .33 & .33 \\
-		 s_{sun} & 0 & .8 & .1 & .1 \\
-		 s_{cloud} & 0 & .2 & .6 & .2 \\
-		 s_{rain} & 0 & .1 & .2 & .7 \\
-		\end{matrix}$$
-	\end{itemize}
-
-\end{itemize}
-
-\begin{itemize}
-	\item Twee vragen die een markov model kunnen oplossen:
-	\begin{enumerate}
-		\item Wat is de kans op een bepaalde toestandenvector $\vec{z}$?
-
-				$$	P(\vec{z})  = \prod_{t=1}^{T} A_{z_{t-1}z_t}$$
-
-			Stel $\vec{z} = \{z_1=S_{sun},z_2=S_{cloud},z_3=S_{rain},z_4=S_{rain},z_5=S_{cloud}\}$ dan is $P(\vec{z}) = 0.33 \times 0.1 \times 0.2 \times 0.7 \times 0.2 $
-		\item Gegeven $\vec{z}$, hoe worden best de parameters van $A$ benaderd zodat de kans op $\vec{z}$ maximaal is.
-		$$A_{ij} = \frac{\sum_{t=1}^{T} \{z_{t-1} = s_i \wedge z_t = s_j\}}{\sum_{t=1}^{T} \{z_{t-1} = s_i\}}$$
-		
-		De maximale kans om van staat $i$ naar $j$ te gaan is het aantal transities van $i$ naar $j$ gedeeld door het totaal aantal keer dat we in $i$ zitten. Met andere woorden: Hoeveel \% zaten we in $i$ als we van $j$ komen.
-	\end{enumerate}
-\end{itemize}
-
-\subsection{Hidden Markov Model}
-\begin{itemize}
-	\item \gls{hmm} = Veronderstelt een markov process met verborgen toestanden
-	\item Bij een HMM: de staat is niet zichtbaar, maar de output is wel zichtbaar.
-	\item Formeel:
-	\begin{itemize}
-		\item Sequentie van geobserveerde outputs $x = \{x_1, x_2, ..., x_T\}$  uit een alfabet $V = \{v_1, v_2, ..., v_{|V|}\}$
-		\item Er is ook een sequentie van staten $z =\{z_1, z_2, ... z_T\}$ uit een alfabet $S = \{s_1, s_2, ... s_{|S|}\}$, maar deze zijn \underline{niet zichtbaar}.
-		\item Transitiematrix $A_{ij}$ wel bekend.
-		\item Kans dat een bepaalde output gegenereerd wordt in functie van de verborgen toestanden:
-		
-		$$P(x_t = v_k|z_t = s_j) = P(x_t = v_k | x_1, ..., x_T, z_1, ..., z_T) = B_{jk}$$
-		
-		Matrix $B$ geeft de waarschijnlijkheid dat een verborgen toestand $s_j$ de output $v_k$ teruggeeft.
-	\end{itemize}
-	\item Vaak voorkomende problemen die opgelost kunnen worden met HMM:
-	\begin{itemize}
-		\item Gegeven de parameters en geobserveerde data, benader de optimale sequentie van verborgen toestanden.
-		\item Gegeven de parameters en geobserveerde data, bereken de kans op die data. $\rightarrow$ Wordt het 'decoding' probleem (\textbf{Viterbi Algoritme}) genoemd en wordt gebruikt bij continue actieherkenning.
-		\item Gegeven de geobserveerde data, benader de parameters van $A$ en $B$.
-	\end{itemize}
-	\item Het \textbf{decoding probleem}: \url{http://jedlik.phy.bme.hu/~gerjanos/HMM/node8.html}
-	\begin{itemize}
-		\item Zoek de meest waarschijnlijke reeks van toestanden $\vec{z} \in S^T$ voor een verzameling van observaties $\vec{x} \in V^T$.
-		
-		\item Hoe 'meest waarschijnlijke toestandensequentie' definiëren. Een mogelijke manier is om de meest waarschijnlijke staat $s_t$ voor $x_t$ te berekenen, en alle $q_t$ dier daar aan voldoen te concateneren.
-		Andere manier is \textbf{Viterbi algoritme} die de hele toestandensequentie met de grootste waarschijnlijkheid teruggeeft.
-		
-		\item Hulpvariabele:
-		
-		$$\delta_t(i) = \max_{\substack{q_1, q_2, ... q_{t-1}}} p\{q_1, q_2, ... q_{t - 1}, q_t = i, o_1, o_2, ... o_{t - 1} | \lambda \}$$
-		
-		die de hoogste kans beschrijft dat een partiele observatie en toestandensequentie tot $t = t$ kan hebben, wanneer de huidige staat $i$ is.
-	\end{itemize}
-\end{itemize}
-
+\section{Key frames}
+In plaats van elke frame te classificeren, zou een actie kunnen voorgesteld worden door \textit{key frames}. Dit is een selectie van frames die een actie voldoende kunnen voorstellen zodanig dat verschillende acties nog steeds onderscheidbaar zijn en variaties van dezelfde actie hetzelfde gelabeld worden. In de literatuur bestaan er diverse manieren om zulke key frames te bepalen. De methode van \cite{Suolan2017} berekent een verschil op basis van de joints die de Kinect beschikbaar stelt. De methode van \cite{Carlsson2001} maakt gebruik van randdetectie om silhouette te bekommen en zoekt een match tussen voorgedefinieerde silhouetten die een key frame van een actie voorstelt. Andere methoden maken ook gebruik van voorgedefinieerde exemplaren \cite{Weinland2008a}, \cite{Fathi2007},
