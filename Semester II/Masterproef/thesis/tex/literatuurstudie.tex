@@ -22,17 +22,14 @@ Het gebruik van de Kinect is geen vereiste om actieherkenning met dieptebeelden 
 
 In volgende onderdelen worden een aantal belangrijke feature descriptors beschreven.
 \subsection{Histograms of 3D Joints (HOJ3D)}
-Het werk van \cite{Xia2012} toont aan hoe een histogram van drie-dimensionale punten aan real-time actieherkenning kan doen. Ze transformeren het skeletbeeld gegenereerd door de Kinect om in bolcoördinaten. Als oorsprong wordt de heup joint genomen. De horizontale referentievector $\textbf{\alpha}$ wordt parallel met de grond genomen door de oorsprong. De verticale referentievector $\textbf{\theta}$ staat loodrecht op $\textbf{\alpha}$ en gaat ook door de oorsprong. De drie-dimensionale ruimte wordt opgesplitst in $84$ deelruimten. Elke joint zal zich dan in één van die 84 deelruimte bevinden. Een histogram wordt opgemaakt door elke joint te wegen in 8 naburige deelruimten via een Gaussische functie:
+Het werk van \cite{Xia2012} toont aan hoe een histogram van drie-dimensionale punten aan real-time actieherkenning kan doen. Ze transformeren het skeletbeeld gegenereerd door de Kinect om in bolcoördinaten. Als oorsprong wordt de heup joint genomen. De horizontale referentievector $\mathbf{\alpha}$ wordt parallel met de grond genomen door de oorsprong. De verticale referentievector $\mathbf{\theta}$ staat loodrecht op $\mathbf{\alpha}$ en gaat ook door de oorsprong. De drie-dimensionale ruimte wordt opgesplitst in $84$ deelruimten. Elke joint zal zich dan in één van die 84 deelruimte bevinden. Een histogram wordt opgemaakt door elke joint te wegen in 8 naburige deelruimten via een Gaussische functie:
 
 $$p(X, \mu, \Sigma) = \frac{1}{(2\pi)^{n/2}|\Sigma|^{1/2}}e^{-\frac{1}{2}(X - \mu)^T\Sigma^{-1}(X - \mu)}$$
 
-Hierbij is $\mu$ de mediaanvector en $\Sigma$ de identiteitsmatrix. Voor zowel $\textbf{\Theta}$ als $\textbf{\alpha}$ wordt de kansfunctie apart uitgerekend. Stel $\Omega$ de cumulatieve distributiefunctie van de normaalverdeling, dan wordt de kans dat een joint met locatie $(\mu_\alpha, \mu_\theta)$ 
+Hierbij is $\mu$ de mediaanvector en $\Sigma$ de identiteitsmatrix. Voor zowel $\mathbf{\Theta}$ als $\mathbf{\alpha}$ wordt de kansfunctie apart uitgerekend. Stel $\Omega$ de cumulatieve distributiefunctie van de normaalverdeling, dan wordt de kans dat een joint met locatie $(\mu_\alpha, \mu_\theta)$ 
 
-$$p(\theta_1 < \theta < \theta_2; \mu_\theta, \sigma) = \Omega(\theta_2; \mu_\theta, \sigma) - \Omega(\theta_1; \mu_\theta, \sigma)$$
 
-$$p(\alpha_1 < \alpha < \alpha_2; \mu_\alpha, \sigma) = \Omega(\alpha_2; \mu_\alpha, \sigma) - \Omega(\alpha_1; \mu_\alpha, \sigma)$$
-
-Dit levert de \gls{ac:hoj} descriptor op.
+Dit levert de \gls{ac:hoj3d} descriptor op.
 
 
 
