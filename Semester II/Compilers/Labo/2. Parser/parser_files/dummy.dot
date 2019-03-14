@@ -1,0 +1,6 @@
+graph {
+node [shape=record];
+Compound1 [color="red", label="{Compound}", ];
+Var2 [color="green", label="{Var|{<name>'hello_world'|<type>i32|<init>init?}}", ];
+Compound1 -- Var2 [];
+}

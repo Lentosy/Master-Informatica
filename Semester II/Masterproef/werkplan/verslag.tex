@@ -1,34 +1,24 @@
 \documentclass{article}
 \usepackage[margin=1in]{geometry}
 \usepackage{hyperref}
-\title{Werkplan '19269: Live actieherkenning met de Kinect sensor in Python' }
+
+\title{Verslag: masterproef Bert De Saffel}
+\author{12 maart 2019}
+\date{}
 
 \setlength{\parindent}{0pt}
 \setlength{\parskip}{2pt}
 \begin{document}
    \maketitle
 
-   \section{Probleemstelling}
-   De Kinect zou graag gebruikt willen worden in moeilijkere omstandigheden. Hiermee bedoelen we dat er veel personen op de achtergrond kunnen zijn, die niet relevant zijn.
-   \section{Doelstelling}
-   Er zijn twee doelen te bereiken met deze masterproef:
-   \begin{enumerate}
-    \item Een Python implementatie die de Kinect sensor kan aanspreken en de beelden die het genereerd kan opslaan. Als basis zou de bestaande open source bibliotheek PyKinect\footnote{\url{https://github.com/Microsoft/PTVS/wiki/PyKinect}} gebruikt worden. Volgende functionaliteiten moeten ondersteund worden:
-    \begin{itemize}
-      \item Elk beeld van de verschillende sensoren moeten live op elkaar gemapt kunnen worden. De beelden zijn: kleurenbeelden, dieptebeelden, infraroodbeelden, body index beelden en skeletbeelden.
-      \item De gemapte beelden moeten op hetzelfde moment opgeslagen kunnen worden in een toegankelijk videoformaat (.mp4, .avi, ...). Kinect Studio laat toe om deze beelden op te slaan in .xef formaat, maar neemt veel opslagruimte in beslag ($\approx$ 1GB per minuut). Dit formaat is ook enkel leesbaar binnen Kinect Studio.
-    \end{itemize}
-    \item Met behulp van machine learning zouden er eenvoudige handelingen (bv. zwaaien, bukken, springen, ...) door de Kinect sensor moeten gedetecteerd worden, rekening houdend dat er andere, niet relevante, personen op dit beeld kunnen zijn.  Dit prototype zou dan gebruikt kunnen worden op opendeurdagen om de aandacht van nieuwe studenten aan te trekken.
-
-    Om hieraan te beginnen wordt er eerst een literatuurstudie gedaan rond actieherkenning met de Kinect, en hoe Kinect het momenteel aanpakt.
-   \end{enumerate}
-   Het eindresultaat is een werkend prototype, dat een bepaalde verzameling van eenvoudige handelingen correct kan herkennen. Het prototype moet ook uitbreidbaar zijn, zodat er nadien eenvoudig nieuwe handelingen kunnen toegevoegd worden. De beelden die de kinect registreert zullen ook beschikbaar zijn in een databank.
-   \\
-   Verdere toepassingen zijn:
-   \begin{itemize}
-      \item Gebarentaal aanleren.
-      \item Analyseren of dat bepaalde fitnessoefeningen goed uitgevoerd worden.
-      \item ...
-   \end{itemize}
-
+	\begin{itemize}
+	   	\item Voorstellen van toepassingen:
+	   	\begin{itemize}
+	   		\item Actieherkenning in luidere omgevingen zoals bijvoorbeeld een fabriek, luchthaven, festival, ... om systemen te besturen. In industriecontext zou bijvoorbeeld een robot kunnen bestuurd worden met behulp van acties die door de persoon uitgevoerd worden.
+	   		\item Analyseren van fitnessoefeningen: 
+	   		\item Analyse van een arbeidscyclus: werknemer heeft toestel vast, werknemer 
+	   	\end{itemize}	
+   		\item Er wordt ook voorgesteld om een eigen dataset aan te maken, specifiek voor de toepassing die gekozen wordt. De inhoud van deze dataset moet zo vlug mogelijk (ten laatste vrijdag 15 maart) vastgelegd worden. 
+   		\item  
+	\end{itemize}
 \end{document}
