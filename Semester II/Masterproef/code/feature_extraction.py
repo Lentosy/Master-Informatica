@@ -1,0 +1,5 @@
+
+
+
+class FeatureExtractor:
+    def receiveSkeletonCoördinates
