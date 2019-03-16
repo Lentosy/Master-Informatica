@@ -1,0 +1,110 @@
+\chapter{Activation Records}
+Overstap naar neutrale voorstelling die onafhankelijk is van de oorspronkelijke taal. Er is wel een probleem: zelfs de omzetting van de abstract syntax tree naar deze neutrale voorstelling is afhankelijk van de architectuur waarvoor gecompileerd wordt. Bijvoorbeeld het statement \texttt{*p++} in C is anders voor 32-bit of 64-bit systemen. Het doel van Activation Records is om de taalspecifieke Abstract Syntax Tree om te vormen naar een taalonafhankelijke Intermediate Representation Tree.
+
+De meeste talen hebben lokale veranderlijken. Bij het aanroepen van een functie moet elke lokale variabele opnieuw op de stack geplaatst worden. Functieoproepen zijn last-in first-ou
+
+Een higher-order functie is een functie waarin:
+\begin{itemize}
+	\item een andere functie aanwezig is.
+	\item een functie heeft als returnwaarde.
+\end{itemize}
+
+\begin{lstlisting}
+fun f(x) =
+let fun g(y) = x + y
+in g
+end
+
+val b = f(3)
+val j = f(4)
+
+val z = h(5)
+val w = j(7)
+\end{lstlisting}
+
+Zulke functies worden niet besproken in deze cursus.
+
+\section{Stack Frames}
+Een stack frame bevat lokale variabelen, het returnadres, temporaries (lokale ingewikkelde subexpressies in de functie) en saved registers.
+
+
+Caller-safed vs calee-safed registers
+
+\begin{lstlisting}
+ADD		R1, R2, R3 // R1 = R2 + R3
+CALL	F
+MUL		R4, R1, R7 // R4 = R1 * R7
+\end{lstlisting}
+Gaat F de waarde R1 overschrijven of niet? Als F dit wel doet is het geen geldige code. Een Calee-safed register is de restrictie dat F deze waarde niet mag aanpassen. Een caller-safed register legt de restrictie op aan de caller van F. De assembly moet dan uitgebreidt worden:
+\begin{lstlisting}
+ADD		R1, R2, R3
+ST		R1, SP[...] // store R1 
+CALL	F
+LD      R1, SP[...] // load R1
+MUL		R4, R1, R7
+\end{lstlisting}
+
+Een deel van de registers worden caller-safed gemaakt, de rest is dan calee-safed. Dit wordt manueel vastgelegd. De compiler kan dan oproepen optimaliseren.
+
+De stack kan ook argumenten bevatten die meegegeven worden aan de functie. Een static link is vooral belangrijk bij geneste en recursieve functies. In program 6.3 moet de variabele \texttt{output} in elke frame beschikbaar zijn. De static link bevat een pointer naar de buitenste functie, zodat deze variabele in elke geneste functie beschikbaar is.
+
+
+Welke parameters moeten op de stack frame zitten en welke niet? Stel volgende functie:
+
+\begin{lstlisting}
+int f(int x, int y){
+	f(x);
+	g(&x);
+	return x + y;
+}
+\end{lstlisting}
+
+Als de functieoproepen $f$ en $g$ er niet zijn, dan moeten $x$ en $y$ niet op de stack. Bij de functie $f$ hangt het af of dat $f$ de parameter aanpast. Bij de functie $g$ moet $x$ zeker in het geheugen zitten.
+
+\begin{lstlisting}
+int f(int x, int y){
+	p = &x;
+}
+\end{lstlisting}
+
+\subsection{Escapes}
+Een variable \textit{escapet} uit een stack frame als:
+\begin{itemize}
+	\item hij passed-by-reference wordt.
+	\item of zijn adres genomen wordt.
+	\item of hij geaccessed wordt vanuit een geneste functie.
+\end{itemize}
+
+Een veranderlijke is \textit{memory-resident} (op de stack plaatsen) als
+\begin{itemize}
+	\item hij escapet
+	\item of niet in een register past
+	\item of een array is
+	\item of er geen vrij register is
+\end{itemize}
+
+
+\section{Frames in de Tiger compiler}
+\subsection{Frame Interface}
+Er is een abstracte representatie nodig van een frame want deze hangt af van de architectuur.
+
+\begin{itemize}
+	\item \texttt{F\_frame}: datastructuur die een frame voorstelt. 
+	\item \texttt{F\_access}: datastructuur die specifieert hoe lokale variabelen moeten geaccesseerd worden (stack, register, ...).
+	\item \texttt{F\_accessList}: Lijst van F\_access structuren.
+	\item \texttt{newFrame(Temp\_label name, U\_boolList formals)}: formals bevat booleans die voor elke parameter aangeeft of hij deze escapet moet worden of niet.
+	\item \texttt{allocLocal(F\_frame f, bool escape)}: maak plaats voor nieuwe veranderlijke in frame $f$, en eventueel is deze escapet.
+\end{itemize}
+ 
+\subsection{Creatie en initialisatie van Frames}
+
+Bij Pentium moet alles op de stack. In MIPS wordt standaard de eerste 3 argumenten in registers gestoken, maar $x_1$ escapet dus wordt toch in de stack gestoken. 
+ 
+ \subsection{Escapes berekenen}
+ Pass-by-reference of het nemen van een referentie is direct zichtbaar in de Abstract Syntax Tree. Om na te gaan of hij geaccessed wordt vanuit een geneste functie wordt de AST recursief overlopen met een symbooltabel (omgeving), maar hier zijn alle veranderlijken gebonden aan booleans: escapes of niet. Deze stap wordt voor semantische analyse en na parsing gedaan. Dus tussen deze twee stappen worden de escapes berekent. Het kan ook efficiënter, maar zien we niet in deze cursus.
+ 
+\subsection{Temporaries en Labels}
+\begin{itemize}
+	\item Een \textbf{temporary} is een waarde die tijdelijk in een nog te bepalen register wordt bewaard.
+	\item Een \textbf{label} is een nog onbekend adres waarde code of statisch gealloceerde data zal terecht komen. Bijvoorbeeld \texttt{string = "een string"} wordt statisch gealloceerd.
+\end{itemize} 
