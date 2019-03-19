@@ -1,20 +1,18 @@
-from sklearn.pipeline import Pipeline
-from sklearn import svm
-import csv
 
-class Action:
-    def __init__(self, target, data):
-        self.target = target
-        self.data = data
+from pandas import read_csv
+from matplotlib import pyplot
 
-action = Action('RH_MOVE_FORWARD' , [])
-with open('data\BERT_RH_MOVE_FORWARD_1.txt', 'r') as csvfile:
-    reader = csv.reader(csvfile, delimiter=';')
-    for row in reader:
-        action.data.extend([row])
-        break
+def load_dataset():
+    df = read_csv("data/BERT_RH_MOVE_FORWARD_1.txt", header=None, sep = ';')
+    plot_subject(df)
 
+def plot_subject(subject):
+    pyplot.figure()
+    for col in range(0, 25, 3):
+        pyplot.subplot(subject.shape[1], 1, subject[col])
+        pyplot.subplot(subject.shape[1], 1, subject[col+1])
+        pyplot.subplot(subject.shape[1], 1, subject[col+2])
 
-clf = svm.SVC(gamma=0.001, C = 100)
+    pyplot.show()
 
-    
+load_dataset()

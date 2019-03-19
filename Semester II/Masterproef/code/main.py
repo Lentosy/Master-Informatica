@@ -1,7 +1,5 @@
-# info over quaternionen
-# https://github.com/CheeZePrinceZz/Kinect-NAO/blob/fd54131b2fa467ed726403348c2628740b66889a/pykinectnao/kinecthandler.py
 #
-#https://github.com/AravinthPanch/gesture-recognition-for-human-robot-interaction
+# https://github.com/AravinthPanch/gesture-recognition-for-human-robot-interaction
 import os
 import sys 
 

@@ -67,7 +67,7 @@
 %union {
   AST::Stmt *stmt_t;
   AST::CompoundStmt *compoundstmt_t;
-
+  
   AST::Expr *expr_t;
   AST::DeclRefExpr *decl_expr_t;
 
@@ -100,6 +100,7 @@
 %type <var_decl_t> var_decl
 %type <varlist_t> func_args
 
+//%type <decl_expr_t> decl_call
 %type <call_expr_t> func_call
 %type <expr_list_t> expr_list
 // TODO: add some more %type's
@@ -170,10 +171,12 @@ expr:
       $$ = $2;
     }
   |  func_call {
-     $$ = $1;
+      $$ = $1;
   }
-  // TODO: additional expressions
-  ;
+  | FLOAT {
+    $$ = sema.ParseFloat($1)
+  }
+ ;
 
 
 decl_expr:
@@ -213,7 +216,6 @@ decl:
 //
 // Variables
 //
-
 var_decl:
     ident ident {
       auto type = sema.ParseTypeName($1);
@@ -231,16 +233,37 @@ var_decl:
     }
   ;
 
-
 //
 // Functions
 //
-
 func_call:
-    ident '(' expr_list ')' {
-      
+    ident '(' ')' { // functie zonder parameters: foo();
+      $$ = new AST::CallExpr($1);
+      $$->location = @$;
     }
+  | ident '(' expr_list ')' { // functie met oneindig veel parameters: foo(x, bar(zoo()), y, z, ...)
+      $$ = new AST::CallExpr($1, *$3); // pointer naar $3
+      $$->location = @$;
 
+    }
+  ;
+expr_list:
+  %empty {
+    $$ = sema.ParseExprList();
+  }
+  | decl_expr {
+    $$ = sema.ParseExprList($1);
+  } 
+  | func_call {
+    $$ = sema.ParseExprList($1);
+  }
+  | expr_list ',' decl_expr {
+    $$ = sema.ParseExprList($3, $1);
+  }
+  | expr_list ',' func_call {
+    $$ = sema.ParseExprList($3, $1);
+  }
+  ;
 func_decl:
     ident ident '(' func_args ')' block {
       auto type = sema.ParseTypeName($1);
@@ -263,7 +286,6 @@ func_args:
       $$ = sema.ParseVariableList($3, $1);
     }
   ;
-
 %%
 
 // We have to implement the error function

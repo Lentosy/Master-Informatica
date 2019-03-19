@@ -143,7 +143,7 @@ namespace cheetah {
 
   AST::Stmt *stmt_t;
   AST::CompoundStmt *compoundstmt_t;
-
+  
   AST::Expr *expr_t;
   AST::DeclRefExpr *decl_expr_t;
 
@@ -152,9 +152,11 @@ namespace cheetah {
   AST::VarDecl *var_decl_t;
   AST::VariableList *varlist_t;
 
+  AST::CallExpr *call_expr_t;
+  AST::ExprList *expr_list_t;
   // TODO: add some more semantic value types
 
-#line 158 "/pract/parser.hpp" // lalr1.cc:377
+#line 160 "/pract/parser.hpp" // lalr1.cc:377
     };
 #else
     typedef YYSTYPE semantic_type;
@@ -383,7 +385,7 @@ namespace cheetah {
   // number is the opposite.  If YYTABLE_NINF, syntax error.
   static const unsigned char yytable_[];
 
-  static const signed char yycheck_[];
+  static const unsigned char yycheck_[];
 
   // YYSTOS[STATE-NUM] -- The (internal number of the) accessing
   // symbol of state STATE-NUM.
@@ -404,7 +406,7 @@ namespace cheetah {
     static const char* const yytname_[];
 #if YYDEBUG
   // YYRLINE[YYN] -- Source line where rule number YYN was defined.
-  static const unsigned char yyrline_[];
+  static const unsigned short int yyrline_[];
     /// Report on the debug stream that the rule \a r is going to be reduced.
     virtual void yy_reduce_print_ (int r);
     /// Print the state stack on the debug stream.
@@ -503,9 +505,9 @@ namespace cheetah {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 50,     ///< Last index in yytable_.
-      yynnts_ = 12,  ///< Number of nonterminal symbols.
-      yyfinal_ = 15, ///< Termination state number.
+      yylast_ = 55,     ///< Last index in yytable_.
+      yynnts_ = 14,  ///< Number of nonterminal symbols.
+      yyfinal_ = 16, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
       yyntokens_ = 33  ///< Number of tokens.
@@ -521,7 +523,7 @@ namespace cheetah {
 
 #line 7 "src/parser.y" // lalr1.cc:377
 } // cheetah
-#line 525 "/pract/parser.hpp" // lalr1.cc:377
+#line 527 "/pract/parser.hpp" // lalr1.cc:377
 
 
 // //                    "%code provides" blocks.
@@ -538,7 +540,7 @@ namespace cheetah {
     };
   }
 
-#line 542 "/pract/parser.hpp" // lalr1.cc:377
+#line 544 "/pract/parser.hpp" // lalr1.cc:377
 
 
 #endif // !YY_YY_PRACT_PARSER_HPP_INCLUDED

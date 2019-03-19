@@ -638,7 +638,7 @@ namespace cheetah {
           switch (yyn)
             {
   case 2:
-#line 109 "src/parser.y" // lalr1.cc:859
+#line 114 "src/parser.y" // lalr1.cc:859
     {
       driver.setProgram((yystack_[0].value.compoundstmt_t));
     }
@@ -646,13 +646,13 @@ namespace cheetah {
     break;
 
   case 3:
-#line 121 "src/parser.y" // lalr1.cc:859
+#line 126 "src/parser.y" // lalr1.cc:859
     { (yylhs.value.stmt_t) = nullptr; }
 #line 652 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 4:
-#line 122 "src/parser.y" // lalr1.cc:859
+#line 127 "src/parser.y" // lalr1.cc:859
     {
       (yylhs.value.stmt_t) = (yystack_[1].value.expr_t);
     }
@@ -660,7 +660,7 @@ namespace cheetah {
     break;
 
   case 5:
-#line 125 "src/parser.y" // lalr1.cc:859
+#line 130 "src/parser.y" // lalr1.cc:859
     {
       (yylhs.value.stmt_t) = new AST::DeclStmt((yystack_[0].value.decl_t));
       (yylhs.value.stmt_t)->location = yylhs.location;
@@ -669,7 +669,7 @@ namespace cheetah {
     break;
 
   case 6:
-#line 133 "src/parser.y" // lalr1.cc:859
+#line 138 "src/parser.y" // lalr1.cc:859
     {
       (yylhs.value.compoundstmt_t) = sema.ParseCompoundStmt(yylhs.location, (yystack_[0].value.stmt_t));
     }
@@ -677,7 +677,7 @@ namespace cheetah {
     break;
 
   case 7:
-#line 136 "src/parser.y" // lalr1.cc:859
+#line 141 "src/parser.y" // lalr1.cc:859
     {
       (yylhs.value.compoundstmt_t) = sema.ParseCompoundStmt(yylhs.location, (yystack_[0].value.stmt_t), (yystack_[1].value.compoundstmt_t));
     }
@@ -685,7 +685,7 @@ namespace cheetah {
     break;
 
   case 8:
-#line 142 "src/parser.y" // lalr1.cc:859
+#line 147 "src/parser.y" // lalr1.cc:859
     {
       (yylhs.value.compoundstmt_t) = sema.ParseCompoundStmt(yylhs.location);
     }
@@ -693,7 +693,7 @@ namespace cheetah {
     break;
 
   case 9:
-#line 145 "src/parser.y" // lalr1.cc:859
+#line 150 "src/parser.y" // lalr1.cc:859
     {
       (yylhs.value.compoundstmt_t) = (yystack_[1].value.compoundstmt_t);
       (yylhs.value.compoundstmt_t)->location = yylhs.location;
@@ -702,7 +702,7 @@ namespace cheetah {
     break;
 
   case 10:
-#line 158 "src/parser.y" // lalr1.cc:859
+#line 163 "src/parser.y" // lalr1.cc:859
     {
       (yylhs.value.expr_t) = (yystack_[0].value.expr_t);
     }
@@ -710,7 +710,7 @@ namespace cheetah {
     break;
 
   case 11:
-#line 161 "src/parser.y" // lalr1.cc:859
+#line 166 "src/parser.y" // lalr1.cc:859
     {
       (yylhs.value.expr_t) = new AST::Assignment((yystack_[2].value.decl_expr_t), (yystack_[0].value.expr_t));
       (yylhs.value.expr_t)->location = yylhs.location;
@@ -719,7 +719,7 @@ namespace cheetah {
     break;
 
   case 12:
-#line 165 "src/parser.y" // lalr1.cc:859
+#line 170 "src/parser.y" // lalr1.cc:859
     {
       (yylhs.value.expr_t) = (yystack_[1].value.expr_t);
     }
@@ -727,50 +727,58 @@ namespace cheetah {
     break;
 
   case 13:
-#line 172 "src/parser.y" // lalr1.cc:859
+#line 173 "src/parser.y" // lalr1.cc:859
+    {
+      (yylhs.value.expr_t) = (yystack_[0].value.call_expr_t);
+  }
+#line 735 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 14:
+#line 181 "src/parser.y" // lalr1.cc:859
     {
       (yylhs.value.expr_t) = new AST::DeclRefExpr((yystack_[0].value.ident_t));
       (yylhs.value.expr_t)->location = yylhs.location;
     }
-#line 736 "/pract/parser.cpp" // lalr1.cc:859
+#line 744 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
-  case 14:
-#line 176 "src/parser.y" // lalr1.cc:859
+  case 15:
+#line 185 "src/parser.y" // lalr1.cc:859
     {
       (yylhs.value.expr_t) = new AST::DeclRefExpr((yystack_[3].value.ident_t), (yystack_[1].value.expr_t));
       (yylhs.value.expr_t)->location = yylhs.location;
     }
-#line 745 "/pract/parser.cpp" // lalr1.cc:859
-    break;
-
-  case 15:
-#line 189 "src/parser.y" // lalr1.cc:859
-    {
-      (yylhs.value.ident_t) = new AST::Identifier(yytext(lexer));
-      (yylhs.value.ident_t)->location = yylhs.location;
-    }
-#line 754 "/pract/parser.cpp" // lalr1.cc:859
+#line 753 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 16:
-#line 196 "src/parser.y" // lalr1.cc:859
+#line 198 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.decl_t) = (yystack_[1].value.var_decl_t);
+      (yylhs.value.ident_t) = new AST::Identifier(yytext(lexer));
+      (yylhs.value.ident_t)->location = yylhs.location;
     }
 #line 762 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 17:
-#line 199 "src/parser.y" // lalr1.cc:859
+#line 205 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.decl_t) = (yystack_[0].value.decl_t);
+      (yylhs.value.decl_t) = (yystack_[1].value.var_decl_t);
     }
 #line 770 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 18:
-#line 210 "src/parser.y" // lalr1.cc:859
+#line 208 "src/parser.y" // lalr1.cc:859
+    {
+      (yylhs.value.decl_t) = (yystack_[0].value.decl_t);
+    }
+#line 778 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 19:
+#line 218 "src/parser.y" // lalr1.cc:859
     {
       auto type = sema.ParseTypeName((yystack_[1].value.ident_t));
       delete (yystack_[1].value.ident_t);
@@ -778,11 +786,11 @@ namespace cheetah {
       (yylhs.value.var_decl_t) = new AST::VarDecl((yystack_[0].value.ident_t), type);
       (yylhs.value.var_decl_t)->location = yylhs.location;
     }
-#line 782 "/pract/parser.cpp" // lalr1.cc:859
+#line 790 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
-  case 19:
-#line 217 "src/parser.y" // lalr1.cc:859
+  case 20:
+#line 225 "src/parser.y" // lalr1.cc:859
     {
       auto type = sema.ParseTypeName((yystack_[3].value.ident_t));
       delete (yystack_[3].value.ident_t);
@@ -790,11 +798,70 @@ namespace cheetah {
       (yylhs.value.var_decl_t) = new AST::VarDecl((yystack_[2].value.ident_t), type, (yystack_[0].value.expr_t));
       (yylhs.value.var_decl_t)->location = yylhs.location;
     }
-#line 794 "/pract/parser.cpp" // lalr1.cc:859
+#line 802 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
-  case 20:
-#line 232 "src/parser.y" // lalr1.cc:859
+  case 21:
+#line 238 "src/parser.y" // lalr1.cc:859
+    { // functie zonder parameters: foo();
+      (yylhs.value.call_expr_t) = new AST::CallExpr((yystack_[2].value.ident_t));
+      (yylhs.value.call_expr_t)->location = yylhs.location;
+    }
+#line 811 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 22:
+#line 242 "src/parser.y" // lalr1.cc:859
+    { // functie met oneindig veel parameters: foo(x, bar(zoo()), y, z, ...)
+      (yylhs.value.call_expr_t) = new AST::CallExpr((yystack_[3].value.ident_t), *(yystack_[1].value.expr_list_t)); // pointer naar $3
+      (yylhs.value.call_expr_t)->location = yylhs.location;
+
+    }
+#line 821 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 23:
+#line 249 "src/parser.y" // lalr1.cc:859
+    {
+    (yylhs.value.expr_list_t) = sema.ParseExprList();
+  }
+#line 829 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 24:
+#line 252 "src/parser.y" // lalr1.cc:859
+    {
+    (yylhs.value.expr_list_t) = sema.ParseExprList((yystack_[0].value.expr_t));
+  }
+#line 837 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 25:
+#line 255 "src/parser.y" // lalr1.cc:859
+    {
+    (yylhs.value.expr_list_t) = sema.ParseExprList((yystack_[0].value.call_expr_t));
+  }
+#line 845 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 26:
+#line 258 "src/parser.y" // lalr1.cc:859
+    {
+    (yylhs.value.expr_list_t) = sema.ParseExprList((yystack_[0].value.expr_t), (yystack_[2].value.expr_list_t));
+  }
+#line 853 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 27:
+#line 261 "src/parser.y" // lalr1.cc:859
+    {
+    (yylhs.value.expr_list_t) = sema.ParseExprList((yystack_[0].value.call_expr_t), (yystack_[2].value.expr_list_t));
+  }
+#line 861 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 28:
+#line 266 "src/parser.y" // lalr1.cc:859
     {
       auto type = sema.ParseTypeName((yystack_[5].value.ident_t));
       delete (yystack_[5].value.ident_t);
@@ -803,35 +870,35 @@ namespace cheetah {
       (yylhs.value.decl_t)->location = yylhs.location;
       delete (yystack_[2].value.varlist_t);
     }
-#line 807 "/pract/parser.cpp" // lalr1.cc:859
+#line 874 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
-  case 21:
-#line 243 "src/parser.y" // lalr1.cc:859
+  case 29:
+#line 277 "src/parser.y" // lalr1.cc:859
     {
       (yylhs.value.varlist_t) = sema.ParseVariableList();
     }
-#line 815 "/pract/parser.cpp" // lalr1.cc:859
+#line 882 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
-  case 22:
-#line 246 "src/parser.y" // lalr1.cc:859
+  case 30:
+#line 280 "src/parser.y" // lalr1.cc:859
     {
       (yylhs.value.varlist_t) = sema.ParseVariableList((yystack_[0].value.var_decl_t));
     }
-#line 823 "/pract/parser.cpp" // lalr1.cc:859
+#line 890 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
-  case 23:
-#line 249 "src/parser.y" // lalr1.cc:859
+  case 31:
+#line 283 "src/parser.y" // lalr1.cc:859
     {
       (yylhs.value.varlist_t) = sema.ParseVariableList((yystack_[0].value.var_decl_t), (yystack_[2].value.varlist_t));
     }
-#line 831 "/pract/parser.cpp" // lalr1.cc:859
+#line 898 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
 
-#line 835 "/pract/parser.cpp" // lalr1.cc:859
+#line 902 "/pract/parser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1093,66 +1160,69 @@ namespace cheetah {
   const signed char
   Parser::yypact_[] =
   {
-      13,   -25,   -25,     1,     5,   -25,    13,   -19,     2,    -4,
-     -25,   -12,   -25,   -21,    -8,   -25,   -25,   -25,     1,     1,
-      22,   -25,   -25,   -25,     4,     1,    28,   -25,   -25,    28,
-     -25,   -17,    30,    17,    28,     3,   -25,   -25,   -25,    12,
+      13,   -25,   -25,    -1,     5,   -25,    13,   -11,    30,    -6,
+     -25,   -10,   -25,   -25,    18,    20,   -25,   -25,   -25,    -1,
+      -4,    -1,     6,   -25,   -25,   -25,   -25,   -25,   -25,   -19,
+      21,    -1,    15,   -25,    15,   -25,   -25,    15,   -25,    11,
+     -25,   -25,    39,    28,    15,     3,   -25,   -25,   -25,     8,
      -25
   };
 
   const unsigned char
   Parser::yydefact_[] =
   {
-       0,    15,     3,     0,     0,     6,     2,     0,    10,    13,
-       5,     0,    17,     0,    13,     1,     7,     4,     0,     0,
-      18,    16,    12,    11,     0,     0,    21,    14,    19,     0,
-      22,     0,    18,     0,     0,     0,    20,    23,     8,     0,
+       0,    16,     3,     0,     0,     6,     2,     0,    10,    14,
+       5,     0,    13,    18,     0,    14,     1,     7,     4,     0,
+      23,     0,    19,    17,    12,    11,    21,    24,    25,     0,
+       0,     0,    29,    22,     0,    15,    20,     0,    30,     0,
+      26,    27,    19,     0,     0,     0,    28,    31,     8,     0,
        9
   };
 
   const signed char
   Parser::yypgoto_[] =
   {
-     -25,   -25,    -6,     9,   -25,     0,   -25,    -2,   -25,   -24,
-     -25,   -25
+     -25,   -25,    -3,    10,   -25,    -2,    -8,     0,   -25,   -24,
+      19,   -25,   -25,   -25
   };
 
   const signed char
   Parser::yydefgoto_[] =
   {
-      -1,     4,     5,     6,    36,     7,     8,     9,    10,    11,
-      12,    31
+      -1,     4,     5,     6,    46,     7,     8,    15,    10,    11,
+      12,    29,    13,    39
   };
 
   const unsigned char
   Parser::yytable_[] =
   {
-      16,    14,    30,    13,     1,    15,    17,    20,    22,     1,
-      37,     1,    33,    21,    18,    34,    14,    14,    23,    24,
-       1,     1,    19,    14,    29,    28,    19,    32,     2,     3,
-      38,     3,    29,    16,    25,    27,     1,     2,     2,    40,
-       3,     3,    25,    35,    39,     0,     0,     0,     0,     0,
-      26
+       9,    14,     1,    17,     1,    16,     9,     1,    38,    22,
+      33,     1,    27,    34,    18,    23,     1,    25,    31,    30,
+      47,     1,    20,     1,    21,    26,    40,     3,     2,    36,
+      48,     3,    37,     2,    32,    50,     3,    42,     2,    28,
+      43,     3,    19,    44,    37,     9,    17,    24,    20,     9,
+      21,    31,    35,    41,    45,    49
   };
 
-  const signed char
+  const unsigned char
   Parser::yycheck_[] =
   {
-       6,     3,    26,     3,     8,     0,    25,     9,    29,     8,
-      34,     8,    29,    25,    12,    32,    18,    19,    18,    19,
-       8,     8,    30,    25,    26,    25,    30,    29,    25,    28,
-      27,    28,    34,    39,    12,    31,     8,    25,    25,    27,
-      28,    28,    12,    26,    35,    -1,    -1,    -1,    -1,    -1,
-      28
+       0,     3,     8,     6,     8,     0,     6,     8,    32,     9,
+      29,     8,    20,    32,    25,    25,     8,    19,    12,    21,
+      44,     8,    28,     8,    30,    29,    34,    28,    25,    31,
+      27,    28,    32,    25,    28,    27,    28,    37,    25,    20,
+      29,    28,    12,    32,    44,    45,    49,    29,    28,    49,
+      30,    12,    31,    34,    26,    45
   };
 
   const unsigned char
   Parser::yystos_[] =
   {
        0,     8,    25,    28,    34,    35,    36,    38,    39,    40,
-      41,    42,    43,    38,    40,     0,    35,    25,    12,    30,
-      40,    25,    29,    38,    38,    12,    28,    31,    38,    40,
-      42,    44,    40,    29,    32,    26,    37,    42,    27,    36,
+      41,    42,    43,    45,    38,    40,     0,    35,    25,    12,
+      28,    30,    40,    25,    29,    38,    29,    39,    43,    44,
+      38,    12,    28,    29,    32,    31,    38,    40,    42,    46,
+      39,    43,    40,    29,    32,    26,    37,    42,    27,    36,
       27
   };
 
@@ -1160,16 +1230,18 @@ namespace cheetah {
   Parser::yyr1_[] =
   {
        0,    33,    34,    35,    35,    35,    36,    36,    37,    37,
-      38,    38,    38,    39,    39,    40,    41,    41,    42,    42,
-      43,    44,    44,    44
+      38,    38,    38,    38,    39,    39,    40,    41,    41,    42,
+      42,    43,    43,    44,    44,    44,    44,    44,    45,    46,
+      46,    46
   };
 
   const unsigned char
   Parser::yyr2_[] =
   {
        0,     2,     1,     1,     2,     1,     1,     2,     2,     3,
-       1,     3,     3,     1,     4,     1,     2,     1,     2,     4,
-       6,     0,     1,     3
+       1,     3,     3,     1,     1,     4,     1,     2,     1,     2,
+       4,     3,     4,     0,     1,     1,     3,     3,     6,     0,
+       1,     3
   };
 
 
@@ -1184,16 +1256,17 @@ namespace cheetah {
   "CLE", "CGT", "CGE", "PLUS", "MINUS", "MUL", "DIV", "EXP", "MOD", "';'",
   "'{'", "'}'", "'('", "')'", "'['", "']'", "','", "$accept", "program",
   "stmt", "stmts", "block", "expr", "decl_expr", "ident", "decl",
-  "var_decl", "func_decl", "func_args", YY_NULLPTR
+  "var_decl", "func_call", "expr_list", "func_decl", "func_args", YY_NULLPTR
   };
 
 #if YYDEBUG
-  const unsigned char
+  const unsigned short int
   Parser::yyrline_[] =
   {
-       0,   109,   109,   121,   122,   125,   133,   136,   142,   145,
-     158,   161,   165,   172,   176,   189,   196,   199,   210,   217,
-     232,   243,   246,   249
+       0,   114,   114,   126,   127,   130,   138,   141,   147,   150,
+     163,   166,   170,   173,   181,   185,   198,   205,   208,   218,
+     225,   238,   242,   249,   252,   255,   258,   261,   266,   277,
+     280,   283
   };
 
   // Print the state stack on the debug stream.
@@ -1276,8 +1349,8 @@ namespace cheetah {
 
 #line 7 "src/parser.y" // lalr1.cc:1167
 } // cheetah
-#line 1280 "/pract/parser.cpp" // lalr1.cc:1167
-#line 254 "src/parser.y" // lalr1.cc:1168
+#line 1353 "/pract/parser.cpp" // lalr1.cc:1167
+#line 287 "src/parser.y" // lalr1.cc:1168
 
 
 // We have to implement the error function

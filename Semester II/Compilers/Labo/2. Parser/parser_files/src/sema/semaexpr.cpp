@@ -25,3 +25,15 @@ AST::ExprList *Sema::ParseExprList(AST::Expr *SubExpr,
 
   return ExprList;
 }
+
+AST::IntLiteral *Sema::ParseInt(AST::Expr *SubExpr) {
+
+}
+
+AST::FloatLiteral *Sema::ParseFloat(AST::Expr *SubExpr) {
+  print(*SubExpr);
+}
+
+AST::StringLiteral *Sema::ParseString(AST::Expr *SubExpr) {
+
+}
