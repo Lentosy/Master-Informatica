@@ -17,17 +17,17 @@ feature descriptors:
 \todo{hog/hof \cite{Laptev2005}}
  
 \section{Features uit dieptebeelden}
-<<<<<<< HEAD
-De methoden die bruikbaar zijn op kleurenbeelden zijn niet bruikbaar op dieptebeelden. Recente literatuur over feature extraction op dieptebeelden levert vaak algoritmen \cite{Xia2012}, \cite{Wang2012b}, \cite{Yang2012} op die gebruik maken van skeletbeelden gegeneerd met methode \cite{Shotton2011} waarop de skelettracker van de Kinect op gebaseerd is. 
-=======
 \begin{figure}
 	\centering
 	\includegraphics[width=0.5\textwidth]{skeleton_joints}
 	\caption{De 25 skeletjoints. De Kinect stelt enkel de drie-dimensionale coördinaten ter beschikking. De verbindingen tussen joints kunnen gegenereerd worden met deze informatie.}
 	\label{fig:skeleton_joints}
 \end{figure}
-De methoden die bruikbaar zijn op kleurenbeelden kunnen niet toegepast op dieptebeelden. Literatuur over feature extraction op dieptebeelden levert vaak algoritmen \cite{Xia2012}, \cite{Wang2012b}, \cite{Yang2012} op die gebruik maken van skeletbeelden gegeneerd met methode \cite{Shotton2011} waarop de skelettracker van de Kinect op gebaseerd is. De skeletbeelden van de Kinect geven de drie-dimensionale coördinaten van 25 punten, \textit{joints} genoemd, die belangrijke kenmerken van het menselijk lichaam voorstellen. Al deze joints worden weergegeven op figuur \ref{fig:skeleton_joints}. 
->>>>>>> b827daf2c430505f1bfde93375e2c250b4c55db9
+De algoritmen die bruikbaar zijn op kleurenbeelden kunnen niet toegepast worden op dieptebeelden. 
+
+
+
+Literatuur over feature extraction op dieptebeelden levert vaak algoritmen \cite{Xia2012}, \cite{Wang2012b}, \cite{Yang2012} op die gebruik maken van skeletbeelden gegeneerd met methode \cite{Shotton2011} waarop de skelettracker van de Kinect op gebaseerd is. De skeletbeelden van de Kinect geven de drie-dimensionale coördinaten van 25 punten, \textit{joints} genoemd, die belangrijke kenmerken van het menselijk lichaam voorstellen. Al deze joints worden weergegeven op figuur \ref{fig:skeleton_joints}.
 
 Het gebruik van de Kinect is geen vereiste om actieherkenning met dieptebeelden uit te voeren. \cite{Li2010} stelt elke frame voor als een verzameling van 3D punten, geëxtraheerd uit de silhouetten dat de dieptebeelden geven en maken gebruik van een \gls{ac:hmm} om het temporale aspect te modelleren. \cite{Wang2012a} 
 
@@ -94,34 +94,26 @@ Op het moment dat een feature vector opgebouwd is voor een individuele frame of 
 	\item Algemene classificatie zonder de actie te modelleren, \textit{actiedetectie}.
 \end{enumerate}
 
-\section{Leren}
-Elke classifier moet eerst leren wat het moet herkennen. Daarom wordt er een leerverzameling opgebouwd. Deze verzameling bevat een aantal voorbeelden waaruit het systeem zal leren. Niet elk voorbeeld wordt gebruikt om te leren. De leerverzameling wordt opgesplitst in een \textit{training set} en een \textit{testing set}. Hoe deze leerverzameling opgesplitst wordt kan op verschillende manieren:
-\begin{enumerate}
-	\item Er kan door de auteurs van de leerverzameling een voorgedefinieerde splitsing vastgelegd worden. Deze soort splitsing is af te raden want \todo{te veel bias}
-	\item \textit{$k-fold$ cross-validation} verdeeld de hele leerverzameling in $k$ stukken. De training set bevat $k - 1$ elementen en de testing set bevat het overige element. Dit proces wordt $k$ keer herhaald, zodat elk element zeker eens in de testing set zit. De bekomen uitkomsten kunnen dan uitgemiddeld worden.
-	\item \textit{Leave-one-out cross-validation}
-\end{enumerate} 
-
-\begin{itemize}
-	\item voorgedefinieerde split: De dataset wordt opgesplitst  in twee of drie delen zoals de auteurs van die dataset dat vermelden
-	\item n-voudige cross-validatie: Verdeeld de dataset in n gelijkvoudige stukken. Hierbij worden er (n-1)/n  percentage van de videos gebruikt om te trainen, en dan de overige 1/n om te testen. Dit proces wordt n keer herhaald, zodat elke video éénmaal gebruikt werd voor te testen
-	\item leave-one-out cross-validatie: {\color{green}aangewezen methode indien testdata personen zijn.} 1 persoon wordt als testset beschouwd. De overige $n - 1$ personen is de training set.
-\end{itemize}
-
 
 \section{Directe classificatie}
-Wanneer het temporale aspect verworpen wordt zijn er maar twee mogelijkheden: alle geobserveerde frames vervatten in één enkele representatie of actieherkenning uitvoeren op elke individuele frame. Een voorbeeld van zo een algoritme is $k$-nearest neighbours. Deze methode maakt gebruik van de afstand van de geobserveerde feature vector tot elke andere feature vector uit de leerverzameling. Uit de $k$ dichtste buren wordt dan de klasse genomen die het meest voorkomt. Deze operatie vraagt voor een grote leerverzameling veel rekenkost omdat elke feature vector gecontroleerd moet worden. Deze methode kan zowel op frame-niveau als op sequentieniveau werken. In het tweede geval wordt er met bijvoorbeeld majority voting de klasse gekozen die het meest voorkomt in een sequentie van frames.
+Wanneer het temporale aspect verworpen wordt zijn er maar twee mogelijkheden: alle geobserveerde frames vervatten in één enkele representatie of actieherkenning uitvoeren op elke individuele frame. 
+
+\subsection{$k$-nearest neighbours}
+Een voorbeeld van zo een algoritme is $k$-nearest neighbours. Deze methode maakt gebruik van de afstand van de geobserveerde feature vector tot elke andere feature vector uit de leerverzameling. Uit de $k$ dichtste buren wordt dan de klasse genomen die het meest voorkomt. Deze operatie vraagt voor een grote leerverzameling veel rekenkost omdat elke feature vector vergeleken moet worden. De classificatie zal meer tijd vragen naarmate de leerverzameling groter is. 
+
+\subsection{Lineaire classifiers}
 
 
 \section{Temporale modellen}
 \label{subsec:temporale_modellen}
-Bij temporale modellen zijn er twee grote klassen te onderscheiden: \textit{generatieve} en \textit{discriminerende} modellen. Een generatief algoritme modelleert hoe een input $x$ wordt gegenereerd om zo een actieklasse $y$ toe te kennen en maakt gebruik van de gezamenlijke kansverdeling $P(x, y) = P(x|y)P(y)$. Een generatief model zal dus de kansverdeling van de leerverzameling modelleren en zal bij een nieuwe observatie. Een discriminerend model zal de kans $P(y|x)$ direct modelleren zodat een directe mapping van $x$ op $y$ beschikbaar is. De onderliggende kansverdelingen worden dan ook niet berekent.
+Bij temporale modellen zijn er twee grote klassen te onderscheiden: \textit{generatieve} en \textit{discriminerende} modellen. Een generatief algoritme modelleert hoe een input $x$ wordt gegenereerd om zo een actieklasse $y$ toe te kennen en maakt gebruik van de gezamenlijke kansverdeling $P(x, y) = P(x|y)P(y)$. Een generatief model zal dus de kansverdeling van de leerverzameling modelleren en zal bij een nieuwe observatie \todo{wat zal het doen?}. Een discriminerend model zal de kans $P(y|x)$ direct modelleren zodat een directe mapping van $x$ op $y$ beschikbaar is. De onderliggende kansverdelingen worden dan ook niet berekent.
  
 Er bestaat een grote discussie over welk van deze twee modellen nu de voorkeur krijgen. Er is aangetoond \cite{Andrew2002} dat discriminerende modellen de voorkeur genieten.
 
 \subsection{Generatieve modellen}
+\todo{eerst nog wa uitleg over gewoon markov model, max 2 zinnen}
 
-Een \gls{ac:hmm} is een typisch voorbeeld van een generatief model. Een \gls{ac:hmm} is een uitbreiding van een Markov model waarbij de staat van elke toestand nu verborgen is. De toestanden zijn hier de verschillende fasen van een bepaalde actie. Een \gls{ac:hmm} gaat uit van twee assumpties:
+Een \gls{ac:hmm} is een typisch voorbeeld van een generatief model. Een \gls{ac:hmm} is een uitbreiding van een Markov model waarbij de staat van elke toestand nu verborgen is. De toestanden zijn hier de verschillende fasen van een bepaalde actie. Er wordt uitgegaan van twee assumpties:
 \begin{enumerate}
 	\item Een verandering van toestand hangt enkel af van de vorige toestand. Dit wordt ook de \textit{Markov eigenschap} genoemd.
 	\item De observatie behorend bij een toestand is onafhankelijk van elke andere observatie.
@@ -148,3 +140,12 @@ Een \gls{ac:dtw} heeft bepaalde restricties:
 
 \section{Key frames}
 In plaats van elke frame te classificeren, zou een actie kunnen voorgesteld worden door \textit{key frames}. Dit is een selectie van frames die een actie voldoende kunnen voorstellen zodanig dat verschillende acties nog steeds onderscheidbaar zijn en variaties van dezelfde actie hetzelfde gelabeld worden. In de literatuur bestaan er diverse manieren om zulke key frames te bepalen. De methode van \cite{Suolan2017} berekent een verschil op basis van de joints die de Kinect beschikbaar stelt. De methode van \cite{Carlsson2001} maakt gebruik van randdetectie om silhouette te bekommen en zoekt een match tussen voorgedefinieerde silhouetten die een key frame van een actie voorstelt. Andere methoden maken ook gebruik van voorgedefinieerde exemplaren \cite{Weinland2008a}, \cite{Fathi2007},
+
+
+\section{Leren}
+Elke classifier moet eerst leren wat het moet herkennen, daarom wordt er een leerverzameling opgebouwd. Deze verzameling bevat een aantal voorbeelden waaruit het systeem zal leren. Niet elk voorbeeld wordt gebruikt om te leren. De leerverzameling wordt opgesplitst in een \textit{training set} en een \textit{testing set}. Hoe deze leerverzameling opgesplitst wordt kan op verschillende manieren:
+\begin{enumerate}
+	\item Er kan door de auteurs van de leerverzameling een voorgedefinieerde splitsing vastgelegd worden. Deze soort splitsing is af te raden want \todo{te veel bias}
+	\item \textit{Leave-$p$-out cross-validation} beschouwt $p$ voorbeelden als de testing set en de overige voorbeelden als training set. Alle mogelijke combinaties worden hierbij uitgevoerd waardoor er $\binom{n}{p}$ keer model moet getraind en gevalideert worden, met $n$ de lengte van de hele verzameling. Het eenvoudigste geval komt voor bij $p = 1$, waardoor er $\binom{n}{1} = n$ validaties zijn.
+	\item \textit{$k-fold$ cross-validation} verdeeld de hele leerverzameling in $k$ stukken. De training set bevat $k - 1$ elementen en de testing set bevat het overige element. Dit proces wordt $k$ keer herhaald, zodat elk element zeker eens in de testing set zit. De bekomen uitkomsten kunnen dan uitgemiddeld worden.	
+\end{enumerate} 

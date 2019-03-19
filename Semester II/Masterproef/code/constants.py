@@ -1,14 +1,24 @@
 from pykinect2 import PyKinectV2
 import pygame
 
+PERSONS = ['BERT']
+ACTIONS = ['STOP',
+           'WAKE_UP', 'SLEEP',
+           'RH_MOVE_FORWARD', 'RH_MOVE_BACKWARDS', 'RH_MOVE_RIGHT', 'RH_MOVE_LEFT',
+           'LH_MOVE_FORWARD', 'LH_MOVE_BACKWARDS', 'LH_MOVE_RIGHT', 'LH_MOVE_LEFT',
+           'ROTATE_ABOUT_AXIS']
+
+DEBUG_FPS = 5
+DEFAULT_FPS = 30
+
 # colors for drawing different bodies
 SKELETON_COLORS = [
-                    pygame.color.THECOLORS["red"], 
-                    pygame.color.THECOLORS["blue"], 
-                    pygame.color.THECOLORS["green"], 
-                    pygame.color.THECOLORS["orange"], 
-                    pygame.color.THECOLORS["purple"], 
-                    pygame.color.THECOLORS["yellow"] 
+                    pygame.color.THECOLORS['red'], 
+                    pygame.color.THECOLORS['blue'], 
+                    pygame.color.THECOLORS['green'], 
+                    pygame.color.THECOLORS['orange'], 
+                    pygame.color.THECOLORS['purple'], 
+                    pygame.color.THECOLORS['yellow'] 
                 ]
 
 
