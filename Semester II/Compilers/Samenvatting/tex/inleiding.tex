@@ -26,7 +26,7 @@ Op figuur \ref{fig:basiswerking_compilers} is de vereenvoudigde basiswerking van
 
 
 \section{Abstract Syntax Tree}
-De eerste stap van elke compiler is het omvormen van de broncode naar een \textbf{Abstract Syntax Tree (AST)}. Veronderstel volgende code, en de daarbijhorende AST die te zien zijn op figuur \ref{fig:abstract_syntax_tree}. Elke knoop van een AST stelt een bepaalde geldige operatie voor, die onafhankelijk is van de gekozen programmeertaal.
+De eerste stap van elke compiler is het omvormen van de broncode naar een \textbf{Abstract Syntax Tree (AST)}. Veronderstel volgende code, en de daarbijhorende AST die te zien zijn op figuur \ref{fig:abstract_syntax_tree}. Elke knoop van een AST stelt een bepaalde geldige operatie voor, die afhankelijk is van de gekozen programmeertaal.
 \begin{figure}[h]
 	\centering
 	\includegraphics[width=0.8\textwidth]{abstract_syntax_tree}
@@ -35,7 +35,7 @@ De eerste stap van elke compiler is het omvormen van de broncode naar een \textb
 \end{figure}
 
 \subsection{Contextvrije grammatica's}
-Om een AST op te stellen moet de notie van tokens ingevoerd worden. Een token is eenvoudig gezien een bepaald symbool dat een betekenis heeft. De tokens van de code uit figuur \ref{fig:abstract_syntax_tree} zijn te zien in tabel \ref{table:tokens}
+Om een AST op te stellen moet de notie van \textbf{tokens} ingevoerd worden. Een token is eenvoudig gezien een bepaald symbool dat een betekenis heeft. De tokens van de code uit figuur \ref{fig:abstract_syntax_tree} zijn te zien in tabel \ref{table:tokens}
 \begin{table}[h]
 	\centering
 	\begin{tabular}{l | l | l}

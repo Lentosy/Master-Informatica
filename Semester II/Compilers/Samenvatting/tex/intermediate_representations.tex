@@ -1,19 +1,26 @@
 
 \chapter{Intermediate Representations}
+\begin{figure}[ht]
+	\includegraphics[width=\textwidth]{intermediate_representations}
+	\caption{Compilers voor vijf talen en vier architecturen: 
+		(links) geen IR, (rechts) met IR.}
+	\label{fig:intermediate_representations}
+\end{figure}
+Een goede IR moet:
 \begin{itemize}
-	\item Makkelijk te produceren door compiler frontend
-	\item Makkelijk om er echte assembler van te genereren
-	\item duidelijke, eenvoudige betekenis
+	\item makkelijk te produceren zijn door de compiler frontend
+	\item makkelijk zijn om er echte assembler van te genereren
+	\item duidelijke, eenvoudige betekenis hebben
 \end{itemize}
 
-Een IR-tree is een eenvoudige abstractie van machine-instructies
+Een IR-tree is een eenvoudige abstractie van machine-instructies. Het lijkt heel goed op een Abstract Syntax Tree maar is taal-onafhankelijk en werkt met temporaries in plaats van variabelen.
 
-Typen van expressies:
+Typen van expressies (\texttt{T\_exp}):
 \begin{itemize}
 	\item \texttt{CONST(i)}: integer constante $i$
 	\item \texttt{NAME(n)}: assembly label $n$
 	\item \texttt{TEMP(t)}: virtueel register $t$
-	\item \texttt{BINOP(o, $e_1$, $e_2$): $e_1 o e_2$ met $o = +, -, *, /, ...$. Hier wordt $e_1$ altijd eerst geëvalueerd.
+	\item \texttt{BINOP(o, $e_1$, $e_2$)}: $e_1 o e_2$ met $o = +, -, *, /, ...$. Hier wordt $e_1$ altijd eerst geëvalueerd.
 	\item \texttt{MEM(e)}: De inhoud van $w$ bytes op $e$ schrijven of lezen.
 	\item \texttt{CALL(f, $l_1, ..., l_n$)}: roep $f$ op met argumenten $l_i$. De volgorde van de argumenten is van belang.
 	\item \texttt{ESEQ(s, e)}: evalueer $s$ voor neveneffecten, dan $e$ als resultaat.

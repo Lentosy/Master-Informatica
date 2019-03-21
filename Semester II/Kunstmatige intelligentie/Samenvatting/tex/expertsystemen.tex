@@ -48,7 +48,159 @@
 	\end{itemize}
 \end{itemize}
 \section{De constructie van een expertsysteem}
-
+\begin{itemize}
+	\item \underline{Twee soorten kennis nodig:}
+	\begin{itemize}
+		\item Kennis over het probleemgebied. Experten in het toepassingsgebied weten hoe ze problemen moeten oplossen, maar kunnen deze kennis niet vertalen in de vorm die een expertsysteem nodig heeft.
+		\item Kennis over expertsystemen. Een team die de kennis van de experten kan filteren en omvormen naar de juiste vorm. 
+	\end{itemize}
+\end{itemize}
 \section{Onzekerheid}
+\begin{itemize}
+	\item De relatie tussen premisse en conclusie van een regel is niet altijd zeker.
+	\item \underline{Voorbeeld:}
+	\begin{itemize}
+		\item Een expertsysteem dat de oorzaak zoekt van problemen in een computer. Dit systeem kan een reparateur begeleiden die een defecte computer moet repareren.
+		\item De reparateur moet melden wat de symptomen zijn. Het systeem moet de actie bepalen die moet ondernomen worden om het probleem op te lossen. Mogelijke regels zijn bijvoorbeeld:
+		\begin{equation*}
+		\begin{split}
+		& \hbox{\textbf{als} SYMPTOOM=computer doet niets bij opstarten} \\
+		& \hbox{\textbf{dan} PROBLEEM=voeding defect} 
+		 \\[3ex]
+		& \hbox{\textbf{als} SYMPTOOM=voeding defect} \\
+		& \hbox{\textbf{dan} PROBLEEM=vervang voeding} 
+		\end{split}
+		\end{equation*}
+		
+		\item Maar soms kan een probleem meerdere oorzaken hebben, waarbij sommige meer waarschijnlijkheid hebben dan anderen:
+		\begin{equation*}
+			\begin{split}
+			& \hbox{\textbf{als} PROBLEEM=bootloader hangt} \\
+			& \hbox{\textbf{dan} OORZAAK=schijf defect \textbf{of} OORZAAK=bootloderinstallatie \textbf{of} ...} 
+			\end{split}
+		\end{equation*}
+		
+		\item Er wordt dan een numerieke factor toegekend, die de waarschijnlijkheid aanduidt. 
+		
+		\item \textbf{Hoe wordt de numerieke waarde bepaalt?}
+		\begin{enumerate}
+			\item Vage verzamelingen: \textbf{Niet te kennen}.
+			\item Bayesiaans redeneren: 
+			\begin{itemize}
+				\item Stel volgende regels:
+				\begin{equation*}
+				\begin{split}
+				& \hbox{\textbf{als} het regent op dag x} \\
+				& \hbox{\textbf{dan} is de kans dat het op dag x + 1 regent 0,8} 
+				\\[3ex]
+				& \hbox{\textbf{als} het niet regent op dag x} \\
+				& \hbox{\textbf{dan} is de kans dat het op dag x + 1 regent 0,3} 
+				\end{split}
+				\end{equation*}
+				\item Statistisch redeneren kan toegepast worden in expertsystemen als er voldoende statistische informatie is:
+				\begin{itemize}
+					\item De kans dat het morgen en overmorgen regent: $0,8 \times 0,8 = 0,64$.
+					\item Da kans dat het morgen niet regent, maar overmorgen wel: $0,2 \times 0,3 = 0,06$.
+				\end{itemize}
+				\item Stel dat we nu twee uitspraken $a$ en $b$ hebben met $p(a) = 0,8$ en $p(b) = 0,2$.
+				\item Wat is de kans op $p(a\; \hbox{\textbf{en}}\;b)$? Deze waarde kan tussen 0 en 0,2 liggen. 
+				
+				Als $a = $ het regent morgen en $b = $ het regent niet morgen, dan is $p(a\; \hbox{\textbf{en}}\;b) = 0$. 
+				
+				Als $a = $ het regent morgen en $b = $ het regent morgenochtend, dan is $p(a\; \hbox{\textbf{en}}\;b) = 0,2$
+				
+				\alert Bayesiaans redeneren is geen aangewezen methode.
+			\end{itemize}
+			\item Theorie van zekerheidsfactoren:
+			\begin{itemize}
+				\item Er wordt een zekerheidsfactor berekent op basis van woorden die een expert uitdrukt:
+				\begin{table}[h]
+					\centering
+					\begin{tabular}{| l | l |}
+						\hline 
+						Term & zekerheidsfactor \\
+						\hline 
+						zeker niet & -1,0 \\
+						bijna zeker niet & -0,8 \\
+						waarschijnlijk niet & -0,6 \\
+						misschien niet & -0,2 tot +0,2 \\
+						misschien & +0,4 \\
+						waarschijnlijk & +0,6 \\
+						bijna zeker & +0,8 \\
+						zeker & +1,0 \\
+						\hline
+					\end{tabular}
+				\end{table}
+			
+				\item Voor een uitspraak $a$ wordt de zekerheidsfactor van die uitspraak $zf(a)$. Hierbij geldt $zf(a) = -zfa(\not a)$.
+				
+				\item Hoe berekenen van de zekerheid van een conclusie als de premisse van een regel zelf onzeker is?
+				
+				\begin{itemize}
+					
+					\item[] \noindent\fbox{%
+						\parbox{\linewidth}{%
+							\begin{equation*}
+							\begin{split}
+							& \hbox{\textbf{als} b} \\
+							& \hbox{\textbf{dan} a \qquad (x)}  
+							\end{split}
+							\end{equation*}
+								$$zf(a) = zf(b) \times x$$
+						}%
+					}
+		
+					\item[]
+					\noindent\fbox{%
+						\parbox{\linewidth}{%
+						\begin{equation*}
+						\begin{split}
+						& \hbox{\textbf{als} b \textbf{en} c \textbf{en} d} \\
+						& \hbox{\textbf{dan} a \qquad (x)}  
+						\end{split}
+						\end{equation*}
+					$$zf(b\;\hbox{\textbf{en}}\;c\; \hbox{\textbf{en}}\;d) = \min(zf(b), zf(c), zf(d)) \times x$$
+						}%
+					}
+					
+					
+				
+					\item[] \noindent\fbox{%
+						\parbox{\linewidth}{%
+						\begin{equation*}
+						\begin{split}
+						& \hbox{\textbf{als} e} \\
+						& \hbox{\textbf{dan} a \qquad (x)}  
+						\\[3ex]
+						& \hbox{\textbf{als} f} \\
+						& \hbox{\textbf{dan} a \qquad (y)}  
+						\end{split}
+						\end{equation*}
+						$$z_1 = zf(e) \times x,\qquad z_2 = zf(f) \times y$$
+						$$zf(a) = \frac{z_1 + z_2}{1 - \min(|z_1|, |z_2|)}$$
+						
+							
+						}%
+					} 
+		
+				\end{itemize}
+			\end{itemize}
+		\end{enumerate}	
+	\end{itemize}
+\end{itemize}
 
 \section{Frames en regelschema's}
+\begin{itemize}
+	\item Noodzaak om kennis in te delen.
+	\item Een \textbf{frame} kan vergeleken worden met een klasse uit object georiënteerde programeertalen.
+	\item Komt uit de theorie van \textbf{semantische netten}.
+	\begin{figure}
+		\includegraphics[width=\textwidth]{semantisch_net}
+		\caption{Een semantisch net.}
+	\end{figure}
+	\begin{itemize}
+		\item Een semantisch netwerk bestaat uit een gelabelde gerichte multigraaf.
+		\item Elke knoop is een begrip, en elk begrip is verbonden met andere begrippen.
+	\end{itemize}
+	
+\end{itemize}
