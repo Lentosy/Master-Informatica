@@ -1,3 +1,7 @@
+% Human Action Recognition and Prediction:A Survey
+% https://arxiv.org/pdf/1806.11230.pdf 
+%
+
 \chapter{Features}
 Ongeacht welke soort input gebruikt wordt, moeten er features geëxtraheerd worden om classificatie mogelijk te maken. Voor actieherkenning wordt er vooral gebruik gemaakt van kleurenbeelden \cite{Laptev2008}, \cite{Dollar2005}, \cite{Willems2008}, \cite{Wang2011} of dieptebeelden \cite{Li2010}, \cite{Wang2012a}, \cite{Xia2012}, \cite{Gu2010}. Dit hoofdstuk bespreekt verschillende mogelijkheden om features uit zowel kleurenbeelden als dieptebeelden te halen. 
 
@@ -85,6 +89,18 @@ $$f_{ci} = \{x_i^c - x_j^i |  x_i^c \in X_c ; x_j^p \in X_i \}$$
 
 De verzameling van deze drie feature vectoren wordt $f_c$ genoemd. Er wordt een lineaire normalisatie uitgevoerd zodat elk attribuut in $f_c$ zich in het bereik $[-1, +1]$ bevindt zodat $f_{norm}$ bekomen wordt. Het aantal dimensies wordt vrij hoog; voor $N = 25$ zorgen $f_{cc}$, $f_{cp}$ en $f_{ci}$ respectievelijk voor $300$, $625$ en $625$ jointbewerkingen op. Elke bewerking genereert drie attributen, $\delta x, \delta y, \delta z$, zodat de totale dimensie van $f_c$ gelijkgesteld moet worden aan $ (300 + 625 + 625) \times 3 = 4650$. In vergelijking met \cite{Yang2012} waarbij ze $N = 20$ gebruiken, is de totale dimensie $2970$.
 
+\subsection{Sequence of the Most Informative Joints (SMIJ)}
+Het werk van \cite{Ofli2012} vertrekt van de observatie dat verschillende personen een actie op diverse manieren kunnen uitvoeren, maar dat altijd dezelfde joints gebruikt worden om die actie uit te voeren. Ze berekenen de \textit{relative informativeness} van alle joints in een temporale window tijdens een actie. Een joint kan bijvoorbeeld belangrijk zijn als het de hoogste verandering in hoek heeft. 
+
+Allereerst berekenen ze de hoeken tussen elk paar ledematen die met elkaar verbonden zijn met een joint. De tijdsreeks van deze hoeken wordt als temporale data beschouwd. De vector $\textbf{a}^i$ bevat de tijdsreeks van de hoeken voor joint $i$ voor $T$ frames. Een actie kan dan gezien worden als de verzameling van zulke vectoren:
+
+$$A = [\textbf{a}^1\textbf{a}^2 \cdot\cdot\cdot \textbf{a}^J]$$
+
+Hierbij is $J$ het aantal joints zodat A een $T \times J$ matrix is. Uit A kan het gemiddelde, de variantie en de maximale hoeksnelheid berekent worden voor elke joint \todo{verder}
+
+\subsection{Lie group}
+Groepentheorie kan ook gebruikt worden bij actieherkenning. De Lie groep $SO_3$ kan de relatieve drie-dimensionale rotaties tussen elk paar van joints representeren. Deze representatie vormt dan een punt in de Lie groep $SO_3 \times ... \times SO_3$. Een actie is dan een curve in diezelfde Lie groep.
+
 
 \chapter{Classificatie}
 Op het moment dat een feature vector opgebouwd is voor een individuele frame of een verzameling van frames is het actieherkenningprobleem gereduceerd tot een classificatieprobleem. De bekomen feature vector wordt als input aan een classifier gegeven die dan tracht de juiste klasse toe te kennen op basis van de leerverzameling. Voor actieherkenning kunnen drie algemene methoden beschreven worden:
@@ -99,6 +115,7 @@ Op het moment dat een feature vector opgebouwd is voor een individuele frame of 
 Wanneer het temporale aspect verworpen wordt zijn er maar twee mogelijkheden: alle geobserveerde frames vervatten in één enkele representatie of actieherkenning uitvoeren op elke individuele frame. 
 
 \subsection{$k$-nearest neighbours}
+
 Een voorbeeld van zo een algoritme is $k$-nearest neighbours. Deze methode maakt gebruik van de afstand van de geobserveerde feature vector tot elke andere feature vector uit de leerverzameling. Uit de $k$ dichtste buren wordt dan de klasse genomen die het meest voorkomt. Deze operatie vraagt voor een grote leerverzameling veel rekenkost omdat elke feature vector vergeleken moet worden. De classificatie zal meer tijd vragen naarmate de leerverzameling groter is. 
 
 \subsection{Lineaire classifiers}
@@ -107,19 +124,17 @@ Een voorbeeld van zo een algoritme is $k$-nearest neighbours. Deze methode maakt
 \section{Temporale modellen}
 \label{subsec:temporale_modellen}
 Bij temporale modellen zijn er twee grote klassen te onderscheiden: \textit{generatieve} en \textit{discriminerende} modellen. Een generatief algoritme modelleert hoe een input $x$ wordt gegenereerd om zo een actieklasse $y$ toe te kennen en maakt gebruik van de gezamenlijke kansverdeling $P(x, y) = P(x|y)P(y)$. Een generatief model zal dus de kansverdeling van de leerverzameling modelleren en zal bij een nieuwe observatie \todo{wat zal het doen?}. Een discriminerend model zal de kans $P(y|x)$ direct modelleren zodat een directe mapping van $x$ op $y$ beschikbaar is. De onderliggende kansverdelingen worden dan ook niet berekent.
- 
-Er bestaat een grote discussie over welk van deze twee modellen nu de voorkeur krijgen. Er is aangetoond \cite{Andrew2002} dat discriminerende modellen de voorkeur genieten.
+ Er bestaat een grote discussie over welk van deze twee modellen nu de voorkeur krijgen. Er is aangetoond \cite{Andrew2002} dat discriminerende modellen de voorkeur genieten.
 
 \subsection{Generatieve modellen}
-\todo{eerst nog wa uitleg over gewoon markov model, max 2 zinnen}
-
-Een \gls{ac:hmm} is een typisch voorbeeld van een generatief model. Een \gls{ac:hmm} is een uitbreiding van een Markov model waarbij de staat van elke toestand nu verborgen is. De toestanden zijn hier de verschillende fasen van een bepaalde actie. Er wordt uitgegaan van twee assumpties:
+Een markovketen is een speciaal soort automaat die gebruikt kan worden bij het modelleren van temporale processen. Elke markovketen kent een aantal staten $S = \{s_1, ..., s_n\}$ en een $n \times n$ transitiematrix $T$. Deze matrix bevat de waarschijnlijkheid om van één staat naar een andere staat te gaan. Een markovketen gaat uit van twee aassumpties:
 \begin{enumerate}
 	\item Een verandering van toestand hangt enkel af van de vorige toestand. Dit wordt ook de \textit{Markov eigenschap} genoemd.
 	\item De observatie behorend bij een toestand is onafhankelijk van elke andere observatie.
 \end{enumerate}
+Een markovketen kent ook een uitvoeralfabet $A = \{a_1, ..., a_k\}$ en een $n \times k$ uitvoermatrix $U$. Deze matrix bevat de waarschijnlijkheden dat een bepaalde staat $s_i$ een uitvoer $a_j$ genereerd. 
 
-Voor een verzameling met $n$ klassen $\Lambda = \lambda^1 ... \lambda^n$ en een verzameling met $k$ observaties $O = \{o_1 ... o_k\}$, moet de juiste klasse $\lambda$ geselecteerd worden die de kans op $P(\lambda | O)$ maximaliseert.
+Een \gls{ac:hmm} is een uitbreiding van een Markov model waarbij de staat van elke toestand nu verborgen is. De toestanden zijn hier de verschillende fasen van een bepaalde actie. Voor een verzameling met $n$ klassen $\Lambda = \lambda^1 ... \lambda^n$ en een verzameling met $k$ observaties $O = \{o_1 ... o_k\}$, moet de juiste klasse $\lambda$ geselecteerd worden die de kans op $P(\lambda | O)$ maximaliseert.
 
 $$\lambda = \arg\max_{\substack{1 \leq i \leq n}} P(O|\lambda^i) $$
 
@@ -145,7 +160,7 @@ In plaats van elke frame te classificeren, zou een actie kunnen voorgesteld word
 \section{Leren}
 Elke classifier moet eerst leren wat het moet herkennen, daarom wordt er een leerverzameling opgebouwd. Deze verzameling bevat een aantal voorbeelden waaruit het systeem zal leren. Niet elk voorbeeld wordt gebruikt om te leren. De leerverzameling wordt opgesplitst in een \textit{training set} en een \textit{testing set}. Hoe deze leerverzameling opgesplitst wordt kan op verschillende manieren:
 \begin{enumerate}
-	\item Er kan door de auteurs van de leerverzameling een voorgedefinieerde splitsing vastgelegd worden. Deze soort splitsing is af te raden want \todo{te veel bias}
-	\item \textit{Leave-$p$-out cross-validation} beschouwt $p$ voorbeelden als de testing set en de overige voorbeelden als training set. Alle mogelijke combinaties worden hierbij uitgevoerd waardoor er $\binom{n}{p}$ keer model moet getraind en gevalideert worden, met $n$ de lengte van de hele verzameling. Het eenvoudigste geval komt voor bij $p = 1$, waardoor er $\binom{n}{1} = n$ validaties zijn.
+	\item Er kan door de auteurs van de leerverzameling een voorgedefinieerde splitsing vastgelegd worden. Dit is de minst flexibele methode en wordt ook sterk afgeraden. 
+	\item \textit{Leave-$p$-out cross-validation} beschouwt $p$ voorbeelden als de testing set en de overige voorbeelden als training set. Alle mogelijke combinaties worden hierbij uitgevoerd waardoor er $\binom{n}{p}$ keer het model moet getraind en gevalideert worden, met $n$ de lengte van de hele verzameling. Het eenvoudigste geval komt voor bij $p = 1$, waardoor er $\binom{n}{1} = n$ validaties zijn, en wordt \textit{leave-one-out cross-validation} genoemd.
 	\item \textit{$k-fold$ cross-validation} verdeeld de hele leerverzameling in $k$ stukken. De training set bevat $k - 1$ elementen en de testing set bevat het overige element. Dit proces wordt $k$ keer herhaald, zodat elk element zeker eens in de testing set zit. De bekomen uitkomsten kunnen dan uitgemiddeld worden.	
 \end{enumerate} 
