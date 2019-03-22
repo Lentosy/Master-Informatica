@@ -640,265 +640,400 @@ namespace cheetah {
   case 2:
 #line 114 "src/parser.y" // lalr1.cc:859
     {
-      driver.setProgram((yystack_[0].value.compoundstmt_t));
-    }
+    driver.setProgram((yystack_[0].value.compoundstmt_t));
+  }
 #line 646 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 3:
-#line 126 "src/parser.y" // lalr1.cc:859
-    { (yylhs.value.stmt_t) = nullptr; }
-#line 652 "/pract/parser.cpp" // lalr1.cc:859
+#line 125 "src/parser.y" // lalr1.cc:859
+    {
+    (yylhs.value.stmt_t) = nullptr;  
+  }
+#line 654 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 4:
-#line 127 "src/parser.y" // lalr1.cc:859
+#line 128 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.stmt_t) = (yystack_[1].value.expr_t);
-    }
-#line 660 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.stmt_t) = (yystack_[1].value.expr_t);
+  }
+#line 662 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 5:
-#line 130 "src/parser.y" // lalr1.cc:859
+#line 131 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.stmt_t) = new AST::DeclStmt((yystack_[0].value.decl_t));
-      (yylhs.value.stmt_t)->location = yylhs.location;
-    }
-#line 669 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.stmt_t) = new AST::DeclStmt((yystack_[0].value.decl_t));
+    (yylhs.value.stmt_t)->location = yylhs.location;
+  }
+#line 671 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 6:
-#line 138 "src/parser.y" // lalr1.cc:859
+#line 137 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.compoundstmt_t) = sema.ParseCompoundStmt(yylhs.location, (yystack_[0].value.stmt_t));
-    }
-#line 677 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.compoundstmt_t) = sema.ParseCompoundStmt(yylhs.location, (yystack_[0].value.stmt_t));
+  }
+#line 679 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 7:
-#line 141 "src/parser.y" // lalr1.cc:859
+#line 140 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.compoundstmt_t) = sema.ParseCompoundStmt(yylhs.location, (yystack_[0].value.stmt_t), (yystack_[1].value.compoundstmt_t));
-    }
-#line 685 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.compoundstmt_t) = sema.ParseCompoundStmt(yylhs.location, (yystack_[0].value.stmt_t), (yystack_[1].value.compoundstmt_t));
+  }
+#line 687 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 8:
-#line 147 "src/parser.y" // lalr1.cc:859
+#line 145 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.compoundstmt_t) = sema.ParseCompoundStmt(yylhs.location);
-    }
-#line 693 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.compoundstmt_t) = sema.ParseCompoundStmt(yylhs.location);
+  }
+#line 695 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 9:
-#line 150 "src/parser.y" // lalr1.cc:859
+#line 148 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.compoundstmt_t) = (yystack_[1].value.compoundstmt_t);
-      (yylhs.value.compoundstmt_t)->location = yylhs.location;
-    }
-#line 702 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.compoundstmt_t) = (yystack_[1].value.compoundstmt_t);
+    (yylhs.value.compoundstmt_t)->location = yylhs.location;
+  }
+#line 704 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 10:
-#line 163 "src/parser.y" // lalr1.cc:859
+#line 160 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.expr_t) = (yystack_[0].value.expr_t);
-    }
-#line 710 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.expr_t) = (yystack_[0].value.expr_t);
+  }
+#line 712 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 11:
-#line 166 "src/parser.y" // lalr1.cc:859
+#line 164 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.expr_t) = new AST::Assignment((yystack_[2].value.decl_expr_t), (yystack_[0].value.expr_t));
-      (yylhs.value.expr_t)->location = yylhs.location;
-    }
-#line 719 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.expr_t) = new AST::Assignment((yystack_[2].value.decl_expr_t), (yystack_[0].value.expr_t));
+    (yylhs.value.expr_t)->location = yylhs.location;
+  }
+#line 721 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 12:
-#line 170 "src/parser.y" // lalr1.cc:859
+#line 169 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.expr_t) = (yystack_[1].value.expr_t);
-    }
-#line 727 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.expr_t) = (yystack_[1].value.expr_t);
+  }
+#line 729 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 13:
 #line 173 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.expr_t) = (yystack_[0].value.call_expr_t);
+    (yylhs.value.expr_t) = (yystack_[0].value.call_expr_t);
   }
-#line 735 "/pract/parser.cpp" // lalr1.cc:859
+#line 737 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 14:
-#line 181 "src/parser.y" // lalr1.cc:859
+#line 177 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.expr_t) = new AST::DeclRefExpr((yystack_[0].value.ident_t));
-      (yylhs.value.expr_t)->location = yylhs.location;
-    }
-#line 744 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.expr_t) = new AST::StringLiteral(yytext(lexer));
+    (yylhs.value.expr_t)->location = yylhs.location;
+  }
+#line 746 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 15:
-#line 185 "src/parser.y" // lalr1.cc:859
+#line 182 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.expr_t) = new AST::DeclRefExpr((yystack_[3].value.ident_t), (yystack_[1].value.expr_t));
-      (yylhs.value.expr_t)->location = yylhs.location;
-    }
-#line 753 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.expr_t) = sema.ParseFloatLiteral(yylhs.location, yytext(lexer));
+  }
+#line 754 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 16:
-#line 198 "src/parser.y" // lalr1.cc:859
+#line 186 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.ident_t) = new AST::Identifier(yytext(lexer));
-      (yylhs.value.ident_t)->location = yylhs.location;
-    }
+    (yylhs.value.expr_t) = sema.ParseIntLiteral(yylhs.location, yytext(lexer));
+  }
 #line 762 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 17:
-#line 205 "src/parser.y" // lalr1.cc:859
+#line 190 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.decl_t) = (yystack_[1].value.var_decl_t);
-    }
-#line 770 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.expr_t) = new AST::BinaryOp((yystack_[2].value.expr_t), Operator::CEQ, (yystack_[0].value.expr_t));
+    (yylhs.value.expr_t)->location = yylhs.location;
+  }
+#line 771 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 18:
-#line 208 "src/parser.y" // lalr1.cc:859
+#line 195 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.decl_t) = (yystack_[0].value.decl_t);
-    }
-#line 778 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.expr_t) = new AST::BinaryOp((yystack_[2].value.expr_t), Operator::CNE, (yystack_[0].value.expr_t));
+    (yylhs.value.expr_t)->location = yylhs.location;
+  }
+#line 780 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 19:
-#line 218 "src/parser.y" // lalr1.cc:859
+#line 200 "src/parser.y" // lalr1.cc:859
     {
-      auto type = sema.ParseTypeName((yystack_[1].value.ident_t));
-      delete (yystack_[1].value.ident_t);
-
-      (yylhs.value.var_decl_t) = new AST::VarDecl((yystack_[0].value.ident_t), type);
-      (yylhs.value.var_decl_t)->location = yylhs.location;
-    }
-#line 790 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.expr_t) = new AST::BinaryOp((yystack_[2].value.expr_t), Operator::CLT, (yystack_[0].value.expr_t));
+    (yylhs.value.expr_t)->location = yylhs.location;
+  }
+#line 789 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 20:
-#line 225 "src/parser.y" // lalr1.cc:859
+#line 205 "src/parser.y" // lalr1.cc:859
     {
-      auto type = sema.ParseTypeName((yystack_[3].value.ident_t));
-      delete (yystack_[3].value.ident_t);
-
-      (yylhs.value.var_decl_t) = new AST::VarDecl((yystack_[2].value.ident_t), type, (yystack_[0].value.expr_t));
-      (yylhs.value.var_decl_t)->location = yylhs.location;
-    }
-#line 802 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.expr_t) = new AST::BinaryOp((yystack_[2].value.expr_t), Operator::CLE, (yystack_[0].value.expr_t));
+    (yylhs.value.expr_t)->location = yylhs.location;
+  }
+#line 798 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 21:
-#line 238 "src/parser.y" // lalr1.cc:859
-    { // functie zonder parameters: foo();
-      (yylhs.value.call_expr_t) = new AST::CallExpr((yystack_[2].value.ident_t));
-      (yylhs.value.call_expr_t)->location = yylhs.location;
-    }
-#line 811 "/pract/parser.cpp" // lalr1.cc:859
+#line 210 "src/parser.y" // lalr1.cc:859
+    {
+    (yylhs.value.expr_t) = new AST::BinaryOp((yystack_[2].value.expr_t), Operator::CGT, (yystack_[0].value.expr_t));
+    (yylhs.value.expr_t)->location = yylhs.location;
+  }
+#line 807 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 22:
-#line 242 "src/parser.y" // lalr1.cc:859
-    { // functie met oneindig veel parameters: foo(x, bar(zoo()), y, z, ...)
-      (yylhs.value.call_expr_t) = new AST::CallExpr((yystack_[3].value.ident_t), *(yystack_[1].value.expr_list_t)); // pointer naar $3
-      (yylhs.value.call_expr_t)->location = yylhs.location;
-
-    }
-#line 821 "/pract/parser.cpp" // lalr1.cc:859
+#line 215 "src/parser.y" // lalr1.cc:859
+    {
+    (yylhs.value.expr_t) = new AST::BinaryOp((yystack_[2].value.expr_t), Operator::CGE, (yystack_[0].value.expr_t));
+    (yylhs.value.expr_t)->location = yylhs.location;
+  }
+#line 816 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 23:
-#line 249 "src/parser.y" // lalr1.cc:859
+#line 220 "src/parser.y" // lalr1.cc:859
     {
-    (yylhs.value.expr_list_t) = sema.ParseExprList();
+    (yylhs.value.expr_t) = new AST::BinaryOp((yystack_[2].value.expr_t), Operator::PLUS, (yystack_[0].value.expr_t));
+    (yylhs.value.expr_t)->location = yylhs.location;
   }
-#line 829 "/pract/parser.cpp" // lalr1.cc:859
+#line 825 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 24:
-#line 252 "src/parser.y" // lalr1.cc:859
+#line 225 "src/parser.y" // lalr1.cc:859
     {
-    (yylhs.value.expr_list_t) = sema.ParseExprList((yystack_[0].value.expr_t));
+    (yylhs.value.expr_t) = new AST::BinaryOp((yystack_[2].value.expr_t), Operator::MINUS, (yystack_[0].value.expr_t));
+    (yylhs.value.expr_t)->location = yylhs.location;
   }
-#line 837 "/pract/parser.cpp" // lalr1.cc:859
+#line 834 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 25:
-#line 255 "src/parser.y" // lalr1.cc:859
+#line 230 "src/parser.y" // lalr1.cc:859
     {
-    (yylhs.value.expr_list_t) = sema.ParseExprList((yystack_[0].value.call_expr_t));
+    (yylhs.value.expr_t) = new AST::BinaryOp((yystack_[2].value.expr_t), Operator::MUL, (yystack_[0].value.expr_t));
+    (yylhs.value.expr_t)->location = yylhs.location;
   }
-#line 845 "/pract/parser.cpp" // lalr1.cc:859
+#line 843 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 26:
-#line 258 "src/parser.y" // lalr1.cc:859
+#line 235 "src/parser.y" // lalr1.cc:859
     {
-    (yylhs.value.expr_list_t) = sema.ParseExprList((yystack_[0].value.expr_t), (yystack_[2].value.expr_list_t));
+    (yylhs.value.expr_t) = new AST::BinaryOp((yystack_[2].value.expr_t), Operator::DIV, (yystack_[0].value.expr_t));
+    (yylhs.value.expr_t)->location = yylhs.location;
   }
-#line 853 "/pract/parser.cpp" // lalr1.cc:859
+#line 852 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 27:
-#line 261 "src/parser.y" // lalr1.cc:859
+#line 240 "src/parser.y" // lalr1.cc:859
     {
-    (yylhs.value.expr_list_t) = sema.ParseExprList((yystack_[0].value.call_expr_t), (yystack_[2].value.expr_list_t));
+    (yylhs.value.expr_t) = new AST::BinaryOp((yystack_[2].value.expr_t), Operator::MOD, (yystack_[0].value.expr_t));
+    (yylhs.value.expr_t)->location = yylhs.location;
   }
 #line 861 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 28:
-#line 266 "src/parser.y" // lalr1.cc:859
+#line 245 "src/parser.y" // lalr1.cc:859
     {
-      auto type = sema.ParseTypeName((yystack_[5].value.ident_t));
-      delete (yystack_[5].value.ident_t);
-
-      (yylhs.value.decl_t) = new AST::FuncDecl((yystack_[4].value.ident_t), type, *(yystack_[2].value.varlist_t), (yystack_[0].value.compoundstmt_t));
-      (yylhs.value.decl_t)->location = yylhs.location;
-      delete (yystack_[2].value.varlist_t);
-    }
-#line 874 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.expr_t) = new AST::BinaryOp((yystack_[2].value.expr_t), Operator::EXP, (yystack_[0].value.expr_t));
+    (yylhs.value.expr_t)->location = yylhs.location;
+  }
+#line 870 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 29:
-#line 277 "src/parser.y" // lalr1.cc:859
+#line 250 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.varlist_t) = sema.ParseVariableList();
-    }
-#line 882 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.expr_t) = new AST::UnaryOp(Operator::PLUS, (yystack_[0].value.expr_t));
+    (yylhs.value.expr_t)->location = yylhs.location;
+  }
+#line 879 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 30:
-#line 280 "src/parser.y" // lalr1.cc:859
+#line 255 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.varlist_t) = sema.ParseVariableList((yystack_[0].value.var_decl_t));
-    }
-#line 890 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.expr_t) = new AST::UnaryOp(Operator::MINUS, (yystack_[0].value.expr_t));
+    (yylhs.value.expr_t)->location = yylhs.location;
+  }
+#line 888 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
   case 31:
-#line 283 "src/parser.y" // lalr1.cc:859
+#line 261 "src/parser.y" // lalr1.cc:859
     {
-      (yylhs.value.varlist_t) = sema.ParseVariableList((yystack_[0].value.var_decl_t), (yystack_[2].value.varlist_t));
-    }
-#line 898 "/pract/parser.cpp" // lalr1.cc:859
+    (yylhs.value.expr_t) = new AST::DeclRefExpr((yystack_[0].value.ident_t));
+    (yylhs.value.expr_t)->location = yylhs.location;
+  }
+#line 897 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 32:
+#line 266 "src/parser.y" // lalr1.cc:859
+    {
+    (yylhs.value.expr_t) = new AST::DeclRefExpr((yystack_[3].value.ident_t), (yystack_[1].value.expr_t));
+    (yylhs.value.expr_t)->location = yylhs.location;
+  }
+#line 906 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 33:
+#line 278 "src/parser.y" // lalr1.cc:859
+    {
+    (yylhs.value.ident_t) = new AST::Identifier(yytext(lexer));
+    (yylhs.value.ident_t)->location = yylhs.location;
+  }
+#line 915 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 34:
+#line 284 "src/parser.y" // lalr1.cc:859
+    {
+    (yylhs.value.decl_t) = (yystack_[1].value.var_decl_t);
+  }
+#line 923 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 35:
+#line 288 "src/parser.y" // lalr1.cc:859
+    {
+    (yylhs.value.decl_t) = (yystack_[0].value.decl_t);
+  }
+#line 931 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 36:
+#line 297 "src/parser.y" // lalr1.cc:859
+    {
+    auto type = sema.ParseTypeName((yystack_[1].value.ident_t));
+    delete (yystack_[1].value.ident_t);
+
+    (yylhs.value.var_decl_t) = new AST::VarDecl((yystack_[0].value.ident_t), type);
+    (yylhs.value.var_decl_t)->location = yylhs.location;
+  }
+#line 943 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 37:
+#line 305 "src/parser.y" // lalr1.cc:859
+    {
+    auto type = sema.ParseTypeName((yystack_[3].value.ident_t));
+    delete (yystack_[3].value.ident_t);
+
+    (yylhs.value.var_decl_t) = new AST::VarDecl((yystack_[2].value.ident_t), type, (yystack_[0].value.expr_t));
+    (yylhs.value.var_decl_t)->location = yylhs.location;
+  }
+#line 955 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 38:
+#line 317 "src/parser.y" // lalr1.cc:859
+    { // functie zonder parameters: foo();
+    (yylhs.value.call_expr_t) = new AST::CallExpr((yystack_[2].value.ident_t));
+    (yylhs.value.call_expr_t)->location = yylhs.location;
+  }
+#line 964 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 39:
+#line 322 "src/parser.y" // lalr1.cc:859
+    { // functie met oneindig veel parameters: foo(x, bar(zoo()), y, z, ...)
+    (yylhs.value.call_expr_t) = new AST::CallExpr((yystack_[3].value.ident_t), *(yystack_[1].value.expr_list_t)); // pointer naar $3
+    (yylhs.value.call_expr_t)->location = yylhs.location;
+  }
+#line 973 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 40:
+#line 328 "src/parser.y" // lalr1.cc:859
+    {
+    (yylhs.value.expr_list_t) = sema.ParseExprList();
+  }
+#line 981 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 41:
+#line 331 "src/parser.y" // lalr1.cc:859
+    {
+    (yylhs.value.expr_list_t) = sema.ParseExprList((yystack_[0].value.expr_t));
+  }
+#line 989 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 42:
+#line 334 "src/parser.y" // lalr1.cc:859
+    {
+    (yylhs.value.expr_list_t) = sema.ParseExprList((yystack_[0].value.expr_t), (yystack_[2].value.expr_list_t));
+  }
+#line 997 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 43:
+#line 339 "src/parser.y" // lalr1.cc:859
+    {
+    auto type = sema.ParseTypeName((yystack_[5].value.ident_t));
+    delete (yystack_[5].value.ident_t);
+    (yylhs.value.decl_t) = new AST::FuncDecl((yystack_[4].value.ident_t), type, *(yystack_[2].value.varlist_t), (yystack_[0].value.compoundstmt_t));
+    (yylhs.value.decl_t)->location = yylhs.location;
+    delete (yystack_[2].value.varlist_t);
+  }
+#line 1009 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 44:
+#line 348 "src/parser.y" // lalr1.cc:859
+    {
+    (yylhs.value.varlist_t) = sema.ParseVariableList();
+  }
+#line 1017 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 45:
+#line 352 "src/parser.y" // lalr1.cc:859
+    {
+    (yylhs.value.varlist_t) = sema.ParseVariableList((yystack_[0].value.var_decl_t));
+  }
+#line 1025 "/pract/parser.cpp" // lalr1.cc:859
+    break;
+
+  case 46:
+#line 356 "src/parser.y" // lalr1.cc:859
+    {
+    (yylhs.value.varlist_t) = sema.ParseVariableList((yystack_[0].value.var_decl_t), (yystack_[2].value.varlist_t));
+  }
+#line 1033 "/pract/parser.cpp" // lalr1.cc:859
     break;
 
 
-#line 902 "/pract/parser.cpp" // lalr1.cc:859
+#line 1037 "/pract/parser.cpp" // lalr1.cc:859
             default:
               break;
             }
@@ -1153,95 +1288,129 @@ namespace cheetah {
   }
 
 
-  const signed char Parser::yypact_ninf_ = -25;
+  const signed char Parser::yypact_ninf_ = -57;
 
   const signed char Parser::yytable_ninf_ = -1;
 
-  const signed char
+  const short int
   Parser::yypact_[] =
   {
-      13,   -25,   -25,    -1,     5,   -25,    13,   -11,    30,    -6,
-     -25,   -10,   -25,   -25,    18,    20,   -25,   -25,   -25,    -1,
-      -4,    -1,     6,   -25,   -25,   -25,   -25,   -25,   -25,   -19,
-      21,    -1,    15,   -25,    15,   -25,   -25,    15,   -25,    11,
-     -25,   -25,    39,    28,    15,     3,   -25,   -25,   -25,     8,
-     -25
+      87,   -57,   -57,   -57,   -57,   100,   100,   -57,   100,     8,
+     -57,    87,   152,     4,    10,   -57,    -6,   -57,   -57,   165,
+     -15,   165,   135,   -57,   -57,   100,   100,   100,   100,   100,
+     100,   100,   100,   100,   100,   100,   100,   -57,   100,    35,
+     100,    -8,   -57,   -57,   165,   165,   165,   165,   165,   165,
+     165,   165,   165,   165,   165,   165,   165,   -57,   165,   -22,
+     116,   100,    13,   -57,   100,   -57,   165,    13,   -57,   -20,
+     165,    22,    15,    13,    61,   -57,   -57,   -57,    74,   -57
   };
 
   const unsigned char
   Parser::yydefact_[] =
   {
-       0,    16,     3,     0,     0,     6,     2,     0,    10,    14,
-       5,     0,    13,    18,     0,    14,     1,     7,     4,     0,
-      23,     0,    19,    17,    12,    11,    21,    24,    25,     0,
-       0,     0,    29,    22,     0,    15,    20,     0,    30,     0,
-      26,    27,    19,     0,     0,     0,    28,    31,     8,     0,
-       9
+       0,    33,    16,    15,    14,     0,     0,     3,     0,     0,
+       6,     2,     0,    10,    31,     5,     0,    13,    35,    29,
+      31,    30,     0,     1,     7,     0,     0,     0,     0,     0,
+       0,     0,     0,     0,     0,     0,     0,     4,     0,    40,
+       0,    36,    34,    12,    17,    18,    19,    20,    21,    22,
+      23,    24,    25,    26,    28,    27,    11,    38,    41,     0,
+       0,     0,    44,    39,     0,    32,    37,     0,    45,     0,
+      42,    36,     0,     0,     0,    43,    46,     8,     0,     9
   };
 
   const signed char
   Parser::yypgoto_[] =
   {
-     -25,   -25,    -3,    10,   -25,    -2,    -8,     0,   -25,   -24,
-      19,   -25,   -25,   -25
+     -57,   -57,   -10,   -35,   -57,    -3,   -57,     0,   -57,   -56,
+     -57,   -57,   -57,   -57
   };
 
   const signed char
   Parser::yydefgoto_[] =
   {
-      -1,     4,     5,     6,    46,     7,     8,    15,    10,    11,
-      12,    29,    13,    39
+      -1,     9,    10,    11,    75,    12,    13,    20,    15,    16,
+      17,    59,    18,    69
   };
 
   const unsigned char
   Parser::yytable_[] =
   {
-       9,    14,     1,    17,     1,    16,     9,     1,    38,    22,
-      33,     1,    27,    34,    18,    23,     1,    25,    31,    30,
-      47,     1,    20,     1,    21,    26,    40,     3,     2,    36,
-      48,     3,    37,     2,    32,    50,     3,    42,     2,    28,
-      43,     3,    19,    44,    37,     9,    17,    24,    20,     9,
-      21,    31,    35,    41,    45,    49
+      14,    24,    19,    21,    61,    22,    68,    63,    23,    72,
+      64,    14,    73,    39,    41,    40,    38,    76,     1,    42,
+      62,     1,    44,    45,    46,    47,    48,    49,    50,    51,
+      52,    53,    54,    55,    61,    56,    58,    60,    39,    78,
+      40,    74,     0,     1,     2,     3,     4,     0,     0,     0,
+       0,     0,     0,     0,     5,     6,     0,     0,    66,     0,
+       0,    70,    67,     8,    57,     0,     0,    71,    24,     1,
+       2,     3,     4,    67,    14,     0,     0,     0,    14,     0,
+       5,     6,     1,     2,     3,     4,     7,     0,    77,     8,
+       0,     0,     0,     5,     6,     1,     2,     3,     4,     7,
+       0,    79,     8,     0,     0,     0,     5,     6,     1,     2,
+       3,     4,     7,     0,     0,     8,     0,     0,     0,     5,
+       6,     0,     0,     0,     0,     0,     0,     0,     8,    25,
+      26,    27,    28,    29,    30,    31,    32,    33,    34,    35,
+      36,     0,     0,     0,     0,     0,     0,    65,    25,    26,
+      27,    28,    29,    30,    31,    32,    33,    34,    35,    36,
+       0,     0,     0,     0,    43,    25,    26,    27,    28,    29,
+      30,    31,    32,    33,    34,    35,    36,    37,    25,    26,
+      27,    28,    29,    30,    31,    32,    33,    34,    35,    36
   };
 
-  const unsigned char
+  const signed char
   Parser::yycheck_[] =
   {
-       0,     3,     8,     6,     8,     0,     6,     8,    32,     9,
-      29,     8,    20,    32,    25,    25,     8,    19,    12,    21,
-      44,     8,    28,     8,    30,    29,    34,    28,    25,    31,
-      27,    28,    32,    25,    28,    27,    28,    37,    25,    20,
-      29,    28,    12,    32,    44,    45,    49,    29,    28,    49,
-      30,    12,    31,    34,    26,    45
+       0,    11,     5,     6,    12,     8,    62,    29,     0,    29,
+      32,    11,    32,    28,    14,    30,    12,    73,     8,    25,
+      28,     8,    25,    26,    27,    28,    29,    30,    31,    32,
+      33,    34,    35,    36,    12,    38,    39,    40,    28,    74,
+      30,    26,    -1,     8,     9,    10,    11,    -1,    -1,    -1,
+      -1,    -1,    -1,    -1,    19,    20,    -1,    -1,    61,    -1,
+      -1,    64,    62,    28,    29,    -1,    -1,    67,    78,     8,
+       9,    10,    11,    73,    74,    -1,    -1,    -1,    78,    -1,
+      19,    20,     8,     9,    10,    11,    25,    -1,    27,    28,
+      -1,    -1,    -1,    19,    20,     8,     9,    10,    11,    25,
+      -1,    27,    28,    -1,    -1,    -1,    19,    20,     8,     9,
+      10,    11,    25,    -1,    -1,    28,    -1,    -1,    -1,    19,
+      20,    -1,    -1,    -1,    -1,    -1,    -1,    -1,    28,    13,
+      14,    15,    16,    17,    18,    19,    20,    21,    22,    23,
+      24,    -1,    -1,    -1,    -1,    -1,    -1,    31,    13,    14,
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24,
+      -1,    -1,    -1,    -1,    29,    13,    14,    15,    16,    17,
+      18,    19,    20,    21,    22,    23,    24,    25,    13,    14,
+      15,    16,    17,    18,    19,    20,    21,    22,    23,    24
   };
 
   const unsigned char
   Parser::yystos_[] =
   {
-       0,     8,    25,    28,    34,    35,    36,    38,    39,    40,
-      41,    42,    43,    45,    38,    40,     0,    35,    25,    12,
-      28,    30,    40,    25,    29,    38,    29,    39,    43,    44,
+       0,     8,     9,    10,    11,    19,    20,    25,    28,    34,
+      35,    36,    38,    39,    40,    41,    42,    43,    45,    38,
+      40,    38,    38,     0,    35,    13,    14,    15,    16,    17,
+      18,    19,    20,    21,    22,    23,    24,    25,    12,    28,
+      30,    40,    25,    29,    38,    38,    38,    38,    38,    38,
+      38,    38,    38,    38,    38,    38,    38,    29,    38,    44,
       38,    12,    28,    29,    32,    31,    38,    40,    42,    46,
-      39,    43,    40,    29,    32,    26,    37,    42,    27,    36,
-      27
+      38,    40,    29,    32,    26,    37,    42,    27,    36,    27
   };
 
   const unsigned char
   Parser::yyr1_[] =
   {
        0,    33,    34,    35,    35,    35,    36,    36,    37,    37,
-      38,    38,    38,    38,    39,    39,    40,    41,    41,    42,
-      42,    43,    43,    44,    44,    44,    44,    44,    45,    46,
-      46,    46
+      38,    38,    38,    38,    38,    38,    38,    38,    38,    38,
+      38,    38,    38,    38,    38,    38,    38,    38,    38,    38,
+      38,    39,    39,    40,    41,    41,    42,    42,    43,    43,
+      44,    44,    44,    45,    46,    46,    46
   };
 
   const unsigned char
   Parser::yyr2_[] =
   {
        0,     2,     1,     1,     2,     1,     1,     2,     2,     3,
-       1,     3,     3,     1,     1,     4,     1,     2,     1,     2,
-       4,     3,     4,     0,     1,     1,     3,     3,     6,     0,
-       1,     3
+       1,     3,     3,     1,     1,     1,     1,     3,     3,     3,
+       3,     3,     3,     3,     3,     3,     3,     3,     3,     2,
+       2,     1,     4,     1,     2,     1,     2,     4,     3,     4,
+       0,     1,     3,     6,     0,     1,     3
   };
 
 
@@ -1263,10 +1432,11 @@ namespace cheetah {
   const unsigned short int
   Parser::yyrline_[] =
   {
-       0,   114,   114,   126,   127,   130,   138,   141,   147,   150,
-     163,   166,   170,   173,   181,   185,   198,   205,   208,   218,
-     225,   238,   242,   249,   252,   255,   258,   261,   266,   277,
-     280,   283
+       0,   114,   114,   125,   128,   131,   137,   140,   145,   148,
+     160,   164,   169,   173,   177,   182,   186,   190,   195,   200,
+     205,   210,   215,   220,   225,   230,   235,   240,   245,   250,
+     255,   261,   266,   278,   284,   288,   297,   305,   317,   322,
+     328,   331,   334,   339,   348,   352,   356
   };
 
   // Print the state stack on the debug stream.
@@ -1349,8 +1519,8 @@ namespace cheetah {
 
 #line 7 "src/parser.y" // lalr1.cc:1167
 } // cheetah
-#line 1353 "/pract/parser.cpp" // lalr1.cc:1167
-#line 287 "src/parser.y" // lalr1.cc:1168
+#line 1523 "/pract/parser.cpp" // lalr1.cc:1167
+#line 359 "src/parser.y" // lalr1.cc:1168
 
 
 // We have to implement the error function

@@ -3,4 +3,4 @@ if [[ $# < 1 ]]; then
 	exit 1
 fi
 FILE=$1
-./cheetah test/${FILE}.c > ${FILE}.dot && dot -Tpng ${FILE}.dot > ${FILE}.png && echo Generated ${FILE}.dot
+./cheetah test/${FILE}.c > ${FILE}.dot && dot -Tpng ${FILE}.dot > ${FILE}.png && echo Generated ${FILE}.png

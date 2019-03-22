@@ -1,0 +1,28 @@
+graph {
+node [shape=record];
+Compound1 [color="red", label="{Compound}", ];
+Var2 [color="green", label="{Var|{<name>'x'|<type>i32|<init>init?}}", ];
+IntLiteral3 [color="blue", label="{IntLiteral|{<value>5}}", ];
+Var2:init -- IntLiteral3 [];
+Compound1 -- Var2 [];
+Var4 [color="green", label="{Var|{<name>'u'|<type>i32|<init>init?}}", ];
+IntLiteral5 [color="blue", label="{IntLiteral|{<value>10000}}", ];
+Var4:init -- IntLiteral5 [];
+Compound1 -- Var4 [];
+Var6 [color="green", label="{Var|{<name>'y'|<type>float|<init>init?}}", ];
+FloatLiteral7 [color="blue", label="{FloatLiteral|{<value>4.794000}}", ];
+Var6:init -- FloatLiteral7 [];
+Compound1 -- Var6 [];
+Var8 [color="green", label="{Var|{<name>'z'|<type>float|<init>init?}}", ];
+FloatLiteral9 [color="blue", label="{FloatLiteral|{<value>4.500000}}", ];
+Var8:init -- FloatLiteral9 [];
+Compound1 -- Var8 [];
+Var10 [color="green", label="{Var|{<name>'w'|<type>float|<init>init?}}", ];
+FloatLiteral11 [color="blue", label="{FloatLiteral|{<value>4.000000}}", ];
+Var10:init -- FloatLiteral11 [];
+Compound1 -- Var10 [];
+Call12 [color="blue", label="{Call|{<name>'print'}}", ];
+StringLiteral13 [color="blue", label="{StringLiteral|{<value>'"stringliteral"'}}", ];
+Call12 -- StringLiteral13 [];
+Compound1 -- Call12 [];
+}

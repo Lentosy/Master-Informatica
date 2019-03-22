@@ -106,15 +106,23 @@
 // TODO: add some more %type's
 
 // TODO: precedence rules
+// 3.2.1 OPERATORS
+// hoe lager in deze lijst, hoe hoger de associativiteit
+%nonassoc EQUAL
+%nonassoc CEQ CNE CLT CLE CGT CGE
+%left PLUS MINUS
+%left MUL DIV MOD
+// unary operators??
+%right EXP
+
 
 %start program
 %%
 
 program:
-    stmts {
-      driver.setProgram($1);
-    }
-  ;
+  stmts {
+    driver.setProgram($1);
+  };
 
 
 
@@ -123,35 +131,33 @@ program:
 //
 
 stmt:
-    ';' { $$ = nullptr; }
-  | expr ';' {
-      $$ = $1;
-    }
-  | decl {
-      $$ = new AST::DeclStmt($1);
-      $$->location = @$;
-    }
-  // TODO: additional statements
-  ;
+  ';' {
+    $$ = nullptr;  
+  } |
+  expr ';' {
+    $$ = $1;
+  } |
+  decl {
+    $$ = new AST::DeclStmt($1);
+    $$->location = @$;
+  };
 
 stmts:
-    stmt {
-      $$ = sema.ParseCompoundStmt(@$, $1);
-    }
-  | stmts stmt {
-      $$ = sema.ParseCompoundStmt(@$, $2, $1);
-    }
-  ;
+  stmt {
+    $$ = sema.ParseCompoundStmt(@$, $1);
+  } | 
+  stmts stmt {
+    $$ = sema.ParseCompoundStmt(@$, $2, $1);
+  };
 
 block:
-    '{' '}' {
-      $$ = sema.ParseCompoundStmt(@$);
-    }
-  | '{' stmts '}' {
-      $$ = $2;
-      $$->location = @$;
-    }
-  ;
+  '{' '}' {
+    $$ = sema.ParseCompoundStmt(@$);
+  } | 
+  '{' stmts '}' {
+    $$ = $2;
+    $$->location = @$;
+  };
 
 
 
@@ -160,35 +166,116 @@ block:
 //
 
 expr:
-    decl_expr {
-      $$ = $1;
-    }
-  | decl_expr EQUAL expr {
-      $$ = new AST::Assignment($<decl_expr_t>1, $3);
-      $$->location = @$;
-    }
-  | '(' expr ')' {
-      $$ = $2;
-    }
-  |  func_call {
-      $$ = $1;
-  }
-  | FLOAT {
-    $$ = sema.ParseFloat($1)
-  }
- ;
+  decl_expr {
+    $$ = $1;
+  } |
 
+  decl_expr EQUAL expr {
+    $$ = new AST::Assignment($<decl_expr_t>1, $3);
+    $$->location = @$;
+  } |
+
+  '(' expr ')' {
+    $$ = $2;
+  } |
+
+  func_call {
+    $$ = $1;
+  } |
+
+  STRING {
+    $$ = new AST::StringLiteral(yytext(lexer));
+    $$->location = @$;
+  } | 
+
+  FLOAT {
+    $$ = sema.ParseFloatLiteral(@$, yytext(lexer));
+  } |
+
+  INTEGER {
+    $$ = sema.ParseIntLiteral(@$, yytext(lexer));
+  } |
+
+  expr CEQ expr {
+    $$ = new AST::BinaryOp($1, Operator::CEQ, $3);
+    $$->location = @$;
+  } |
+
+  expr CNE expr {
+    $$ = new AST::BinaryOp($1, Operator::CNE, $3);
+    $$->location = @$;
+  } |
+
+  expr CLT expr {
+    $$ = new AST::BinaryOp($1, Operator::CLT, $3);
+    $$->location = @$;
+  } |
+  
+  expr CLE expr {
+    $$ = new AST::BinaryOp($1, Operator::CLE, $3);
+    $$->location = @$;
+  } |
+  
+  expr CGT expr {
+    $$ = new AST::BinaryOp($1, Operator::CGT, $3);
+    $$->location = @$;
+  } |
+  
+  expr CGE expr {
+    $$ = new AST::BinaryOp($1, Operator::CGE, $3);
+    $$->location = @$;
+  } |
+
+  expr PLUS expr {
+    $$ = new AST::BinaryOp($1, Operator::PLUS, $3);
+    $$->location = @$;
+  } |
+  
+  expr MINUS expr {
+    $$ = new AST::BinaryOp($1, Operator::MINUS, $3);
+    $$->location = @$;
+  } |
+  
+  expr MUL expr {
+    $$ = new AST::BinaryOp($1, Operator::MUL, $3);
+    $$->location = @$;
+  } |
+  
+  expr DIV expr {
+    $$ = new AST::BinaryOp($1, Operator::DIV, $3);
+    $$->location = @$;
+  } |
+  
+  expr MOD expr {
+    $$ = new AST::BinaryOp($1, Operator::MOD, $3);
+    $$->location = @$;
+  } |
+  
+  expr EXP expr {
+    $$ = new AST::BinaryOp($1, Operator::EXP, $3);
+    $$->location = @$;
+  } |
+  
+  PLUS expr {
+    $$ = new AST::UnaryOp(Operator::PLUS, $2);
+    $$->location = @$;
+  } |
+
+  MINUS expr {
+    $$ = new AST::UnaryOp(Operator::MINUS, $2);
+    $$->location = @$;
+  };
 
 decl_expr:
-    ident {
-      $$ = new AST::DeclRefExpr($1);
-      $$->location = @$;
-    }
-  | ident '[' expr ']' {
-      $$ = new AST::DeclRefExpr($1, $3);
-      $$->location = @$;
-    }
-  ;
+  ident {
+    $$ = new AST::DeclRefExpr($1);
+    $$->location = @$;
+  } | 
+  
+  ident '[' expr ']' {
+    $$ = new AST::DeclRefExpr($1, $3);
+    $$->location = @$;
+  };
 
 
 
@@ -197,95 +284,87 @@ decl_expr:
 //
 
 ident:
-    IDENTIFIER {
-      $$ = new AST::Identifier(yytext(lexer));
-      $$->location = @$;
-    }
-  ;
+  IDENTIFIER {
+    $$ = new AST::Identifier(yytext(lexer));
+    $$->location = @$;
+  };
 
 decl:
-    var_decl ';' {
-      $$ = $1;
-    }
-  | func_decl {
-      $$ = $1;
-    }
-  ;
+  var_decl ';' {
+    $$ = $1;
+  } | 
+  
+  func_decl {
+    $$ = $1;
+  };
 
 
 //
 // Variables
 //
 var_decl:
-    ident ident {
-      auto type = sema.ParseTypeName($1);
-      delete $1;
+  ident ident {
+    auto type = sema.ParseTypeName($1);
+    delete $1;
 
-      $$ = new AST::VarDecl($2, type);
-      $$->location = @$;
-    }
-  | ident ident EQUAL expr {
-      auto type = sema.ParseTypeName($1);
-      delete $1;
+    $$ = new AST::VarDecl($2, type);
+    $$->location = @$;
+  } | 
+  
+  ident ident EQUAL expr {
+    auto type = sema.ParseTypeName($1);
+    delete $1;
 
-      $$ = new AST::VarDecl($2, type, $4);
-      $$->location = @$;
-    }
-  ;
+    $$ = new AST::VarDecl($2, type, $4);
+    $$->location = @$;
+  };
 
 //
 // Functions
 //
 func_call:
-    ident '(' ')' { // functie zonder parameters: foo();
-      $$ = new AST::CallExpr($1);
-      $$->location = @$;
-    }
-  | ident '(' expr_list ')' { // functie met oneindig veel parameters: foo(x, bar(zoo()), y, z, ...)
-      $$ = new AST::CallExpr($1, *$3); // pointer naar $3
-      $$->location = @$;
+  ident '(' ')' { // functie zonder parameters: foo();
+    $$ = new AST::CallExpr($1);
+    $$->location = @$;
+  } | 
+  
+  ident '(' expr_list ')' { // functie met oneindig veel parameters: foo(x, bar(zoo()), y, z, ...)
+    $$ = new AST::CallExpr($1, *$3); // pointer naar $3
+    $$->location = @$;
+  };
 
-    }
-  ;
 expr_list:
   %empty {
     $$ = sema.ParseExprList();
-  }
-  | decl_expr {
+  } | 
+  expr {
     $$ = sema.ParseExprList($1);
-  } 
-  | func_call {
-    $$ = sema.ParseExprList($1);
-  }
-  | expr_list ',' decl_expr {
+  } |
+  expr_list ',' expr {
     $$ = sema.ParseExprList($3, $1);
-  }
-  | expr_list ',' func_call {
-    $$ = sema.ParseExprList($3, $1);
-  }
-  ;
-func_decl:
-    ident ident '(' func_args ')' block {
-      auto type = sema.ParseTypeName($1);
-      delete $1;
+  };
 
-      $$ = new AST::FuncDecl($2, type, *$4, $6);
-      $$->location = @$;
-      delete $4;
-    }
-  ;
+func_decl:
+  ident ident '(' func_args ')' block {
+    auto type = sema.ParseTypeName($1);
+    delete $1;
+    $$ = new AST::FuncDecl($2, type, *$4, $6);
+    $$->location = @$;
+    delete $4;
+  };
 
 func_args:
-    %empty {
-      $$ = sema.ParseVariableList();
-    }
-  | var_decl {
-      $$ = sema.ParseVariableList($1);
-    }
-  | func_args ',' var_decl {
-      $$ = sema.ParseVariableList($3, $1);
-    }
-  ;
+  %empty {
+    $$ = sema.ParseVariableList();
+  } |
+  
+  var_decl {
+    $$ = sema.ParseVariableList($1);
+  } | 
+  
+  func_args ',' var_decl {
+    $$ = sema.ParseVariableList($3, $1);
+  };
 %%
 
 // We have to implement the error function

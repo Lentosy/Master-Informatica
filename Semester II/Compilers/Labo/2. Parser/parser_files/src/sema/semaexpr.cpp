@@ -26,14 +26,26 @@ AST::ExprList *Sema::ParseExprList(AST::Expr *SubExpr,
   return ExprList;
 }
 
-AST::IntLiteral *Sema::ParseInt(AST::Expr *SubExpr) {
+AST::IntLiteral *Sema::ParseIntLiteral(const Location &Loc, std::string IntToken) {
 
+  long long parsed = strtol(IntToken.c_str(), nullptr, 0);
+//  if(parsed == 0L){
+//    throw semantic_error(Loc->location, "invalid conversion");
+//  } 
+  IntLiteral *IntLiteral = new AST::IntLiteral(parsed);
+  IntLiteral->location = Loc;
+  return IntLiteral;
+
+  
 }
 
-AST::FloatLiteral *Sema::ParseFloat(AST::Expr *SubExpr) {
-  print(*SubExpr);
-}
 
-AST::StringLiteral *Sema::ParseString(AST::Expr *SubExpr) {
-
+AST::FloatLiteral *Sema::ParseFloatLiteral(const Location &Loc, std::string FloatToken) {
+  float parsed = strtof(FloatToken.c_str(), nullptr);
+//  if(parsed == 0.0) {
+//    throw semantic_error(Loc->location, "invalid conversion");
+//  }
+  FloatLiteral *FloatLiteral = new AST::FloatLiteral(parsed);
+  FloatLiteral->location = Loc;
+  return FloatLiteral;
 }
