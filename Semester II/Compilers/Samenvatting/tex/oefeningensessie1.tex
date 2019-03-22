@@ -15,10 +15,11 @@ Gegeven de volgende grammatica:
 	\end{split}
 \end{equation*}
 \begin{enumerate}
-	\item Bereken nullable, FIRST en FOLLOW
+	\item \textbf{Bereken nullable, FIRST en FOLLOW.}
 	\begin{table}[h]
 		\centering
 		\begin{tabular}{| l | l | l | l |}
+			\hline
 			& nullable & FIRST & FOLLOW \\
 			\hline
 			S & nee & \{ u \}    & /	 			\\
@@ -30,14 +31,14 @@ Gegeven de volgende grammatica:
 		\end{tabular}
 	\end{table}
 
-	\item Construeer de $LL(1)$ parsingtabel.
+	\item \textbf{Construeer de $LL(1)$ parsingtabel.}
 	\begin{table}[h]
 		\centering
 		\begin{tabular}{| l | l | l | l | l | l | l |}
 			\hline
 			   & u 					& z & v & w & y & x \\
 			 S & $S \mapsto uBDz$  	&   &   &   &   &   \\
-			 B &   					&   &   & $B \mapsto w \; B \mapsto Bv$  &   &   \\
+			 B &   					&   &   & $B \mapsto w, \; B \mapsto Bv$  &   &   \\
 			 D &  					& $D \mapsto EF$  &   &   & $D \mapsto EF$  & $D \mapsto EF$   \\
 			 E &   					& $E \mapsto $  &   &   & $E \mapsto y$  &  $E \mapsto $ \\
 			 F &   					& $F \mapsto $  &   &   &   &  $F \mapsto x$ \\
@@ -45,11 +46,13 @@ Gegeven de volgende grammatica:
 		\end{tabular}
 	\end{table}
 
-	\item Toon aan dat dit geen $LL(1)$ parser is.
+	\item \textbf{Toon aan dat dit geen $LL(1)$ parser is.}
 	
 	Als we B aan het parsen zijn, en het eerstvolgende token is een $w$ dan weten we niet welke productieregel toegepast moet worden.
 	
-	\item Door de linkse recursiviteit van de productieregel $B \mapsto Bv$, kan je volgende veranderingen invoeren:
+	\item \textbf{Wijzig de grammatica \emph{zo weinig mogelijk} om een $LL(1)$ grammatica te hebben dat dezelfde taal aanvaardt.}
+	
+	Door de linkse recursiviteit van de productieregel $B \mapsto Bv$, kan je volgende veranderingen invoeren:
 	\begin{equation*}
 		\begin{split}
 		& B \mapsto wB' \\
@@ -62,7 +65,7 @@ Gegeven de volgende grammatica:
 \section{Voorbeeldexamenvraag}
 Gegeven de reguliere expressie $S = ab+c$.
 \begin{enumerate}
-	\item Schrijf een (ambigue) grammatica voor $S$ met tokens $a$, $b$ en $c$.
+	\item \textbf{Schrijf een (ambigue) grammatica voor $S$ met tokens $a$, $b$ en $c$.}
 	
 	\begin{equation*}
 		\begin{split}
@@ -73,42 +76,48 @@ Gegeven de reguliere expressie $S = ab+c$.
 		\end{split}
 	\end{equation*}
 	
-	\item Geef de $LR(0)$ statentabel en $LR(0)$ parsingtabel.
+	\item \textbf{Geef de $LR(0)$ statentabel en $LR(0)$ parsingtabel.}
 	
 	Altijd de closure nemen van productieregel van niet-terminal waar het puntje voor staat. dus alle productieregels opnemen in toestand van die niet-terminal. Uiteindelijk moet elk puntje op het einde staan
 	
 	\begin{table}[h]
+		\centering
 		\begin{tabular}{| l  | l | l | l | l | l | l |}
 			\hline
 			  & a & b & c & \$ & S & B \\
+			  \hline
 			1 & s3  &   &   &    & g2\footnote{Als er een reductie uitgevoerd is in toestand 1 voor $S$, dan moeten we naar toestand 2 gaan}   &   \\
 			2 & & & & & & \\
 			3 & & s5\footnote{Als we $b$ shiften uit toestand 3 zitten we in toestand 5} & & & & g4 \\
 			4 & & & s7 & & & \\
-			5 & r3\footnote{Reductie kan uitgevoerd worden met regel 3 ($B \mapsto b$) & s5,r3 & r3 & r3 & & g6 \\
+			5 & r3\footnote{Reductie kan uitgevoerd worden met regel 3 ($B \mapsto b$)} & s5,r3 & r3 & r3 & & g6 \\
 			6 & r2 & r2 & r2 & r2 & & \\
 			7 r1 & r1 & r1 & r1 & & & \\
+			\hline
 		\end{tabular}
 	\end{table}
 
-	\item Zijn er conflicten? Waarom wel of niet?
+	\item \textbf{Zijn er conflicten? Waarom wel of niet?}
 	
 	Er is een shift-reduce conflict voor toestand 5 en token $b$. Dit komt omdat de gekozen grammatica ambigue is.
 
-	\item Grammatica herschrijven:
+	\item \textbf{Construeer een niet-ambigue LL parsingtabel die deze expressie herkent. Indien nodig, maak de grammatica niet-ambigue.}
+		
+		Grammatica herschrijven:
 	\begin{equation*}
 	\begin{split}
 	& S \mapsto aBc \\
-	& B \mapsto bB'
+	& B \mapsto bB' \\
 	& B' \mapsto  \\
 	& B' \mapsto B 
 	\end{split}
 	\end{equation*}
 	
 	nullable, FIRST en FOLLOW bepalen:
-	\begin{table}[h]
+	\begin{table}[ht]
 		\centering
 		\begin{tabular}{| l | l | l | l |}
+			\hline
 			& nullable & FIRST & FOLLOW \\
 			\hline
 			S & nee  & \{ a \}    & /	 			\\
@@ -125,9 +134,10 @@ Gegeven de reguliere expressie $S = ab+c$.
 		\begin{tabular}{| l | l | l | l |}
 			\hline
 			  & a 					& b & c \\
+			  \hline
 			S & $S \mapsto aBc$	    &   &   \\
 			B &   					& $B \mapsto bB'$  &   \\
-			B' &  & $B' \mapsto B$ & $B' \mapsto$
+			B' &  & $B' \mapsto B$ & $B' \mapsto$ \\
 			\hline
 		\end{tabular}
 	\end{table}
@@ -135,7 +145,7 @@ Gegeven de reguliere expressie $S = ab+c$.
 \end{enumerate}
 
 \section{Oefening 3.13 p86}
-Toon aan dat de volgende grammatica $LALR(1)$ is maar niet $SLR$
+Toon aan dat de volgende grammatica $LALR(1)$ is maar niet $SLR$:
 \begin{equation*}
 \begin{split}
 0 :& S \mapsto X\& \\
