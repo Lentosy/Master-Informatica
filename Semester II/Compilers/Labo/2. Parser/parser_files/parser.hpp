@@ -197,7 +197,8 @@ namespace cheetah {
         MUL = 276,
         DIV = 277,
         EXP = 278,
-        MOD = 279
+        MOD = 279,
+        UMINUS = 280
       };
     };
 
@@ -505,12 +506,12 @@ namespace cheetah {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 201,     ///< Last index in yytable_.
+      yylast_ = 336,     ///< Last index in yytable_.
       yynnts_ = 14,  ///< Number of nonterminal symbols.
-      yyfinal_ = 23, ///< Termination state number.
+      yyfinal_ = 31, ///< Termination state number.
       yyterror_ = 1,
       yyerrcode_ = 256,
-      yyntokens_ = 33  ///< Number of tokens.
+      yyntokens_ = 34  ///< Number of tokens.
     };
 
 
@@ -523,7 +524,7 @@ namespace cheetah {
 
 #line 7 "src/parser.y" // lalr1.cc:377
 } // cheetah
-#line 527 "/pract/parser.hpp" // lalr1.cc:377
+#line 528 "/pract/parser.hpp" // lalr1.cc:377
 
 
 // //                    "%code provides" blocks.
@@ -540,7 +541,7 @@ namespace cheetah {
     };
   }
 
-#line 544 "/pract/parser.hpp" // lalr1.cc:377
+#line 545 "/pract/parser.hpp" // lalr1.cc:377
 
 
 #endif // !YY_YY_PRACT_PARSER_HPP_INCLUDED

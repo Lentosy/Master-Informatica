@@ -1,0 +1,12 @@
+graph {
+node [shape=record];
+Compound1 [color="red", label="{Compound}", ];
+If2 [color="red", label="{If|{<cond>cond|<then>then|<else>else?}}", ];
+DeclRef3 [color="blue", label="{DeclRef|{<decl>'something'|<index>index?}}", ];
+If2:cond -- DeclRef3 [];
+Call4 [color="blue", label="{Call|{<name>'foo'}}", ];
+If2:then -- Call4 [];
+Call5 [color="blue", label="{Call|{<name>'bar'}}", ];
+If2:else -- Call5 [];
+Compound1 -- If2 [];
+}

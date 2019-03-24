@@ -1,24 +1,26 @@
+if(x == 5){
 
-int fib(int n) {
-    if(xandro == "noob"){
-        // lege blok
-    } else {
-        functie(inner_functie(parameter))
-    }
-
-    if(bert == "pro") {
-        int x = 99;
-        for(int i = 1, i < x, i++) {
-            print(i);
-        }
-    }
-
-    while(x >= 0){
-        x--;
-    }
-    
-    return x;
-    return;
+} else {
+    print(funct(parameter));
 }
 
 
+if(y == "een string met spaties en een underscore _"){
+    int top = 100;
+    for(int i = 1; i < top; i = i + 1) {
+        print(i);
+    }
+}
+
+
+while(z - 4 < 9 + 7) {
+    func(func(func(z)));
+}
+
+int functie(){
+    return x;
+}
+
+int functie2(){
+    return;
+}

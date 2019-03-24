@@ -112,9 +112,10 @@
 %nonassoc CEQ CNE CLT CLE CGT CGE
 %left PLUS MINUS
 %left MUL DIV MOD
+%nonassoc UMINUS
 // unary operators??
 %right EXP
-
+// x = -5
 
 %start program
 %%
@@ -124,11 +125,6 @@ program:
     driver.setProgram($1);
   };
 
-
-
-if(x) {
-
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // Statements
@@ -153,20 +149,26 @@ stmt:
     $$ = new AST::IfStmt($3, $5, $7);
     $$->location = @$;
   } |
+  IF '(' expr ')' stmt {
+    $$ = new AST::IfStmt($3, $5);
+  } |
+  IF '(' expr ')' stmt ELSE stmt {
+    $$ = new AST::IfStmt($3, $5, $7);
+  } |
   WHILE '(' expr ')' block {
     $$ = new AST::WhileStmt($3, $5);
     $$->location = @$;
   } |
-  FOR '(' stmt ',' expr ',' expr  ')' block {
-    $$ = new AST::ForStmt($3, $5, $7, $9);
+  FOR '(' stmt expr ';' expr  ')' block {
+    $$ = new AST::ForStmt($3, $4, $6, $8);
     $$->location = @$;
   } |
   RETURN {
-    $$ = new AST::ReturnStmt()
+    $$ = new AST::ReturnStmt();
     $$->location = @$;
   } |
   RETURN expr {
-    $$ = new AST::ReturnStmt($1)
+    $$ = new AST::ReturnStmt($2);
     $$->location = @$;
   }
   ;
@@ -213,11 +215,14 @@ expr:
   } |
 
   STRING {
-    StringLiteral *StringLiteral = new AST::StringLiteral(yytext(lexer));
+    std::string tekst = yytext(lexer);
+    for(int i = 1; i < tekst.size(); i++){
+      tekst[i - 1] = tekst[i];
+    }
+    tekst.resize(tekst.size() - 2); // remove start " en einde"
+    StringLiteral *StringLiteral = new AST::StringLiteral(tekst);
     StringLiteral->location = @$;
     $$ = StringLiteral;
-    //$$ = new AST::StringLiteral(yytext(lexer));
-    //$$->location = @$;
   } | 
 
   FLOAT {
@@ -288,12 +293,12 @@ expr:
     $$->location = @$;
   } |
   
-  PLUS expr {
+  PLUS expr %prec UMINUS {
     $$ = new AST::UnaryOp(Operator::PLUS, $2);
     $$->location = @$;
   } |
 
-  MINUS expr {
+  MINUS expr %prec UMINUS {
     $$ = new AST::UnaryOp(Operator::MINUS, $2);
     $$->location = @$;
   };

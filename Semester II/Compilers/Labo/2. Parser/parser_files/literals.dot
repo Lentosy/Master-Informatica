@@ -22,7 +22,7 @@ FloatLiteral11 [color="blue", label="{FloatLiteral|{<value>4.000000}}", ];
 Var10:init -- FloatLiteral11 [];
 Compound1 -- Var10 [];
 Call12 [color="blue", label="{Call|{<name>'print'}}", ];
-StringLiteral13 [color="blue", label="{StringLiteral|{<value>'"stringliteral"'}}", ];
+StringLiteral13 [color="blue", label="{StringLiteral|{<value>'stringliteral'}}", ];
 Call12 -- StringLiteral13 [];
 Compound1 -- Call12 [];
 }
