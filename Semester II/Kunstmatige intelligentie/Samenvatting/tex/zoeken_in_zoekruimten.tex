@@ -13,7 +13,7 @@
 \begin{itemize}
 	\item \textbf{STanford Research Institute Problem Solver (STRIPS)} = een algemene probleemoplosser.
 	\item Met behulp van een taal wordt het op te lossen probleem beschreven.
-	\item \underline{Voorbeeld:} de torens van Hanoi (Figuur \ref{fig:torensVanHanoi}.
+	\item \underline{Voorbeeld:} de torens van Hanoi (Figuur \ref{fig:torensVanHanoi}).
 	\begin{figure}[h]
 		\centering
 		\includegraphics[width=\textwidth]{torensVanHanoi}
@@ -57,7 +57,7 @@
 				- : &\quad \texttt{HangtAan(schijf2, van)}
 			\end{split}
 		\end{equation*}
-		Elke actie bestaat uit een preconditie $P$ die voldaan moet zijn vooraleer de actie kan uitgevoerd worden. De lijst van de toe te voegen uitspraken wordt aangeduid met het $+$ symbool en de lijst met de te verwijderen uitspraken worden aangeduid met het $-$ symbool.
+		Elke actie bestaat uit een premisse $P$ die voldaan moet zijn vooraleer de actie kan uitgevoerd worden. De lijst van de toe te voegen uitspraken wordt aangeduid met het $+$ symbool en de lijst met de te verwijderen uitspraken worden aangeduid met het $-$ symbool.
 		\item Om de symmetrie van de begintoestand op te lossen zou een actie \texttt{IsSymmetrie(A, B)} aangemaakt kunnen worden als volgt:
 		\begin{equation*}
 			\begin{split}
@@ -72,7 +72,7 @@
 \section{Efficiënt zoeken in zoekruimten}
 \subsection{Breedte-eerst zoeken}
 \begin{itemize}
-	\item De \textbf{vertakkingsfactor} is het gemiddeld aantal nieuwe, nog niet bekeken buren zoeken van een onderzochte knoop en wordt voorgesteld door $b$ (branching factor).
+	\item De \textbf{vertakkingsfactor} is het gemiddeld aantal nieuwe, nog niet bekeken buren van een onderzochte knoop en wordt voorgesteld door $b$ (branching factor).
 	\item Bij de torens van Hanoi is $b \approx 1,5$.
 	\item Voor een diepte $d$ worden ongeveer 
 	$$1 + b + b^2 + ... + b^d = \frac{b^{d + 1} - 1}{b - 1}$$
@@ -88,7 +88,7 @@ In plaats van breedte-eerst zoeken te gebruiken zou ook een manier kunnen gebrui
 		\item De gekende kost $g(k)$ van de knoop: 
 		\begin{itemize}
 			\item Deze functie is een schatting van de werkelijke kost $g^*(k)$ van het kortste  pad van de startknoop naar $k$.
-			\item Wordt berekend door bij de kost van zijn voorganger $v$ de kost $c(v \rightarrow k)$ opgeteld van de actie die $v$ omzet in $k$.
+			\item Het wordt berekend door bij de kost van zijn voorganger $v$ de kost $c(v \rightarrow k)$ op te tellen; de kost van de actie die $v$ omzet in $k$.
 
 			\item Er geldt steeds $g(k) \geq g^*(k)$.
 		\end{itemize} 
@@ -97,9 +97,9 @@ In plaats van breedte-eerst zoeken te gebruiken zou ook een manier kunnen gebrui
 			\item Deze functie is een schatting van $h^*(k)$, de kost om vanuit de knoop het doel te bereiken via het kortste pad.
 		\end{itemize}
 	\end{enumerate}
-	\item Deze twee waarden geven de geschatte kost, verpakt door de evaluatiefunctie $f$:
+	\item De som van deze twee waarden geven de geschatte kost, verpakt door de evaluatiefunctie $f$:
 	$$f(k) = g(k) + h(k)$$
-	\item Interessante knopen heben een lage $f$ waarde. 
+	\alert Interessante knopen heben een lage $f$ waarde. 
 	\item \textbf{Beste-eerst zoeken}:
 	\begin{enumerate}
 		\item[(1)] Steek de startknoop $s$ in de verzameling niet-ontwikkelde knopen NOK met $g(s) = 0$. Geef alle andere knopen een voorlopige schatting $g(k) = \infty$.
@@ -114,7 +114,7 @@ In plaats van breedte-eerst zoeken te gebruiken zou ook een manier kunnen gebrui
 \subsubsection{A* heuristieken}
 \begin{itemize}
 	\item Een heuristiek is $A*$ als $h(k) \leq h^*(k)$.
-	\item \underline{Bewijs:} elke $A*$ heuristiek is toelaatbaar als er slechts een eindig aantal knopen $k_i$, met $g^*(k_i) \leq g^*(D)$ is.
+	\item \underline{Bewijs:} indien er slechts een eindig aantal knopen $k_i$, met $g^*(k_i) \leq g^*(D)$ zijn, is een $A*$-heuristiek toelaatbaar.
 	\begin{itemize}
 		\item Neem een $A*$ heuristiek $h$ en bewijs dat er steeds een knoop $k'$ is die voldoet aan de volgende voorwaarden:
 		\begin{enumerate}
@@ -172,7 +172,7 @@ In plaats van breedte-eerst zoeken te gebruiken zou ook een manier kunnen gebrui
 
 \subsubsection{Relaxatieheuristieken}
 \begin{itemize}
-	\item Bekomen door het originele probleem sterk te vereenvoudigen.
+	\item Worden bekomen door het originele probleem sterk te vereenvoudigen.
 	\item Er worden verbindingen toegevoegd in de graaf, wat overeenkomt met het schrappen van acties in de premisse.
 	\item Het kortste pad in nieuwe graaf is zeker niet langer dan het kortste pad in de originele graaf. Deze heuristiek is dan ook $A^*$.
 \end{itemize}
@@ -196,15 +196,26 @@ In plaats van breedte-eerst zoeken te gebruiken zou ook een manier kunnen gebrui
 		\item Er kan een bijhorende boom (figuur \ref{fig:spelboom}) opgesteld worden die alle mogelijke zetten beschrijft.
 		\begin{figure}
 			\includegraphics[width=\textwidth]{spelboom}
-			\caption{Een spelboom.}
+			\caption{Een spelboom waarbij de startsituatie een stapel van 7 jetons is.}
 			\label{fig:spelboom}
 		\end{figure}
 		\item Noem de speler die begint \textit{Max}, en de andere speler \textit{Min}.
-		\item Bij elke eindpositie is de winst of verlies van Max berekent bij een startsituatie van slechts één stapel met 7 jetons.
+		\item Bij elke eindpositie is de winst of verlies van Max berekent.
 		\item De overige posities kunnen van onder naar boven opgesteld worden:
 		\begin{enumerate}
 			\item Als Max aan zet is dan nemen we de grootste score.
-			\item Als min aan zet is nemen we de kleinste score.
+			\item Als Min aan zet is nemen we de kleinste score.
 		\end{enumerate} 
+		\item Dit heet \textbf{minimax}. Er wordt gebruik gemaakt van $\alpha-\beta$ snoeien om oninteressante zetten (deelbomen) zeker niet te evalueren in de spelboom. Op die manier is er minder geheugen nodig. Het optimale pad is nooit echt gekend, maar er kunnen grenzen gesteld worden.
+		\begin{itemize}
+			\item De waarde $\alpha$ staat voor de gewenste minimumscore voor Max.
+			\item De waarde $\beta$ staat voor de gewenste maximumscore voor Min.  
+			\item Algemeen wordt er een pad naar een blad gezocht waarbij zowel Max als Min steeds de beste zet kiezen.
+			\item Neem een knoop $k$ en veronderstel een schatting $f$ die $s(k)$ vervangt. De waarden van voorouders van die knoop kunnen veranderen. Stel $f > s(k)$:
+			\begin{enumerate}
+				\item $k$ is een minknoop. Als $f >  s(b)\;\forall\;b \hbox{ broer van } k$, dan wordt de $s$-waarde van de ouderknoop vervangen door $f$. Nu wordt naar geval 2 gegaan.
+				\item $k$ is een maxknoop en geen wortel. De nieuwe $s-$waarde van de ouder is hoogstens $f$. Nu wordt naar geval 1 gegaan.
+			\end{enumerate}
+		\end{itemize}
 	\end{itemize}
 \end{itemize}

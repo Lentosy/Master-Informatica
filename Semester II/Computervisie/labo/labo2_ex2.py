@@ -1,10 +1,9 @@
 import cv2
-import sys
 import os
 from Modules import optcheck, highgui
 
 #whitenoise.png
-fullPath = optcheck.getArgument(sys.argv)
+fullPath = optcheck.getArguments()[0]
 filepath, filename = os.path.split(fullPath)
 cv2.namedWindow(filename)
 

@@ -35,8 +35,6 @@ AST::IntLiteral *Sema::ParseIntLiteral(const Location &Loc, std::string IntToken
   IntLiteral *IntLiteral = new AST::IntLiteral(parsed);
   IntLiteral->location = Loc;
   return IntLiteral;
-
-  
 }
 
 

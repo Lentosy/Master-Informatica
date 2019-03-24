@@ -128,7 +128,7 @@
 		\begin{enumerate}
 			\item Voor elk \textit{foneem}. Dit zijn betekenisvolle klankenreeksen die soms met een letter overeenkomen en soms met een lettergroep.
 			\item Voor elk \textit{woord}. Een woord is een opeenvolging van fonemen. 
-			\item VOor alle mogelijke zinnen samen.
+			\item Voor alle mogelijke zinnen samen.
 		\end{enumerate}
 		\item Een aantal veronderstellingen:
 		\begin{itemize}
@@ -151,6 +151,12 @@
 			\item Een \textbf{unigram} is een $1$-gram dat dan de relatieve frequentie van alle woorden bevat.
 			\item Een \textbf{bigram} is een $2$-gram bevat alle mogelijke combinaties van twee opeenvolgende woorden.
 		\end{itemize}
+		\item Een bigram heeft een beginknoop. Deze beginknoop is verbonden met alle beginknopen van woorden en genereert zelf geen uitvoer. De overgangswaarschijnlijkheid wordt gegeven door de unigrammen. De overgangswaarschijnlijkheid van de eindknoop van een woord naar de beginknoop van een volgend woord is gegeven door de relatieve frequentie van het bijbehorende bigram.
+		\item Stel $W$ het aantal woorden en $f$ het gemiddeld aantal fonemen per woord, dan is het totaal aantal staten $3fW$.
+	\end{itemize}
+	\item In een HMM kan gebruikt worden om de waarschijnlijkheid van een bepaalde uitvoer te berekenen. Maar wat als we willen weten hoe de uitvoer gegenereerd is? 
+	\begin{itemize}
+		\item 
 	\end{itemize}
 	
 	

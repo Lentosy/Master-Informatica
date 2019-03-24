@@ -7,8 +7,8 @@ import constants
 import ctypes
 import pygame
 
-START_RECORDING = 30
-NEXT_TAKE = 31
+STAR_RECORDING_EVENT = 30
+STAR_RECORDING_EVENTNE = 31
 
 class Runtime():
     def __init__(self, fps):
@@ -113,11 +113,9 @@ class Runtime():
         self.exit()
 
     def handle_event(self, event):
-        TypeError("test")
-        # throw NotImplementedException
+        pass
     def run_logic(self):
-        TypeError("test")
-    # throw NotImplementedException
+        pass
 class DefaultRuntime(Runtime):
     def __init__(self):
         print("Starting Default Runtime...")
@@ -190,13 +188,13 @@ class RecordRuntime(Runtime):
         self.stdout = open(f"data\{constants.PERSONS[self.person_number]}_{constants.ACTIONS[self.action_number]}_{self.record_count}.txt", 'a')
         self.skip = True # wether or not to skip the feature extraction process: this is used at the beginning of the recording, to allow the person to get ready
     def handle_event(self, event):
-        if event.type == START_RECORDING:
+        if event.type == STAR_RECORDING_EVENT:
             print("Start recording")
             print(f"Take {self.record_count}")                    
-            pygame.time.set_timer(START_RECORDING, 0)
-            pygame.time.set_timer(NEXT_TAKE, 5000)
+            pygame.time.set_timer(STAR_RECORDING_EVENT, 0)
+            pygame.time.set_timer(STAR_RECORDING_EVENTNE, 5000)
             self.skip = False
-        elif event.type == NEXT_TAKE:
+        elif event.type == STAR_RECORDING_EVENTNE:
             pygame.time.delay(2000)
             if(self.record_count == 10):
                 self.done = True
@@ -209,7 +207,7 @@ class RecordRuntime(Runtime):
     
 
     def run_logic(self):
-        pygame.time.set_timer(START_RECORDING, 5000)          
+        pygame.time.set_timer(STAR_RECORDING_EVENT, 5000)          
         if self.kinect.has_new_color_frame():
             frame = self.kinect.get_last_color_frame()
             self.draw_color_frame(frame, self.frame_surface)
@@ -234,18 +232,18 @@ class RecordRuntime(Runtime):
 #    def run(self):
 #        print(f"Starting recording for action {constants.ACTIONS[self.action_number]}\nActor: {constants.PERSONS[self.person_number]}")  
 #        skip = True
-#        pygame.time.set_timer(START_RECORDING, 5000)      
+#        pygame.time.set_timer(STAR_RECORDING_EVENT, 5000)      
 #        # -------- Main Program Loop -----------
 #        while not self.done:
 #            # --- Main event loop
 #            for event in pygame.event.get():
-#                if event.type == START_RECORDING:
+#                if event.type == STAR_RECORDING_EVENT:
 #                    print("Start recording")
 #                    print(f"Take {self.record_count}")                    
-#                    pygame.time.set_timer(START_RECORDING, 0)
-#                    pygame.time.set_timer(NEXT_TAKE, 5000)
+#                    pygame.time.set_timer(STAR_RECORDING_EVENT, 0)
+#                    pygame.time.set_timer(NEXT_TAKE_EVENT, 5000)
 #                    skip = False
-#                elif event.type == NEXT_TAKE:
+#                elif event.type == NEXT_TAKE_EVENT:
 #                    pygame.time.delay(2000)
 #                    if(self.record_count == 10):
 #                        self.done = True

@@ -4,7 +4,7 @@ import os.path
 from Modules import highgui, imgproc, optcheck
 # unsharp.png
 
-fullPath = optcheck.getArgument(sys.argv)
+fullPath = optcheck.getArguments()[0]
 filepath, filename = os.path.split(fullPath)
 cv2.namedWindow(filename)
 

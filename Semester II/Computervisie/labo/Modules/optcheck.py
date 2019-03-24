@@ -1,14 +1,18 @@
 import os
+import argparse
 
 
-def getArgument(args):
-    try:
-        filePath = args[1]
-    except IndexError:
-        print("One parameter required: the path of an image.")
-        exit(-1)
+def getArguments():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('image_paths', type=str, nargs='+')
+    args = parser.parse_args()
 
-    if (not os.path.isfile(filePath)):
-        print("'" + filePath + "' is not an existing file.")
-        exit(-1)
-    return filePath
+    for arg in args.image_paths:
+        if(not os.path.isfile(arg)):
+            print(f"'{arg}' not an existing file.")
+            exit(1)
+            
+    return args.image_paths
+
+
+

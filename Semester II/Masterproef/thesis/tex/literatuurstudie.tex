@@ -3,7 +3,7 @@
 %
 
 \chapter{Features}
-Ongeacht welke soort input gebruikt wordt, moeten er features geëxtraheerd worden om classificatie mogelijk te maken. Voor actieherkenning wordt er vooral gebruik gemaakt van kleurenbeelden \cite{Laptev2008}, \cite{Dollar2005}, \cite{Willems2008}, \cite{Wang2011} of dieptebeelden \cite{Li2010}, \cite{Wang2012a}, \cite{Xia2012}, \cite{Gu2010}. Dit hoofdstuk bespreekt verschillende mogelijkheden om features uit zowel kleurenbeelden als dieptebeelden te halen. 
+De eerste stap van actieherkenning is de juiste keuze van features maken. Ongeacht welke classifier of welke input gebruikt wordt, moeten er features geëxtraheerd worden om de classificatie mogelijk te maken. Voor actieherkenning wordt er vooral gebruik gemaakt van kleurenbeelden \cite{Laptev2008}, \cite{Dollar2005}, \cite{Willems2008}, \cite{Wang2011} of dieptebeelden \cite{Li2010}, \cite{Wang2012a}, \cite{Xia2012}, \cite{Gu2010}. Dit hoofdstuk bespreekt verschillende mogelijkheden om features uit zowel kleurenbeelden als dieptebeelden te halen. 
 
 \section{Features uit kleurenbeelden}
 De extractie van features bij kleurenbeelden kan in twee categorieën onderverdeeld worden: \textit{globale feature extraction} en \textit{lokale feature extraction} \cite{Poppe2010}. Bij een globale aanpak wordt een persoon eerst gelokaliseerd met behulp van \textit{background subtraction} of \textit{tracking} gevolgd door het encoderen van de interesseregio's. Background subtraction kan enkel met statische camera's uitgevoerd worden. Er wordt een referentieframe bijgehouden die enkel statische informatie bevat. Het verschil tussen een nieuwe frame en de referentieframe kan nieuwe informatie opleveren. Deze representatie kan veel informatie bevatten, maar door de nood aan background subtraction of tracking zijn zulke methoden gevoelig aan ruis.
@@ -96,14 +96,28 @@ Allereerst berekenen ze de hoeken tussen elk paar ledematen die met elkaar verbo
 
 $$A = [\textbf{a}^1\textbf{a}^2 \cdot\cdot\cdot \textbf{a}^J]$$
 
-Hierbij is $J$ het aantal joints zodat A een $T \times J$ matrix is. Uit A kan het gemiddelde, de variantie en de maximale hoeksnelheid berekent worden voor elke joint \todo{verder}
+Hierbij is $J$ het aantal joints zodat A een $T \times J$ matrix is. Uit A kan het gemiddelde, de variantie en de maximale hoeksnelheid berekent worden voor elke joint. 
 
 \subsection{Lie group}
 Groepentheorie kan ook gebruikt worden bij actieherkenning. De Lie groep $SO_3$ kan de relatieve drie-dimensionale rotaties tussen elk paar van joints representeren. Deze representatie vormt dan een punt in de Lie groep $SO_3 \times ... \times SO_3$. Een actie is dan een curve in diezelfde Lie groep.
 
 
 \chapter{Classificatie}
-Op het moment dat een feature vector opgebouwd is voor een individuele frame of een verzameling van frames is het actieherkenningprobleem gereduceerd tot een classificatieprobleem. De bekomen feature vector wordt als input aan een classifier gegeven die dan tracht de juiste klasse toe te kennen op basis van de leerverzameling. Voor actieherkenning kunnen drie algemene methoden beschreven worden:
+Op het moment dat een feature vector opgebouwd is voor een individuele frame of een verzameling van frames is het actieherkenningprobleem gereduceerd tot een classificatieprobleem. De bekomen feature vector wordt als input aan een classifier gegeven die dan tracht de juiste klasse toe te kennen op basis van de leerverzameling. 
+
+\section{Leren}
+Ongeacht welke classifier gebruikt wordt, moet het eerst leren wat het moet herkennen. Daarom wordt er een leerverzameling opgebouwd. Deze verzameling bevat een aantal voorbeelden waaruit het systeem zal leren. Niet elk voorbeeld wordt gebruikt om te leren. De leerverzameling wordt opgesplitst in een \textit{training set} en een \textit{testing set}. Hoe deze leerverzameling opgesplitst wordt kan op verschillende manieren:
+\begin{enumerate}
+	\item Er kan door de auteurs van de leerverzameling een voorgedefinieerde splitsing vastgelegd worden. Dit is de minst flexibele methode en wordt ook sterk afgeraden. 
+	\item \textit{Leave-$p$-out cross-validation} beschouwt $p$ voorbeelden als de testing set en de overige voorbeelden als training set. Alle mogelijke combinaties worden hierbij uitgevoerd waardoor er $\binom{n}{p}$ keer het model moet getraind en gevalideert worden, met $n$ de lengte van de hele verzameling. Het eenvoudigste geval komt voor bij $p = 1$, waardoor er $\binom{n}{1} = n$ validaties zijn, en wordt \textit{leave-one-out cross-validation} genoemd.
+	\item \textit{$k-$fold cross-validation} verdeeld de hele leerverzameling in $k$ gelijke stukken. De training set bevat $k - 1$ elementen en de testing set bevat het overige element. Dit proces wordt $k$ keer herhaald, zodat elk element zeker eens in de testing set zit. De bekomen uitkomsten kunnen dan uitgemiddeld worden.	
+\end{enumerate} 
+
+
+
+
+
+Voor actieherkenning kunnen drie algemene methoden beschreven worden:
 \begin{enumerate}
 	\item Classificeren zonder de temporale dimensie expliciet te modelleren, \textit{directe classificatie};
 	\item Classificeren waarbij de temporale dimensie wel gemodelleerd wordt, \textit{temporale modellen};
@@ -157,10 +171,4 @@ Een \gls{ac:dtw} heeft bepaalde restricties:
 In plaats van elke frame te classificeren, zou een actie kunnen voorgesteld worden door \textit{key frames}. Dit is een selectie van frames die een actie voldoende kunnen voorstellen zodanig dat verschillende acties nog steeds onderscheidbaar zijn en variaties van dezelfde actie hetzelfde gelabeld worden. In de literatuur bestaan er diverse manieren om zulke key frames te bepalen. De methode van \cite{Suolan2017} berekent een verschil op basis van de joints die de Kinect beschikbaar stelt. De methode van \cite{Carlsson2001} maakt gebruik van randdetectie om silhouette te bekommen en zoekt een match tussen voorgedefinieerde silhouetten die een key frame van een actie voorstelt. Andere methoden maken ook gebruik van voorgedefinieerde exemplaren \cite{Weinland2008a}, \cite{Fathi2007},
 
 
-\section{Leren}
-Elke classifier moet eerst leren wat het moet herkennen, daarom wordt er een leerverzameling opgebouwd. Deze verzameling bevat een aantal voorbeelden waaruit het systeem zal leren. Niet elk voorbeeld wordt gebruikt om te leren. De leerverzameling wordt opgesplitst in een \textit{training set} en een \textit{testing set}. Hoe deze leerverzameling opgesplitst wordt kan op verschillende manieren:
-\begin{enumerate}
-	\item Er kan door de auteurs van de leerverzameling een voorgedefinieerde splitsing vastgelegd worden. Dit is de minst flexibele methode en wordt ook sterk afgeraden. 
-	\item \textit{Leave-$p$-out cross-validation} beschouwt $p$ voorbeelden als de testing set en de overige voorbeelden als training set. Alle mogelijke combinaties worden hierbij uitgevoerd waardoor er $\binom{n}{p}$ keer het model moet getraind en gevalideert worden, met $n$ de lengte van de hele verzameling. Het eenvoudigste geval komt voor bij $p = 1$, waardoor er $\binom{n}{1} = n$ validaties zijn, en wordt \textit{leave-one-out cross-validation} genoemd.
-	\item \textit{$k-fold$ cross-validation} verdeeld de hele leerverzameling in $k$ stukken. De training set bevat $k - 1$ elementen en de testing set bevat het overige element. Dit proces wordt $k$ keer herhaald, zodat elk element zeker eens in de testing set zit. De bekomen uitkomsten kunnen dan uitgemiddeld worden.	
-\end{enumerate} 
+

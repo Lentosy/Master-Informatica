@@ -134,7 +134,7 @@ Tabel \ref{table:DrieDimensionaleTransformaties} toont de hiërarchie van drie-d
 \section{Pinhole model}
 \begin{figure}[h]
 	\includegraphics[width=\textwidth]{pinhole_model}
-	\caption{Het pinhole model, uitgewerkt voor de yz-vlak.}
+	\caption{Het pinhole model, uitgewerkt voor het yz-vlak.}
 	\label{fig:pinhole_model}
 \end{figure}
 \begin{itemize}
@@ -165,5 +165,27 @@ Tabel \ref{table:DrieDimensionaleTransformaties} toont de hiërarchie van drie-d
 \section{Projectieve transformaties}
 \begin{itemize}
 	\item 
+\end{itemize}
+
+
+\section{Lensvertekening}
+\begin{itemize}
+	\item Lenzen met een grote hoek tonen voorwerpen vaak in gebogen vorm. Er is dus compensatie nodig voor:
+	\begin{itemize}
+		\item rechte lijnen te detecteren,
+		\item circles, rechthoeken, ... te detecteren,
+		\item beelden te matchen.
+	\end{itemize}
+	\item Hoekvertekening kan eenvoudig opgelost worden:
+	\begin{equation*}
+		\begin{split}
+			x'_c = x_c(1 + \kappa_1r^2_c + \kappa_2r^4_c) \\
+			y'_c = y_c(1 + \kappa_1r^2_c + \kappa_2r^4_c) \\
+		\end{split}
+	\end{equation*}
+	waarbij \begin{itemize}
+		\item $r_c$ de hoekafstand van pixel $(x_c, y_c)$ tot het optische centrum is.
+		\item $\kappa_1$, $\kappa_2$ en de positie van het optische centrum kan gevonden worden door calibratie.
+	\end{itemize}
 \end{itemize}
 

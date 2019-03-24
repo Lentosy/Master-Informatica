@@ -71,7 +71,7 @@ Het algoritme verloopt als volgt:
 	\end{itemize}
 \end{enumerate}
 
-\section{Lijngroepering}
+\section{Lijnmodel}
 De vergelijking van een lijn dat door twee punten $(x_1, y_1)$ en $(x_2, y_2)$ gaat:
 
 $$\frac{y - y_1}{y_2 - y_1} = \frac{x - x_1}{x_2 - x_1}$$
@@ -80,9 +80,47 @@ of
 
 $$(y - y_1)(x_2 - x_1) = (x - x_1)(y_2 - y_1)$$
 
+Een lijn door een punt $(p_i, q_i)$ wordt beschreven als 
+$$q_i = mp_i + c$$
+of
+$$c = -p_im + q_i$$
+
+Deze vergelijking definieert een lijn van punten in de parameterruimte. Deze ruimte wordt ook de Hough ruimte genoemd (figuur \ref{fig:hough_space}).
+\begin{figure}
+	\includegraphics[width=\textwidth]{hough_space}
+	\caption{Punten op een gemeenschappelijke lijn kan vertaald worden naar lijnen door een gemeenschappelijk punt in de Hough ruimte.}
+	\label{fig:hough_space}
+\end{figure}
+
+
 \section{Hough transformatie}
+\begin{itemize}
+	\item Een parameterruimte bestaat uit discrete cellen $(j, k)$.
+	\item Elk punt $(p_i, q_i)$ in de beeldruimte draagt een eenheid bij tot de cel $(j, k)$ waarbij
+	
+	$$k = \lfloor -p_i \frac{j}{N} + q_i \rfloor$$
+	,$j \in \mathcal{Z}$ en $N$ de resolutie van de parameterruimte.
+	\item Een cel dat $M$ bijdragen heeft komt overeen met een lijn met $M$ punten.
+	\alert Probleem met $y = mx + c$:
+	\begin{itemize}
+		\item Verticale lijnen kunnen niet voorgesteld worden.
+		\item De bijdragen worden niet goed gedistribueerd.
+	\end{itemize}
+	\good Normaalvergelijking gebruiken: $\rho = x\cos\theta + y\sin\theta$ (figuur \ref{fig:normal_line_equation}).
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.5\textwidth]{normal_line_equation}
+		\caption{Hesse normaalvorm.}
+		\label{fig:normal_line_equation}
+	\end{figure}
+	\begin{itemize}
+		\item $y - mx = c$ kan herschreven worden in normaalvorm door te delen door $\sqrt{1 + m^2}$.
+		\item 
+	\end{itemize}
+\end{itemize}
 
 \section{Radon transformatie}
+Het enige verschil met de Hough transformatie is dat de parameter $\theta$ kan gekozen worden.
 
 \section{Random Sample Consensus (RANSAC)}
 Het \textbf{RANSAC} algoritme wordt gebruikt om inliers te zoeken. Vaak wordt het gevolgd door least-mean-squares fitting.

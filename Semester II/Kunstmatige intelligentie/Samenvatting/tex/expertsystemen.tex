@@ -40,11 +40,44 @@
 	\begin{itemize}
 		\item \textbf{Forward chaining:}
 		\begin{itemize}
-			\item Alle regels overlopen tot een regel gevonden wordt waarvoor alle uitspraken uit de premisse tot de gegevens behoren.
-			\item 
+			\item Kan in $O(g)$, met $g$ de grootte van de regelbank.
+			\item Twee gegevensstructuren:
+			\begin{itemize}
+				\item \textbf{LijstMetRegels($u$)} die voor elke uitspraak $u$ bijhoudt in welke regels ze in de premisse voorkomt.
+				\item \textbf{Premisseteller($r$)} die voor elke regel $r$ bijhoudt hoeveel uitspraken in de premisse nog niet gevalideerd zijn.
+			\end{itemize}
+			\item Werking:
+			\begin{enumerate}
+				\item Initialiseer de gegevensverzameling en de doelverzameling.
+				\item Voor elke regel $r$, initialiseer \textit{Premisseteller($r$)}
+				 op het aantal uitspraken in de premisse.
+				\item Zolang de gegevensverzameling en het doel geen gemeenschappelijk element bevatten, en de gegevensverzameling niet leeg is:
+				\begin{enumerate}
+					\item Neem een uitspraak $u$ uit de gegevensverzameling.
+					\item Voor elke regel $r$ in \textit{LijstMetRegels($r$)}, verminder \textit{Premisseteller($r$)}. Als deze daardoor nul wordt, zet elke uitspraak uit de conclusie die nog niet behandeld is in de gegevensverzameling.
+				\end{enumerate}
+				\item Deel het resultaat mee aan de gebruiker.
+			\end{enumerate}
+			\item \underline{Voorbeeld:}
+			\begin{itemize}
+				\item Stel volgende regelbank:
+				\begin{enumerate}
+					\item Als $X$ kwaakt en $X$ eet vliegen - Dan $X$ is een kikker.
+					\item Als $X$ kwettert en $X$ zingt - Dan $X$ is een kanarie.
+					\item Als $X$ is een kikker - Dan $X$ is groen.
+					\item Als $X$ is een kanarie - Dan $X$ is geel.
+				\end{enumerate}
+				\item Stel nu dat we een huisdier hebben, Fritz,  en er zijn twee dingen bekend over hem: hij kwaakt en eet vliegen. We willen nu de kleur weten.
+				\item Fritz wordt gesubstitueerd voor $X$ in regel 1, zodat er besloten wordt dat hij een kikker is. Dit wordt dan toegevoegd aan de gegevens. We weten nu dat Fritz kwaakt, dat hij vliegen eet en dat hij een kikker is.
+				\item Fritz kan nu gesubstitueerd worden in regel 3, zodat er besloten wordt dat hij groen is.
+			\end{itemize}
+			\item Forward Chaining werkt van links naar rechts, startend vanaf de gekende feiten om tot een conclusie te komen.
+			\alert In het algoritme kunnen regels toegepast worden die uiteindelijk niet bijdragen tot de oplossing. Men probeert dit efficiënter op te lossen met backwards chaining.
 		\end{itemize}
-		
-		\item \textbf{Backward chaning:}
+		\item \textbf{Backward chaining:}
+		\begin{itemize}
+			\item Kan in $O(g)$, met $g$ de grootte van de regelbank.
+		\end{itemize}
 	\end{itemize}
 \end{itemize}
 \section{De constructie van een expertsysteem}
@@ -132,7 +165,7 @@
 					\end{tabular}
 				\end{table}
 			
-				\item Voor een uitspraak $a$ wordt de zekerheidsfactor van die uitspraak $zf(a)$. Hierbij geldt $zf(a) = -zfa(\not a)$.
+				\item Voor een uitspraak $a$ wordt de zekerheidsfactor van die uitspraak $z(a)$. Hierbij geldt $z(a) = -z(\neg a)$.
 				
 				\item Hoe berekenen van de zekerheid van een conclusie als de premisse van een regel zelf onzeker is?
 				
@@ -146,7 +179,7 @@
 							& \hbox{\textbf{dan} a \qquad (x)}  
 							\end{split}
 							\end{equation*}
-								$$zf(a) = zf(b) \times x$$
+								$$z(a) = z(b) \times x$$
 						}%
 					}
 		
@@ -159,7 +192,7 @@
 						& \hbox{\textbf{dan} a \qquad (x)}  
 						\end{split}
 						\end{equation*}
-					$$zf(b\;\hbox{\textbf{en}}\;c\; \hbox{\textbf{en}}\;d) = \min(zf(b), zf(c), zf(d)) \times x$$
+					$$z(b\;\hbox{\textbf{en}}\;c\; \hbox{\textbf{en}}\;d) = \min(z(b), z(c), z(d)) \times x$$
 						}%
 					}
 					
@@ -176,8 +209,8 @@
 						& \hbox{\textbf{dan} a \qquad (y)}  
 						\end{split}
 						\end{equation*}
-						$$z_1 = zf(e) \times x,\qquad z_2 = zf(f) \times y$$
-						$$zf(a) = \frac{z_1 + z_2}{1 - \min(|z_1|, |z_2|)}$$
+						$$z_1 = z(e) \times x,\qquad z_2 = z(f) \times y$$
+						$$z(a) = \frac{z_1 + z_2}{1 - \min(|z_1|, |z_2|)}$$
 						
 							
 						}%
