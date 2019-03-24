@@ -79,7 +79,7 @@ def getORBFeatures(image, nfeatures):
 def matchORBFeatures(image1, image2, nfeatures, nmatches):
     keypoints1, descriptors1 = getORBFeatures(image1, nfeatures)
     keypoints2, descriptors2 = getORBFeatures(image2, nfeatures)
-    bf = cv2.BFMatcher_create(cv2.NORM_HAMMING, crossCheck = True)
+    bf = cv2.BFMatcher_create(normType = cv2.NORM_HAMMING2, crossCheck = True)
     matches = bf.match(descriptors1, descriptors2)
     matches = sorted(matches, key = lambda x:x.distance)
     matches = matches[:nmatches]

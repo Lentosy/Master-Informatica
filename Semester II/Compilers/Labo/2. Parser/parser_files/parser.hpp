@@ -383,7 +383,7 @@ namespace cheetah {
   // YYTABLE[YYPACT[STATE-NUM]] -- What to do in state STATE-NUM.  If
   // positive, shift that token.  If negative, reduce the rule whose
   // number is the opposite.  If YYTABLE_NINF, syntax error.
-  static const unsigned char yytable_[];
+  static const signed char yytable_[];
 
   static const signed char yycheck_[];
 
@@ -505,7 +505,7 @@ namespace cheetah {
     enum
     {
       yyeof_ = 0,
-      yylast_ = 189,     ///< Last index in yytable_.
+      yylast_ = 201,     ///< Last index in yytable_.
       yynnts_ = 14,  ///< Number of nonterminal symbols.
       yyfinal_ = 23, ///< Termination state number.
       yyterror_ = 1,

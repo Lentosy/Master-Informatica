@@ -126,6 +126,10 @@ program:
 
 
 
+if(x) {
+
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Statements
 //
@@ -140,7 +144,32 @@ stmt:
   decl {
     $$ = new AST::DeclStmt($1);
     $$->location = @$;
-  };
+  } |
+  IF '(' expr ')' block {
+    $$ = new AST::IfStmt($3, $5);
+    $$->location = @$;
+  } |
+  IF '(' expr ')' block ELSE block {
+    $$ = new AST::IfStmt($3, $5, $7);
+    $$->location = @$;
+  } |
+  WHILE '(' expr ')' block {
+    $$ = new AST::WhileStmt($3, $5);
+    $$->location = @$;
+  } |
+  FOR '(' stmt ',' expr ',' expr  ')' block {
+    $$ = new AST::ForStmt($3, $5, $7, $9);
+    $$->location = @$;
+  } |
+  RETURN {
+    $$ = new AST::ReturnStmt()
+    $$->location = @$;
+  } |
+  RETURN expr {
+    $$ = new AST::ReturnStmt($1)
+    $$->location = @$;
+  }
+  ;
 
 stmts:
   stmt {
@@ -184,8 +213,11 @@ expr:
   } |
 
   STRING {
-    $$ = new AST::StringLiteral(yytext(lexer));
-    $$->location = @$;
+    StringLiteral *StringLiteral = new AST::StringLiteral(yytext(lexer));
+    StringLiteral->location = @$;
+    $$ = StringLiteral;
+    //$$ = new AST::StringLiteral(yytext(lexer));
+    //$$->location = @$;
   } | 
 
   FLOAT {

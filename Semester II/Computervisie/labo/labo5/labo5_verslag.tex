@@ -112,11 +112,19 @@
 	\end{figure}
 	\newpage
 	\section*{Oefening 13}
+	ORB (Oriented FAST and Rotated BRIEF) is ook een hoekdetector. Eerst worden de coördinaten en descriptoren van de punten opgehaald via een ORB object uit OpenCV. Met een BFMatcher (Brute Force matcher) object kunnen de descriptoren van de ORB features van twee verschillende figuren vergeleken worden. De methode \texttt{drawMatches} maakt verbindingen tussen punten die matchen. 
 	\subsection*{Nieuwe functies}
 	\begin{itemize}		
-		\item \textbf{ORB}
-		\item \textbf{BFMatcher}
+		\item \textbf{ORB\_create(nfeatures) $\rightarrow$ orb}
+		
+		Creëert een ORB object waarmee $nfeatures$ features gedetecteerd mee kunnen worden. Het object heeft een methode \texttt{detectAndCompute(image, mask)} die de hoekpunten zal detecteren.
+		\item \textbf{BFMatche\_create(normType, crossCheck)}
+		
+		Deze functie creëert een BFMatcher object. Dit object bevat een methode \texttt{match(descriptors1, descriptors2)} die twee descriptors aanvaardt en een lijst teruggeeft van hoekpunten die matchen.
+		
 		\item \textbf{drawMatches}
+		
+		Deze functie zal de gedecteerde hoekpunten van twee figuren verbinden als er een match is.
 	\end{itemize}
 	\subsection*{Invoer en uitvoer}
 	\begin{figure}[!htb]
