@@ -1,4 +1,3 @@
-#
 # https://github.com/AravinthPanch/gesture-recognition-for-human-robot-interaction
 import os
 import sys 
@@ -21,21 +20,24 @@ def main(args=None):
     __main__ = "Kinect v2"
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("-r", "--record", dest="action_number", type=int, help="Makes the application record movements "
-    +"and saves the information to disk. The resulting file is saved in data\[PERSON_NUMBER]_[ACTION_NAME]_[RECORD_COUNT] The argument of this option is an integer corresponding to the action"
-    +"that is performed in the recording.\nPossible integers are:\n"
-    + ' '.join(f"{i} {constants.ACTIONS[i]}" for i in range(0, len(constants.ACTIONS)))
+    subparsers = parser.add_subparsers(help = "Sub-command help")
+    parser_record = subparsers.add_parser('record', formatter_class = argparse.RawTextHelpFormatter, help = "Makes the application record movements and saves the information to disk.") 
+    
+    parser_record.add_argument("action_number", type=int, help = "One of the following integers:\n"
+    + "\n".join(f"{i} {constants.ACTIONS[i]}" for i in range(0, len(constants.ACTIONS)))
     )
-    parser.add_argument("-p", "--person", dest="person_number", type=int)
-    parser.add_argument('-d', '--debug', action='store_true', help="Enables debug mode; a slower fps rate and only the head is tracked. All output is redirected to stdout.")
+    parser_record.add_argument("person_number", type=int, help = "One of the following integers:\n"
+    + "\n".join(f"{i} {constants.PERSONS[i]}" for i in range(0, len(constants.PERSONS))))
+   
+    parser.add_argument('-d', '--debug', dest = 'debug', action = 'store_true', help = 'Enables debug mode')
     args = parser.parse_args()
     
     if(args.action_number is not None and args.person_number is None):
-        print("Using the -r option also requires the -p option")
+        print("Using the -a option also requires the -p option")
         exit(-1)
     
     if(args.action_number is None and args.person_number is not None):
-        print("Using the -o option also requires the -r option")
+        print("Using the -p option also requires the -a option")
         exit(-1)
 
     if(args.action_number is not None and args.person_number is not None):

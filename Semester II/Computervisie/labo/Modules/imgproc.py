@@ -2,13 +2,17 @@ import cv2
 import numpy
 import math
 
+# Converts the src image to grayscale and returns the result.
 def convertToGrayscale(src):
     return cv2.cvtColor(src, cv2.COLOR_BGR2GRAY)
 
+# Applies a binary threshold on a grayscale src image. The ratio specifies at which grayscale value it should switch from black to white. 
+# A ratio of 0.5 makes every pixel with a value < 127 black and every pixel with avalue >= 127 white
 def binaryThreshold(src, ratio):
     retval, dst = cv2.threshold(src, ratio * 255, 255, cv2.THRESH_BINARY)
     return dst
 
+# Sharpens the given src image and uses a (kernelSize x kernelSize) matrix
 def unsharpMasking(src, kernelSize):
     blurredImage = cv2.GaussianBlur(src, (kernelSize, kernelSize), 0) # grote waarden gebruiken om te overdrijven
     diff = cv2.absdiff(src, blurredImage)

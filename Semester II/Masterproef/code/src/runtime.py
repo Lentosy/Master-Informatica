@@ -7,8 +7,8 @@ import constants
 import ctypes
 import pygame
 
-STAR_RECORDING_EVENT = 30
-STAR_RECORDING_EVENTNE = 31
+START_RECORDING_EVENT = 30
+NEXT_TAKE_EVENT = 31
 
 class Runtime():
     def __init__(self, fps):
@@ -41,7 +41,7 @@ class Runtime():
         coordinates = []
         quaternions = []
         
-        for j in range(0, length):
+        for j in range(0, len(constants.JOINTS)):
             try:
                 x = depth_points[j].x                    
                 y = depth_points[j].y
@@ -113,19 +113,26 @@ class Runtime():
         self.exit()
 
     def handle_event(self, event):
-        pass
-    def run_logic(self):
-        pass
-class DefaultRuntime(Runtime):
-    def __init__(self):
-        print("Starting Default Runtime...")
-        Runtime.__init__(self, constants.DEFAULT_FPS)
-    def handle_event(self, event):    
         if event.type == pygame.QUIT: # If user clicked close
             self.done = True # Flag that we are done so we exit this loop
         elif event.type == pygame.VIDEORESIZE: # window resized
             self.screen = pygame.display.set_mode(event.dict['size'], 
                                        pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE, 32)
+        else:
+            self.handle_custom_event(event)
+
+    
+    def handle_custom_event(self, event):
+        pass
+    
+    def run_logic(self):
+        pass
+
+class DefaultRuntime(Runtime):
+    def __init__(self):
+        print("Starting Default Runtime...")
+        Runtime.__init__(self, constants.DEFAULT_FPS)
+    
     def run_logic(self):
         if self.kinect.has_new_color_frame():
                 frame = self.kinect.get_last_color_frame()
@@ -141,20 +148,13 @@ class DefaultRuntime(Runtime):
                 if not body.is_tracked: 
                     continue 
                 joint_points = self.kinect.body_joints_to_color_space(body.joints)
+                self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])                    
             
-
 class DebugRuntime(Runtime):
     def __init__(self):
         print("Starting Debug Runtime...")
         Runtime.__init__(self, constants.DEBUG_FPS)
         self.stdout = sys.stdout
-    
-    def handle_event(self, event):
-        if event.type == pygame.QUIT: # If user clicked close
-                self.done = True # Flag that we are done so we exit this loop
-        elif event.type == pygame.VIDEORESIZE: # window resized
-            self.screen = pygame.display.set_mode(event.dict['size'], 
-                                       pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE, 32)
     
     def run_logic(self):
         # --- Getting frames and drawing  
@@ -177,7 +177,6 @@ class DebugRuntime(Runtime):
                 features = self.extract_body_information(body)          
                 self.stdout.write(';'.join(str(x) for x in features) + "\n")
     
-
 class RecordRuntime(Runtime):
     def __init__(self, action_number, person_number):
         print("Starting Record Runtime")
@@ -187,27 +186,24 @@ class RecordRuntime(Runtime):
         self.record_count = 1
         self.stdout = open(f"data\{constants.PERSONS[self.person_number]}_{constants.ACTIONS[self.action_number]}_{self.record_count}.txt", 'a')
         self.skip = True # wether or not to skip the feature extraction process: this is used at the beginning of the recording, to allow the person to get ready
-    def handle_event(self, event):
-        if event.type == STAR_RECORDING_EVENT:
+    def handle_custom_event(self, event):
+        print("k")
+        if event.type == START_RECORDING_EVENT:
             print("Start recording")
             print(f"Take {self.record_count}")                    
-            pygame.time.set_timer(STAR_RECORDING_EVENT, 0)
-            pygame.time.set_timer(STAR_RECORDING_EVENTNE, 5000)
+            pygame.time.set_timer(START_RECORDING_EVENT, 0)
+            pygame.time.set_timer(NEXT_TAKE_EVENT, 5000)
             self.skip = False
-        elif event.type == STAR_RECORDING_EVENTNE:
+        elif event.type == NEXT_TAKE_EVENT:
             pygame.time.delay(2000)
             if(self.record_count == 10):
                 self.done = True
-                break
+                return
             self.record_count += 1
             print(f"Take {self.record_count}")
-            self.stdout = open(f"data\{constants.PERSONS[self.person_number]}_{constants.ACTIONS[self.action_number]}_{self.record_count}.txt", 'a')
-        elif event.type == pygame.QUIT: # If user clicked close
-            self.done = True # Flag that we are done so we exit this loop
-    
-
+            self.stdout = open(f"data\{constants.PERSONS[self.person_number]}_{constants.ACTIONS[self.action_number]}_skeleton_{self.record_count}.txt", 'a')
     def run_logic(self):
-        pygame.time.set_timer(STAR_RECORDING_EVENT, 5000)          
+        pygame.time.set_timer(START_RECORDING_EVENT, 5000)          
         if self.kinect.has_new_color_frame():
             frame = self.kinect.get_last_color_frame()
             self.draw_color_frame(frame, self.frame_surface)
@@ -220,62 +216,9 @@ class RecordRuntime(Runtime):
                 body = self.bodies.bodies[i]
                 if not body.is_tracked: 
                     continue 
-                
                 joint_points = self.kinect.body_joints_to_color_space(body.joints)
                 self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])
-                if(skip):
+                if(self.skip):
                     break
                 features = self.extract_body_information(body)          
                 self.stdout.write(';'.join(str(x) for x in features) + f";{self.action_number}\n")
-            
-            
-#    def run(self):
-#        print(f"Starting recording for action {constants.ACTIONS[self.action_number]}\nActor: {constants.PERSONS[self.person_number]}")  
-#        skip = True
-#        pygame.time.set_timer(STAR_RECORDING_EVENT, 5000)      
-#        # -------- Main Program Loop -----------
-#        while not self.done:
-#            # --- Main event loop
-#            for event in pygame.event.get():
-#                if event.type == STAR_RECORDING_EVENT:
-#                    print("Start recording")
-#                    print(f"Take {self.record_count}")                    
-#                    pygame.time.set_timer(STAR_RECORDING_EVENT, 0)
-#                    pygame.time.set_timer(NEXT_TAKE_EVENT, 5000)
-#                    skip = False
-#                elif event.type == NEXT_TAKE_EVENT:
-#                    pygame.time.delay(2000)
-#                    if(self.record_count == 10):
-#                        self.done = True
-#                        break
-#                    self.record_count += 1
-#                    print(f"Take {self.record_count}")
-#                    self.stdout = open(f"data\{constants.PERSONS[self.person_number]}_{constants.ACTIONS[self.action_number]}_{self.record_count}.txt", 'a')
-#                elif event.type == pygame.QUIT: # If user clicked close
-#                    self.done = True # Flag that we are done so we exit this loop
-#            
-#            if self.kinect.has_new_color_frame():
-#                frame = self.kinect.get_last_color_frame()
-#                self.draw_color_frame(frame, self.frame_surface)
-#                frame = None
-#            # get skeletondata if body frames exist
-#            if self.kinect.has_new_body_frame(): 
-#                self.bodies = self.kinect.get_last_body_frame()
-#
-#            if self.bodies is not None: 
-#                for i in range(0, self.kinect.max_body_count):
-#                    body = self.bodies.bodies[i]
-#                    if not body.is_tracked: 
-#                        continue 
-#                    
-#                    joint_points = self.kinect.body_joints_to_color_space(body.joints)
-#                    self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])
-#                    if(skip):
-#                        break
-#                    features = self.extract_body_information(body)          
-#                    self.stdout.write(';'.join(str(x) for x in features) + f";{self.action_number}\n")
-#            
-#            copy_back_buffer()
-#            pygame.display.flip()
-#            self.clock.tick(self.fps)
-#        self.exit()
