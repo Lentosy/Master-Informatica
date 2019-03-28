@@ -18,7 +18,10 @@ ANGLES = range(0, 180, 30)
 BLOCK_SIZE = (16, 16)
 IMAGES = [f'Images\\road{x}' for x in range(1, 4 +1)]
 
-def getFilters(image):
+
+# herstructureren zodat we een lijst hebben van 22 * 40 = 880 elementen
+# Elk element stelt dan een feature vector voor van een block
+def getFeatures(image):
     DoGFilters = []
     for angle in ANGLES: # angle = [0, 30, 60, 90, 120, 150]
         DoGFilters.append(imgproc.getDoGFilter(size = 11, sigmabig = 2, sigmasmall = 1, angle = angle))
@@ -29,15 +32,14 @@ def getFilters(image):
     for DoGFilter in DoGFilters:      
         responses.extend([cv2.filter2D(src = image, ddepth = -1, kernel = DoGFilter)])
     maxvalues = []
-    for response in responses:
-        maxvalues_response = []
-        for i in range(0, 352, BLOCK_SIZE[0]):
-            maxvalues_row = []
-            for j in range(0, 640, BLOCK_SIZE[1]):
+    
+    for i in range(0, 352, BLOCK_SIZE[0]):
+        maxvalues_row = []
+        for j in range(0, 640, BLOCK_SIZE[1]):
+            for response in responses:
                 block = response[i:i+16, j:j+16]
                 maxvalues_row.append(numpy.amax(block))
-            maxvalues_response.extend([maxvalues_row])
-        maxvalues.extend([maxvalues_response])
+            maxvalues.extend([maxvalues_row])
     return maxvalues
 
 def getRoadMarkings(img):
@@ -45,8 +47,10 @@ def getRoadMarkings(img):
     for i in range(0, 352, BLOCK_SIZE[0]):
         markings_row = []
         for j in range(0, 640, BLOCK_SIZE[1]):
-            markings_row.append(numpy.amax(img[i:i+16, j:j+16]))
-        roadmarkings.extend([markings_row])
+            if(numpy.amax(img[i:i+16, j:j+16]) == 255):
+                roadmarkings.append(1)
+            else:
+                roadmarkings.append(0)
     return roadmarkings
 
 def visualizeMeans(filters, roadmarkings):
@@ -58,7 +62,7 @@ def visualizeMeans(filters, roadmarkings):
         response_non_road_marked_blocks = []
         for i in range(0, len(roadmarkings)):
             for j in range(0, len(roadmarkings[i])):
-                if(roadmarkings[i][j] == 255):
+                if(roadmarkings[i][j]):
                     response_road_marked_blocks.append(f[i][j])
                 else:
                     response_non_road_marked_blocks.append(f[i][j])
@@ -73,10 +77,15 @@ def visualizeMeans(filters, roadmarkings):
     plt.show()
 
 def main():
-    randomForestClassifier = RandomForestClassifier(n_estimators = 10, min_samples_leaf = 10)
+    randomForestClassifier = RandomForestClassifier(n_estimators = 10)
     for imagePath in IMAGES:
         image = highgui.openImage(f"{imagePath}.png")
         image_blocks = highgui.openImage(f"{imagePath}_blocks.png")
+        features_image = getFeatures(image)
+        labels = getRoadMarkings(image_blocks)
+        randomForestClassifier.fit(features_image, labels)
+        
+    print(randomForestClassifier.predict(getFeatures(highgui.openImage(f"{IMAGES[0]}.png"))))
 
 if __name__ == '__main__':
     main()
