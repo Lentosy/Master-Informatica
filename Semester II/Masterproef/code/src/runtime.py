@@ -2,32 +2,37 @@ from pykinect2 import PyKinectV2
 from pykinect2.PyKinectV2 import *
 from pykinect2 import PyKinectRuntime
 
+import cv2
 import sys
+import os
 import constants
 import ctypes
 import pygame
 
-START_RECORDING_EVENT = 30
-NEXT_TAKE_EVENT = 31
 
 class Runtime():
     def __init__(self, fps):
         pygame.init()     
-        # Set the width and height of the screen [width, height]
-        self.infoObject = pygame.display.Info()
-        self.screen = pygame.display.set_mode((self.infoObject.current_w >> 1, self.infoObject.current_h >> 1), 
-                                               pygame.HWSURFACE|pygame.DOUBLEBUF|pygame.RESIZABLE, 32)
         pygame.display.set_caption("KinectV2 for Windows")
+        
+        # get info about the current graphical environment (mostly the whole screen)
+        displayInfo = pygame.display.Info()
+        width = displayInfo.current_w >> 1 # bit shift to the right so we dont take the full screen
+        height = displayInfo.current_h >> 1
+        self.screen = pygame.display.set_mode((width, height), # resolution
+                                              pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE | pygame.NOFRAME)
+
+
         # Loop until the user clicks the close button.
         self.done = False
         # Used to manage how fast the screen updates
         self.clock = pygame.time.Clock()
-        # Kinect runtime object, we only want color and depth frames 
+        # Kinect runtime object 
         self.kinect = PyKinectRuntime.PyKinectRuntime(PyKinectV2.FrameSourceTypes_Color | PyKinectV2.FrameSourceTypes_Depth | PyKinectV2.FrameSourceTypes_Body)
         # back buffer surface for getting Kinect color frames, 32bit color, width and height equal to the Kinect color frame size
         self.frame_surface = pygame.Surface((self.kinect.color_frame_desc.Width, self.kinect.color_frame_desc.Height), 0, 32)
         # skeleton data
-        self.bodies = None
+        self.skeletons = None
         # frames per second to run at
         self.fps = fps
    
@@ -51,7 +56,6 @@ class Runtime():
                 else:
                     z = depth_list[c]
                 coordinates.extend([x, y, z])
-                
                 quaternions.extend([orientations[j].Orientation.x, orientations[j].Orientation.y, orientations[j].Orientation.z, orientations[j].Orientation.w])
             except: # error ocurred, treat joint as invalid
                 x = -1
@@ -107,7 +111,7 @@ class Runtime():
         while not self.done:
             for event in pygame.event.get():
                 self.handle_event(event)
-            self.run_logic()
+            self.handle_logic()
             self.copy_back_buffer()
             self.clock.tick(self.fps)
         self.exit()
@@ -121,30 +125,31 @@ class Runtime():
         else:
             self.handle_custom_event(event)
 
-    
     def handle_custom_event(self, event):
-        pass
+        raise NotImplementedError("This is an abstract method. Implement this in a subclass")
     
-    def run_logic(self):
-        pass
+    def handle_logic(self):
+        raise NotImplementedError("This is an abstract method. Implement this in a subclass")
 
 class DefaultRuntime(Runtime):
     def __init__(self):
         print("Starting Default Runtime...")
         Runtime.__init__(self, constants.DEFAULT_FPS)
     
-    def run_logic(self):
+    def handle_custom_event(self, event):
+        pass
+    def handle_logic(self):
         if self.kinect.has_new_color_frame():
                 frame = self.kinect.get_last_color_frame()
                 self.draw_color_frame(frame, self.frame_surface)
                 frame = None
         # get skeletondata if body frames exist
         if self.kinect.has_new_body_frame(): 
-            self.bodies = self.kinect.get_last_body_frame()
+            self.skeletons = self.kinect.get_last_body_frame()
         # --- draw skeletons to _frame_surface
-        if self.bodies is not None: 
+        if self.skeletons is not None: 
             for i in range(0, self.kinect.max_body_count):
-                body = self.bodies.bodies[i]
+                body = self.skeletons.bodies[i]
                 if not body.is_tracked: 
                     continue 
                 joint_points = self.kinect.body_joints_to_color_space(body.joints)
@@ -156,7 +161,9 @@ class DebugRuntime(Runtime):
         Runtime.__init__(self, constants.DEBUG_FPS)
         self.stdout = sys.stdout
     
-    def run_logic(self):
+    def handle_custom_event(self, event):
+        pass
+    def handle_logic(self):
         # --- Getting frames and drawing  
         # New color frame: draw on screen
         if self.kinect.has_new_color_frame():
@@ -165,11 +172,11 @@ class DebugRuntime(Runtime):
             frame = None
         # get skeletondata if body frames exist
         if self.kinect.has_new_body_frame(): 
-            self.bodies = self.kinect.get_last_body_frame()
+            self.skeletons = self.kinect.get_last_body_frame()
         # --- draw skeletons to _frame_surface
-        if self.bodies is not None: 
+        if self.skeletons is not None: 
             for i in range(0, self.kinect.max_body_count):
-                body = self.bodies.bodies[i]
+                body = self.skeletons.bodies[i]
                 if not body.is_tracked: 
                     continue 
                 joint_points = self.kinect.body_joints_to_color_space(body.joints)
@@ -183,42 +190,54 @@ class RecordRuntime(Runtime):
         Runtime.__init__(self, constants.DEFAULT_FPS)
         self.action_number = action_number
         self.person_number = person_number
-        self.record_count = 1
-        self.stdout = open(f"data\{constants.PERSONS[self.person_number]}_{constants.ACTIONS[self.action_number]}_{self.record_count}.txt", 'a')
-        self.skip = True # wether or not to skip the feature extraction process: this is used at the beginning of the recording, to allow the person to get ready
+        self.frame_count = 1 # index of frames
+        self.directory = f'data\{constants.PERSONS[person_number]}\{constants.ACTIONS[action_number]}'
+        if not os.path.exists(self.directory):
+            os.makedirs(self.directory)
+        self.stdout = open(f'{self.directory}\\joints.txt' , 'a')
+
+        self.START_RECORDING_COUNTDOWN = pygame.USEREVENT + 1
+        self.font = pygame.font.SysFont("Courier", 72)
+        self.countdown_count = 5
+        pygame.time.set_timer(self.START_RECORDING_COUNTDOWN, 1000)
+
+    def exit(self):
+        # convert all the images from bmp format to jpg format to reduce image size
+        pass
+    
     def handle_custom_event(self, event):
-        print("k")
-        if event.type == START_RECORDING_EVENT:
-            print("Start recording")
-            print(f"Take {self.record_count}")                    
-            pygame.time.set_timer(START_RECORDING_EVENT, 0)
-            pygame.time.set_timer(NEXT_TAKE_EVENT, 5000)
-            self.skip = False
-        elif event.type == NEXT_TAKE_EVENT:
-            pygame.time.delay(2000)
-            if(self.record_count == 10):
-                self.done = True
-                return
-            self.record_count += 1
-            print(f"Take {self.record_count}")
-            self.stdout = open(f"data\{constants.PERSONS[self.person_number]}_{constants.ACTIONS[self.action_number]}_skeleton_{self.record_count}.txt", 'a')
-    def run_logic(self):
-        pygame.time.set_timer(START_RECORDING_EVENT, 5000)          
+        if event.type == self.START_RECORDING_COUNTDOWN:
+            text = self.font.render(f"{self.countdown_count}", False, (255, 255, 255))
+            self.frame_surface.blit(text, (self.frame_surface.get_width() / 2, self.frame_surface.get_height()/2))
+            print(self.countdown_count)
+            if(self.countdown_count == 0):
+                pygame.time.set_timer(self.START_RECORDING_COUNTDOWN, 0)
+            else:    
+                self.countdown_count -= 1
+
+    def handle_logic(self):              
+    
         if self.kinect.has_new_color_frame():
             frame = self.kinect.get_last_color_frame()
             self.draw_color_frame(frame, self.frame_surface)
             frame = None
+            
         # get skeletondata if body frames exist
         if self.kinect.has_new_body_frame(): 
-            self.bodies = self.kinect.get_last_body_frame()
-        if self.bodies is not None: 
+            self.skeletons = self.kinect.get_last_body_frame()
+        if self.skeletons is not None: 
             for i in range(0, self.kinect.max_body_count):
-                body = self.bodies.bodies[i]
+                body = self.skeletons.bodies[i]
                 if not body.is_tracked: 
                     continue 
+                if(self.countdown_count is 0):
+                    features = self.extract_body_information(body)
+    
+                    # save skeleton and frame data
+                    pygame.image.save(self.frame_surface, f'{self.directory}\\frame{self.frame_count}.bmp')
+                    self.frame_count += 1
+                    self.stdout.write(';'.join(str(x) for x in features) + f";\n")
+                    # 
+                
                 joint_points = self.kinect.body_joints_to_color_space(body.joints)
                 self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])
-                if(self.skip):
-                    break
-                features = self.extract_body_information(body)          
-                self.stdout.write(';'.join(str(x) for x in features) + f";{self.action_number}\n")
