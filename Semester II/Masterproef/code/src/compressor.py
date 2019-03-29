@@ -14,4 +14,5 @@ def compress(path):
 for root, subdirs, files in os.walk(DIR):
     for file in files:
         if(file.endswith(".bmp")):
+            print(f"Compressing {file}")
             compress(f"{root}\\{file}")

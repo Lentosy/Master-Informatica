@@ -9,7 +9,6 @@ import constants
 import ctypes
 import pygame
 
-
 class Runtime():
     def __init__(self, fps):
         pygame.init()     
@@ -21,7 +20,6 @@ class Runtime():
         height = displayInfo.current_h >> 1
         self.screen = pygame.display.set_mode((width, height), # resolution
                                               pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE | pygame.NOFRAME)
-
 
         # Loop until the user clicks the close button.
         self.done = False
@@ -42,7 +40,7 @@ class Runtime():
         
         depth_points = self.kinect.body_joints_to_depth_space(joints)
         depth_list = self.kinect.get_last_depth_frame()
-        
+
         coordinates = []
         quaternions = []
         
@@ -50,7 +48,7 @@ class Runtime():
             try:
                 x = depth_points[j].x                    
                 y = depth_points[j].y
-                c = int(y) * 512 + int(x) # depth index to be used in _depth
+                c = int(y) * 512 + int(x) # depth index to be used in depth_list
                 if(c > len(depth_list) or (x < 0 and y < 0)):
                     z = -1 # joint is not in view, so no depth data exists
                 else:
@@ -58,13 +56,13 @@ class Runtime():
                 coordinates.extend([x, y, z])
                 quaternions.extend([orientations[j].Orientation.x, orientations[j].Orientation.y, orientations[j].Orientation.z, orientations[j].Orientation.w])
             except: # error ocurred, treat joint as invalid
-                x = -1
-                y = -1
-                z = -1 
+                (x, y, z) = (-1, -1, -1)
         return [';'.join(str(c) for c in coordinates), ';'.join(str(q) for q in quaternions)]
+
     def is_joint_tracked(self, joint):
         jointState = joint.TrackingState
         return not jointState == PyKinectV2.TrackingState_NotTracked and not jointState == PyKinectV2.TrackingState_Inferred
+
     # This function draws a straight line segment starting from joint0 and ending in joint1
     def draw_body_bone(self, joints, jointPoints, color, joint0, joint1):
         if(not self.is_joint_tracked(joints[joint0]) and not self.is_joint_tracked(joints[joint1])):
@@ -76,23 +74,27 @@ class Runtime():
             pygame.draw.line(self.frame_surface, color, start, end, constants.SKELETON_LINE_THICKNESS)
         except Exception as e: # sometimes coordinates can be (-inf, -inf)
             pass
+
     # This function draws a circle at a joint location
     def draw_joint_circle(self, joints, jointPoints, color, joint):
         if(not self.is_joint_tracked(joints[joint])):
             return
         center = (int(jointPoints[joint].x), int(jointPoints[joint].y))
         pygame.draw.circle(self.frame_surface, color, center, constants.SKELETON_CIRCLE_RADIUS, 0)
+    
     def draw_body(self, joints, jointPoints, color):
         for i in range(len(constants.CONNECTIONS)):
             self.draw_body_bone(joints, jointPoints, color, constants.CONNECTIONS[i][0], constants.CONNECTIONS[i][1])
             # optimalisation: CONNECTIONS list (from constants.py) contains  an equal amount of elements as the JOINTS list. So it can be put in one loop
             self.draw_joint_circle(joints, jointPoints, color, constants.JOINTS[i]) 
+    
     def draw_color_frame(self, frame, target_surface):
         target_surface.lock()
         address = self.kinect.surface_as_array(target_surface.get_buffer())
         ctypes.memmove(address, frame.ctypes.data, frame.size)
         del address
         target_surface.unlock()
+    
     def copy_back_buffer(self):
             # --- copy back buffer surface pixels to the screen, resize it if needed and keep aspect ratio
             # --- (screen size may be different from Kinect's color frame size) 
@@ -102,6 +104,7 @@ class Runtime():
             self.screen.blit(surface_to_draw, (0,0))
             surface_to_draw = None
             pygame.display.update()
+    
     def exit(self):
         # Close the Kinect sensor, close the window and quit.
         self.kinect.close()
@@ -138,22 +141,21 @@ class DefaultRuntime(Runtime):
     
     def handle_custom_event(self, event):
         pass
+    
     def handle_logic(self):
         if self.kinect.has_new_color_frame():
                 frame = self.kinect.get_last_color_frame()
                 self.draw_color_frame(frame, self.frame_surface)
                 frame = None
-        # get skeletondata if body frames exist
+        
         if self.kinect.has_new_body_frame(): 
             self.skeletons = self.kinect.get_last_body_frame()
-        # --- draw skeletons to _frame_surface
+        
         if self.skeletons is not None: 
-            for i in range(0, self.kinect.max_body_count):
-                body = self.skeletons.bodies[i]
-                if not body.is_tracked: 
-                    continue 
-                joint_points = self.kinect.body_joints_to_color_space(body.joints)
-                self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])                    
+            for body in self.skeletons.bodies:
+                if body.is_tracked: 
+                    joint_points = self.kinect.body_joints_to_color_space(body.joints)
+                    self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])                    
             
 class DebugRuntime(Runtime):
     def __init__(self):
@@ -163,6 +165,7 @@ class DebugRuntime(Runtime):
     
     def handle_custom_event(self, event):
         pass
+    
     def handle_logic(self):
         # --- Getting frames and drawing  
         # New color frame: draw on screen
@@ -175,10 +178,8 @@ class DebugRuntime(Runtime):
             self.skeletons = self.kinect.get_last_body_frame()
         # --- draw skeletons to _frame_surface
         if self.skeletons is not None: 
-            for i in range(0, self.kinect.max_body_count):
-                body = self.skeletons.bodies[i]
-                if not body.is_tracked: 
-                    continue 
+            body = self.skeletons.bodies[0]
+            if(body.is_tracked): 
                 joint_points = self.kinect.body_joints_to_color_space(body.joints)
                 self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])                    
                 features = self.extract_body_information(body)          
@@ -207,8 +208,8 @@ class RecordRuntime(Runtime):
     
     def handle_custom_event(self, event):
         if event.type == self.START_RECORDING_COUNTDOWN:
-            text = self.font.render(f"{self.countdown_count}", False, (255, 255, 255))
-            self.frame_surface.blit(text, (self.frame_surface.get_width() / 2, self.frame_surface.get_height()/2))
+            #text = self.font.render(f"{self.countdown_count}", False, (255, 255, 255))
+            #self.frame_surface.blit(text, (self.frame_surface.get_width() / 2, self.frame_surface.get_height()/2))
             print(self.countdown_count)
             if(self.countdown_count == 0):
                 pygame.time.set_timer(self.START_RECORDING_COUNTDOWN, 0)
@@ -228,16 +229,15 @@ class RecordRuntime(Runtime):
         if self.skeletons is not None: 
             for i in range(0, self.kinect.max_body_count):
                 body = self.skeletons.bodies[i]
-                if not body.is_tracked: 
-                    continue 
-                if(self.countdown_count is 0):
-                    features = self.extract_body_information(body)
-    
-                    # save skeleton and frame data
-                    pygame.image.save(self.frame_surface, f'{self.directory}\\frame{self.frame_count}.bmp')
-                    self.frame_count += 1
-                    self.stdout.write(';'.join(str(x) for x in features) + f";\n")
-                    # 
-                
-                joint_points = self.kinect.body_joints_to_color_space(body.joints)
-                self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])
+                if(body.is_tracked): 
+                    if(self.countdown_count is 0):
+                        
+                        pygame.image.save(self.frame_surface, f'{self.directory}\\frame{self.frame_count}.bmp')
+                        self.frame_count += 1
+
+                        features = self.extract_body_information(body)
+                        self.stdout.write(';'.join(str(x) for x in features) + f";\n")
+                        # 
+                    
+                    joint_points = self.kinect.body_joints_to_color_space(body.joints)
+                    self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])
