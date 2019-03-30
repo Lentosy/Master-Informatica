@@ -6,7 +6,6 @@ import numpy as np
 
 from constants import PERSONS, ACTIONS
 
-
 FOLDER = "data/"
 
 names = ["Nearest Neighbors", "RBF SVM", "Random Forest"]
