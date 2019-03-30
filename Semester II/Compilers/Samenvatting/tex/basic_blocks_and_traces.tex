@@ -1,0 +1,22 @@
+\chapter{Basisblokken en traces}
+
+Probleem met IR tree: soms is volgorde van uitvoering in de tree niet bepaald. We zouden de knopen van de IR tree kunnen herordenen.
+
+Ander probleem: in een functiecall kan een parameter ook een functiecall zijn. De binneste functiecall moet eerst uitgevoerd worden.
+
+Het is nog niet gemakkelijk om machinecode te genereren.
+
+
+\section{Canonical trees}
+
+
+\section{Linearizeren}
+Door associativiteit kan de tree omgevormd worden tot een lijst van statements. Onder elke statement kunnen complexe expressies hangen in de vorm van subtrees.
+
+
+
+\section{Basic blocks}
+Algemene definitie: een sequentie van statements. Als één statement uitgevoerd wordt, moeten alle andere statements van dit block uitgevoerd worden. Een basic block start met een \texttt{LABEL} statement en eindigt met een \texttt{JUMP} of \texttt{CJUMP} statement.
+
+\subsection{Traces aanmaken}
+Een trace is een sequentie van basisblokken die mogelijk na elkaar uitgevoerd kunnen worden. De trace kan nog opgekuist worden zodat het false pad van een basisblok gevolgd wordt door zijn opvolger binnen een trace.
