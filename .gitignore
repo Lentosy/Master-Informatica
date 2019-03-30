@@ -1,5 +1,5 @@
 *.exe
-Semester II/Masterproef/code/src/data/*
+"Semester II/Masterproef/code/src/data/"
 
 ## Core latex/pdflatex auxiliary files:
 *.aux

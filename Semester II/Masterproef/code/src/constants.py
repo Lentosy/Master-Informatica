@@ -1,7 +1,7 @@
 from pykinect2 import PyKinectV2
 import pygame
 
-PERSONS = ['BERT', 'DEMING']
+PERSONS = ['BERT', 'DEMING', 'NIELS']
 ACTIONS = ['DEFAULT',               'EMERGENCY_STOP',       
            'RH_NORMAL_STOP',        'LH_NORMAL_STOP',
            'RH_MOVE_FORWARD',       'RH_MOVE_BACKWARD',     'RH_MOVE_RIGHT',
