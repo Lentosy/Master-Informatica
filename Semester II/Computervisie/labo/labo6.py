@@ -56,10 +56,11 @@ def getFeatureVectors(image):
     # construct the 12 DoG Filters
     DoGFilters = []
     for angle in ANGLES:  # angle = [0, 30, 60, 90, 120, 150]
-        DoGFilters.append(imgproc.getDoGFilter(size=45, sigmabig=2,
+        DoGFilters.append(imgproc.getDoGFilter(size=75, sigmabig=25,
                                                sigmasmall=1, angle=angle))
-        DoGFilters.append(imgproc.getDoGFilter(size=11, sigmabig=2,
+        DoGFilters.append(imgproc.getDoGFilter(size=25, sigmabig=5,
                                                sigmasmall=1, angle=angle))
+
 
     # Get the responses when filtering the image with each of the 12 DoGFilters
     responses = []
@@ -134,7 +135,7 @@ def visualizeMeans(features, roadmarkings):
     plt.show()
 
 
-def drawRectangles(image, predictions):
+def getOverlayedImage(image, predictions):
     """
     This function draws rectangles for each 16 x 16 block which the classifier
     thinks contains a road marking.
@@ -158,7 +159,9 @@ def drawRectangles(image, predictions):
                     beta=1-alpha, gamma=0,
                     dst=predictionImage)
 
-    highgui.showImage('name', predictionImage)
+    return predictionImage
+    
+
 
 
 def balanceTrainingset(features, labels):
@@ -200,6 +203,8 @@ def evaluateClassifierPerformance(classifier):
         image_blocks = highgui.openImage(f"{testImage}_blocks.png") 
         predictions = classifier.predict(getFeatureVectors(image))
         groundTruth = getRoadMarkings(image_blocks) 
+        predictionImage = getOverlayedImage(image, predictions)
+        highgui.saveImage(predictionImage, highgui.getSavePath(f"{testImage}.png", 'CLASSIFIER'))
 
         TP, FP, FN, TN = (0, 0, 0, 0)
         print(f"recall and precision considering {trainingSet} as the training data and {testImage} as the test data")
@@ -218,7 +223,7 @@ def evaluateClassifierPerformance(classifier):
         precision = TP/(TP + FP)  # given a positive prediction from the classifier, how likely is it to be correct?
         recall = TP/(TP + FN)     # given a positive example, will the classifier detect it?
 
-        print(f"Precision: {precision} \t Recall: {recall}")
+        print(f"Precision: {round(precision, 4) * 100} \t Recall: {round(recall, 4) * 100}")
 
 def main():
     randomForestClassifier = RandomForestClassifier(n_estimators=10)    

@@ -20,8 +20,8 @@ def unsharpMasking(src, kernelSize):
     return unsharpImage
 
 def getDoGFilter(size, sigmabig, sigmasmall, angle):
-    gaussianColumnMatrix = cv2.getGaussianKernel(ksize = size, sigma = sigmabig)
-    gaussianRowMatrix = numpy.transpose(cv2.getGaussianKernel(ksize= size, sigma = sigmasmall))
+    gaussianColumnMatrix = numpy.array(cv2.getGaussianKernel(ksize = size, sigma = sigmabig))
+    gaussianRowMatrix = numpy.transpose(cv2.getGaussianKernel(ksize = size, sigma = sigmasmall))
     squareMatrix = numpy.zeros((size, size))
     for i in range(0, size):
         squareMatrix[i][int((size - 1) / 2)] = gaussianColumnMatrix[i]
