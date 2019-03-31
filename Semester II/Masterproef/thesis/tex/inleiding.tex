@@ -6,15 +6,13 @@
 Menselijke actieherkenning is het proces dat op een automatische manier (I) detecteert dat een persoon een bepaalde actie uitvoert en (II) herkennen welke actie dit is. Voorbeelden van zulke acties zijn lopen, stappen, zwaaien, springen, bukken, enz. Actieherkenning kent tal van toepassingen zoals fysiotherapie \cite{Deboeverie2016}, lichaamsanalyse \cite{Devi2015}, mens-robot interactie \cite{Li2018} en teleoperatie \cite{Ajili2017}. In deze masterproef wordt actieherkenning gecombineerd met teleoperatie, meer specifiek voor rijdende voorwerpen, zoals een robot of een slimme fiets. Een operator kan dan door enkel gebaren uit te voeren het voorwerp besturen. Belangrijk hierbij is het real-time aspect; een te trage herkenning van de actie zorgt voor een late reactie waardoor er potentieel ongevallen kunnen plaatsvinden. 
 
 \section{Probleemstelling}
-Actieherkenning 
-In het onderzoeksgebied actieherkenning is er al uitbundig onderzoek gedaan. Zo is men in staat om voor zowel kleurenbeelden als dieptebeelden actieherkenning toe te passen op een betrouwbare manier. Echter blijft het moeilijk om dit te realiseren in een real-time scenario, waarbij snelle beslissingen gemaakt moeten worden. Een groot probleem is de onzekerheid van de actie. 
+Men is reeds in staat om voor zowel kleurenbeelden als dieptebeelden actieherkenning toe te passen op een betrouwbare manier. Echter blijft het moeilijk om dit te realiseren in een real-time scenario, waarbij snelle beslissingen gemaakt moeten worden. Een groot probleem is de onzekerheid van de actie. 
 
 In de literatuur worden er vaak methoden (\cite{Xia2012}, ...) beschreven die acties herkennen op video's waarop slechts één actie uitgevoerd wordt. De actielabel wordt ook maar nadien toegekend, als de video reeds gedaan is. Een betere aanpak zou de actielabel toekennen op het moment dat de actie bezig is, op een video waarbij meerdere acties kunnen uitgevoerd worden op hetzelfde moment. In de literatuur worden dit \textit{untrimmed video's} genoemd. In zulke video's zijn de actielabels, actiepositie en actieduur onbekende parameters.
 
 De THUMOS Challenge \footnote{\url{http://www.thumos.info}} werd georganiseerd in 2015 en was een initiatief om op een competitieve manier het probleem van actieherkenning in untrimmed video's te onderzoeken. Ze bieden een dataset aan met untrimmed video's die scenario's uit het echte leven bevatten.
 
-Het doel van deze masterproef is om eerst te onderzoeken welke methoden er al bestaan op vlak van actieherkenning in untrimmed video's en hoe deze aangepast kunnen worden zodat ze werken op de skeletdata van een Kinect. De complete oplossingsstrategie wordt beschreven in hoofdstuk \ref{ch:methodologie}.
-
+Het doel van deze masterproef is om eerst te onderzoeken welke methoden er al bestaan op vlak van actieherkenning in untrimmed video's en hoe deze geoptimaliseerd kunnen worden zodat ze efficiënt werken op de skeletdata van een Kinect. In hoofdstuk \ref{ch:methodologie} wordt de uitwerking beschreven.
 
 
 \section{De Kinect}
@@ -37,4 +35,4 @@ Ondanks het succes van de Kinect heeft Microsoft toch besloten om het product ni
 \end{figure}
 
 \section{Structuur}
-In hoofdstuk \ref{ch:methodologie} wordt de algemene methodologie beschreven die gebruikt wordt om deze masterproef te realiseren, waarom deze gebruikt wordt en wat het beoogde eindresultaat is. Verder wordt er in hoofdstuk \ref{ch:literatuur} een overzicht gegeven van bestaande methoden en welke features en classifiers zij gebruiken.
+In hoofdstuk \ref{ch:methodologie} wordt de algemene methodologie beschreven die gebruikt wordt om deze masterproef te realiseren, waarom deze gebruikt wordt en wat het beoogde eindresultaat is. Verder wordt er in hoofdstuk \ref{ch:features} en hoofdstuk \ref{ch:classificatie} een overzicht gegeven van bestaande methoden en welke features en classifiers zij gebruiken. In hoofdstuk \todo{hoofdstuk uitwerking, resultaten, conclusie}
