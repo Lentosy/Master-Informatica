@@ -1,16 +1,34 @@
 from sklearn.svm import SVC
+from sklearn.datasets import make_moons, make_circles, make_classification
+from sklearn.neural_network import MLPClassifier
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.svm import SVC
+from sklearn.gaussian_process import GaussianProcessClassifier
+from sklearn.gaussian_process.kernels import RBF
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
+from sklearn.naive_bayes import GaussianNB
+from sklearn.discriminant_analysis import QuadraticDiscriminantAnalysis
 import pandas as pd
 import numpy as np
+import sys, os
 
 from constants import PERSONS, ACTIONS
 
-names = ["Nearest Neighbors", "RBF SVM", "Random Forest"]
+devnull = open(os.devnull, 'w')
+
+names = ["Nearest Neighbors", "RBF SVM", "Random Forest", "AdaBoost",
+         "Naive Bayes"]
+
+
+# mogelijkheden: per actie een andere classifier maken
+
 classifiers = [
     KNeighborsClassifier(3),
-    SVC(gamma = 'scale' , C = 100),
-    RandomForestClassifier(max_depth = 5, n_estimators = 10, max_features = 1)
+    SVC(gamma=2, C=1),
+    RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1),
+    AdaBoostClassifier(),
+    GaussianNB(),
 ]
 
 class Dataset(object):
@@ -30,7 +48,7 @@ def load_trainingset(trainingPersons):
                 trainingset.target.extend(labels.to_numpy().ravel())
                 trainingset.data.extend(joints.to_numpy())
             except FileNotFoundError as fnfe:
-                print(fnfe)
+                devnull.write(str(fnfe))
     return trainingset
 
 def load_validationset(validationPerson):
@@ -43,7 +61,7 @@ def load_validationset(validationPerson):
             validationset.target.extend(labels.to_numpy().ravel())
             validationset.data.extend(joints.to_numpy())
         except FileNotFoundError as fnfe:
-            print(fnfe)
+            devnull.write(str(fnfe))
     return validationset
 
 def fitAndPredict(trainingset, validationset):
@@ -59,10 +77,13 @@ def fitAndPredict(trainingset, validationset):
 
         print(f"[{name}]: correct = {positive/len(res) * 100}%, false = {negative/len(res) * 100}%")
 
-        
-        
-trainingset = load_trainingset([PERSONS[1], PERSONS[2]])
-validationset = load_validationset(PERSONS[0])
 
-fitAndPredict(trainingset, validationset)
+
+for i in range(1, len(PERSONS) + 1):
+    testPersons = PERSONS[:i - 1] + PERSONS[i:]
+    validationPerson = PERSONS[i - 1]
+    trainingset = load_trainingset(testPersons)
+    validationset = load_validationset(validationPerson)
+    print(f"Training set: {testPersons}\nValidation set: {validationPerson}")
+    fitAndPredict(trainingset, validationset)
 
