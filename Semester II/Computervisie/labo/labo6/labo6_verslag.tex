@@ -12,44 +12,85 @@
 \section{Uitwerking}
 Het detecteren van wegmarkeringen in een beeld kan vereenvoudigd worden door het detecteren van een wegmarkeringen in blokken die een kleinere resolutie hebben. Als het beeld onderverdeeld wordt in blokken die elk $16 \times 16$ pixels groot zijn, zou men enkel voor dit blok moeten kunnen bepalen of dit een wegmarkering of niet voorstelt. De uitkomsten van alle blokken samen vormt dan de detectie op beeldniveau.
 
-Een eerste stap is het opbouwen van de feature vector per blok. Hiervoor worden er 12 DoG filters opgebouwd die 6 verschillende hoeken en 2 verschillende grootten bevatten. Het oorspronkelijke beeld wordt gefilterd met elke filter met de \texttt{filter2D} functie zodat er 12 responsewaarden zijn per pixel. Als nu het beeld beschouwd wordt als blokken van $16 \times 16$ pixels, dan kan voor elk blok een feature vector opgebouwd worden die uit 12 waarden bestaat door de maximale responswaarde te nemen voor elke filter binnen elk blok. Op die manier kan de feature vector van een blok op rij $i$ en kolom $j$ voorgesteld worden als:
+Een eerste stap is het opbouwen van de feature vector per $16 \times 16$ blok. Hiervoor worden er 12 DoG filters opgebouwd me volgende eigenschappen:
+\begin{itemize}
+	\item Zes van deze filters worden een $25 \times 25$ matrix, met $\sigma_{big} = 3$ en $\sigma_{small} = 1$.
+	\item De overige zes van deze filters worden een $75 \times 75$ matrix, met $\sigma_{big} = 10$ en $\sigma_{small} = 4$.
+	\item Voor elke reeks van 6 filters krijgt elke filter een andere oriëntatie, gaande van $0$ graden tot $180$ graden, in stappen van $30$ graden.
+\end{itemize}
+
+
+Het oorspronkelijke beeld wordt gefilterd met elk van de 12 filters met de \texttt{filter2D} functie zodat er 12 responsewaarden zijn per pixel. Als nu het beeld beschouwd wordt als blokken van $16 \times 16$ pixels, dan kan voor elk blok een feature vector opgebouwd worden die uit 12 waarden bestaat door de maximale responswaarde te nemen voor elke filter binnen elk blok. Op die manier kan de feature vector van een blok op rij $i$ en kolom $j$ voorgesteld worden als:
 
 $$\textbf{f_{ij}} = \{f_1, f_2, ..., f_{11}, f_{12}\}$$
 
-Op het moment dat een feature vector beschikbaar is voor een blok, kan dit meegegeven worden aan een classifier. De gebruikte classifier is hier een Random Forest Classifier met $10$ bomen.
+Op het moment dat een feature vector beschikbaar is voor een blok, kan dit meegegeven worden aan een classifier. De gebruikte classifier is hier een Random Forest Classifier met $10$ bomen en een minimum bladgrootte van $3$. De training data wordt gebalanceerd door een even aantal blokken te selecteren die geen wegmarkering voorstellen als blokken die wel een wegmarkering voorstellen.
 
 
 
 \section{Classifier output}
-Voor elk beeld wordt de classifier getest. Dit wil zeggen dat de drie andere beelden tot de training data behoren en het overige beeld tot de testdata. Volgende tabel toont de \textit{recall} en \textit{precision} dat bereikt is voor elk van de wegen:
+Voor elk beeld wordt de classifier getest. Dit wil zeggen dat de drie andere beelden tot de training data behoren en het overige beeld tot de testdata, en dit voor elk beeld. Tabel \ref{table:precision_recall} toont de \textit{recall} en \textit{precision} dat bereikt is wanneer de classifier getest is op dat beeld:
 \begin{table}[ht]
 	\centering
 	\begin{tabular}{l | l | l}
 		& precision & recall \\
 		\hline
-		road1 & 61.90\% & 20.97\% \\
-		road2 & 83.33\% & 54.55\% \\
-		road3 & 90.00\% & 27.84\% \\
-		road4 & 82.61\% & 38.38\% \\
-		\hline
-		gemiddelde & 79.46\% & 35.43\%
+road1 & 48.94\% & 37.1\% \\
+road2 & 84.0\% & 38.18\% \\
+road3 & 66.67\% & 14.43\% \\
+road4 & 75.68\% & 28.28\% \\
+\hline gemiddelde & 68.82\% & 29.50\%
 	\end{tabular}
+	\caption{De \textit{precision} en \textit{recall} voor elk beeld.}
+	\label{table:precision_recall}
 \end{table}
-\begin{figure}
-	\includegraphics[width=\textwidth]{road1EXCLASSIFIER}
-	\caption{Classificatie voor \texttt{road1.png}.}
+
+\newpage
+De volgende figuren tonen de effectieve geclassificeerde pixels.
+
+\begin{figure}[ht]
+	\begin{minipage}{0.48\textwidth}
+		\includegraphics[width=\linewidth]{road1_filter}
+		\caption{Gemiddelde waarden voor elke filter voor \texttt{road1.png}.}
+	\end{minipage}
+	\begin{minipage}{0.48\textwidth}
+		\includegraphics[width=\linewidth]{road1EXCLASSIFIER}
+		\caption{Classificatie voor \texttt{road1.png}.}
+	\end{minipage}
+
 \end{figure}
-\begin{figure}
-	\includegraphics[width=\textwidth]{road2EXCLASSIFIER}
-	\caption{Classificatie voor \texttt{road2.png}.}
+\begin{figure}[ht]
+	\begin{minipage}{0.48\textwidth}
+		\includegraphics[width=\linewidth]{road2_filter}
+		\caption{Gemiddelde waarden voor elke filter voor \texttt{road2.png}.}
+	\end{minipage}
+	\begin{minipage}{0.48\textwidth}
+		\includegraphics[width=\linewidth]{road2EXCLASSIFIER}
+		\caption{Classificatie voor \texttt{road2.png}.}
+	\end{minipage}
+	
 \end{figure}
-\begin{figure}
-	\includegraphics[width=\textwidth]{road3EXCLASSIFIER}
-	\caption{Classificatie voor \texttt{road3.png}.}
+\begin{figure}[ht]
+	\begin{minipage}{0.48\textwidth}
+		\includegraphics[width=\linewidth]{road3_filter}
+		\caption{Gemiddelde waarden voor elke filter voor \texttt{road3.png}.}
+	\end{minipage}
+	\begin{minipage}{0.48\textwidth}
+		\includegraphics[width=\linewidth]{road3EXCLASSIFIER}
+		\caption{Classificatie voor \texttt{road3.png}.}
+	\end{minipage}
+	
 \end{figure}
-\begin{figure}
-	\includegraphics[width=\textwidth]{road4EXCLASSIFIER}
-	\caption{Classificatie voor \texttt{road4.png}.}
+\begin{figure}[ht]
+	\begin{minipage}{0.48\textwidth}
+		\includegraphics[width=\linewidth]{road4_filter}
+		\caption{Gemiddelde waarden voor elke filter voor \texttt{road4.png}.}
+	\end{minipage}
+	\begin{minipage}{0.48\textwidth}
+		\includegraphics[width=\linewidth]{road4EXCLASSIFIER}
+		\caption{Classificatie voor \texttt{road4.png}.}
+	\end{minipage}
+	
 \end{figure}
 
 

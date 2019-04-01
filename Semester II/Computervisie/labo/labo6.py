@@ -55,11 +55,13 @@ def getFeatureVectors(image):
     """
     # construct the 12 DoG Filters
     DoGFilters = []
-    for angle in ANGLES:  # angle = [0, 30, 60, 90, 120, 150]
-        DoGFilters.append(imgproc.getDoGFilter(size=75, sigmabig=25,
+    for angle in ANGLES:  # angle = [0, 30, 60, 90, 120, 150]                              
+        DoGFilters.append(imgproc.getDoGFilter(size=25, sigmabig=3,
                                                sigmasmall=1, angle=angle))
-        DoGFilters.append(imgproc.getDoGFilter(size=25, sigmabig=5,
-                                               sigmasmall=1, angle=angle))
+    for angle in ANGLES: 
+        DoGFilters.append(imgproc.getDoGFilter(size=75, sigmabig=10,
+                                               sigmasmall=4, angle=angle))
+    
 
 
     # Get the responses when filtering the image with each of the 12 DoGFilters
@@ -100,7 +102,7 @@ def getRoadMarkings(image):
     return roadmarkings
 
 
-def visualizeMeans(features, roadmarkings):
+def visualizeMeans(features, roadmarkings, savePath):
     """
     Compares the mean values of each feature for blocks containing road
     markings and blocks containing no road markings.
@@ -127,12 +129,13 @@ def visualizeMeans(features, roadmarkings):
         mean_values_per_filter_road.append(numpy.average(values_per_filter_road[i]))
         mean_values_per_filter_non_road.append(numpy.average(values_per_filter_non_road[i]))
 
+    plt.clf()
     plt.plot(mean_values_per_filter_road, label = "road mark blocks")
     plt.plot(mean_values_per_filter_non_road, label = "non-road mark blocks")
     plt.legend()
     plt.xlabel("filter index")
     plt.ylabel("mean of maximal response per block")
-    plt.show()
+    plt.savefig(savePath)
 
 
 def getOverlayedImage(image, predictions):
@@ -162,8 +165,6 @@ def getOverlayedImage(image, predictions):
     return predictionImage
     
 
-
-
 def balanceTrainingset(features, labels):
     """
     Balances the trainingset so that it contains an equal amount of white and black blocks.
@@ -181,6 +182,8 @@ def balanceTrainingset(features, labels):
 
 def evaluateClassifierPerformance(classifier):
 
+    avg_precision = 0
+    avg_recall = 0
     # apply 4-fold cross validation: image with index i will be used as testdata, the other images as trainingdata
     for i in range(1, len(IMAGES) + 1):
         trainingSet = IMAGES[:i - 1] + IMAGES[i:]
@@ -194,7 +197,9 @@ def evaluateClassifierPerformance(classifier):
             image_blocks = highgui.openImage(f"{imagePath}_blocks.png")
             features = getFeatureVectors(image)
             labels = getRoadMarkings(image_blocks)
+   
             (features, labels) = balanceTrainingset(features, labels)
+            
             featureSet.extend(features)
             labelSet.extend(labels)
             
@@ -203,11 +208,14 @@ def evaluateClassifierPerformance(classifier):
         image_blocks = highgui.openImage(f"{testImage}_blocks.png") 
         predictions = classifier.predict(getFeatureVectors(image))
         groundTruth = getRoadMarkings(image_blocks) 
+
+        # visualize the filter means
+        visualizeMeans(getFeatureVectors(image), groundTruth, f"{IMAGES[i - 1]}_filter.png")
+        
         predictionImage = getOverlayedImage(image, predictions)
         highgui.saveImage(predictionImage, highgui.getSavePath(f"{testImage}.png", 'CLASSIFIER'))
 
         TP, FP, FN, TN = (0, 0, 0, 0)
-        print(f"recall and precision considering {trainingSet} as the training data and {testImage} as the test data")
         for prediction, groundTruth in zip(predictions, groundTruth):
             if(groundTruth == 1):
                 if(prediction == 1):
@@ -220,13 +228,17 @@ def evaluateClassifierPerformance(classifier):
                 else:
                     TN += 1
 
-        precision = TP/(TP + FP)  # given a positive prediction from the classifier, how likely is it to be correct?
-        recall = TP/(TP + FN)     # given a positive example, will the classifier detect it?
+        precision = round(TP/(TP + FP), 4) * 100  # given a positive prediction from the classifier, how likely is it to be correct?
+        recall = round(TP/(TP + FN), 4) * 100     # given a positive example, will the classifier detect it?
+        avg_precision += precision
+        avg_recall += recall
+        #print(f"road{i} & {precision}\\% & {recall}\\% \\\\") # for latex
+        print(f"recall and precision considering {trainingSet} as the training data and {testImage} as the test data")
+        print(f"Precision: {precision} \t Recall: {recall}")
 
-        print(f"Precision: {round(precision, 4) * 100} \t Recall: {round(recall, 4) * 100}")
-
+   # print(f"\\hline gemiddelde & {avg_precision/4}\\% & {avg_recall/4}\\%")
 def main():
-    randomForestClassifier = RandomForestClassifier(n_estimators=10)    
+    randomForestClassifier = RandomForestClassifier(n_estimators=10, min_samples_leaf=3)    
     evaluateClassifierPerformance(randomForestClassifier)
 
 if __name__ == '__main__':
