@@ -236,7 +236,7 @@ class RecordRuntime(Runtime):
                         self.frame_count += 1
 
                         features = self.extract_body_information(body)
-                        self.stdout.write(';'.join(str(x) for x in features) + f";\n")
+                        self.stdout.write(';'.join(str(x) for x in features) + f"\n")
                         # 
                     
                     joint_points = self.kinect.body_joints_to_color_space(body.joints)
