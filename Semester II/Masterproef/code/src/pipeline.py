@@ -18,9 +18,6 @@ class Dataset(object):
         self.data = []
         self.target = []
 
-
-
-
 def load_trainingset(trainingPersons):
     trainingset = Dataset() # trainingset is a n * k matrix with n = # samples (frames) and k = # features (175)
 
@@ -64,7 +61,7 @@ def fitAndPredict(trainingset, validationset):
 
         
         
-trainingset = load_trainingset([PERSONS[1]])
+trainingset = load_trainingset([PERSONS[1], PERSONS[2]])
 validationset = load_validationset(PERSONS[0])
 
 fitAndPredict(trainingset, validationset)

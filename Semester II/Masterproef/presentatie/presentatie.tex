@@ -1,0 +1,51 @@
+\documentclass[]{beamer}
+
+\usepackage{lipsum}
+\usepackage{pgfpages}
+\usepackage{graphics}
+
+\graphicspath{{img/}}
+
+\mode<handout>{%
+%	\setbeameroption{show notes}
+}
+
+\usetheme{AnnArbor}
+\usecolortheme{beaver}
+
+\AtBeginSection[]
+{
+	\begin{frame}
+		\frametitle{Inhoudsopgave}
+		\tableofcontents[currentsection]
+	\end{frame}
+}
+
+
+\begin{document}
+	\title[Actieherkenning met de Kinect sensor]{Live actieherkenning met de Kinect sensor in Python}
+	\author[Bert De Saffel]{
+				\begin{tabular}{rcr}
+				prof. dr. ir. Peter Veelaert &\&& prof. dr. ir. Wilfried Philips \\
+				ing. Sanne Roegiers &\&& ing. Dimitri van Cauwelaert
+				\end{tabular}
+	}
+	
+	\subtitle{Master of Science in de industriële wetenschappen: informatica \\ \vspace{0.2cm} Bert De Saffel}
+	\date{04 april 2019}
+	\frame{\titlepage}
+	
+	\section{Context}
+	\begin{frame}
+		\begin{itemize}
+			\item Real-time actieherkenning
+		\end{itemize}
+	\end{frame}
+
+
+	\begin{frame}
+		\begin{center}
+			\Huge Vragen, opmerkingen, ...?
+		\end{center}
+	\end{frame}
+\end{document}
