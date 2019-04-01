@@ -23,7 +23,7 @@
 
 
 \begin{document}
-	\title[Actieherkenning met de Kinect sensor]{Live actieherkenning met de Kinect sensor in Python}
+	\title[Actieherkenning met de Kinect sensor]{Intuïtive mens-machineinterface met live actieherkenning }
 	\author[Bert De Saffel]{
 				\begin{tabular}{rcr}
 				prof. dr. ir. Peter Veelaert &\&& prof. dr. ir. Wilfried Philips \\
@@ -35,10 +35,82 @@
 	\date{04 april 2019}
 	\frame{\titlepage}
 	
+	\section{Vorige week}
+	\frametitle{Vorige week}
+	\begin{frame}
+		\begin{itemize}
+			\item Kleurenbeelden opslaan
+			\item Gelabelde dataset
+			\begin{itemize}
+				\item Drie personen
+				\item Elke persoon voert vijf maal elke actie uit
+			\end{itemize}
+			\item Normaliseren skeletjoints
+			\begin{itemize}
+				\item Pelvis als centrum
+				\item Elke andere joint is relatief t.o.v. het centrum 
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+	
 	\section{Context}
 	\begin{frame}
 		\begin{itemize}
 			\item Real-time actieherkenning
+			\item Met de Kinect Sensor
+			\begin{itemize}
+				\item Genereert skelet via dieptebeelden
+			\end{itemize}
+		\end{itemize}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.4\textwidth]{skeleton}
+		\end{figure}
+	\end{frame}
+
+	\section{Probleemstelling}
+	\begin{frame}
+		\frametitle{Probleemstelling}
+		\begin{itemize}
+			\item Invariant zijn van de features onafhankelijk van o.a.:
+			\begin{itemize}
+				\item verschillen in lichaamsbouw (kind of volwassen)
+				\item actie-uitvoering
+				\item camerahoek
+				\item snelheid (trage of snelle actie)
+			\end{itemize}
+		\end{itemize}
+		\begin{figure}
+			\includegraphics[width=0.7\linewidth]{sensoren}
+		\end{figure}
+	\end{frame}
+	\begin{frame}
+			\frametitle{Probleemstelling}
+	\begin{itemize}
+		\item Invariant zijn van de features onafhankelijk van o.a.:
+		\begin{itemize}
+			\item verschillen in lichaamsbouw (kind of volwassen)
+			\item actie-uitvoering
+			\item camerahoek
+			\item snelheid (trage of snelle actie)
+		\end{itemize}
+	\end{itemize}
+	\begin{figure}
+		\includegraphics[width=0.7\linewidth]{sensoren}
+	\end{figure}
+	\end{frame}
+
+	\section{Realisatie}
+
+	\begin{frame}
+		\frametitle{Realisatie}
+		\begin{itemize}
+			\item Eigen dataset gemaakt
+			\begin{itemize}
+				\item 3 personen
+				\item 9 acties
+				\item Elke actie 5 keer
+			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
