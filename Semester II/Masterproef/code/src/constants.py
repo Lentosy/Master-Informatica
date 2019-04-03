@@ -51,7 +51,6 @@ JOINTS = [
     PyKinectV2.JointType_ThumbLeft,           # 22
     PyKinectV2.JointType_HandTipRight,        # 23
     PyKinectV2.JointType_ThumbRight,          # 24
-    PyKinectV2.JointType_Count,               # 25
 
 ]
 

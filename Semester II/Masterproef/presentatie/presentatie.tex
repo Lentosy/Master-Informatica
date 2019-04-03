@@ -1,9 +1,15 @@
 \documentclass[]{beamer}
 
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\tikzstyle{result} = [rectangle, rounded corners, minimum width=3cm, minimum height=0.5cm, text centered, draw=black, fill=green!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=0.5cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{arrow}= [thick,->,>=stealth]
+\usepackage{movie15}
 \usepackage{lipsum}
 \usepackage{pgfpages}
-\usepackage{graphics}
-
+\usepackage{graphicx}
+\usepackage[dutch]{babel}
 \graphicspath{{img/}}
 
 \mode<handout>{%
@@ -23,7 +29,7 @@
 
 
 \begin{document}
-	\title[Actieherkenning met de Kinect sensor]{Intuïtive mens-machineinterface met live actieherkenning }
+	\title[Actieherkenning met de Kinect sensor]{Intuïtieve mens-machineinterface met live actieherkenning }
 	\author[Bert De Saffel]{
 				\begin{tabular}{rcr}
 				prof. dr. ir. Peter Veelaert &\&& prof. dr. ir. Wilfried Philips \\
@@ -35,85 +41,114 @@
 	\date{04 april 2019}
 	\frame{\titlepage}
 	
-	\section{Vorige week}
-	\frametitle{Vorige week}
-	\begin{frame}
-		\begin{itemize}
-			\item Kleurenbeelden opslaan
-			\item Gelabelde dataset
-			\begin{itemize}
-				\item Drie personen
-				\item Elke persoon voert vijf maal elke actie uit
-			\end{itemize}
-			\item Normaliseren skeletjoints
-			\begin{itemize}
-				\item Pelvis als centrum
-				\item Elke andere joint is relatief t.o.v. het centrum 
-			\end{itemize}
-		\end{itemize}
+	\begin{frame}{Inhoudsopgave}
+		\begin{enumerate}
+			\item Context
+			\item Probleemstellingen
+			\item Methodologie
+		\end{enumerate}
 	\end{frame}
 	
 	\section{Context}
-	\begin{frame}
+
+	\begin{frame}{Context}
 		\begin{itemize}
-			\item Real-time actieherkenning
-			\item Met de Kinect Sensor
+			\item Oorzaken van ernstige arbeidsongevallen in 2015
+			\begin{enumerate}
+				\item Verlies van controle over een machine of voertuig
+				\item Uitglijden of struikelen
+				\item Het tillen of neerzetten van lasten
+				\item Vrijkomen van giftige producten
+			\end{enumerate}
+			\item<2-> Gevolgen
 			\begin{itemize}
-				\item Genereert skelet via dieptebeelden
+				\item Langdurige ongeschiktheid
+				\item Permanente letsels
+				\item Sterfgeval
 			\end{itemize}
 		\end{itemize}
+	\end{frame}
+	\begin{frame}{Context}
 		\begin{figure}
-			\centering
-			\includegraphics[width=0.4\textwidth]{skeleton}
+			\includegraphics[width=0.7\textwidth]{arbeidsongevallen}
+			\caption{Frequentiegraad ernstige arbeidsongevallen in de privésector.}
 		\end{figure}
 	\end{frame}
 
-	\section{Probleemstelling}
-	\begin{frame}
-		\frametitle{Probleemstelling}
+	\begin{frame}{Context}
 		\begin{itemize}
-			\item Invariant zijn van de features onafhankelijk van o.a.:
+			\item Mogelijke oplossing
 			\begin{itemize}
-				\item verschillen in lichaamsbouw (kind of volwassen)
-				\item actie-uitvoering
-				\item camerahoek
-				\item snelheid (trage of snelle actie)
-			\end{itemize}
-		\end{itemize}
-		\begin{figure}
-			\includegraphics[width=0.7\linewidth]{sensoren}
-		\end{figure}
-	\end{frame}
-	\begin{frame}
-			\frametitle{Probleemstelling}
-	\begin{itemize}
-		\item Invariant zijn van de features onafhankelijk van o.a.:
-		\begin{itemize}
-			\item verschillen in lichaamsbouw (kind of volwassen)
-			\item actie-uitvoering
-			\item camerahoek
-			\item snelheid (trage of snelle actie)
-		\end{itemize}
-	\end{itemize}
-	\begin{figure}
-		\includegraphics[width=0.7\linewidth]{sensoren}
-	\end{figure}
-	\end{frame}
-
-	\section{Realisatie}
-
-	\begin{frame}
-		\frametitle{Realisatie}
-		\begin{itemize}
-			\item Eigen dataset gemaakt
-			\begin{itemize}
-				\item 3 personen
-				\item 9 acties
-				\item Elke actie 5 keer
+				\item Het inzetten van robotica in gevaarlijke omgevingen
+				\item<2-> Hoe besturen?
+				\begin{itemize}
+					\item Remote control
+					\item Autonoom
+					\item Actieherkenning
+				\end{itemize}
 			\end{itemize}
 		\end{itemize}
 	\end{frame}
 
+	\begin{frame}\frametitle{Context}
+		\begin{itemize}
+			\item De verplaatsing van een robot uitvoeren met enkel actieherkenning
+			\item<2-> Met de kinect sensor
+			\begin{itemize}
+				\item Kan skeletbeelden genereren vanuit RGB-D data
+			\end{itemize}
+			\begin{figure}
+				\includegraphics[width=0.4\textwidth]{skeleton}
+			\end{figure}	
+		\end{itemize}
+	\end{frame}
+
+	\section{Probleemstellingen}
+	\begin{frame}\frametitle{Probleemstellingen}
+		\begin{enumerate}
+			\item Verschillen in lichaamsbouw mogelijk (klein vs groot)
+			\item Verschillen in camerahoek
+			\item<2-> Real-time actieherkenning
+			\begin{itemize}
+				\item De actie herkennen op het moment dat deze uitgevoerd wordt
+			\end{itemize} 
+		\end{enumerate}
+	\end{frame}
+
+	\begin{frame}\frametitle{Onderzoek}
+		\begin{enumerate}
+			\item De features moeten rotatie- en lichaamsinvariant zijn
+			\item Actie moet vroeg genoeg herkend worden om live te kunnen classificeren
+		\end{enumerate}
+	\end{frame}
+
+
+	\section{Methodologie}
+	\begin{frame}\frametitle{Methodologie}
+		\begin{tikzpicture}[node distance = 2cm]
+			\node (literatuur) [process] {Literatuur};
+			%\node (literatuur1) [result, right of=literatuur, xshift=2cm, yshift=0.5cm] {Features};
+			%\node (literatuur2) [result, right of=literatuur, xshift=2cm, yshift=-0.5cm] {Temporale dimensie};
+			\node (dataset) [process, below of=literatuur] {Dataset};
+			
+			\node (dataset1) [result, right of=dataset,xshift=4cm,yshift=0.5cm] {3 personen, 9 acties, elk 5 maal uitgevoerd};
+			\node (dataset2) [result, right of=dataset,xshift=2cm,yshift=-0.5cm,fill=red!30] {Frame drops aanwezig};
+			
+			\node (experiment) [process, below of=dataset] {Experimenteerfase};
+				
+			\node (experiment1) [result, right of=experiment,xshift=4cm,yshift=0.5cm] {Features: HOJ3D, COV3DJ, EigenJoints, SMIJ};
+			\node (experiment2) [result, right of=experiment,xshift=4cm,yshift=-0.5cm] {Temporale dimensie: HMM, DTW, SW};
+			
+			%\draw [arrow] (literatuur) -- (literatuur1);
+			%\draw [arrow] (literatuur) -- (literatuur2);
+			\draw [arrow] (literatuur) -- (dataset);
+			\draw [arrow] (dataset) -- (dataset1);
+			\draw [arrow] (dataset) -- (dataset2);
+			\draw [arrow] (dataset) -- (experiment);
+			\draw [arrow] (experiment) -- (experiment1);
+			\draw [arrow] (experiment) -- (experiment2);
+		\end{tikzpicture}
+	\end{frame}
 
 	\begin{frame}
 		\begin{center}

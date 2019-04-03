@@ -54,7 +54,7 @@ def detectLines(image, threshold1, threshold2):
             y = lambda x: a*x + b
             point1 = (x0, int(y(x0)))
             point2 = (x1, int(y(x1)))
-            print(point1, point2)
+        
             cv2.line(img = result, pt1 = point1, pt2 = point2, color = (0,0,0), thickness = 1, lineType = cv2.LINE_AA)  
         except:
             pass
