@@ -206,12 +206,33 @@ In plaats van breedte-eerst zoeken te gebruiken zou ook een manier kunnen gebrui
 			\item Als Max aan zet is dan nemen we de grootste score.
 			\item Als Min aan zet is nemen we de kleinste score.
 		\end{enumerate} 
-		\item Dit heet \textbf{minimax}. Er wordt gebruik gemaakt van $\alpha-\beta$ snoeien om oninteressante zetten (deelbomen) zeker niet te evalueren in de spelboom. Op die manier is er minder geheugen nodig. Het optimale pad is nooit echt gekend, maar er kunnen grenzen gesteld worden.
+		\item Dit heet \textbf{minimax}. 
+		\item Er wordt gebruik gemaakt van \textbf{$\alpha-\beta$ snoeien} om oninteressante zetten (deelbomen) zeker niet te evalueren in de spelboom. Op die manier is er minder geheugen nodig.
 		\begin{itemize}
-			\item De waarde $\alpha$ staat voor de gewenste minimumscore voor Max.
-			\item De waarde $\beta$ staat voor de gewenste maximumscore voor Min.  
-			\item Algemeen wordt er een pad naar een blad gezocht waarbij zowel Max als Min steeds de beste zet kiezen.
-			\item Neem een knoop $k$ en veronderstel een schatting $f$ die $s(k)$ vervangt. De waarden van voorouders van die knoop kunnen veranderen. Stel $f > s(k)$:
+			\item De zet $7\rightarrow6-1$ levert een score van $-5$ op.
+			\item Van de zet $7\rightarrow5-2$ weten we niet wat de score is.
+			\begin{itemize}
+				\item We weten wel dat Min erop kan reageren met een zet die een score van $-5$ geeft.
+				\item Het kan zijn dat de andere deelboom een betere score oplevert voor Min, maar het zal zeker geen lagere zijn (want die zet zou hij niet nemen).
+				\item Deze zet is niet beter dan $7\rightarrow 6 - 1$	
+		\end{itemize}
+			\item Algemeen wordt er gezocht naar een pad naar een blad waarbij zowel Max als Min steeds de beste zet kiezen.
+			\begin{itemize}
+				\item Op dit pad is de kost van alle knopen gelijk.
+				\item De kost is $s_{opt}$, de optimale score.
+			\end{itemize}
+		\end{itemize}
+		\item Moeten alle knopen ge-evalueerd worden om de optimale score te vinden?
+		\begin{itemize}
+			\item Een \textbf{voorbroer} $b$ van een knoop $k$ is een broer van $k$, of een broer van één van de voorouders van $k$ (Figuur \ref{fig:voorbroers}).
+			\begin{figure}
+				\centering
+				\includegraphics[width=0.5\textwidth]{voorbroers}
+				\caption{De voorbroers van een knoop $k$ worden gemarkeerd met een kruis.}
+				\label{fig:voorbroers}
+			\end{figure}
+			\item Neem een knoop $k$ en veronderstel dat $s(k)$ kan vervangen worden door een schatting $f$.
+			\item De waarden van de voorouders van $k$ kunnen ook nu veranderd worden. Stel $f > s(k)$:
 			\begin{enumerate}
 				\item $k$ is een minknoop. Als $f >  s(b)\;\forall\;b \hbox{ broer van } k$, dan wordt de $s$-waarde van de ouderknoop vervangen door $f$. Nu wordt naar geval 2 gegaan.
 				\item $k$ is een maxknoop en geen wortel. De nieuwe $s-$waarde van de ouder is hoogstens $f$. Nu wordt naar geval 1 gegaan.

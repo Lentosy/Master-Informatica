@@ -21,12 +21,7 @@
 		\begin{itemize}
 			\item bevat \textbf{feiten}: dit zijn uitspraken die waar zijn.
 			\item bevat \textbf{regels}: dit heeft de vorm \textbf{als$<$premisse$>$dan$<$conclusie$>$}
-			\begin{equation*}
-				\begin{split}
-					\hbox{\textbf{als} AS=rond \textbf{en} MATERIAAL=staal} \\
-					\hbox{\textbf{dan} SMERING=olie} 
-				\end{split}
-			\end{equation*}
+			\regel{AS=rond \textbf{en} MATERIAAL=staal}{SMERING=olie}
 		\end{itemize}
 		\item Een \textbf{afleidingssysteem}:
 		\begin{itemize}
@@ -61,14 +56,19 @@
 			\item \underline{Voorbeeld:}
 			\begin{itemize}
 				\item Stel volgende regelbank:
-				\begin{enumerate}
-					\item Als $X$ kwaakt en $X$ eet vliegen - Dan $X$ is een kikker.
-					\item Als $X$ kwettert en $X$ zingt - Dan $X$ is een kanarie.
-					\item Als $X$ is een kikker - Dan $X$ is groen.
-					\item Als $X$ is een kanarie - Dan $X$ is geel.
-				\end{enumerate}
+				
+				\noindent\fbox{%
+					\parbox{\linewidth}{%
+						\regel{$X$ kwettert en $X$ zingt}{$X$ is een kanarie}
+						\regel{$X$ kwaakt en $X$ eet vliegen}{Dan $X$ is een kikker}
+						\regel{$X$ is een kikker}{$X$ is groen}
+						\regel{$X$ is een kanarie}{$X$ is geel}
+					}%
+				}
+
+
 				\item Stel nu dat we een huisdier hebben, Fritz,  en er zijn twee dingen bekend over hem: hij kwaakt en eet vliegen. We willen nu de kleur weten.
-				\item Fritz wordt gesubstitueerd voor $X$ in regel 1, zodat er besloten wordt dat hij een kikker is. Dit wordt dan toegevoegd aan de gegevens. We weten nu dat Fritz kwaakt, dat hij vliegen eet en dat hij een kikker is.
+				\item Fritz wordt gesubstitueerd voor $X$ in regel 1, maar hij voldoet niet aan de premisse. Hij wordt nu gesubstitueerd voor $X$ in regel 2, zodat er besloten wordt dat hij een kikker is. Dit wordt dan toegevoegd aan de gegevens. We weten nu dat Fritz kwaakt, dat hij vliegen eet en dat hij een kikker is.
 				\item Fritz kan nu gesubstitueerd worden in regel 3, zodat er besloten wordt dat hij groen is.
 			\end{itemize}
 			\item Forward Chaining werkt van links naar rechts, startend vanaf de gekende feiten om tot een conclusie te komen.
@@ -77,6 +77,35 @@
 		\item \textbf{Backward chaining:}
 		\begin{itemize}
 			\item Kan in $O(g)$, met $g$ de grootte van de regelbank.
+			\item Werking:
+			\begin{enumerate}
+				\item[$A.$] Behandeling voor een regel waarbij alle uitspraken uit de premisse gegevens zijn:
+				\begin{enumerate}
+					\item[$A1.$] Voeg alle uitspraken uit de conclusie toe aan de gegevens.
+					\item[$A2$] Voor alle tussenregels voor wie, op deze manier, alle uitspraken uit de premisse gegevens zijn geworden, behandel ze volgens $A$.
+					\item[$A3.$] Verwijder de regel uit de regelbank of uit de verzameling tussenregels.
+				\end{enumerate}
+				\item[$B.$] Behandeling voor een regel waarbij niet alle uitspraken uit de premisse gegevens zijn:
+				\begin{enumerate}
+					\item[$B1.$] Voeg alle uitspraken uit de premisse die geen gegevens zijn toe aan de tussendoelverzameling.
+					\item[$B2.$] Verwijder de regel uit de regelbank en voeg hem toe aan de tussenregels.
+				\end{enumerate}
+				\item[$C.$] Oplossingsalgoritme:
+				\begin{enumerate}
+					\item Initialiseer de gegevensverzameling en doelverzameling. Initialiseer ook de verzamelingen van tussendoelen en tussenregels: deze zijn leeg.
+					\item Zolang er geen resultaat is gevonden, en er een regel is uit de regelbank wiens conclusie een doel of een tussendoel bevat, doe het volgende:
+					\begin{enumerate}
+						\item Neem zo een regel.
+						\item Als alle uitspraken uit de premisse gegevens zijn, behandel volgens $A$, anders volgende $B$.
+					\end{enumerate}
+				\end{enumerate}
+			\end{enumerate}
+			\item \underline{Voorbeeld:}
+			\begin{itemize}
+				\item Veronderstel dezelfde regelbank als bij forward chaining.
+				\item Stel nu dat we een huisdier hebben, Fritz,  en er zijn twee dingen bekend over hem: hij kwaakt en eet vliegen. We willen nu de kleur weten.
+				\item Fritz wordt gesubstitueerd voor $X$ in regel 3. Men moet dan bewijzen dat Frits een kikker is.
+			\end{itemize}
 		\end{itemize}
 	\end{itemize}
 \end{itemize}
@@ -95,23 +124,13 @@
 	\begin{itemize}
 		\item Een expertsysteem dat de oorzaak zoekt van problemen in een computer. Dit systeem kan een reparateur begeleiden die een defecte computer moet repareren.
 		\item De reparateur moet melden wat de symptomen zijn. Het systeem moet de actie bepalen die moet ondernomen worden om het probleem op te lossen. Mogelijke regels zijn bijvoorbeeld:
-		\begin{equation*}
-		\begin{split}
-		& \hbox{\textbf{als} SYMPTOOM=computer doet niets bij opstarten} \\
-		& \hbox{\textbf{dan} PROBLEEM=voeding defect} 
-		 \\[3ex]
-		& \hbox{\textbf{als} SYMPTOOM=voeding defect} \\
-		& \hbox{\textbf{dan} PROBLEEM=vervang voeding} 
-		\end{split}
-		\end{equation*}
+		\regel{SYMPTOOM=computer doet niets bij opstarten}{PROBLEEM=voeding defect}
+		\regel{SYMPTOOM=voeding defect}{PROBLEEM=vervang voeding}
+
 		
 		\item Maar soms kan een probleem meerdere oorzaken hebben, waarbij sommige meer waarschijnlijkheid hebben dan anderen:
-		\begin{equation*}
-			\begin{split}
-			& \hbox{\textbf{als} PROBLEEM=bootloader hangt} \\
-			& \hbox{\textbf{dan} OORZAAK=schijf defect \textbf{of} OORZAAK=bootloderinstallatie \textbf{of} ...} 
-			\end{split}
-		\end{equation*}
+		\regel{PROBLEEM=bootloader hangt}{OORZAAK=schijf defect \textbf{of} OORZAAK=bootloderinstallatie \textbf{of} ...}
+
 		
 		\item Er wordt dan een numerieke factor toegekend, die de waarschijnlijkheid aanduidt. 
 		
@@ -121,15 +140,9 @@
 			\item Bayesiaans redeneren: 
 			\begin{itemize}
 				\item Stel volgende regels:
-				\begin{equation*}
-				\begin{split}
-				& \hbox{\textbf{als} het regent op dag x} \\
-				& \hbox{\textbf{dan} is de kans dat het op dag x + 1 regent 0,8} 
-				\\[3ex]
-				& \hbox{\textbf{als} het niet regent op dag x} \\
-				& \hbox{\textbf{dan} is de kans dat het op dag x + 1 regent 0,3} 
-				\end{split}
-				\end{equation*}
+				\regel{het regent op dag x}{is de kans dat het op dag x + 1 regent 0,8}
+				\regel{het niet regent op dag x}{is de kans dat het op dag x + 1 regent 0,3}
+
 				\item Statistisch redeneren kan toegepast worden in expertsystemen als er voldoende statistische informatie is:
 				\begin{itemize}
 					\item De kans dat het morgen en overmorgen regent: $0,8 \times 0,8 = 0,64$.
@@ -235,5 +248,25 @@
 		\item Een semantisch netwerk bestaat uit een gelabelde gerichte multigraaf.
 		\item Elke knoop is een begrip, en elk begrip is verbonden met andere begrippen.
 	\end{itemize}
+	\item Opzoeken van informatie:
+	\begin{itemize}
+		\item \textit{Kan een eend snateren?} Vanuit 'eend' wordt de 'kan'-relatie naar 'snateren' genomen. Het antwoord is 'ja'.
+		\item \textit{Heeft een eend zwemvliezen?} Via de 'is een'-relatie weet men dat een eend een zwemvogel is. De zwemvogel bevat een 'heeft'-relatie naar 'zwemvliezen'. Het antwoord is 'ja'.
+		\item \textit{Heeft een eend vleugels?} Via de twee 'is een'-relaties weet men dat een eend een vogel is. Een vogel bevat een 'heeft'-relatie naar 'vleugels'. Het antwoord is 'ja'.
+		\item \textit{Eet een eend sla?} Na het netwerk te hebben afgezocht is er geen verband tussen sla en eenden gevonden.
+		
+	\end{itemize}
+	\item Twee regels om informatie op te zoeken:
+	\begin{enumerate}
+		\item Volg de takken waarvan de naam in de vraag staat.
+		\item Volg de takken met 'is een' als naam. Deze zorgt ervoor dat het probleem veralgemeend wordt (eend wordt zwemvogel en dan vogel), maar het wordt enkel gebruikt als er geen andere informatie meer beschikbaar is via andere relaties.
+	\end{enumerate}
+	\item \textit{Kan een struisvogel vliegen?}  We vinden informatie met de 'kan niet'-relatie zodat het antwoord 'nee' is. 
+	\alert Het net bevat enkel informatie en geen regels voor de verwerking ervan.
+	\item Frames versus objectgeoriënteerd programmeren:
+	\begin{enumerate}
+		\item Ze hebben beiden een hiërarchisch systeem dat gebruik maakt van (geen meervoudige) overerving.
+		\item In een semantisch net wordt er geen onderscheid gemaakt tussen klassen en objecten.
+	\end{enumerate}
 	
 \end{itemize}
