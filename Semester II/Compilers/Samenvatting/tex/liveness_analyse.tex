@@ -1,0 +1,56 @@
+\chapter{Liveness analyse}
+
+\section{Control Flow Graphs}
+Een niet-lineaire voorstelling van de assemblycode die uitgevoerd wordt. Elke knoop in de graaf stelt een instructie voor. 
+
+
+\QA{Hoeveel registers zijn er nodig om de temporaries $a$, $b$ en $c$ bij te houden?}{
+Eerst afvragen waar in het programma de waarde van $a$ een rol kan spelen. De set van punten na een bepaalde instructie wordt de \texttt{out set} genoemd.  
+}
+
+Het is minder interessant wat de sets exact zijn, maar wel de plaatsen waar meerdere veranderlijken voorkomen. De liveness range is het bereik dat een bepaalde veranderlijke levend is in het programma.
+
+Hoe liveness berekenen? Vergelijking 10.3 oplossen.
+\begin{itemize}
+	\item Iteratief algoritme
+	\item Itereer over alle blokken in de graaf in omgekeerde volgorde (van onder naar boven).
+	\begin{itemize}
+		\item Maak kopie van de in en out sets
+		\item Bereken de nieuwe in set
+		\item Bereken de nieuwe out set
+	\end{itemize}
+	\item Blijf dit doen zolang er een set gewijzigd wordt.
+\end{itemize}
+
+Complexiteit:
+\begin{itemize}
+	\item Stel programmagrootte: $N$ statements.
+	\item Elk statement kan maar 1 veranderlijke updaten, dus maximum $N$ veranderlijken.
+	\item De set operatie is $O(N)$.
+	\item De for loop is dan $O(N^2)$.
+	\item In elke iteratie minsten 1 element toevoegen door een monotone update, dus max $2N^2$ iteraties van de repeat loop.
+	\item Complexiteit: $O(N^4)$.
+	\item In realiteit is het bijna lineair.
+\end{itemize}
+
+Voorstellingen van sets:
+\begin{itemize}
+	\item Eenvoudigste voorstelling van een set: bitvectoren. Bijvoorbeeld 64 bits, als bit 3 op 1 staat, zit 3de temporary in de s
+	\item Als er te veel temporaries zijn kan gelinkte lijst gebruikt worden
+\end{itemize}et
+
+
+Least Fixed Point \& Conservativiteit
+
+\QA{Kan $Y$ een probleem geven? Kan $Z$ een probleem geven?}{De $Y$ analyse zal nog steeds een correct programma opleveren, maar het is niet optimaal. De $Z$ analyse zal registers overschrijven.}
+
+Een analyse is conservatief als het gedrag van het programma niet gewijzigd wordt.
+
+
+\section{Statische approximatie}
+
+\QA{Waarom is dit slechts een benadering?}{Onbeslisbare problemen kunnen niet opgelost worden.}
+
+
+\section{Interference Graph}
+We zijn enkel geïnteresseerd welke sets meerdere veranderlijken bevat. De interference graph verbindt knopen die samen kunnen voorkomen.

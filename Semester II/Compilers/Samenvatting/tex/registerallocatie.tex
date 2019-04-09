@@ -1,0 +1,19 @@
+\chapter{Registerallocatie}
+Graph coloring om registers te alloceren in een interference graph.
+
+
+Met sommige knopen geen rekening houden (bv h, want er zullen toch twee kleuren overblijven want heeft maar 2 buren).
+
+\begin{enumerate}
+	\item Vereenvoudig de graaf door continue knopen met een graad $< k$ weg te laten. Steek ze op een stack.
+	\item Pop and color: selecteer een kleur en voeg knoop terug toe met die kleur aan de graaf.
+\end{enumerate} 
+
+\section{Register Coalescing}
+Knopen die kopieën bevatten proberen samen te voegen als die het kleuren hoogstwaarschijnlijk niet bemoeilijken.
+
+Twee heuristieken die het kleuren zeker niet moeilijker maken:
+\begin{itemize}
+	\item heuristiek van Briggs: als samengevoegde knoop minder dan $K$ buren van significante graad heeft
+	\item heuristiek van George: Elke buur $t$ van $a$ is ofwel een buur van $b$ ofwel niet van significante graad.
+\end{itemize}
