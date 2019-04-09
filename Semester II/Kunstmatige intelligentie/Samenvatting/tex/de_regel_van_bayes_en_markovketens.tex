@@ -3,7 +3,7 @@
 
 \section{Probabiliteit}
 \begin{itemize}
-	\item Een universum $U$ met een eindig aantal toestanden.
+	\item Een universum $U$ bevat een eindig aantal toestanden.
 	\item De kans op een uitspraak $a$ wordt genoteerd als $p(a)$ en is gelijk aan:
 	
 	$$p(a) = \frac{\#(a)}{\#U} $$
@@ -12,8 +12,8 @@
 		\alert Niet bruikbaar: het systeem kan enkel de kans bepalen van reeds bestaande gevallen. 
 		\begin{enumerate}
 			\item \begin{itemize}
-				\item Stel $83$-jarige patiënt met hoofdpijn.
-				\item In het universum zit er een $83$-jarige patiënt met hoofdpijn.
+				\item Stel een observatie: $83$-jarige patiënt met hoofdpijn.
+				\item In het universum zit er geen $83$-jarige patiënt met hoofdpijn.
 				\item De patiënt kan dus niet bestaan.
 			\end{itemize}
 			\item \begin{itemize}
@@ -77,7 +77,7 @@
 	\item \underline{Voorbeeld:}
 	\begin{itemize}
 		\item Er is een groot aantal ziektes.
-		\item Deze leiden tot de lijst van hypothesen, waarbij $h_i$ staat voor de uitspraak "De patiënt heeft de $i-$de ziektepatroon".
+		\item Deze leiden tot de lijst van hypothesen, waarbij $h_i$ staat voor de uitspraak "De patiënt heeft het $i-$de ziektepatroon".
 		\item Is er een groot aantal mogelijke symptomen.
 		\item Bij een patiënt kunnen de symptomen vastgesteld worden, die resulteren in een uitspraak $d$.
 		\item Hoe bepalen welk ziektepatroon het meest waarschijnlijk is?
@@ -88,7 +88,7 @@
 			
 			$$p(d) = \sum_i p(h_i\&d) = \sum_i p(h_i)p(d|h_i)$$
 			
-			\item De expliciete waarde van $p(d)$ is eigenlijk niet nodig. 
+			\item De expliciete waarde van $p(d)$ is eigenlijk niet nodig aangezien deze onafhankelijk is van $i$. We weten dat $d$ waar is uit de waarnemingen en is dus een constante factor.
 		\end{itemize}
 	\end{itemize}
 	

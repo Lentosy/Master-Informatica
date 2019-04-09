@@ -67,9 +67,9 @@
 	\end{itemize}
 	\item Parameters hebben niet noodzakelijk een betekenis, en is daarom ook onmogelijk om ze met de hand in te voeren. Daarom laat men een systeem leren, met behulp van \textbf{drie methoden}:
 	\begin{itemize}
-		\item Algoritmisch leren: Er wordt gedemonstreerd hoe een bepaalde actie moet uitgevoerd worden. Het systeem kan hierna deze actie inoefenen door het herhalen van deze instructies. Deze vorm komt goed overeen met het programmeren van een computer.
-		\item Leren met supervisie: Hier wordt er geen gebruik gemaakt van een algoritme maar eerder van voorbeelden. Deze voorbeelden worden een leerverzameling genoemd en bevatten inputgegevens die het systeem moet leren herkennen, met de daarbij horende resultaten. Er wordt een verband opgelegd tussen een bepaalde input en output.
-		\item Leren zonder supervisie: Dit gebeurt gedeeltelijk algoritmisch aangezien er enige instructies nodig zijn om de machine op gang te krijgen. De machine zal nadien zelf experimenteren wat er gebeurd bij het aanpassen van verschillende parameters. Het leren gebeurt dus niet met voorbeelden, maar uit eigen ervaring. Hier is er dan ook geen verband tussen het resultaat en de verschillende deeltaken, maar er is wel een algemeen idee wat er aangeleerd moet worden.
+		\item \textbf{Algoritmisch leren}: Er wordt gedemonstreerd hoe een bepaalde actie moet uitgevoerd worden. Het systeem kan hierna deze actie inoefenen door het herhalen van deze instructies. Deze vorm komt goed overeen met het programmeren van een computer.
+		\item \textbf{Leren met supervisie}: Hier wordt er geen gebruik gemaakt van een algoritme maar eerder van voorbeelden. Deze voorbeelden worden een leerverzameling genoemd en bevatten inputgegevens die het systeem moet leren herkennen, met de daarbij horende resultaten. Er wordt een verband opgelegd tussen een bepaalde input en output.
+		\item \textbf{Leren zonder supervisie}: Dit gebeurt gedeeltelijk algoritmisch aangezien er enige instructies nodig zijn om de machine op gang te krijgen. De machine zal nadien zelf experimenteren wat er gebeurd bij het aanpassen van verschillende parameters. Het leren gebeurt dus niet met voorbeelden, maar uit eigen ervaring. Hier is er dan ook geen verband tussen het resultaat en de verschillende deeltaken, maar er is wel een algemeen idee wat er aangeleerd moet worden.
 	\end{itemize}
 \end{itemize}
 \section{Classificatie}
@@ -80,9 +80,9 @@
 	\item \underline{Twee soorten meetwaarden}:
 	\begin{itemize}
 		\item Sommige metingen kunnen een groot aantal waarden opleveren die voorgesteld kunnen worden als een getal.
-		\item Andere metingen hebben maar een beperkt aantal waarden, zoals de indeling van van categorieën. 
+		\item Andere metingen hebben maar een beperkt aantal waarden, zoals de indeling van categorieën. 
 		\begin{itemize}
-			\item Deze kunnen omgezet worden zodat ze antwoorden zijn op ja-nee vragen, zodatze geconverteerd kunnen worden naar 0 of 1.
+			\item Deze kunnen omgezet worden zodat ze antwoorden zijn op ja-nee vragen, zodat ze geconverteerd kunnen worden naar 0 of 1.
 			\good Nu zijn alle meetwaarden getallen.	
 		\end{itemize}
 	\end{itemize}
@@ -96,13 +96,18 @@
 		\item De nulvector: 0 = (0, ..., 0).
 		\item Het inproduct:
 		$$\textbf{v}\cdot\textbf{u} = \sum_{i}^{n}v_iu_i$$
-		Het inproduct is lineair: $(A\textbf{v})\cdot \textbf{u} = A(\textbf{v}\cdot\textbf{u})$ en $(\textbf{u} + \textbf{v})\cdot\textbf{x} = \textbf{u} \cdot \textbf{x} + \textbf{v} \cdot \textbf{x}$.
+		Het inproduct is lineair:
+		\begin{itemize}
+			\item $(A\textbf{v})\cdot \textbf{u} = A(\textbf{v}\cdot\textbf{u})$
+			\item $(\textbf{u} + \textbf{v})\cdot\textbf{x} = \textbf{u} \cdot \textbf{x} + \textbf{v} \cdot \textbf{x}$
+		\end{itemize}
+
 		
 		Het kan ook gedefinieerd worden als 
 		$$\textbf{v}\cdot\textbf{u} = || \textbf{v} ||\;|| \textbf{u} || \cos\theta$$
 		met $\theta$ de hoek tussen vector $\textbf{v}$ en $\textbf{u}$.
 		
-		Als $\textbf{v}$ en $\textbf{u}$ orthogonaal zijn, dan is het inwendig product, aangezien $\cos(\pi/2) = 0$;
+		Als $\textbf{v}$ en $\textbf{u}$ orthogonaal zijn $(\theta = \pi/2)$, dan is het inwendig product:
 		$$\textbf{v}\cdot\textbf{u} = 0$$
 		
 		Als $\theta = 0$, dan 
@@ -195,7 +200,7 @@
 				\item Na de constructie van de wortel moeten nog $n_j$ deelbomen geconstrueerd worden.
 				\item \underline{Voorbeeld:}
 				\begin{itemize}
-					\item Veronderstel volgende informatie:
+					\item Veronderstel volgende informatie (tabel \ref{table:example}):
 					\begin{table}[ht]
 						\centering
 						\begin{tabular}{| c c c c | r |}
@@ -222,6 +227,8 @@
 							\multicolumn{2}{|r}{}&\multicolumn{2}{l}{Algemeen totaal:}	 & 528	\\
 							\hline		
 						\end{tabular}
+						\caption{}
+						\label{table:example}
 					\end{table}
 					\item Voor elk attribuut kan de resulterende verdeling afgeleidt worden (tabel \ref{table:resulterende_verdeling}):
 					\begin{table}[ht]
@@ -241,7 +248,7 @@
 							& nee & 240 & 24 \\
 							\hline			
 						\end{tabular}
-						\caption{Resulterende verdeling.}
+						\caption{}
 						\label{table:resulterende_verdeling}
 					\end{table}
 					\item Voor elk attribuut kan nu $I(j)$ berekent worden, hier uitgewerkt voor de beroepscategorie:	
