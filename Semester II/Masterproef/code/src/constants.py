@@ -1,5 +1,5 @@
-from pykinect2 import PyKinectV2
-import pygame
+#from pykinect2 import PyKinectV2
+#import pygame
 
 PERSONS = ['BERT', 'DEMING', 'NIELS'] 
 ACTIONS = ['DEFAULT',               'EMERGENCY_STOP',       

@@ -4,7 +4,13 @@
 
 \chapter{Features}
 \label{ch:features}
-De eerste stap van actieherkenning is de juiste keuze van features maken. Ongeacht welke classifier of welke input gebruikt wordt, moeten er features geëxtraheerd worden om de classificatie mogelijk te maken. Voor actieherkenning wordt er vooral gebruik gemaakt van kleurenbeelden \cite{Laptev2008}, \cite{Dollar2005}, \cite{Willems2008}, \cite{Wang2011} of dieptebeelden \cite{Li2010}, \cite{Wang2012a}, \cite{Xia2012}, \cite{Gu2010}. Dit hoofdstuk bespreekt verschillende mogelijkheden om features uit zowel kleurenbeelden als dieptebeelden te halen. 
+Menselijke actieherkenning vereist een omzetting van de ruwe beelden tot een vorm die een gebaar, pose of actie kan beschrijven. Aangezien dat het om menselijke actieherkenning gaat, is het ook enkel nuttig om informatie over de persoon die de actie uitvoert bij te houden. Een camera die aan het filmen is genereert frames. Men zou voor elke frame een nuttige beschrijving kunnen zoeken zodat enkel informatie overblijft van de persoon zelf. Zo een beschrijving wordt een \textit{feature vector} genoemd. Deze \textit{feature vector} kan verschillende vormen aannemen, maar elke vorm heeft de volgende gelijkenis: de \textit{feature vector} is een rij van getallen waarbij elk getal een ander attribuut beschrijft. Als voorbeeld nemen we skeletdata. De Kinect sensor kan voor elke frame op basis van de ruwe kleuren- en dieptebeelden een skeletbeeld genereren met maximum 25 punten. Elk punt kan geïdentificeerd worden door zijn x, y, en z coördinaten. Per frame kan er dan een \textit{feature vector} $f$ opgebouwd worden met 75 waarden, die de x, y en z beschrijven voor elk van de punten.
+$$f =  \begin{pmatrix}
+x_1 & y_1&  z_1&  x_2&  y_2&  z_2&  ...&  x_{25} & y_{25}& z_{25}
+\end{pmatrix}$$
+
+Dit is slechts één van de vele mogelijke \textit{feature vectors} die kunnen opgesteld worden. Dit hoofdstuk verkent de mogelijkheden van \textit{features} voor zowel kleuren- als dieptebeelden.
+
 
 \section{Features uit kleurenbeelden}
 De extractie van features bij kleurenbeelden kan in twee categorieën onderverdeeld worden: \textit{globale feature extraction} en \textit{lokale feature extraction} \cite{Poppe2010}. Bij een globale aanpak wordt een persoon eerst gelokaliseerd met behulp van \textit{background subtraction} of \textit{tracking} gevolgd door het encoderen van de interesseregio's. Background subtraction kan enkel met statische camera's uitgevoerd worden. Er wordt een referentieframe bijgehouden die enkel statische informatie bevat. Het verschil tussen een nieuwe frame en de referentieframe kan nieuwe informatie opleveren. Deze representatie kan veel informatie bevatten, maar door de nood aan background subtraction of tracking zijn zulke methoden gevoelig aan ruis.
@@ -29,8 +35,6 @@ feature descriptors:
 	\label{fig:skeleton_joints}
 \end{figure}
 De algoritmen die bruikbaar zijn op kleurenbeelden kunnen niet toegepast worden op dieptebeelden. 
-
-
 
 Literatuur over feature extraction op dieptebeelden levert vaak algoritmen \cite{Xia2012}, \cite{wang2012b}, \cite{Yang2012} op die gebruik maken van skeletbeelden gegeneerd met methode \cite{Shotton2011} waarop de skelettracker van de Kinect op gebaseerd is. De skeletbeelden van de Kinect geven de drie-dimensionale coördinaten van 25 punten, \textit{joints} genoemd, die belangrijke kenmerken van het menselijk lichaam voorstellen. Al deze joints worden weergegeven op figuur \ref{fig:skeleton_joints}.
 

@@ -2,6 +2,7 @@ import numpy as np
 import sys, os
 import pandas as pd
 import matplotlib.pyplot as plot
+from classification_strategies import perFrameClassification, simpleBufferClassification
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
@@ -17,7 +18,7 @@ names = ["Nearest Neighbors", "RBF SVM", "Random Forest", "AdaBoost",
 # mogelijkheden: per actie een andere classifier trainen
 classifiers = [
     KNeighborsClassifier(3),
-    SVC(gamma=2, C=1),
+    SVC(gamma='scale', C=100),
     RandomForestClassifier(max_depth=5, n_estimators=10, max_features=1),
     AdaBoostClassifier(),
     GaussianNB(),
@@ -27,6 +28,9 @@ class Dataset(object):
     def __init__(self):
         self.data = []
         self.target = []
+    
+    def __len__(self):
+        return len(self.data) # data and target attribute always have same length
 
 
 def load_trainingset(trainingPersons):
@@ -43,7 +47,6 @@ def load_trainingset(trainingPersons):
                 devnull.write(str(fnfe))
     return trainingset
 
-
 def load_validationset(validationPerson):
     validationset = Dataset() 
     for action in ACTIONS:
@@ -57,42 +60,21 @@ def load_validationset(validationPerson):
             devnull.write(str(fnfe))
     return validationset
 
-
-def fitAndPredict(trainingset, validationset):
+def evaluateClassifiers(trainingset, validationset, strategy):
     listPrecisions = [] # used to make a graph 
     listRecalls = []
-    for name, clf in zip(names, classifiers):
-        clf.fit(trainingset.data, trainingset.target)
-        res = clf.predict(validationset.data)
-        TP, FP, FN, TN = (0, 0, 0, 0)
-        for i in range(0, len(res)):
-            if(validationset.target[i] == 1):
-                if(res[i] == 1):
-                    TP += 1
-                else:
-                    FN += 1
-            elif(validationset.target[i] == 0):
-                if(res[i] == 1):
-                    FP += 1
-                else:
-                    TN += 1    
-        try:
-            precision = round(TP/(TP + FP), 4) * 100 # given a positive prediction from the classifier: how likely is it to be correct?
-            recall = round(TP/(TP + FN), 4) * 100    # given a positive example, how likely will the classifier correctly detect it?
-            listPrecisions.append(precision)
-            listRecalls.append(recall)
-        except:
-            listPrecisions.append(0)
-            listRecalls.append(0)
-    
-    plot.plot(listPrecisions, label = 'precision')
-    plot.plot(listRecalls, label = 'recall')
-    plot.legend()
-    plot.xticks(np.arange(5), names)
-    plot.xlabel('classifier')
-    plot.ylabel('percentage')
-    plot.show()
+    listF1scores = []
+    for clf in classifiers:
+        precision, recall, F1score = strategy(trainingset, validationset, clf)
+        listPrecisions.append(precision)
+        listRecalls.append(recall)
+        listF1scores.append(F1score)
 
+    return listPrecisions, listRecalls, listF1scores
+
+avgPrecisions = [0] * len(classifiers)
+avgRecalls = [0] * len(classifiers)
+avgF1scores = [0] * len(classifiers)
 
 for i in range(1, len(PERSONS) + 1):
     testPersons = PERSONS[:i - 1] + PERSONS[i:]
@@ -100,6 +82,26 @@ for i in range(1, len(PERSONS) + 1):
     trainingset = load_trainingset(testPersons)
     validationset = load_validationset(validationPerson)
     #print(f"Training set: {testPersons}\nValidation set: {validationPerson}")
-    plot.clf()
-    plot.title(validationPerson)
-    fitAndPredict(trainingset, validationset)
+    precisions, recalls, F1scores = evaluateClassifiers(trainingset, validationset, perFrameClassification)
+
+    i = 0
+    for p, a, f in zip(precisions, recalls, F1scores):
+        avgPrecisions[i] += p
+        avgRecalls[i] += a
+        avgF1scores[i] += f
+        i += 1
+    
+
+avgPrecisions = [x / len(classifiers) for x in avgPrecisions]
+avgRecalls = [x / len(classifiers) for x in avgRecalls]
+avgF1scores = [x / len(classifiers) for x in avgF1scores]
+
+plot.title("Average precision/recall for each classifier")
+plot.plot(avgPrecisions, label = 'precision', linestyle = (0, (1, 10)), marker='o')
+plot.plot(avgRecalls, label = 'recall', linestyle = (0, (1, 10)), marker='o')
+plot.plot(avgF1scores, label = 'F1 score', linestyle = (0, (1, 10)), marker='o')
+plot.legend()
+plot.xticks(np.arange(5), names)
+plot.xlabel('classifier')
+plot.ylabel('percentage')
+plot.show()
