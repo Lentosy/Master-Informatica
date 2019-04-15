@@ -9,5 +9,5 @@ spine_info = joints[joints.columns[PyKinectV2.JointType_SpineBase:PyKinectV2.Joi
 other_joints = joints[joints.columns[PyKinectV2.JointType_SpineMid * 3:PyKinectV2.JointType_ThumbRight * 3 + 3]]
 all_joints = joints[joints.columns[PyKinectV2.JointType_SpineBase : PyKinectV2.JointType_ThumbRight * 3 + 3]]
 
-all_joints[:, 3] = all_joints[:, 3] - all_joints[:, 0]
+all_joints.iloc[:, 3] = all_joints[:, 3] - all_joints[:, 0]
 print(all_joints.head())
