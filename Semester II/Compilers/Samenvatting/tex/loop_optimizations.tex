@@ -1,0 +1,64 @@
+\chapter{Loop Optimizations}
+
+Formele definitie van een lus: verzameling knoepn $S$ met daarin een header $h$, vanuit elke knoop in de lus kan je naar $h$, van $h$ kan je naar elke knoop in $S$, externe pijlen komen enkel toe in $h$.
+
+De knopen in een lus vormen een \textit{strongly connected component}: vanuit één knoop in de lus kan elke andere knoop in de lus bereikt worden. De back edge is de verbinding die de een knoop naar de header verbindt
+
+Reduceerbaarheid = niet te kennen. Enkel weten dat lussen volledig overlappen of helemaal niet. Ze kunnen niet deels overlappen.
+
+\section{Dominators}
+\begin{itemize}
+	\item Veronderstel 1 startknoop $s_0$ van de $CFG$.
+	\item Knoop $d$ domineert knoop $n$ als elk pad van $s_0$ naar $n$ door $d$ gaat.
+	\item Eenvoudig berekenen met data flow analyse. Hoe initialiseren? maximale sets. 
+	\item In plaats van data  flow analyse kan ook de dominator tree opgesteld worden. De dominator set van een knoop is dan de opeenvolging van ouderknopen.
+\end{itemize}
+
+Eigenschappen van een dominator:
+\begin{itemize}
+	\item Transitief: $a$ dom $b$ en $b$ dom $c$ $\rightarrow a$ dom $c$.
+	\item Als $e$ dom $n$ en $d$ dom $n$, dan $e$ dom $d$ of $d$ dom $e$.
+	\item Elke knoop $n$ heeft een unieke immediate dominator \texttt{idom($n$)}
+\end{itemize}
+
+\subsection{Header loops}
+\begin{itemize}
+	\item Een header $h$ kan header zijn van meerdere lussen.
+	\item Loops kunnen genest zijn.
+	\item Een loop-nest tree geeft aan welke knopen op welk loopniveau ze zitten.
+
+\end{itemize}
+
+\subsection{Loop preheader}
+\begin{itemize}
+	\item Algemene code die voor een lus moet uitgevoerd worden.
+	\item Handig als er meerdere paden naar de header van de lus zijn.
+\end{itemize}
+
+
+
+\section{Loop Invariant Computations}
+\begin{itemize}
+	\item Berekeningen die altijd dezelfde waarde hebben kunnen buiten de lus geplaatst worden. (! niet altijd, soms is herberekenen beter dan de registers te gebruiken)
+	\item Een definitie $d : t \leftarrow a_1 op a_2$ is loop-invariant als voor elke $a_i$:
+	\begin{itemize}
+		\item $a_i$ een constante is;
+		\item alle definities van $a_i$ die $d$ bereiken bevinden zich buiten de lus;
+		\item of de enige definitie van $a_i$, die $d$ bereikt, loop-invariant is.
+	\end{itemize}
+\end{itemize}
+
+Voorbeelden: mogen we $t \leftarrow a + b$ voor de loop zetten?
+
+Oppassen met side-effects: exceptions, pointer dereferencing
+
+\subsection{Conversie lussen voor LCIM}
+
+
+
+\section{Inductieveranderlijken}
+
+
+
+
+\section{Loop unrolling}

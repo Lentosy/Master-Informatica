@@ -1,13 +1,16 @@
-from pykinect2 import PyKinectV2
-from pykinect2.PyKinectV2 import *
-from pykinect2 import PyKinectRuntime
 
-import cv2
 import sys
 import os
 import constants
 import ctypes
+
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1' # surpress pygame output
 import pygame
+
+
+from pykinect2 import PyKinectV2
+from pykinect2.PyKinectV2 import FrameSourceTypes_Color, FrameSourceTypes_Depth, FrameSourceTypes_Body, TrackingState_Tracked, TrackingState_NotTracked, TrackingState_Inferred
+from pykinect2 import PyKinectRuntime
 
 class Runtime():
     def __init__(self, fps):
@@ -26,7 +29,7 @@ class Runtime():
         # Used to manage how fast the screen updates
         self.clock = pygame.time.Clock()
         # Kinect runtime object 
-        self.kinect = PyKinectRuntime.PyKinectRuntime(PyKinectV2.FrameSourceTypes_Color | PyKinectV2.FrameSourceTypes_Depth | PyKinectV2.FrameSourceTypes_Body)
+        self.kinect = PyKinectRuntime.PyKinectRuntime(FrameSourceTypes_Color | FrameSourceTypes_Depth | FrameSourceTypes_Body)
         # back buffer surface for getting Kinect color frames, 32bit color, width and height equal to the Kinect color frame size
         self.frame_surface = pygame.Surface((self.kinect.color_frame_desc.Width, self.kinect.color_frame_desc.Height), 0, 32)
         # skeleton data
@@ -61,7 +64,7 @@ class Runtime():
 
     def is_joint_tracked(self, joint):
         jointState = joint.TrackingState
-        return not jointState == PyKinectV2.TrackingState_NotTracked and not jointState == PyKinectV2.TrackingState_Inferred
+        return not jointState == TrackingState_NotTracked and not jointState == TrackingState_Inferred
 
     # This function draws a straight line segment starting from joint0 and ending in joint1
     def draw_body_bone(self, joints, jointPoints, color, joint0, joint1):

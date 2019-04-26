@@ -126,12 +126,30 @@ void AST::FuncDecl::emit(Program &prog) const {
   func_exit = name->string + ".exit";
 
   // TODO: implement function prologue
+  // 5.2 save callee-saved registers
+  for(const std::string& s : callee_saved_regs){
+    prog << Instruction{"pushq", {s}, "save callee-saved register"};
+  }
 
+  // 5.2 set the base pointer
+  prog << Instruction{"mov", {"%SP", "%rbx"}, "set the base pointer"};
+  // %rbx
+
+  // 5.2 align the stack pointer by 16 bytes
+  prog << Instruction{"sub", {"$16", "%SP"}, "align the stack pointer by 16 bytes"};
   body->emit(prog);
 
   prog << Block{func_exit, false, "end of function " + name->string};
 
   // TODO: implement function epilogue
+
+  // 5.2 restore the stack pointer
+  prog << Instruction{"add", {"$16", "%SP"}, "restore the stack pointer"};
+  // 5.2 restore callee-saved registers
+  for(int i = callee_saved_regs.size(); i > 0; i--){
+    prog << Instruction{"popq", {callee_saved_regs[i]}, "restore callee-saved register"};
+  }
+
 
   prog << Instruction{"retq", {}, "return to the caller"};
 }
@@ -228,7 +246,21 @@ void AST::CallExpr::emit(Program &prog) const {
     codegen_error(str("invalid call to %s: expected %d arguments, got %d",
                       name->string, argc, args.size()));
 
-  codegen_error("TODO: implement CallExpr");
+  // 5.1 emit and store arguments
+  for (size_t i = 0; i < argc; i++){
+    args[i]->emit(prog);
+  }
+
+  // 5.1 generating the call
+  prog << Instruction{"call", {name->string}};
+  
+  // 5.1 return a value
+  if(std::get<0>(decl) == T_void){
+    prog << Instruction{"pushq", {"0xABCDEF"}};
+  }else if(std::get<0>(decl) == T_int){
+
+  }
+
 }
 
 void AST::BinaryOp::emit(Program &prog) const {

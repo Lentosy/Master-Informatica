@@ -26,7 +26,7 @@ def main(args=None):
     parser.add_argument('-d', '--debug', 
                         dest = 'debug', 
                         action = 'store_true', 
-                        help = 'Enables debug mode. This has a slower FPS and writes out the feature vector for the head joint every frame')
+                        help = 'Enables debug mode. This has a slower FPS and writes out the feature vector for the head joint for every frame')
     
     args = parser.parse_args()
     
