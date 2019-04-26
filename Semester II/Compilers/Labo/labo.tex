@@ -1,0 +1,141 @@
+\documentclass{report}
+\usepackage{ugentstyle}
+\selectlanguage{english}
+
+\lstset
+{
+frame=single,
+tabsize=2
+}
+
+\begin{document}
+	\maketitle{Compilers Labo}
+	\tableofcontents
+	
+
+	\chapter{Prologue}
+	\section{Using Docker}
+	Each lab has a \texttt{files} directory which you should change your working directory to. Run the following command to start an interactive Docker container. 
+	\begin{lstlisting}
+$ docker run --rm -it -v "$(pwd)":/files tbesard/compilers:practx
+	\end{lstlisting}
+	\section{Installing the nano editor}
+	Editing files on a Windows computer brings incompatibility with linux tools. It is recommended to install a text editor on the container.
+	\begin{lstlisting}
+$ apt-get update
+$ apt-get install nano
+	\end{lstlisting}
+	\chapter{Lexing}
+	\chapter{Parsing}
+	\chapter{Code Generation}
+	
+
+	\section{Setup}
+	Run a docker container and configure the project with CMake.
+	\begin{lstlisting}
+$ docker run --rm -it -v "$(pwd)":/files tbesard/compilers:pract3
+$ cd /files
+$ cmake .
+	\end{lstlisting}
+	Run \texttt{make} to compile the whole project after each change. Use \texttt{cheetah} to generate the assembly code.
+	\begin{lstlisting}
+$ ./cheetah test/dummy.c
+.globl main
+main:
+	pushq	$1
+	popq	%rax
+	...
+	\end{lstlisting}
+	Een executable aanmaken kan met \texttt{make dummy}, of als je alle testen wilt compileren kan je \texttt{make test} gebruiken.
+	
+	\section{Debugging}
+	Met \texttt{gdb} kan een executable geïnspecteerd worden.
+	\begin{lstlisting}
+$ gdb ./test/dummy
+(gdb) run
+
+	\end{lstlisting}
+	
+	\section{Compiler infrastructure}
+	The \texttt{codegen.hpp} header defines three important datastructures:
+	\begin{itemize}
+		\item \texttt{Program}: This represents the program that is being emitted, and is accesible as the argument to each \texttt{emit} function. It contains a list of \texttt{Blocks}.
+		\item \texttt{Block}: A block is identified by a label and contains a list of \texttt{Instructions}.
+		\item \texttt{Instruction}: An instruction has three fields:
+		\begin{itemize}
+			\item \texttt{name}: the textual representation of the instruction name.
+			\item \texttt{arguments}: a list of arguments.
+			\item \texttt{comment}: an optional string that will be emitted as part of the generated code.
+		\end{itemize}
+	\end{itemize}
+
+	\section{Emitting code}
+	We will implement the compiler as a stack machine. This means that it should push and pop values onto the stack and only use registers when absolutely neccesary. An explanation of the most useful registers:
+	\begin{itemize}
+		\item \texttt{\%rax}: Temporary register, mainly used as the return register.
+		\item \texttt{\%rbx}: Callee-saved register which can optionally be used as a base pointer.
+		\item \texttt{\%rbp}: Callee-saved register which can optionally be used as a frame pointer.
+		\item \texttt{\%rdi}: Used to pass the first argument to functions.
+		\item \texttt{\%rsi}: Used to pass the second argument to functions.
+		\item \texttt{\%rdx}: Used to pass the third argument to functions. Can also be used as the second return register.
+		\item \texttt{\%rcx}: Used to pass the fourth argument to functions.
+		\item \texttt{\%r8}: Used to pass the fifth argument to functions.
+		\item \texttt{\%r9}: Used to pass the sixth argument to functions.
+		\item \texttt{\%r12-r15}: Callee-saved registers.
+	\end{itemize}
+	A short summary of the special registers:
+	\begin{itemize}
+		\item \textbf{Stack Pointer}: The stack pointer points to the top of the stack. All locations beyond the stack pointer are considered to be garbage, and all locations before the stack pointer are considered to be allocated.
+		\item \textbf{Frame Pointer}: The area on the stack devoted to local variables, parameters, return address and other temporaries for a function is called the function's \texttt{stack frame}. The frame pointer points at the beginning of a stack frame such that the stack pointer can be restored to the frame pointer. Equivalently, the frame pointer contains the value of the stack pointer just before a function is called.
+		\item \textbf{Base Pointer}: The base pointer is derived from the stack pointer and is used to travel trough the stack.
+	\end{itemize}
+	
+	
+	Each AST object now has an \texttt{emit} function, which purpose is to generate assembly code for that AST object.
+	\subsection{Function calls}
+	In \texttt{emit.cpp}, complete the implementation of \texttt{CallExpr::emit(Program \&prog) const} and implement the following features:
+	
+	\begin{itemize}
+		\item \textbf{emit and store arguments}
+		\begin{lstlisting}
+for (size_t i = 0; i < argc; i++){
+	args[i]->emit(prog)
+}
+		\end{lstlisting}
+		Remember that this is a method of the class \texttt{CallExpr}, so we can use the attributes \texttt{args} and \texttt{name} of this class. The attribute \texttt{args} is of type \texttt{ExprList}, which can contain pointers to various expression types such as \texttt{FloatLiteral} or \texttt{Assignment} (see \texttt{expr.hpp}). We will simply call the emit method for each \texttt{Expr} in this list.
+		
+		\item \textbf{generate a call}
+		\begin{lstlisting}
+prog << Instruction{"call", {name->string}};
+		\end{lstlisting}
+		Here we need to emit a \texttt{call} instruction. An instruction has a \texttt{name}, a list of \texttt{arguments} and optionally a \texttt{comment}. The name of the instruction is obviously \texttt{call}. In this case the list of arguments only contain one element: the name of the function. We opted to not include a comment here since a \texttt{call} instruction is fairly obvious.
+		
+		\item \textbf{return a value}
+		\begin{lstlisting}
+if(std::get<0>(decl) == T_void){
+	prog << Instruction{"pushq", {"0xABCDEF"}, "void return value"}
+} else if(std::get<0>(decl) == T_int){
+
+}
+		\end{lstlisting}
+		Our language only has two possible return types: \texttt{void} and \texttt{int}. 
+	\end{itemize}
+
+	\subsection{Function Declarations}
+	In \texttt{emit.cpp}, complete the implementation of \texttt{FuncDecl::emit(Program \&prog) const} and implement the following features:
+	\begin{itemize}
+		\item \textbf{The function prologue}:
+		\begin{itemize}
+			\item save callee-saved registers
+			\item set the base pointer
+			\item align the stack pointer by 16 bytes
+		\end{itemize}
+		\item \textbf{The function epilogue}:
+		\begin{itemize}
+			\item restore the stack pointer
+			\item restore callee-saved registers
+		\end{itemize}
+	\end{itemize}
+	
+ 
+\end{document}
