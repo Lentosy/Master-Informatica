@@ -1,13 +1,21 @@
-import pandas as pd
-from pykinect2 import PyKinectV2
-from pykinect2.PyKinectV2 import *
+import csv
 
-PATH = "data\\BERT\\EMERGENCY_STOP\\joints.txt"
-joints = pd.read_csv(PATH, header = None, sep = ';')
 
-spine_info = joints[joints.columns[PyKinectV2.JointType_SpineBase:PyKinectV2.JointType_SpineBase + 3]]
-other_joints = joints[joints.columns[PyKinectV2.JointType_SpineMid * 3:PyKinectV2.JointType_ThumbRight * 3 + 3]]
-all_joints = joints[joints.columns[PyKinectV2.JointType_SpineBase : PyKinectV2.JointType_ThumbRight * 3 + 3]]
+def transform_features(path):
+    info = []
+    with open(path) as dataFile:
+        csvReader = csv.reader(dataFile, delimiter=';')
+        for row in csvReader:
+            spine_x = float(row[0])
+            spine_y = float(row[1])
+            spine_z = float(row[2])
+            dat = []
+            for i in range(0, 75, 3):
+                dat.append(float(row[i + 0]) - spine_x)
+                dat.append(float(row[i + 1]) - spine_y)
+                dat.append(float(row[i + 2]) - spine_z)
+            for i in range(75, len(row)):
+                dat.append(float(row[i]))
+            info.extend([dat])
+    return info
 
-all_joints.iloc[:, 3] = all_joints[:, 3] - all_joints[:, 0]
-print(all_joints.head())
