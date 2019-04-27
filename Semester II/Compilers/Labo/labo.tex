@@ -15,10 +15,15 @@ tabsize=2
 
 	\chapter{Prologue}
 	\section{Using Docker}
+	\label{sec:using_docker}
 	Each lab has a \texttt{files} directory which you should change your working directory to. Run the following command to start an interactive Docker container. 
 	\begin{lstlisting}
 $ docker run --rm -it -v "$(pwd)":/files tbesard/compilers:practx
 	\end{lstlisting}
+	After the container has launched, you can navigate to the correct directory with 
+	$$\texttt{cd files}$$
+	
+	You can edit these files on your local host machine, but it is recommended to edit in the container (see next section).
 	\section{Installing the nano editor}
 	Editing files on a Windows computer brings incompatibility with linux tools. It is recommended to install a text editor on the container.
 	\begin{lstlisting}
@@ -26,10 +31,168 @@ $ apt-get update
 $ apt-get install nano
 	\end{lstlisting}
 	\chapter{Lexing}
-	\chapter{Parsing}
-	\chapter{Code Generation}
+	\section{Setup}
+	The goal of this lab is to process source files in a C-like language, and generate a stream of tokens along with location information, or an error message if the syntax of the file is invalid. This will be realised with the Flex lexical analyzer generator.
 	
+	The project can be executed using the docker image \texttt{tbesard/compilers:pract1} (see Using Docker \ref{sec:using_docker} for more information). Run \texttt{make} and execute the resulting \texttt{main} executable on a source file:
+	$$\texttt{make \&\& ./main test/dummy.c}$$ 
+	
+	\section{Basic lexing}
+	The first part is to add some new definitions and rules in \texttt{lexer.l.} The definitions consist of a label and a regex. The purpose of these definitions is to be used in rules. The rules match a regular expression and tells the lexer what to return.
+	\begin{lstlisting}
+/*
+	Definitions	
+*/
+DIGIT	[0-9]
+WHITESPACE   [ \t\n\r]
+ID    [a-z_][a-z0-9_]*
+COMMENT   "//"[^\n\r]*
+FLOAT   [0-9]+\.[0-9]*
+STRING \"[^\n]+\"
 
+
+/*
+	Rules
+*/
+"="        return EQUAL;
+"=="       return CEQ;
+"!="       return CNE;
+"<"        return CLT;
+">"        return CGT;
+"<="       return CLE;
+">="       return CGE;
+"+"        return PLUS;
+"-"        return MINUS;
+"*"        return MUL;
+"/"        return DIV;
+"^"        return EXP;
+"%"        return MOD;
+","        return ',';
+";"        return ';';
+"("        return '(';
+")"        return ')';
+"{"        return '{';
+"}"        return '}';
+"["        return '[';
+"]"        return ']';
+"return"  return RETURN;
+"if"      return IF;
+"else"    return ELSE;
+"while"   return WHILE;
+"for"     return FOR;
+{COMMENT}     /*must be ignored*/
+{FLOAT}       return FLOAT;
+{DIGIT}+      return INTEGER;
+{WHITESPACE}+       
+{ID}          return IDENTIFIER;
+{STRING}      return STRING;
+.             error("unknown symbol");
+	\end{lstlisting}
+	\section{Location information}
+	To add location information, the method \texttt{update\_location()} in \texttt{lexer.l} must be updated. This method will be called everytime the lexer returns a token from the rules. The struct \texttt{Location} in \texttt{lexer.hpp} contains two integers for the line number and column number. The \texttt{Lexer} class contains two \texttt{Location} structs which respectively represent the beginning line and column and the ending line and column of the token. The attribute \texttt{yytext} contains a string representation of the current token.
+	\begin{lstlisting}
+void Lexer::update_location() {
+	if(yytext[0] == '\n' || yytext[0] == '\r'){
+		begin.column = 1; 
+		end.column = 1;
+		begin.line++; 
+		end.line++;
+	} else {
+		begin.column = end.column;
+		end.column += strlen(yytext);
+	}
+}	
+	\end{lstlisting}
+	\section{Error reporting}
+	To add error messages, the method \texttt{update\_location()} in \texttt{lexer.l} must first be updated so that it keeps string information of the current line.
+		\begin{lstlisting}[escapeinside={\%}{\%}]
+%\textbf{char *buffer = (char*)malloc(YY\_BUF\_SIZE);}%
+void Lexer::update_location() {
+	if(yytext[0] == '\n' || yytext[0] == '\r'){
+		begin.column = 1; 
+		end.column = 1;
+		begin.line++; 
+		end.line++;
+		%\textbf{free(buffer);}%
+		%\textbf{buffer = (char*)malloc(YY\_BUF\_SIZE);}%
+	} else {
+		begin.column = end.column;
+		end.column += strlen(yytext);
+		%\textbf{strcat(buffer, yytext);}%
+	}
+}	
+	\end{lstlisting}
+	Additionaly, the method \texttt{error()} in \texttt{lexer.l} must be implemented. This method gets called when the lexer encounters an error.
+	\begin{lstlisting}
+void Lexer::error(const std::string &message) {
+	std::cerr << "Syntax error: " << message 
+	          << " at line " << begin.line
+	          << " at column " << begin.column 
+	          << "\n";
+	std::cerr << buffer << "\n";
+	printf("%*c^\n", (int)begin.column - 1, ' ');
+}
+	\end{lstlisting}
+	\section{Context-sensitive rules}
+	A context-sensitive rule are useful for patterns which cannot be matched with simple regular expressions. Here we add the neccesary definitions and rules to parse block comments. We add a definition \texttt{BLOCK\_COMMENT}, which is preceded by \texttt{\%x}. This symbol means that \texttt{BLOCK\_COMMENT} is an exclusive state, which means that the lexer will only match rules which are tagged \texttt{BLOCK\_COMMENT} once it enters the state. Next a new set of rules is implemented. The \texttt{INITIAL} state is a predefined state which marks the entry point for any other state. We specify that a block comment starts with /*, and if that pattern occurs, the state \texttt{BLOCK\_COMMENT} is activated. Only patterns in the \texttt{BLOCK\_COMMENT} state block will be matched. Now four possible rules can be matched:
+	\begin{enumerate}
+		\item The end of a comment is specified with */. If this occurs the comment has succesfully ended and we go back to the initial state.
+		\item If it's not the end of the coment, there could be an infinite number of characters we have to eat ([\textasciicircum *\textbackslash n]+). We do not include the newline character because we want it seperately to increase the line number.
+		\item When we encounter a newline, we want to increase the line number of the lexer.
+		\item When the end of a file is reached, the block comment was not terminated, resulting in an error message.
+	\end{enumerate}
+	\begin{lstlisting}
+/*
+	Definitions
+*/
+%x BLOCK_COMMENT
+
+/*
+	Rules
+*/
+<INITIAL>{
+	"/*" BEGIN(BLOCK_COMMENT);
+}
+<BLOCK_COMMENT>{
+	"*/"	BEGIN(INITIAL);
+	[^*\n]+
+	\n		yylineno++;
+	<<EOF>> {
+		error("unterminated block comment");
+		BEGIN(INITIAL)
+	}
+}
+	\end{lstlisting}
+	\chapter{Parsing}
+	\section{Setup}
+	The goal of this lab is to complete the implementation of a parser for the same C-like language we have worked with in the first lab. This will be realised with the Bison parser-generator tool in order to generate the BNF grammar that implements the rule of this language.
+	
+	After mounting the image, configure the project using 
+	$$\texttt{cmake .}$$
+	This only need to be done once. To actaully compile the files, use
+	$$\texttt{make}$$
+	After compiling, a binary named \texttt{cheetah} will be created. This binary will visualize the AST of a source file in GraphViz DOT format. This DOT format can be rendered to a PNG.
+	$$\texttt{./cheetah ../test/dummy.c > dummy.dot \&\& dot -Tpng dummy.dot > dummy.png}$$ 
+	\section{Function call}
+	We will first implement the function call expression. The rule needs to produce an expression, and as such needs to be part of the \texttt{expr} production. A function call is represented by a \texttt{AST::CallExpr} object and the argument list is of type \texttt{AST::ExprList}. In \texttt{parser.y} we first add two new representations to the \texttt{\%union} clause.
+	\begin{lstlisting}
+%union {
+	...
+	...
+	AST::CallExpr *call_expr_t;
+	AST::ExprList *expr_list_t;
+}
+	\end{lstlisting}
+		These symbols also need to be classified as a nonterminal symbol.
+	\begin{lstlisting}
+%type <call_expr_t> func_call
+%type <expr_list_t> expr_list
+	\end{lstlisting}
+	\section{Literals}
+	\section{Operators}
+	\section{Control flow}
+	
+	\chapter{Code Generation}
 	\section{Setup}
 	Run a docker container and configure the project with CMake.
 	\begin{lstlisting}

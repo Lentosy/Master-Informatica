@@ -64,16 +64,15 @@ $$d: t \leftarrow M[a] \quad\hbox{of}\quad t \leftarrow a + b$$
 Een ambigue definitie: call die al dan niet de waarde van $t$ wijzigt.
 
 Een statement $d$ is reaching definition van statement $u$ als er een pad van $d$ naar $u$ bestaat waarop geen niet-ambigue definitie van $t$ voorkomt. Controleer in de controleverloopgraaf. Als de definitie van $t$ niet aangepast wordt dan is $d$ een reaching definition van $u$.  Zie tabel 17.2: de gen- en killset zijn sets van statements, bij liveliness is het set van temporaries. In andere woorden: hoe lang is een definitie van een veranderlijke geldig (vergelijkbaar met liveliness analyse, maar de vergelijking is met de unie van predecessors).
-\begin{equation*}
-\begin{split}
-	& d_2: t \left ...  \\
-	& d_1: t \left ... \\
-	& d:t \left ... \\
-	& ... \\
-	& ... \\
-	& u: ...
-\end{split}
-\end{equation*}
+\begin{lstlisting}
+d_2: t \left ...  
+d_1: t \left ... 
+d:t \left ... 
+... 
+... 
+ u: ...
+\end{lstlisting}
+
 
 \QA{Waarom is reaching definitions nuttig?}{
 Als je op een bepaald punt ziet dat er geen reaching definition is, dan zit je met een uninitialized variabele.
