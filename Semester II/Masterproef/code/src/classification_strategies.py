@@ -9,24 +9,27 @@ class ClassificationStrategy(object):
     """
     def __init__(self, trainingset, validationset, classifier):
         self.confusionMatrix = [] # The confusion matrix is represented by list in this order: [TP, FP, FN, TN]
-        self.recalls = [0] * len(ACTIONS)
-        self.precisions = [0] * len(ACTIONS)
+        self.recalls = []
+        self.precisions = []
         self.trainingset = trainingset
         self.validationset = validationset
         self.classifier = classifier
         self.classifier.fit(self.trainingset.data, self.trainingset.target)
 
     def calculateRecall(self): # given a positive prediction from the classifier: how likely is it to be correct?
-        return sum(self.recalls) / len(ACTIONS)
+        return sum(self.recalls) / len(self.recalls)
     
     def calculatePrecision(self): # given a positive example, how likely will the classifier correctly detect it?
-        return sum(self.precisions) / len(ACTIONS)
+        return sum(self.precisions) / len(self.precisions)
 
     def calculateF1Score(self): # harmonic mean of precision and recall
         f1score = 0
         for precision, recall in zip(self.precisions, self.recalls):
-            f1score += (2 * (precision*recall) / (precision+recall))
-        return f1score / len(ACTIONS)
+            try:
+                f1score += (2 * (precision*recall) / (precision+recall))
+            except ZeroDivisionError:
+                pass
+        return f1score / len(self.precisions)
 
     def perform(self):
         raise NotImplementedError("This is an abstract method. Implement this in a subclass")
@@ -56,59 +59,55 @@ class PerFrameClassification(ClassificationStrategy):
                         self.confusionMatrix[1] += 1
                     else:
                         self.confusionMatrix[3] += 1
-        
             try:
                 (TP, FP, FN) = (self.confusionMatrix[0], self.confusionMatrix[1], self.confusionMatrix[3])
-                self.precisions[i] = round(TP/(TP + FP), 4) * 100
-                self.recalls[i] = round(TP/(TP + FN), 4) * 100   
+                self.precisions.append(round(TP/(TP + FP), 4) * 100)
+                self.recalls.append(round(TP/(TP + FN), 4) * 100)   
             except ZeroDivisionError:
                 pass
 
 
+class SimpleBufferClassification(ClassificationStrategy):
+
+    def __init__(self, trainingset, validationset, classifier):
+        ClassificationStrategy.__init__(self, trainingset, validationset, classifier)
+        self.bufferSize = 30
+
+    def perform(self):
+        iterations = (len(self.validationset) // self.bufferSize)
+        for i in range(0, len(ACTIONS)):
+            self.confusionMatrix = [0] * 4
+            for currentIteration in range(0, iterations):
+                bufferTarget = [self.validationset.target[j] for j in range(currentIteration*self.bufferSize, (currentIteration+1)*self.bufferSize)]
+                bufferData =  [self.validationset.data[j] for j in range(currentIteration*self.bufferSize, (currentIteration+1)*self.bufferSize)]
+                predictions = self.classifier.predict(bufferData)  # let classifier classify the individual frames first
+                majority = self._getMajorityVote(predictions)
+                for j in range(0, len(bufferTarget)):
+                    if(bufferTarget[j] == majority):
+                        if(predictions[j] == majority):
+                            self.confusionMatrix[0] += 1
+                        else:
+                            self.confusionMatrix[2] += 1
+                    elif(bufferTarget[j] != majority):
+                        if(predictions[j] == majority):
+                            self.confusionMatrix[1] += 1
+                        else:
+                            self.confusionMatrix[3] += 1
+            try:
+                (TP, FP, FN) = (self.confusionMatrix[0], self.confusionMatrix[1], self.confusionMatrix[3])
+                self.precisions.append(round(TP/(TP + FP), 4) * 100)
+                self.recalls.append(round(TP/(TP + FN), 4) * 100)   
+            except ZeroDivisionError:
+                pass
 
 
-def simpleBufferClassification(trainingset, validationset, classifier):
-    def getMajorityVote(list):
+    def _getMajorityVote(self, predictions):
         frequency = dict(zip([i for i in range(len(ACTIONS))], [0 for i in range(len(ACTIONS))]))
-        for l in list:
-            frequency[max(0, l)] += 1
-        (maxKey, maxVal) = (-1, -1)
+        for prediction in predictions:
+            frequency[max(0, prediction)] += 1 # sometimes the classifier returns 'unknown', or '-1' In that case we map those at 0.
+        (maxKey, maxVal) = (-1, -1) #
         for (key, val) in iter(frequency.items()):
             if(val > maxVal):
                 maxVal = val
                 maxKey = key
         return maxKey
-
-    bufferSize = 30
-    iterations = (len(validationset) // bufferSize)
-    print(iterations) 
-    classifier.fit(trainingset.data, trainingset.target)
-    precision, recall, F1score = (0, 0, 0)
-    TP, FP, FN, TN = (0, 0, 0, 0)
-    for currentIteration in range(0, iterations):
-        bufferTarget = [validationset.target[j] for j in range(currentIteration*bufferSize, (currentIteration+1)*bufferSize)]
-        bufferData =  [validationset.data[j] for j in range(currentIteration*bufferSize, (currentIteration+1)*bufferSize)]
-        res = classifier.predict(bufferData) # let classifier classify the individual frames first
-        majority = getMajorityVote(res)
-        for x in range(0, bufferSize):
-            if(bufferTarget[x] == 1):
-                if(majority == 1):
-                    TP += 1
-                else:
-                    FN += 1
-            elif(bufferTarget[x] == 0):
-                if(majority == 1):
-                    FP += 1
-                else:
-                    TN += 1    
-            try:
-                precision = round(TP/(TP + FP), 4) * 100  # given a positive prediction from the classifier: how likely is it to be correct?
-                recall = round(TP/(TP + FN), 4) * 100     # given a positive example, how likely will the classifier correctly detect it?
-                F1score = 2 * (precision * recall) / (precision + recall)
-            except:
-                pass
-
-
-    
-    return (precision, recall, F1score)
-

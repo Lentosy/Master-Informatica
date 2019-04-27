@@ -1,5 +1,3 @@
-# https://github.com/AravinthPanch/gesture-recognition-for-human-robot-interaction
-
 import argparse
 import constants  # constants can be found in constants.py
 from runtime import * # import all runtime environments

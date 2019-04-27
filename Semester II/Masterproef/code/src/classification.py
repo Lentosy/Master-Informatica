@@ -3,7 +3,7 @@ import sys, os
 import pandas as pd
 import matplotlib.pyplot as plot
 from transform_features import transform_features
-from classification_strategies import ClassificationStrategy, PerFrameClassification, simpleBufferClassification
+from classification_strategies import ClassificationStrategy, PerFrameClassification, SimpleBufferClassification
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
@@ -23,44 +23,46 @@ classifiers = [
     GaussianNB(),
 ]
 
+strategies = [PerFrameClassification, SimpleBufferClassification]
+
 
 class Dataset(object):
     """
     This class represents a dataset that is compatible with the sklearn machine learning library
+    The data list contains a feature vector for each sample.
+    The target list contains the ground truth for each sample
     """
-    def __init__(self):
-        self.data = []
-        self.target = []
+    def __init__(self, data, target):
+        if(len(data) != len(target)):
+            raise ValueError(f"The length of data and target are not the same (data = {len(data)}, target = {len(target)})")
+        self.data = data
+        self.target = target
     
     def __len__(self):
+        """
+        Provides an easy way to get the number of samples.
+        """
         return len(self.data) # data and target attribute always have same length
 
-def loadTrainingset(trainingPersons):
-    trainingset = Dataset() # trainingset is a n * k matrix with n = # samples (frames) and k = # features (175)
-    for person in trainingPersons:
+
+def loadDataset(persons):
+    """
+    This returns a sklearn compatible dataset for the given persons. It can be used as either a training set or validation set.
+    """
+    data, target = ([], []) # create 2 empty lists
+    for person in persons:
         for action in ACTIONS:
             folder = f"data\\{person}\\{action}"
             try:
                 joints = pd.read_csv(f"{folder}\\joints.txt", header = None, sep = ';')
                 labels = pd.read_csv(f"{folder}\\labels.txt", header = None)
-                trainingset.target.extend(labels.to_numpy().ravel())
-                trainingset.data.extend(transform_features(f"{folder}\\joints.txt"))
+                target.extend(labels.to_numpy().ravel())
+                data.extend(transform_features(f"{folder}\\joints.txt"))
             except FileNotFoundError as fnfe:
                 devnull.write(str(fnfe))
-    return trainingset
+    dataset = Dataset(data, target) # dataset is a n * k matrix with n = # samples (frames) and k = # features (175)
+    return dataset
 
-def loadValidationset(validationPerson):
-    validationset = Dataset() 
-    for action in ACTIONS:
-        folder = f"data\\{validationPerson}\\{action}"
-        try:
-            joints = pd.read_csv(f"{folder}\\joints.txt", header = None, sep = ';')
-            labels = pd.read_csv(f"{folder}\\labels.txt", header = None)
-            validationset.target.extend(labels.to_numpy().ravel())
-            validationset.data.extend(transform_features(f"{folder}\\joints.txt"))
-        except FileNotFoundError as fnfe:
-            devnull.write(str(fnfe))
-    return validationset
 
 avgPrecisions = [0] * len(classifiers)
 avgRecalls = [0] * len(classifiers)
@@ -68,14 +70,14 @@ avgF1scores = [0] * len(classifiers)
 
 for i in range(1, len(PERSONS) + 1):
     testPersons = PERSONS[:i - 1] + PERSONS[i:]
-    validationPerson = PERSONS[i - 1]
-    trainingset = loadTrainingset(testPersons)
-    validationset = loadValidationset(validationPerson)
+    validationPerson = [PERSONS[i - 1]]
+    trainingset = loadDataset(testPersons)
+    validationset = loadDataset(validationPerson)
     listPrecisions = [] # used to make a graph 
     listRecalls = []
     listF1scores = []
     for clf in classifiers:
-        strategy = PerFrameClassification(trainingset, validationset, clf)
+        strategy = SimpleBufferClassification(trainingset, validationset, clf)
         strategy.perform()
         listPrecisions.append(strategy.calculatePrecision())
         listRecalls.append(strategy.calculateRecall())
