@@ -1,8 +1,8 @@
 import csv
 
 
-def transform_features(path):
-    info = []
+def transformFeatures(path):
+    featureVector = []
     with open(path) as dataFile:
         csvReader = csv.reader(dataFile, delimiter=';')
         for row in csvReader:
@@ -16,6 +16,7 @@ def transform_features(path):
                 dat.append(float(row[i + 2]) - spine_z)
             for i in range(75, len(row)):
                 dat.append(float(row[i]))
-            info.extend([dat])
-    return info
+            featureVector.extend([dat])
+    print(featureVector)
+    return featureVector
 

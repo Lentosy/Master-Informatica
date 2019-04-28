@@ -1,8 +1,9 @@
+import time
 import numpy as np
 import sys, os
 import pandas as pd
 import matplotlib.pyplot as plot
-from transform_features import transform_features
+from transform_features import transformFeatures
 from classification_strategies import ClassificationStrategy, PerFrameClassification, SimpleBufferClassification
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
@@ -57,53 +58,55 @@ def loadDataset(persons):
                 joints = pd.read_csv(f"{folder}\\joints.txt", header = None, sep = ';')
                 labels = pd.read_csv(f"{folder}\\labels.txt", header = None)
                 target.extend(labels.to_numpy().ravel())
-                data.extend(transform_features(f"{folder}\\joints.txt"))
+                data.extend(transformFeatures(f"{folder}\\joints.txt"))
             except FileNotFoundError as fnfe:
                 devnull.write(str(fnfe))
     dataset = Dataset(data, target) # dataset is a n * k matrix with n = # samples (frames) and k = # features (175)
     return dataset
 
 
-avgPrecisions = [0] * len(classifiers)
-avgRecalls = [0] * len(classifiers)
-avgF1scores = [0] * len(classifiers)
 
-for i in range(1, len(PERSONS) + 1):
-    testPersons = PERSONS[:i - 1] + PERSONS[i:]
-    validationPerson = [PERSONS[i - 1]]
-    trainingset = loadDataset(testPersons)
-    validationset = loadDataset(validationPerson)
-    listPrecisions = [] # used to make a graph 
-    listRecalls = []
-    listF1scores = []
-    for clf in classifiers:
-        strategy = SimpleBufferClassification(trainingset, validationset, clf)
-        strategy.perform()
-        listPrecisions.append(strategy.calculatePrecision())
-        listRecalls.append(strategy.calculateRecall())
-        listF1scores.append(strategy.calculateF1Score())
+def plotStrategy(strategy, precisions, recalls, f1scores):
+    plot.title(f"Average precision/recall for each classifier ({str(strategy)})")
+    plot.plot(precisions, label = 'precision', linestyle = (0, (1, 10)), marker='o')
+    plot.plot(recalls, label = 'recall', linestyle = (0, (1, 10)), marker='o')
+    plot.plot(f1scores, label = 'F1 score', linestyle = (0, (1, 10)), marker='o')
+    plot.legend()
+    plot.xticks(np.arange(5), names)
+    plot.xlabel('classifier')
+    plot.ylabel('percentage')
+    axes = plot.gca()
+    axes.set_ylim([0, 100])
+    plot.show()
 
-    i = 0
-    for p, a, f in zip(listPrecisions, listRecalls, listF1scores):
-        avgPrecisions[i] += p
-        avgRecalls[i] += a
-        avgF1scores[i] += f
-        i += 1
-    
+for classificationStrategy in strategies: # we want to compare each classification strategy
+    start = time.time()
+    avgPrecisions = [0] * len(classifiers)
+    avgRecalls = [0] * len(classifiers)
+    avgF1scores = [0] * len(classifiers)
+    for i in range(1, len(PERSONS) + 1):
+        testPersons = PERSONS[:i - 1] + PERSONS[i:]
+        validationPerson = [PERSONS[i - 1]]
+        trainingset = loadDataset(testPersons)
+        validationset = loadDataset(validationPerson)
+        (precisions, recalls, f1scores) = ([], [], []) 
+        for classifier in classifiers:
+            strategy = classificationStrategy(trainingset, validationset, classifier)
+            strategy.perform()
+            precisions.append(strategy.calculatePrecision())
+            recalls.append(strategy.calculateRecall())
+            f1scores.append(strategy.calculateF1Score())
+        i = 0
+        for p, a, f in zip(precisions, recalls, f1scores):
+            avgPrecisions[i] += p
+            avgRecalls[i] += a
+            avgF1scores[i] += f
+            i += 1
+    avgPrecisions = [x / len(classifiers) for x in avgPrecisions]
+    avgRecalls = [x / len(classifiers) for x in avgRecalls]
+    avgF1scores = [x / len(classifiers) for x in avgF1scores]
+    end = time.time()
+    print(f"{end - start} seconds")
+    plotStrategy(strategy, avgPrecisions, avgRecalls, avgF1scores)
 
-print(avgPrecisions)
-avgPrecisions = [x / len(classifiers) for x in avgPrecisions]
-avgRecalls = [x / len(classifiers) for x in avgRecalls]
-avgF1scores = [x / len(classifiers) for x in avgF1scores]
 
-plot.title("Average precision/recall for each classifier")
-plot.plot(avgPrecisions, label = 'precision', linestyle = (0, (1, 10)), marker='o')
-plot.plot(avgRecalls, label = 'recall', linestyle = (0, (1, 10)), marker='o')
-plot.plot(avgF1scores, label = 'F1 score', linestyle = (0, (1, 10)), marker='o')
-plot.legend()
-plot.xticks(np.arange(5), names)
-plot.xlabel('classifier')
-plot.ylabel('percentage')
-axes = plot.gca()
-axes.set_ylim([0, 100])
-plot.show()
