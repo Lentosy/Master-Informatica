@@ -50,13 +50,13 @@ Program cheetah::codegen(AST::CompoundStmt *root) {
 }
 
 // global state of variables
-static std::map<std::string, int> var_decls;
+static std::map<std::string, int> var_decls; // string = identifier, int = offset relative to base pointer
 
 // global state of functions
 static std::string func_exit;
 static std::map<std::string, std::tuple<llvm::Type *, size_t>> func_decls = {
     {"echo", std::make_tuple(T_void, 1)}, {"read", std::make_tuple(T_int, 0)}};
-
+ 
 
 //
 // Helper functions
@@ -132,11 +132,11 @@ void AST::FuncDecl::emit(Program &prog) const {
   }
 
   // 5.2 set the base pointer
-  prog << Instruction{"mov", {"%SP", "%rbx"}, "set the base pointer"};
-  // %rbx
+  prog << Instruction {"pushq", {"%rbx"}, "store base pointer on stack"};
+  prog << Instruction{"movq", {"%rsp", "%rbx"}, "copy value of stack pointer into base pointer"};
 
   // 5.2 align the stack pointer by 16 bytes
-  prog << Instruction{"sub", {"$16", "%SP"}, "align the stack pointer by 16 bytes"};
+  prog << Instruction{"subq", {"$16", "%rsp"}, "align the stack pointer by 16 bytes"}; // WAAROM 16 BYTES?
   body->emit(prog);
 
   prog << Block{func_exit, false, "end of function " + name->string};
@@ -144,7 +144,7 @@ void AST::FuncDecl::emit(Program &prog) const {
   // TODO: implement function epilogue
 
   // 5.2 restore the stack pointer
-  prog << Instruction{"add", {"$16", "%SP"}, "restore the stack pointer"};
+  prog << Instruction{"addq", {"$16", "%rsp"}, "restore the stack pointer"};
   // 5.2 restore callee-saved registers
   for(int i = callee_saved_regs.size(); i > 0; i--){
     prog << Instruction{"popq", {callee_saved_regs[i]}, "restore callee-saved register"};
@@ -160,7 +160,30 @@ void AST::VarDecl::emit(Program &prog) const {
   if (it != var_decls.end())
     codegen_error(str("cannot redefine variable '%s'", name->string.c_str()));
 
-  codegen_error("TODO: implement VarDecl");
+  // 5.3 determine the size (only support int)
+  if(type == T_int){
+    int size = 64;
+    int value = ((IntLiteral*) init)->value;
+    prog << Instruction{"pushq", {"$" + value}};
+  }
+  
+  
+  // 5.3 reserve stack space, making sure the stack remains 16-byte aligned
+  prog << Instruction{"subq", {"$192", "%rsp"}}; // 16 * 8 bits = 128 bits + 64 bits = 192 bits (24 bytes)
+
+  // 5.3 add the location of the variable relative to the base pointer in var_decls
+  if(var_decls.size() == 0){
+    var_decls[name->string] = -32; // 4 bytes
+  } else {
+    int lastOffset = var_decls.begin()->second;
+    for(auto it = var_decls.begin(); it != var_decls.end(); it++) {
+      if(it->second < lastOffset){
+        lastOffset = it->second;
+      }
+    }
+    var_decls[name->string] = lastOffset - 32;
+  }
+
 }
 
 
@@ -257,9 +280,8 @@ void AST::CallExpr::emit(Program &prog) const {
   // 5.1 return a value
   if(std::get<0>(decl) == T_void){
     prog << Instruction{"pushq", {"0xABCDEF"}};
-  }else if(std::get<0>(decl) == T_int){
-
   }
+  // return int?
 
 }
 
