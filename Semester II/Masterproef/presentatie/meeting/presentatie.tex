@@ -1,0 +1,41 @@
+\documentclass[]{beamer}
+
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric, arrows}
+\tikzstyle{result} = [rectangle, rounded corners, minimum width=3cm, minimum height=0.5cm, text centered, draw=black, fill=green!30]
+\tikzstyle{process} = [rectangle, minimum width=3cm, minimum height=0.5cm, text centered, draw=black, fill=orange!30]
+\tikzstyle{arrow}= [thick,->,>=stealth]
+\usepackage{movie15}
+\usepackage{lipsum}
+\usepackage{pgfpages}
+\usepackage{graphicx}
+\usepackage[dutch]{babel}
+\graphicspath{{img/}}
+
+\mode<handout>{%
+%	\setbeameroption{show notes}
+}
+
+\usetheme{AnnArbor}
+\usecolortheme{beaver}
+
+
+\begin{document}	
+	\begin{frame}
+		\begin{enumerate}
+			\item Preprocessing
+			\begin{itemize}
+				\item Translatie: heup centrum joint wordt de oorsprong
+				\item Schaal: Elke coördinaat normaliseren met de langste afstand (heup centrum joint tot hoofd joint)
+				\item View invariant: via rotatiematrix naar nieuw coördinatensysteem
+			\end{itemize} 
+			\item Classificatie
+			\begin{itemize}
+				\item Eenvoudige per frame classificatie
+				\item Eenvoudige buffer classificatie (majority vote per 30 frames)
+				\item Algemeen: classificatie duurt nog vrij lang
+			
+			\end{itemize}
+		\end{enumerate}
+	\end{frame}
+\end{document}

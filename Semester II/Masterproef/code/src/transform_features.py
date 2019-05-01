@@ -1,5 +1,21 @@
 import csv
 
+class FeatureTransformer(object):
+    @classmethod
+    def __init__(self, path):
+        self.featureVector = []
+        with open(path) as dataFile:
+            csvReader = csv.reader(dataFile, delimiter = ';')
+            for row in csvReader:
+                self.featureVector.extend([row])
+
+    @classmethod
+    def preProcessing(self):
+        print(self.featureVector)
+
+
+    @classmethod
+    def _translate(self):
 
 def transformFeatures(path):
     featureVector = []
@@ -17,6 +33,5 @@ def transformFeatures(path):
             for i in range(75, len(row)):
                 dat.append(float(row[i]))
             featureVector.extend([dat])
-    print(featureVector)
     return featureVector
 

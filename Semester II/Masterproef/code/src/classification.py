@@ -106,7 +106,7 @@ for classificationStrategy in strategies: # we want to compare each classificati
     avgRecalls = [x / len(classifiers) for x in avgRecalls]
     avgF1scores = [x / len(classifiers) for x in avgF1scores]
     end = time.time()
-    print(f"{end - start} seconds")
+    print(f"{strategy}: {end - start} seconds")
     plotStrategy(strategy, avgPrecisions, avgRecalls, avgF1scores)
 
 
