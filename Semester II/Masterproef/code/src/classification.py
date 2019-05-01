@@ -1,9 +1,11 @@
 import time
 import numpy as np
 import sys, os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1' # surpress pygame output
 import pandas as pd
 import matplotlib.pyplot as plot
-from transform_features import transformFeatures
+import csv
+from transform_features import FeatureTransformer
 from classification_strategies import ClassificationStrategy, PerFrameClassification, SimpleBufferClassification
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
@@ -51,6 +53,7 @@ def loadDataset(persons):
     This returns a sklearn compatible dataset for the given persons. It can be used as either a training set or validation set.
     """
     data, target = ([], []) # create 2 empty lists
+
     for person in persons:
         for action in ACTIONS:
             folder = f"data\\{person}\\{action}"
@@ -58,10 +61,16 @@ def loadDataset(persons):
                 joints = pd.read_csv(f"{folder}\\joints.txt", header = None, sep = ';')
                 labels = pd.read_csv(f"{folder}\\labels.txt", header = None)
                 target.extend(labels.to_numpy().ravel())
-                data.extend(transformFeatures(f"{folder}\\joints.txt"))
+                rawData = []
+                with open(f"{folder}\\joints.txt") as dataFile:
+                    csvReader = csv.reader(dataFile, delimiter=';')
+                    for row in csvReader:
+                        rawData.append(row)
+                ft = FeatureTransformer(rawData)
+                data.extend(ft.preProcessing())
             except FileNotFoundError as fnfe:
                 devnull.write(str(fnfe))
-    dataset = Dataset(data, target) # dataset is a n * k matrix with n = # samples (frames) and k = # features (175)
+    dataset = Dataset(data[:75], target[:75]) # dataset is a n * k matrix with n = # samples (frames) and k = # features (175)
     return dataset
 
 
@@ -78,6 +87,7 @@ def plotStrategy(strategy, precisions, recalls, f1scores):
     axes = plot.gca()
     axes.set_ylim([0, 100])
     plot.show()
+
 
 for classificationStrategy in strategies: # we want to compare each classification strategy
     start = time.time()

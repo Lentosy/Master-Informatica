@@ -1,37 +1,54 @@
-import csv
+from constants import JOINTS
+from pykinect2 import PyKinectV2
+from math import sqrt
 
 class FeatureTransformer(object):
     @classmethod
-    def __init__(self, path):
-        self.featureVector = []
-        with open(path) as dataFile:
-            csvReader = csv.reader(dataFile, delimiter = ';')
-            for row in csvReader:
-                self.featureVector.extend([row])
+    def __init__(self, rawData):
+        self.featureVectors = rawData
 
     @classmethod
     def preProcessing(self):
-        print(self.featureVector)
-
+        for featureVector in self.featureVectors:
+            self._translateToOrigin(featureVector)
+            self._scale(featureVector)
+            for i in range(75, len(featureVector)):
+                featureVector[i] = float(featureVector[i])
+        return self.featureVectors
 
     @classmethod
-    def _translate(self):
+    def _translateToOrigin(self, featureVector):
+        """
+        This processing step translates the whole skeleton so that the spine base becomes the origin in the camera coördinate system.
+        """
+        # The lower spine is used as the origin
+        spine_x = float(featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + 0])
+        spine_y = float(featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + 1])
+        spine_z = float(featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + 2])
+        for i in range(0, 75, 3):
+            featureVector[i+0] = float(featureVector[i+0]) - spine_x
+            featureVector[i+1] = float(featureVector[i+1]) - spine_y
+            featureVector[i+2] = float(featureVector[i+2]) - spine_z
 
-def transformFeatures(path):
-    featureVector = []
-    with open(path) as dataFile:
-        csvReader = csv.reader(dataFile, delimiter=';')
-        for row in csvReader:
-            spine_x = float(row[0])
-            spine_y = float(row[1])
-            spine_z = float(row[2])
-            dat = []
-            for i in range(0, 75, 3):
-                dat.append(float(row[i + 0]) - spine_x)
-                dat.append(float(row[i + 1]) - spine_y)
-                dat.append(float(row[i + 2]) - spine_z)
-            for i in range(75, len(row)):
-                dat.append(float(row[i]))
-            featureVector.extend([dat])
-    return featureVector
+    @classmethod
+    def _scale(self, featureVector):
+        """
+        This processing step makes the feature vector scale invariant by dividing each position vector with the length of the Neck position vector.
+        """
+        neck_x = float(featureVector[JOINTS[PyKinectV2.JointType_Neck] + 0])
+        neck_y = float(featureVector[JOINTS[PyKinectV2.JointType_Neck] + 1])
+        neck_z = float(featureVector[JOINTS[PyKinectV2.JointType_Neck] + 2])
+        length = sqrt(neck_x * neck_x + neck_y * neck_y + neck_z * neck_z)
+        for i in range(0, 75, 3):
+            featureVector[i+0] = float(featureVector[i+0]) / length
+            featureVector[i+1] = float(featureVector[i+1]) / length
+            featureVector[i+2] = float(featureVector[i+2]) / length
 
+        
+   # @classmethod
+    #def _toLocalSkeletonCoördinateSystem(self, featureVector):
+
+
+
+
+    

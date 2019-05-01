@@ -127,80 +127,142 @@
 
 
 	\section{Methodologie}
-	\begin{frame}\frametitle{Methodologie}
-		\begin{tikzpicture}[node distance = 2cm]
-			%\node (literatuur) [process] {Literatuur};
-			%\node (literatuur1) [result, right of=literatuur, xshift=2cm, yshift=0.5cm] {Features};
-			%\node (literatuur2) [result, right of=literatuur, xshift=2cm, yshift=-0.5cm] {Temporale dimensie};
-			\node (dataset) [process] {Dataset};
-			
-			\node (dataset1) [result, right of=dataset,xshift=4cm,yshift=0.5cm] {3 personen, 9 acties, elk 5 maal uitgevoerd};
-			\node (dataset2) [result, right of=dataset,xshift=2cm,yshift=-0.5cm,fill=red!30] {Frame drops aanwezig};
-			
-			\node (experiment) [process, below of=dataset] {Experimenteerfase};
-				
-			\node (experiment1) [result, right of=experiment,xshift=4cm,yshift=0.5cm,fill=orange!30] {Features: HOJ3D, COV3DJ, EigenJoints};
-			\node (experiment2) [result, right of=experiment,xshift=4cm,yshift=-0.5cm,fill=orange!30] {Temporale dimensie: SW, HMM, DTW};
-			
-			\node (evaluatie) [process, below of=experiment] {Evaluatie};
-			
-			%\draw [arrow] (literatuur) -- (literatuur1);
-			%\draw [arrow] (literatuur) -- (literatuur2);
-			%\draw [arrow] (literatuur) -- (dataset);
-			\draw [arrow] (dataset) -- (dataset1);
-			\draw [arrow] (dataset) -- (dataset2);
-			\draw [arrow] (dataset) -- (experiment);
-			\draw [arrow] (experiment) -- (experiment1);
-			\draw [arrow] (experiment) -- (experiment2);
-			\draw [arrow] (experiment) -- (evaluatie);
-			\draw [arrow] (evaluatie) -- (experiment);
-		\end{tikzpicture}
-	\end{frame}
-	\begin{frame}{Dataset}
-		\begin{itemize}
-			\item Welke acties?
-			\item<2-> Frame drops
+	\subsection{Machine Learning}
+	\begin{frame}{Machine Learning - Classificatieprobleem}
 			\begin{itemize}
-				\item Verouderde hardware
-				\item Te hoge resolutie
+				\item Een verzameling van klassen (labels, uitvoerwaarden, ...)
+				\item \textbf{Gegeven een observatie, tot welke klasse behoort deze observatie?}
+				\item Bij actieherkenning:
+				\begin{itemize}
+					\item Klassen = acties
+					\item Observaties = frames
+				\end{itemize}
+			\end{itemize}
+
+	\end{frame}
+	
+	\begin{frame}{Machine Learning - Features}
+		\begin{itemize}
+			\item Een observatie (frame) wordt getransformeerd naar \textit{features}
+			\begin{itemize}
+				\item Pixel: RGB-waarden
+				\item Persoon: leeftijd, geslacht, haarkleur, lengte, ...
+			\end{itemize}
+			\item Features op basis van skeletbeelden
+			\begin{itemize}
+				\item Elk skelet \textit{joint} wordt gekenmerkt door zijn ($x, y, z$) coördinaten
+				\item Het skelet bestaat uit 25 \textit{joints}
+				\item[$\rightarrow$] 75-dimensionale \textit{feature vector}
+				
+				$$\textbf{f} = \begin{pmatrix}
+				x_1 & y_1 & z_1 & ...&  x_{25} & y_{25} & z_{25}
+				\end{pmatrix}$$
 			\end{itemize}
 		\end{itemize}
+		
 	\end{frame}
-	\begin{frame}{Experimenteerfase}
-	\begin{itemize}
-		\item Verschillende features uittesten op eigen dataset
+
+	\begin{frame}{Machine Learning - Classificatie}
+		
+	\end{frame}
+	\subsection{Dataset}
+	\begin{frame}{Dataset}
+		content...
+	\end{frame}
+	\subsection{Preprocessing}
+	\begin{frame}{Preprocessing}
+		\begin{enumerate}
+			\item[1.]<1-> Plaats-invariantie $\rightarrow$ Translatie
+			\begin{itemize}
+				\item \textit{Spine base joint} als oorsprong:
+				$$\begin{pmatrix}
+				x' \\
+				y' \\
+				z'
+				\end{pmatrix}
+				= \begin{pmatrix}
+				x \\ y \\ z
+				\end{pmatrix}
+				- \begin{pmatrix}
+				x_0 \\ y_0 \\ z_0
+				\end{pmatrix}$$
+				met $x_0, y_0, z_0$ de drie-dimensionale coördinaten van de \textit{Spine base joint}
+			\end{itemize}
+			\item[2.]<2-> Schaal-invariantie $\rightarrow$ Vectornormalisatie 
+			\begin{itemize}
+				\item Elk component van elke positievector delen door lengte van de \textit{neck joint} positievector:
+				$$
+				\begin{pmatrix}
+				x' \\ y' \\ z'
+				\end{pmatrix}
+				=				
+				\begin{pmatrix}
+				\frac{x}{||n||} \\ \frac{y}{||n||}  \\ \frac{z}{||n||} 
+				\end{pmatrix}
+				$$
+				met $$||n|| = \sqrt{(neck_x)^2 + (neck_y)^2 + (neck_z)^2}$$
+			\end{itemize}
+		\end{enumerate}
+	\end{frame}
+
+	\begin{frame}
+		\begin{enumerate}
+			\item[3.]<1-> Rotatie-invariantie $\rightarrow$ Lokaal skeletcoördinatensysteem $(X', Y', Z')$
+			\begin{itemize}
+				\item X'-as = de as door de 
+				\item Y'-as = de as door de 
+				\item Z'-as = orthogonaal met X' en Y'
+				\item Via quaternionen:
+				$$\textbf{q} = a + b\textbf{i} + c\textbf{j} + d\textbf{k}$$
+				\begin{itemize}
+					\item Vierdimensionale uitbreiding van de reële getallen
+					\item $b\textbf{i} + c\textbf{j} + d\textbf{k}$ is drie-dimensionaal en reflecteerd de ruimte $R^3$.
+						\item Sneller en compacter dan drie-dimensionale rotatiematrices
+					\item Rotatie rond $x-as$:
+					$$
+						\hbox{bgtg}\bigg(\frac{2ab + 2cd}{1 - 2b^2 + 2c^2}\bigg)\qquad \hbox{radialen}
+					$$
+
+				
+				\end{itemize}
+
+				
+			\end{itemize}
+	\end{enumerate}
+	\end{frame}
+	\begin{frame}{Preprocessing}
+	\includegraphics[width=\textwidth]{skeleton_preprocessing}
+	\end{frame}
+	
+	\subsection{Feature transformatie}
+	
+	\subsection{Classificatie}
+	\begin{frame}
 		\begin{itemize}
-			\item HOJ3D
-			\item COV3DJ
-			\item EigenJoints
+			\item 
 		\end{itemize}
-		\item Combineren met verschillende methoden om temporale informatie te behouden
+	\end{frame}
+	\subsection{Evaluatie}
+	\begin{frame}{Evaluatie}
 		\begin{itemize}
-			\item Sliding Window
-			\item Dynamic Time Warping
-			\item Hidden Markov Model
+			\item Confusion matrix
+			\begin{figure}[ht]
+				\centering
+				\includegraphics[width=0.5\textwidth]{confusionmatrix}
+			\end{figure}
+		
+				\item Precision = $\frac{TP}{TP + FP}$
+				\item Recall = $\frac{TP}{TP + FN}$
+				\item F1 score = $2*\frac{precision * recall}{precision + recall}$
+		
 		\end{itemize}
-		\item Zoeken naar verbeteringen
-		\begin{itemize}
-			\item Combinatie van features
-			\item Dimensiereductie
-		\end{itemize}
-	\end{itemize}
 	\end{frame}
 	\begin{frame}{Evaluatie}
-	\begin{itemize}
-		\item Confusion matrix
-		\begin{figure}
-			\includegraphics[width=0.5\textwidth]{confusionmatrix}
-		\end{figure}
-		\begin{itemize}
-			\item Accuracy: $\frac{TP + TN}{TP + FP + FN + TN}$
-			\item Precision: $\frac{TP}{TP + FP}$
-			\item Recall: $\frac{TP}{TP + FN}$
-			\item F1 score: $2\frac{P\cdot R}{P + R}$
-		\end{itemize}
-	\end{itemize}
+		\includegraphics[width=0.5\textwidth]{PerFrameClassification_PreProcessing}
+		\includegraphics[width=0.5\textwidth]{SimpleBufferClassification_PreProcessing}
 	\end{frame}
+	
+	
 	\begin{frame}
 		\begin{center}
 			\Huge Vragen, opmerkingen, ...?
