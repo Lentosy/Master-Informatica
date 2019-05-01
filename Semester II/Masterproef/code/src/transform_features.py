@@ -1,6 +1,7 @@
 from constants import JOINTS
 from pykinect2 import PyKinectV2
-from math import sqrt
+from math import sqrt, acos, pi, cos, sin
+import numpy
 
 class FeatureTransformer(object):
     @classmethod
@@ -12,6 +13,7 @@ class FeatureTransformer(object):
         for featureVector in self.featureVectors:
             self._translateToOrigin(featureVector)
             self._scale(featureVector)
+            self._toLocalSkeletonCoördinateSystem(featureVector)
             for i in range(75, len(featureVector)):
                 featureVector[i] = float(featureVector[i])
         return self.featureVectors
@@ -45,10 +47,15 @@ class FeatureTransformer(object):
             featureVector[i+2] = float(featureVector[i+2]) / length
 
         
-   # @classmethod
-    #def _toLocalSkeletonCoördinateSystem(self, featureVector):
-
-
+    @classmethod
+    def _toLocalSkeletonCoördinateSystem(self, featureVector):
+        xAngle = acos(featureVector[PyKinectV2.JointType_HipLeft] + featureVector[PyKinectV2.JointType_HipLeft + 1] + featureVector[PyKinectV2.JointType_HipLeft + 2])
+        rotationX = numpy.matrix([[1, 0, 0], [0, cos(xAngle), -sin(xAngle)], [0, sin(xAngle), cos(xAngle)]])
+        
+        for i in range(0, 75, 3):
+            coördinateVector = (featureVector[i], featureVector[i+1], featureVector[i+2])
+            result = (rotationX @ coördinateVector).getA1()
+            featureVector[i], featureVector[i+1], featureVector[i+2] = result
 
 
     

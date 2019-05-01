@@ -27,6 +27,15 @@
 	\end{frame}
 }
 
+\AtBeginSubsection[]
+{
+	\begin{frame}
+	\frametitle{Inhoudsopgave}
+	\tableofcontents[currentsection, currentsubsection]
+	\end{frame}
+}
+
+
 
 \begin{document}
 	\title[Actieherkenning met de Kinect sensor]{Intuïtieve mens-machineinterface met live actieherkenning }
@@ -143,31 +152,52 @@
 	
 	\begin{frame}{Machine Learning - Features}
 		\begin{itemize}
-			\item Een observatie (frame) wordt getransformeerd naar \textit{features}
+			\item Een observatie wordt getransformeerd naar \textit{features}
 			\begin{itemize}
 				\item Pixel: RGB-waarden
 				\item Persoon: leeftijd, geslacht, haarkleur, lengte, ...
 			\end{itemize}
 			\item Features op basis van skeletbeelden
 			\begin{itemize}
-				\item Elk skelet \textit{joint} wordt gekenmerkt door zijn ($x, y, z$) coördinaten
+				\item Elk skelet \textit{joint} wordt gekenmerkt door zijn ($x, y, z$) coördinaten en ($a, b, c, d$) quaternionen.
+				\begin{itemize}
+					\item Quaternion:
+					$$\textbf{q} = a + b\textbf{i} + c\textbf{j} + d\textbf{k}$$
+				\end{itemize}
 				\item Het skelet bestaat uit 25 \textit{joints}
-				\item[$\rightarrow$] 75-dimensionale \textit{feature vector}
+				\item[$\rightarrow$] 175-dimensionale \textit{feature vector}
 				
-				$$\textbf{f} = \begin{pmatrix}
-				x_1 & y_1 & z_1 & ...&  x_{25} & y_{25} & z_{25}
-				\end{pmatrix}$$
+
 			\end{itemize}
-		\end{itemize}
 		
+		\end{itemize}
+		$$\textbf{f} = \begin{pmatrix}
+		x_1 & y_1 &  ...&  y_{25} & z_{25} & a_1 & b_1 & ... & c_{25} & d_{25}
+		\end{pmatrix}$$
 	\end{frame}
 
 	\begin{frame}{Machine Learning - Classificatie}
+		\begin{itemize}
+			\item De \textit{feature vector} kan als input dienen voor eender welke classifier
+			\item Welke classifier is de beste? $\rightarrow$ Evalueren a.d.h.v. een \textit{confusion matrix}:
+				\begin{figure}[ht]
+					\centering
+					\includegraphics[width=0.5\textwidth]{confusionmatrix}
+				\end{figure}
+				
+				\item Precision = $\frac{TP}{TP + FP}$
+				\item Recall = $\frac{TP}{TP + FN}$
+				\item F1 score = $2*\frac{precision * recall}{precision + recall}$
+				
 		
+		\end{itemize}
 	\end{frame}
 	\subsection{Dataset}
 	\begin{frame}{Dataset}
-		content...
+		\begin{itemize}
+			\item Onderzoek naar intuïtieve handelingen  
+			\item $\approx$ 30 FPS
+		\end{itemize}
 	\end{frame}
 	\subsection{Preprocessing}
 	\begin{frame}{Preprocessing}
@@ -209,24 +239,10 @@
 		\begin{enumerate}
 			\item[3.]<1-> Rotatie-invariantie $\rightarrow$ Lokaal skeletcoördinatensysteem $(X', Y', Z')$
 			\begin{itemize}
-				\item X'-as = de as door de 
-				\item Y'-as = de as door de 
+				\item X'-as = de as door de \textit{Right Hip joint (RH)} en \textit{Left Hip joint (LH)}
+				\item Y'-as = de as door de \textit{Spine Base joint (SB)} en \textit{Spine Mid joint (SM)}
 				\item Z'-as = orthogonaal met X' en Y'
-				\item Via quaternionen:
-				$$\textbf{q} = a + b\textbf{i} + c\textbf{j} + d\textbf{k}$$
-				\begin{itemize}
-					\item Vierdimensionale uitbreiding van de reële getallen
-					\item $b\textbf{i} + c\textbf{j} + d\textbf{k}$ is drie-dimensionaal en reflecteerd de ruimte $R^3$.
-						\item Sneller en compacter dan drie-dimensionale rotatiematrices
-					\item Rotatie rond $x-as$:
-					$$
-						\hbox{bgtg}\bigg(\frac{2ab + 2cd}{1 - 2b^2 + 2c^2}\bigg)\qquad \hbox{radialen}
-					$$
 
-				
-				\end{itemize}
-
-				
 			\end{itemize}
 	\end{enumerate}
 	\end{frame}
@@ -235,31 +251,53 @@
 	\end{frame}
 	
 	\subsection{Feature transformatie}
+	\begin{frame}{Feature transformatie}
+		\begin{itemize}
+			\item Momenteel: \textit{Features} zijn invariant t.o.v. locatie, schaal en camerahoek
+		\end{itemize}
+	\end{frame}
 	
 	\subsection{Classificatie}
-	\begin{frame}
+	\begin{frame}{Classificatie}
 		\begin{itemize}
-			\item 
+			\item Enerzijds vergelijken verschillende classifiers
+			\begin{itemize}
+				\item $K$-\textit{Nearest Neighbors}
+				\begin{itemize}
+					\item Vergelijk de $k$ dichtste feature vectoren, de gelabelde klasse is diegene die het meest voorkomt
+				\end{itemize}
+				\item \textit{Support Vector Machine}
+				\begin{itemize}
+					\item Zoek een hypervlak dat de positieve observaties van de negatieve onderscheidt.
+					\begin{figure}[ht]
+						\centering
+						\includegraphics[width=0.5\linewidth]{svm}
+					\end{figure}
+				\end{itemize}
+
+			\end{itemize}
 		\end{itemize}
 	\end{frame}
+	\begin{frame}{Classificatie}
+		\begin{itemize}
+			\item Anderzijds verschillende classificatiestrategieën toepassen
+			\begin{itemize}
+				\item Frame per frame classificeren zonder temporaal aspect
+				\item Buffer bijhouden van 30 frames, met \textit{majority voting} de actie bepalen
+				\item Buffer bijhouden van 30 frames, met een gewogen vote de actie bepalen
+			\end{itemize}
+		\end{itemize}
+	\end{frame}
+
+
 	\subsection{Evaluatie}
 	\begin{frame}{Evaluatie}
-		\begin{itemize}
-			\item Confusion matrix
-			\begin{figure}[ht]
-				\centering
-				\includegraphics[width=0.5\textwidth]{confusionmatrix}
-			\end{figure}
-		
-				\item Precision = $\frac{TP}{TP + FP}$
-				\item Recall = $\frac{TP}{TP + FN}$
-				\item F1 score = $2*\frac{precision * recall}{precision + recall}$
-		
-		\end{itemize}
+		\centering
+		\includegraphics[width=0.8\linewidth]{PerFrameClassification_PreProcessing}
 	\end{frame}
 	\begin{frame}{Evaluatie}
-		\includegraphics[width=0.5\textwidth]{PerFrameClassification_PreProcessing}
-		\includegraphics[width=0.5\textwidth]{SimpleBufferClassification_PreProcessing}
+		\centering
+		\includegraphics[width=0.7\linewidth]{SimpleBufferClassification_PreProcessing}
 	\end{frame}
 	
 	

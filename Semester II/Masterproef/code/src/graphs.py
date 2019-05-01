@@ -15,8 +15,8 @@ with open(f"data\\DEBUG\\EMERGENCY_STOP\\joints.txt") as dataFile:
         rawData.append(row)
 
 
-graphData = [[[],[]], [[],[]], [[],[]]]
-ranges = [[-300, 300], [-300, 300], [-2, 2]]
+graphData = [[[],[]], [[],[]], [[],[]], [[],[]]]
+ranges = [[-300, 300], [-300, 300], [-2, 2], [-2, 2]]
 for i in range(0, 2):
     for j in range(0, 75, 3):
         graphData[0][i].append(-float(rawData[i][j])) # negative so skeleton is standing upright
@@ -47,10 +47,18 @@ for i in range(0, 2):
         graphData[2][i].append(processed[i][j+2])
 
 
+for featureVector in ft.featureVectors:
+    ft._toLocalSkeletonCoördinateSystem(featureVector)
+processed = ft.featureVectors
+for i in range(0, 2):
+    for j in range(0, 75, 3):
+        graphData[3][i].append(-processed[i][j]) 
+        graphData[3][i].append(-processed[i][j+1])
+        graphData[3][i].append(processed[i][j+2])
 
-fig, axes = plot.subplots(nrows=3, ncols=2)
+fig, axes = plot.subplots(nrows=4, ncols=2)
 
-for i in range(0, 3):
+for i in range(0, 4):
     for j in range(0, 2):
         xdata, ydata, zdata = ([], [], [])
         for k in range(3, 75, 3):
