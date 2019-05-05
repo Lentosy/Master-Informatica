@@ -1,0 +1,40 @@
+\chapter{Static Single-Assignment}
+Dient om eenvoudiger Data-Flow analyse te doen. Maar er moet wel eerst Control-flow analyse gedaan worden.
+
+
+Use-def chain = per gebruik van een veranderlijke (statement 2, voor veranderlijke a) bijhouden waar deze gedefinieerd wordt (in statement 1). Nog altijd niet optimaal: vezameling van meerdere elementen zijn nog  steeds mogelijk. Idealiter wordt er maar één (of zelfs geen) statement bijgehouden = Single Assignment Form.
+
+
+Static Single Assignment = zorgen dat een veranderlijke op slechts één plaats geïnitialiseerd wordt. Voordelen:
+\begin{itemize}
+	\item De dataverloopanalyse wordt gemakkelijker.
+	\item De analyses verlopen nu lineair.
+	\item Ontkoppeling veranderlijken met dezelfde naam. De programmeur heeft zelf drie keer de variabele $a$ gebruikt, maar kan even goed andere variabelenamen zijn.
+\end{itemize}
+
+De $\phi$-functie geeft $a_2$ terug als het programma van blok $3$ komt en $a_1$ als het programma van blok $2$ komt. Elke veranderlijke wordt nu slechts éénmaal gedefinieerd.
+
+Hoe $\phi$-functie wegwerken? Voeg move operaties toe na blok 3 en 2 die respectievelijk $a_2$ en $a_1$ in $a_3$ steken.
+
+Wanneer $\phi$-functie toevoegen?
+\begin{itemize}
+	\item $a_i$ = $\phi(a_1, ..., a_n)$ is nodig in blok $z$ als
+	\begin{itemize}
+		\item $a$ gedefinieerd in blok $x$
+		\item $a$ gedefinieerd in blok $y \neq x$
+		\item Pad van pijlen van $x$ naar $z$ ($P_{xz}$) is niet leeg
+		\item Pad van pijlen van $y$ naar $z$ ($P_{yz}$) is niet leeg	
+		\item $P_{xz}$ en $P{yz}$ hebben enkel $z$ gemeen
+		\item $z$ mag ook midden in $P_{xz}$ of $P_{yz}$ maar niet in beide
+		
+	\end{itemize}
+	\item Wanneer een knoop $x$ een definitie van variabele $a$ bezit, dan moet voor elke knoop $z$ in de dominantiegrens van $x$ een $\phi$-functie aangemaakt worden voor $a$.
+\end{itemize}
+
+Dominantiegrens kunnen aantonen op figuur
+
+
+\section{Aggressive Dead Code Elimination}
+Eenvoudige variant nadeel: ontdekt geen useless veranderlijken (na sterktereductie)
+
+Aggresieve variant nadeel: stel je stored A in het geheugen (\texttt{STORE A}) Er zijn twee bovenliggende blokken die iets verschillend aan A toekennen. Boven deze twee blokken is er een conditionele jump die bepaald welke van de twee toekenningen uitgevoerd wordt. Er moet ook controleafhankelijkheden bijgehouden worden.

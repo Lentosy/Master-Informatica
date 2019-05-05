@@ -27,24 +27,24 @@ SKELETON_COLORS = [
 # List of all the available joints (same order as the PyKinectv2.JointType enumeration)
 JOINTS = [
     PyKinectV2.JointType_SpineBase,           # 0 quaternion exists
-    PyKinectV2.JointType_SpineMid,            # 1 
+    PyKinectV2.JointType_SpineMid,            # 1 quaternion exists
     PyKinectV2.JointType_Neck,                # 2 quaternion exists
     PyKinectV2.JointType_Head,                # 3
     PyKinectV2.JointType_ShoulderLeft,        # 4 quaternion exists
     PyKinectV2.JointType_ElbowLeft,           # 5 quaternion exists
     PyKinectV2.JointType_WristLeft,           # 6 quaternion exists
-    PyKinectV2.JointType_HandLeft,            # 7
+    PyKinectV2.JointType_HandLeft,            # 7 quaternion exists
     PyKinectV2.JointType_ShoulderRight,       # 8 quaternion exists
     PyKinectV2.JointType_ElbowRight,          # 9 quaternion exists
     PyKinectV2.JointType_WristRight,          # 10 quaternion exists
-    PyKinectV2.JointType_HandRight,           # 11
+    PyKinectV2.JointType_HandRight,           # 11 quaternion exists
     PyKinectV2.JointType_HipLeft,             # 12 quaternion exists
     PyKinectV2.JointType_KneeLeft,            # 13 quaternion exists
-    PyKinectV2.JointType_AnkleLeft,           # 14
+    PyKinectV2.JointType_AnkleLeft,           # 14 quaternion exists
     PyKinectV2.JointType_FootLeft,            # 15
     PyKinectV2.JointType_HipRight,            # 16 quaternion exists
     PyKinectV2.JointType_KneeRight,           # 17 quaternion exists
-    PyKinectV2.JointType_AnkleRight,          # 18
+    PyKinectV2.JointType_AnkleRight,          # 18 quaternion exists
     PyKinectV2.JointType_FootRight,           # 19
     PyKinectV2.JointType_SpineShoulder,       # 20 quaternion exists
     PyKinectV2.JointType_HandTipLeft,         # 21

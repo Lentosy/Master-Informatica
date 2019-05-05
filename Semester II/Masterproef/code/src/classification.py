@@ -6,7 +6,7 @@ import pandas as pd
 import matplotlib.pyplot as plot
 import csv
 from transform_features import FeatureTransformer
-from classification_strategies import ClassificationStrategy, PerFrameClassification, SimpleBufferClassification
+from classification_strategies import ClassificationStrategy, PerFrameClassification, SimpleBufferClassification, WeightedBufferClassification
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
@@ -26,7 +26,7 @@ classifiers = [
     GaussianNB(),
 ]
 
-strategies = [PerFrameClassification, SimpleBufferClassification]
+strategies = [WeightedBufferClassification]
 
 
 class Dataset(object):
@@ -70,7 +70,7 @@ def loadDataset(persons):
                 data.extend(ft.preProcessing())
             except FileNotFoundError as fnfe:
                 devnull.write(str(fnfe))
-    dataset = Dataset(data[:75], target[:75]) # dataset is a n * k matrix with n = # samples (frames) and k = # features (175)
+    dataset = Dataset(data, target) # dataset is a n * k matrix with n = # samples (frames) and k = # features (175)
     return dataset
 
 

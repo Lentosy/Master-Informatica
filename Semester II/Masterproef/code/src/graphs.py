@@ -9,7 +9,7 @@ from mpl_toolkits import mplot3d
 
 
 rawData = []
-with open(f"data\\DEBUG\\EMERGENCY_STOP\\joints.txt") as dataFile:
+with open(f"data\\DEBUG\\joints.txt") as dataFile:
     csvReader = csv.reader(dataFile, delimiter=';')
     for row in csvReader:
         rawData.append(row)
@@ -25,6 +25,8 @@ for i in range(0, 2):
 
 
 ft = FeatureTransformer(rawData)
+ft.preProcessing()
+exit(1)
 for featureVector in ft.featureVectors:
     ft._translateToOrigin(featureVector)
 processed = ft.featureVectors
@@ -86,4 +88,7 @@ fig.tight_layout(pad=0.0, w_pad=0, h_pad=0)
 
 fig.legend(labels=('Skelet joints', 'Heup joint'), loc='upper left')
 fig.title = "Preprocessingfase"
+fig.set_figheight(10)
+fig.set_figwidth(10)
+
 plot.show()

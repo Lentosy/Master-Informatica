@@ -19,10 +19,10 @@ class ClassificationStrategy(object):
     def __str__(self):
         raise NotImplementedError("This is an abstract method. Implement this in a subclass")
 
-    def calculateRecall(self): # given a positive prediction from the classifier: how likely is it to be correct?
+    def calculateRecall(self):  # given a positive example, how likely will the classifier correctly detect it?
         return sum(self.recalls) / len(self.recalls)
     
-    def calculatePrecision(self): # given a positive example, how likely will the classifier correctly detect it?
+    def calculatePrecision(self):# given a positive prediction from the classifier: how likely is it to be correct?
         return sum(self.precisions) / len(self.precisions)
 
     def calculateF1Score(self): # harmonic mean of precision and recall
@@ -118,7 +118,7 @@ class SimpleBufferClassification(ClassificationStrategy):
     def _getMajorityVote(self, predictions):
         frequency = dict(zip([i for i in range(len(ACTIONS))], [0 for i in range(len(ACTIONS))]))
         for prediction in predictions:
-            frequency[max(0, prediction)] += 1 # sometimes the classifier returns 'unknown', or '-1' In that case we map those at 0.
+            frequency[max(0, prediction)] += 1 # sometimes the classifier returns 'unknown', or '-1' In that case we map those to 0.
         (maxKey, maxVal) = (-1, -1) #
         for (key, val) in iter(frequency.items()):
             if(val > maxVal):
@@ -130,6 +130,10 @@ class WeightedBufferClassification(ClassificationStrategy):
     def __init__(self, trainingset, validationset, classifier):
         ClassificationStrategy.__init__(self, trainingset, validationset, classifier)
         self.bufferSize = 30
+
+    def __str__(self):
+        return "WeightedBufferClassification"
+
 
     def perform(self):
         iterations = (len(self.validationset) // self.bufferSize)
@@ -161,8 +165,9 @@ class WeightedBufferClassification(ClassificationStrategy):
 
     def _getWeightedVote(self, predictions):
         frequency = dict(zip([i for i in range(len(ACTIONS))], [0 for i in range(len(ACTIONS))]))
-        for prediction in predictions:
-            frequency[max(0, prediction)] += 1 # sometimes the classifier returns 'unknown', or '-1' In that case we map those at 0.
+        for i in range(0, len(predictions)):
+            frequency[max(0, predictions[i])] += 1 + i/2
+
         (maxKey, maxVal) = (-1, -1) #
         for (key, val) in iter(frequency.items()):
             if(val > maxVal):

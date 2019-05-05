@@ -1,4 +1,46 @@
 \chapter{Evaluatie}
+
+\section{Preprocessing}
+
+Deze stap bestaat uit drie fasen:
+\begin{enumerate}
+	\item Een translatie zorgt ervoor dat de \textit{Spine Base Joint} ($J_{sb}$) als oorsprong wordt genomen. Dit kan via een eenvoudige vectorbewerking 
+	$$\begin{pmatrix}
+	x' \\ y' \\ z'
+	\end{pmatrix}
+	= \begin{pmatrix}
+	x \\ y \\ z
+	\end{pmatrix}
+	- \begin{pmatrix}
+	x_0 \\ y_0 \\ z_0
+	\end{pmatrix}$$
+	
+	waarbij $x_0, y_0$ en $z_0$ de drie-dimensionale coördinaten van $J_{sb}$ zijn. Deze transformatie zorgt ervoor dat de features \textbf{plaats-invariant} zijn. Een persoon kan zich nu eender waar bevinden in het camerabereik van de Kinect sensor.
+	\item Een tweede fase is het schalen van de features. Dit kan ook eenvoudig berekend worden door de componenten van elke positievector van elk skelet joint te delen door een bepaalde norm $||n||$. Als norm wordt hier de lengte van de positievector van de \textit{Neck Joint} ($J_n)$ genomen en is gelijk aan
+	$$||n|| = \sqrt{(J_{n_x})^2 + (J_{n_y})^2 + (J_{n_z})^2}$$
+	Elke positievector kan dan genormeerd worden:
+	$$
+	\begin{pmatrix}
+	x' \\ y' \\ z'
+	\end{pmatrix}
+	=				
+	\begin{pmatrix}
+	\frac{x}{||n||} \\ \frac{y}{||n||}  \\ \frac{z}{||n||} 
+	\end{pmatrix}$$
+	Men zou ook andere normen kunnen nemen. Figuur \todo{figuur} toont de impact van de keuze van verschillende normen.
+	
+	Deze schaaloperatie zorgt ervoor dat de features \textbf{schaal-invariant} zijn. Dit heeft vooral betrekking op personen met een kleiner en groter gestalte.
+	\item Tot slot is er nog een rotatietransformatie die een nieuw soort coördinatensysteem introduceert. De features zijn nu ook \textbf{rotatie-invariant}.
+\end{enumerate}
+Figuur \ref{fig:skeleton_preprocessing} toont de invloed van de verschillende preprocessing fasen op de skeletdata.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{skeleton_preprocessing}
+	\caption{De impact van de verschillende preprocessing fasen op twee gelijkaardige acties. Hierbij is de oranje joint de \textit{Spine Base joint}.}
+	\label{fig:skeleton_preprocessing}
+\end{figure}
+
+\section{Classifiers}
 \label{ch:evaluatie}
 De gebruikte dataset bestaat uit $x$ acties. De \textit{classifier} kan voor elk frame één van deze acties toekennen. Om de classifier te evalueren zou er een $x \times x$ frequentietabel opgesteld kunnen worden waarbij zowel de rijen als de kolommen gelabeld worden met de namen van de acties. De \textit{classifier} heeft dan een correcte classificatie uitgevoerd als de rij en kolom overeenkomen. Een vereenvoudigd voorbeeld is te zien op tabel \ref{table:example_evaluation}
 \begin{table}[ht]

@@ -61,47 +61,29 @@
 	\section{Context}
 
 	\begin{frame}{Context}
-		\begin{itemize}
-			\item Oorzaken van ernstige arbeidsongevallen in 2015
-			\begin{enumerate}
-				\item Verlies van controle over een machine of voertuig
-				\item Uitglijden of struikelen
-				\item Het tillen of neerzetten van lasten
-				\item Vrijkomen van giftige producten
-			\end{enumerate}
-			\item<2-> Gevolgen
-			\begin{itemize}
-				\item Langdurige ongeschiktheid
-				\item Permanente letsels
-				\item Sterfgeval
-			\end{itemize}
-		\end{itemize}
-	\end{frame}
-	\begin{frame}{Context}
 		\begin{figure}
-			\includegraphics[width=0.7\textwidth]{arbeidsongevallen}
-			\caption{Frequentiegraad ernstige arbeidsongevallen in de privésector.}
+				\includegraphics[width=0.3\textwidth]{imagine1}
+			\end{figure}
+		\begin{figure}
+			\includegraphics[width=0.3\textwidth]{imagine2}
 		\end{figure}
+		
 	\end{frame}
 
 	\begin{frame}{Context}
 		\begin{itemize}
-			\item Mogelijke oplossing
-			\begin{itemize}
-				\item Het inzetten van robotica in gevaarlijke omgevingen
-				\item<2-> Hoe besturen?
+			\item Hoe besturen?
 				\begin{itemize}
 					\item Remote control
 					\item Autonoom
 					\item Actieherkenning
 				\end{itemize}
 			\end{itemize}
-		\end{itemize}
 	\end{frame}
 
 	\begin{frame}\frametitle{Context}
 		\begin{itemize}
-			\item De verplaatsing van een robot uitvoeren met enkel actieherkenning
+			\item De verplaatsing van een \textquotedblleft robot\textquotedblright uitvoeren met enkel actieherkenning
 			\item<2-> Met de kinect sensor
 			\begin{itemize}
 				\item Kan skeletbeelden genereren vanuit RGB-D data
@@ -111,25 +93,29 @@
 			\end{figure}	
 		\end{itemize}
 	\end{frame}
+	\begin{frame}{Kinect Sensor}
+		\begin{figure}
+			\includegraphics[width=\textwidth]{sensoren}
+		\end{figure}
+	\end{frame}
 
 	\section{Probleemstellingen}
 	\begin{frame}\frametitle{Probleemstellingen}
 		\begin{enumerate}
 			\item Verschillen in lichaamsbouw mogelijk (klein vs groot)
 			\item Verschillen in camerahoek
+			\item Verschillen in locatie
 			\item<2-> Real-time actieherkenning
 			\begin{itemize}
 				\item De actie herkennen op het moment dat deze uitgevoerd wordt
+				\item $\approx$ binnen $5$ frames
 			\end{itemize} 
 		\end{enumerate}
-		\begin{figure}
-			\includegraphics[width=\textwidth]{sensoren}
-		\end{figure}
 	\end{frame}
 
 	\begin{frame}\frametitle{Onderzoek}
 		\begin{enumerate}
-			\item De features moeten rotatie- en lichaamsinvariant zijn
+			\item De features moeten rotatie-, lichaams- en plaatsinvariant zijn
 			\item Actie moet vroeg genoeg herkend worden om live te kunnen classificeren
 		\end{enumerate}
 	\end{frame}
@@ -140,7 +126,7 @@
 	\begin{frame}{Machine Learning - Classificatieprobleem}
 			\begin{itemize}
 				\item Een verzameling van klassen (labels, uitvoerwaarden, ...)
-				\item \textbf{Gegeven een observatie, tot welke klasse behoort deze observatie?}
+				\item \textbf{Gegeven een observatie, tot welke klasse behoort ze?}
 				\item Bij actieherkenning:
 				\begin{itemize}
 					\item Klassen = acties
@@ -149,6 +135,7 @@
 			\end{itemize}
 
 	\end{frame}
+	
 	
 	\begin{frame}{Machine Learning - Features}
 		\begin{itemize}
@@ -195,11 +182,22 @@
 	\subsection{Dataset}
 	\begin{frame}{Dataset}
 		\begin{itemize}
-			\item Onderzoek naar intuïtieve handelingen  
-			\item $\approx$ 30 FPS
+			\item 9 acties, 4 personen 
+			\item Opgenomen met de Kinect
+			\item \textit{Leave-One-Out Cross Validation}
+			\begin{itemize}
+				\item Trainingset: $n - 1$ personen
+				\item Testset: $1$ persoon
+				\item Evalueer classifier met deze twee sets
+				\item Herhaal $n$ keer zodat elke persoon één keer in de testset zit
+				\item De score van de classifier is het gemiddelde van de scores
+			\end{itemize}
 		\end{itemize}
 	\end{frame}
 	\subsection{Preprocessing}
+	\begin{frame}{Preprocessing}
+	\includegraphics[width=\textwidth]{skeleton_preprocessing}
+\end{frame}
 	\begin{frame}{Preprocessing}
 		\begin{enumerate}
 			\item[1.]<1-> Plaats-invariantie $\rightarrow$ Translatie
@@ -246,16 +244,7 @@
 			\end{itemize}
 	\end{enumerate}
 	\end{frame}
-	\begin{frame}{Preprocessing}
-	\includegraphics[width=\textwidth]{skeleton_preprocessing}
-	\end{frame}
 	
-	\subsection{Feature transformatie}
-	\begin{frame}{Feature transformatie}
-		\begin{itemize}
-			\item Momenteel: \textit{Features} zijn invariant t.o.v. locatie, schaal en camerahoek
-		\end{itemize}
-	\end{frame}
 	
 	\subsection{Classificatie}
 	\begin{frame}{Classificatie}
@@ -283,8 +272,13 @@
 			\item Anderzijds verschillende classificatiestrategieën toepassen
 			\begin{itemize}
 				\item Frame per frame classificeren zonder temporaal aspect
-				\item Buffer bijhouden van 30 frames, met \textit{majority voting} de actie bepalen
-				\item Buffer bijhouden van 30 frames, met een gewogen vote de actie bepalen
+				\item Buffer bijhouden van 30 opeenvolgende frames, met \textit{majority voting} de actie bepalen
+				\item Buffer bijhouden van 30 opeenvolgende frames, met een gewogen vote de actie bepalen
+				\item Gewichten op actie plaatsen
+				\begin{itemize}
+					\item Stopactie heeft voorrang
+				\end{itemize}
+		
 			\end{itemize}
 		\end{itemize}
 	\end{frame}
@@ -297,10 +291,17 @@
 	\end{frame}
 	\begin{frame}{Evaluatie}
 		\centering
-		\includegraphics[width=0.7\linewidth]{SimpleBufferClassification_PreProcessing}
+		\includegraphics[width=0.8\linewidth]{SimpleBufferClassification_PreProcessing}
+	\end{frame}
+	\begin{frame}{Evaluatie}
+		\centering
+		\includegraphics[width=0.8\linewidth]{WeightedBufferClassification_PreProcessing}
 	\end{frame}
 	
 	
+	\begin{frame}
+	Een recap doen van alle onderwerpen
+\end{frame}
 	\begin{frame}
 		\begin{center}
 			\Huge Vragen, opmerkingen, ...?

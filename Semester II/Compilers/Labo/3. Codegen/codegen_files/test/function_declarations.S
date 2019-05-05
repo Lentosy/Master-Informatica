@@ -8,16 +8,14 @@ do_echo:                        # start of function do_echo
     pushq     %r13              # save callee-saved register
     pushq     %r14              # save callee-saved register
     pushq     %r15              # save callee-saved register
-    pushq     %rbx              # store base pointer on stack
     movq      %rsp, %rbx        # copy value of stack pointer into base pointer
     subq      $16, %rsp         # align the stack pointer by 16 bytes
     pushq     $1
     call      echo
-    pushq     0xABCDEF
+    pushq     $0xABCDEF         # void sentinel value
     popq      %rax              # discard expr output
 do_echo.exit:                   # end of function do_echo
-    addq      $16, %rsp         # restore the stack pointer
-    popq      %rax              # restore callee-saved register
+    movq      %rbx, %rsp        # restore stack pointer value to base pointer value
     popq      %r15              # restore callee-saved register
     popq      %r14              # restore callee-saved register
     popq      %r13              # restore callee-saved register
@@ -25,6 +23,7 @@ do_echo.exit:                   # end of function do_echo
     popq      %rsi              # restore callee-saved register
     popq      %rdi              # restore callee-saved register
     popq      %rbp              # restore callee-saved register
+    popq      %rbx              # restore callee-saved register
     retq                        # return to the caller
 .globl main
 main:                           # start of function main
@@ -36,18 +35,16 @@ main:                           # start of function main
     pushq     %r13              # save callee-saved register
     pushq     %r14              # save callee-saved register
     pushq     %r15              # save callee-saved register
-    pushq     %rbx              # store base pointer on stack
     movq      %rsp, %rbx        # copy value of stack pointer into base pointer
     subq      $16, %rsp         # align the stack pointer by 16 bytes
     call      do_echo
-    pushq     0xABCDEF
+    pushq     $0xABCDEF         # void sentinel value
     popq      %rax              # discard expr output
     pushq     $0
     popq      %rax              # return a value
     jmp       main.exit         # exit function
 main.exit:                      # end of function main
-    addq      $16, %rsp         # restore the stack pointer
-    popq      %rax              # restore callee-saved register
+    movq      %rbx, %rsp        # restore stack pointer value to base pointer value
     popq      %r15              # restore callee-saved register
     popq      %r14              # restore callee-saved register
     popq      %r13              # restore callee-saved register
@@ -55,4 +52,5 @@ main.exit:                      # end of function main
     popq      %rsi              # restore callee-saved register
     popq      %rdi              # restore callee-saved register
     popq      %rbp              # restore callee-saved register
+    popq      %rbx              # restore callee-saved register
     retq                        # return to the caller

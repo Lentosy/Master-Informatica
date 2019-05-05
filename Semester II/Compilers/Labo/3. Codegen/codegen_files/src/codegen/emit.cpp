@@ -50,13 +50,16 @@ Program cheetah::codegen(AST::CompoundStmt *root) {
 }
 
 // global state of variables
-static std::map<std::string, int> var_decls; // string = identifier, int = offset relative to base pointer
+static std::map<std::string, int> var_decls;
+
+// 5.4 global state of function parameters
+static std::map<std::string, int> func_param;
 
 // global state of functions
 static std::string func_exit;
 static std::map<std::string, std::tuple<llvm::Type *, size_t>> func_decls = {
     {"echo", std::make_tuple(T_void, 1)}, {"read", std::make_tuple(T_int, 0)}};
- 
+
 
 //
 // Helper functions
@@ -108,6 +111,10 @@ std::string variable(const AST::Identifier *name) {
   return str("%d(%%rbp)", it->second);
 }
 
+// 5.4 Returns a reference to a parameter
+//std::string parameter(size_t i) {
+  
+//}
 
 //
 // Declarations
@@ -125,31 +132,43 @@ void AST::FuncDecl::emit(Program &prog) const {
   prog << Block{name->string, true, "start of function " + name->string};
   func_exit = name->string + ".exit";
 
-  // TODO: implement function prologue
+  // begin function prologue
   // 5.2 save callee-saved registers
   for(const std::string& s : callee_saved_regs){
     prog << Instruction{"pushq", {s}, "save callee-saved register"};
   }
 
+
+  // 5.4 push parameters onto stack
+  for(const VarDecl * v : args){
+    v->emit(prog);
+  }
+
   // 5.2 set the base pointer
-  prog << Instruction {"pushq", {"%rbx"}, "store base pointer on stack"};
+  // volgende lijn waarschijnlijk niet nodig aangezien %rbx ook al callee-saved register is
+  //prog << Instruction{"pushq", {"%rbx"}, "store value of base pointer on stack"};
   prog << Instruction{"movq", {"%rsp", "%rbx"}, "copy value of stack pointer into base pointer"};
 
   // 5.2 align the stack pointer by 16 bytes
-  prog << Instruction{"subq", {"$16", "%rsp"}, "align the stack pointer by 16 bytes"}; // WAAROM 16 BYTES?
-  body->emit(prog);
+  prog << Instruction{"subq", {"$16", "%rsp"}, "align the stack pointer by 16 bytes"}; // to make room for local variables
 
+  // end function prologue
+
+  body->emit(prog);
   prog << Block{func_exit, false, "end of function " + name->string};
 
-  // TODO: implement function epilogue
-
+  // begin function epilogue
   // 5.2 restore the stack pointer
-  prog << Instruction{"addq", {"$16", "%rsp"}, "restore the stack pointer"};
+  prog << Instruction{"movq", {"%rbx", "%rsp"}, "restore stack pointer value to base pointer value"};
+  
+  // volgende lijn waarschijnlijk niet nodig aangezien %rbx ook al callee-saved register is
+  //prog << Instruction{"popq", {"%rbx"}, "restore base pointer value"};
+
   // 5.2 restore callee-saved registers
-  for(int i = callee_saved_regs.size(); i > 0; i--){
+  for(int i = callee_saved_regs.size() - 1; i >= 0; i--){
     prog << Instruction{"popq", {callee_saved_regs[i]}, "restore callee-saved register"};
   }
-
+  // end function epilogue
 
   prog << Instruction{"retq", {}, "return to the caller"};
 }
@@ -160,30 +179,24 @@ void AST::VarDecl::emit(Program &prog) const {
   if (it != var_decls.end())
     codegen_error(str("cannot redefine variable '%s'", name->string.c_str()));
 
-  // 5.3 determine the size (only support int)
-  if(type == T_int){
-    int size = 64;
-    int value = ((IntLiteral*) init)->value;
-    prog << Instruction{"pushq", {"$" + value}};
-  }
-  
-  
+  // 5.3 determine  bytes =the size (you should only support int)
+  int size = 4; // 8 bytes = 64 bit
+
   // 5.3 reserve stack space, making sure the stack remains 16-byte aligned
-  prog << Instruction{"subq", {"$192", "%rsp"}}; // 16 * 8 bits = 128 bits + 64 bits = 192 bits (24 bytes)
+  prog << Instruction{"subq", {"$4", "%rsp"}, "allocate space for the variable"};
 
   // 5.3 add the location of the variable relative to the base pointer in var_decls
   if(var_decls.size() == 0){
-    var_decls[name->string] = -32; // 4 bytes
-  } else {
+    var_decls[name->string] = -size;
+  } else { // find the smallest offset
     int lastOffset = var_decls.begin()->second;
-    for(auto it = var_decls.begin(); it != var_decls.end(); it++) {
+    for(auto it = var_decls.begin(); it != var_decls.end(); it++){
       if(it->second < lastOffset){
         lastOffset = it->second;
       }
     }
-    var_decls[name->string] = lastOffset - 32;
+    var_decls[name->string] = lastOffset - size;
   }
-
 }
 
 
@@ -198,7 +211,7 @@ void AST::CompoundStmt::emit(Program &prog) const {
     S->emit(prog);
     if (dynamic_cast<AST::Expr *>(S) != nullptr) {
       // expressions put stuff on the stack
-      prog << Instruction{"popq", {"%rax"}, "discard expr output"};
+      prog << Instruction{"popq", {ret_reg}, "discard expr output"};
     }
   }
 }
@@ -270,19 +283,20 @@ void AST::CallExpr::emit(Program &prog) const {
                       name->string, argc, args.size()));
 
   // 5.1 emit and store arguments
-  for (size_t i = 0; i < argc; i++){
+  for(int i = argc - 1; i >= 0 ; i-- ){
     args[i]->emit(prog);
   }
 
   // 5.1 generating the call
   prog << Instruction{"call", {name->string}};
-  
+
   // 5.1 return a value
   if(std::get<0>(decl) == T_void){
-    prog << Instruction{"pushq", {"0xABCDEF"}};
+    // the following gives a segmentation fault
+    prog << Instruction{"pushq", {"$0xABCDEF"} , "void sentinel value"};
+  }else {
+    prog << Instruction{"pushq", {"%rax"}, "return value of the function"}; // %rax is the return registerexi
   }
-  // return int?
-
 }
 
 void AST::BinaryOp::emit(Program &prog) const {
@@ -292,9 +306,36 @@ void AST::BinaryOp::emit(Program &prog) const {
   prog << Instruction{"popq", {"%rbx"}, "binary op RHS"};
   prog << Instruction{"popq", {"%rax"}, "binary op LHS"};
 
+  // 5.5 Binary Operators
+
+  /*EQUAL,
+  CEQ, CNE, CLT, CLE, CGT, CGE,
+  PLUS, MINUS, MUL, DIV, EXP, MOD,
+  */
   switch (op) {
-  default:
-    codegen_error("TODO: implement BinaryOp");
+    case cheetah::AST::Operator::PLUS:
+      prog << Instruction{"addq", {"%rbx", "%rax"}, "add numbers"}; 
+      break;
+    case cheetah::AST::Operator::MINUS:
+      prog << Instruction{"subq", {"%rax", "%rbx"}, "subtract numbers"}; // subtraction is not commutative
+      prog << Instruction{"movq", {"%rbx", "%rax"}, "put subtraction result in %rax"};
+      break;
+    case cheetah::AST::Operator::MUL:
+      prog << Instruction{"mulq", {"%rbx"}, "multiply"};
+      break;
+    case cheetah::AST::Operator::DIV:
+      prog << Instruction{"divq", {"%rbx"}, "divide"};
+      prog << Instruction{"addq", {"%rdx", "%rax"}, "add remainder"};
+      break;
+    case cheetah::AST::Operator::CEQ:
+      prog << Instruction{"cmp", {"%rbx", "%rax"}, "compare operands"};
+      //prog << Instruction{"je", {"true"}};
+      //prog << Block{}
+      //prog << Instruction{"pushq", {"$1"}};
+      //prog << Instruction{""}
+      break;
+    default:
+      codegen_error("TODO: implement BinaryOp");
   }
 
   prog << Instruction{"pushq", {"%rax"}, "binary op result"};
@@ -304,9 +345,12 @@ void AST::UnaryOp::emit(Program &prog) const {
   right->emit(prog);
   prog << Instruction{"popq", {"%rax"}, "unary op RHS"};
 
+  // 5.5 Unary Operators
   switch (op) {
-  default:
-    codegen_error("TODO: implement UnaryOp");
+    case cheetah::AST::Operator::MINUS:
+      prog << Instruction{"movq", {"$-1", "%rsi"}};
+      prog << Instruction{"mulq", {"%rsi"}, "negative number"};
+      break;
   }
 
   prog << Instruction{"pushq", {"%rax"}, "unary op result"};

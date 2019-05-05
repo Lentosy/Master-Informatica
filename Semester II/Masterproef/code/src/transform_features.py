@@ -10,12 +10,14 @@ class FeatureTransformer(object):
 
     @classmethod
     def preProcessing(self):
-        for featureVector in self.featureVectors:
-            self._translateToOrigin(featureVector)
-            self._scale(featureVector)
-            self._toLocalSkeletonCoördinateSystem(featureVector)
-            for i in range(75, len(featureVector)):
-                featureVector[i] = float(featureVector[i])
+        for i in range(0, len(self.featureVectors)):
+            self._translateToOrigin(self.featureVectors[i])
+            self._scale(self.featureVectors[i])
+            self._toLocalSkeletonCoördinateSystem(self.featureVectors[i])
+          #  self._removeUselessQuaternions(self.featureVectors[i])
+
+            self.featureVectors[i] = self.featureVectors[i][:175 - 100] # 24 because 6 joints without quaternions
+
         return self.featureVectors
 
     @classmethod
@@ -48,14 +50,18 @@ class FeatureTransformer(object):
 
         
     @classmethod
+    def _removeUselessQuaternions(self, featureVector):
+        #jointsWithoutQuaternions = [3, 15, 21, 22, 23, 24]
+        for i in range(75, len(featureVector)):
+            featureVector[i] = float(featureVector[i])
+
+        for i in range(75 + (3)*4, len(featureVector) - 4):
+            featureVector[i] = featureVector[i + 4]
+
+        for i in range(75 + (15)*4, len(featureVector) - 4):
+            featureVector[i] = featureVector[i + 4]
+            
+
+    @classmethod
     def _toLocalSkeletonCoördinateSystem(self, featureVector):
-        xAngle = acos(featureVector[PyKinectV2.JointType_HipLeft] + featureVector[PyKinectV2.JointType_HipLeft + 1] + featureVector[PyKinectV2.JointType_HipLeft + 2])
-        rotationX = numpy.matrix([[1, 0, 0], [0, cos(xAngle), -sin(xAngle)], [0, sin(xAngle), cos(xAngle)]])
-        
-        for i in range(0, 75, 3):
-            coördinateVector = (featureVector[i], featureVector[i+1], featureVector[i+2])
-            result = (rotationX @ coördinateVector).getA1()
-            featureVector[i], featureVector[i+1], featureVector[i+2] = result
-
-
-    
+        pass
