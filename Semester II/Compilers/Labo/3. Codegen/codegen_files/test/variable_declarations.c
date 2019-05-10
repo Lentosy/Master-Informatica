@@ -1,5 +1,5 @@
 void do_echo() {
-	int i = 1;
+	int i = 13;
 	echo(i);
 }
 

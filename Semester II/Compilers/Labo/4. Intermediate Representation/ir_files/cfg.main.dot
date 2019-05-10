@@ -1,0 +1,5 @@
+digraph "CFG for 'main' function" {
+	label="CFG for 'main' function";
+
+	Node0x5558087dba20 [shape=record,label="{entry:\l  %foo = alloca [10 x i32], !dbg !8\l  %n = alloca i32, !dbg !9\l  store i32 10, i32* %n, !dbg !9\l  %0 = load i32, i32* %n, !dbg !10\l  %1 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %0, !dbg !10\l  store i32 0, i32* %1, !dbg !11\l  ret i32 0\l}"];
+}

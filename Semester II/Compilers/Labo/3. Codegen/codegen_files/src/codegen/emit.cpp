@@ -1,5 +1,17 @@
 // functionality related to emitting code
 
+// docker run --rm -it --cap-add=SYS_PTRACE --security-opt seccomp=unconfined -v "$(pwd)":/files tbesard/compilers:pract3
+// Instruction reference: https://www.felixcloutier.com/x86/
+
+// 64 bit platform
+// stack grows downwards
+// parameters to function are passed on the stack in reverse order
+// functions are called using the call instruction that pushes the address of the next instruction to the stack and jumps
+// the stack is 16-byte aligned just before the call instruction is called
+// the return value is stored in the %rax register
+// 
+
+
 #include "ast.hpp"
 #include "auxiliary.hpp"
 #include "codegen.hpp"
@@ -25,7 +37,6 @@ const std::array<std::string, 8> callee_saved_regs = {
 // main entry-point
 Program cheetah::codegen(AST::CompoundStmt *root) {
   auto prog = Program();
-
   // first generate code for all function declarations...
   AST::CompoundStmt *toplevel = new AST::CompoundStmt();
   for (auto const &S : root->body) {
@@ -140,18 +151,17 @@ void AST::FuncDecl::emit(Program &prog) const {
 
 
   // 5.4 push parameters onto stack
-  for(const VarDecl * v : args){
-    v->emit(prog);
-  }
+  //for(const VarDecl * v : args){
+  //  v->emit(prog);
+  //}
 
   // 5.2 set the base pointer
-  // volgende lijn waarschijnlijk niet nodig aangezien %rbx ook al callee-saved register is
-  //prog << Instruction{"pushq", {"%rbx"}, "store value of base pointer on stack"};
-  prog << Instruction{"movq", {"%rsp", "%rbx"}, "copy value of stack pointer into base pointer"};
+  // volgende lijn waarschijnlijk niet nodig aangezien %rbp ook al callee-saved register is
+  prog << Instruction{"pushq", {"%rbp"}, "store value of base pointer on stack"};
+  prog << Instruction{"movq", {"%rsp", "%rbp"}, "copy value of stack pointer into base pointer"};
 
   // 5.2 align the stack pointer by 16 bytes
   prog << Instruction{"subq", {"$16", "%rsp"}, "align the stack pointer by 16 bytes"}; // to make room for local variables
-
   // end function prologue
 
   body->emit(prog);
@@ -159,17 +169,16 @@ void AST::FuncDecl::emit(Program &prog) const {
 
   // begin function epilogue
   // 5.2 restore the stack pointer
-  prog << Instruction{"movq", {"%rbx", "%rsp"}, "restore stack pointer value to base pointer value"};
-  
-  // volgende lijn waarschijnlijk niet nodig aangezien %rbx ook al callee-saved register is
-  //prog << Instruction{"popq", {"%rbx"}, "restore base pointer value"};
+  prog << Instruction{"movq", {"%rbp", "%rsp"}, "restore stack pointer value to base pointer value"};
+  // volgende lijn waarschijnlijk niet nodig aangezien %rbp ook al callee-saved register is
+  prog << Instruction{"popq", {"%rbp"}, "restore base pointer value"};
 
   // 5.2 restore callee-saved registers
   for(int i = callee_saved_regs.size() - 1; i >= 0; i--){
     prog << Instruction{"popq", {callee_saved_regs[i]}, "restore callee-saved register"};
   }
   // end function epilogue
-
+//
   prog << Instruction{"retq", {}, "return to the caller"};
 }
 
@@ -179,7 +188,7 @@ void AST::VarDecl::emit(Program &prog) const {
   if (it != var_decls.end())
     codegen_error(str("cannot redefine variable '%s'", name->string.c_str()));
 
-  // 5.3 determine  bytes =the size (you should only support int)
+  // 5.3 determine the size (you should only support int)
   int size = 4; // 8 bytes = 64 bit
 
   // 5.3 reserve stack space, making sure the stack remains 16-byte aligned
@@ -187,7 +196,7 @@ void AST::VarDecl::emit(Program &prog) const {
 
   // 5.3 add the location of the variable relative to the base pointer in var_decls
   if(var_decls.size() == 0){
-    var_decls[name->string] = -size;
+    var_decls[name->string] = size;
   } else { // find the smallest offset
     int lastOffset = var_decls.begin()->second;
     for(auto it = var_decls.begin(); it != var_decls.end(); it++){
@@ -195,7 +204,7 @@ void AST::VarDecl::emit(Program &prog) const {
         lastOffset = it->second;
       }
     }
-    var_decls[name->string] = lastOffset - size;
+    var_decls[name->string] = lastOffset + size;
   }
 }
 
@@ -225,14 +234,25 @@ void AST::ReturnStmt::emit(Program &prog) const {
   prog << Instruction{"jmp", {func_exit}, "exit function"};
 }
 
+
+// 5.6 If Statement
 void AST::IfStmt::emit(Program &prog) const {
-  codegen_error("TODO: implement IfStmt");
+  //cond->emit(prog);
+  //prog << Block{label(prog, "iftrue"), false};
+  //then->emit(prog);
+  //prog << Instruction{"jmp", {"next"}};
+  //prog << Block{label(prog, "iffalse"), false};
+  //elsev->emit(prog);
+  //prog << Instruction{"jmp", {"next"}};
+  //prog << Block{"next", false};
 }
 
+// 5.6 While Statement
 void AST::WhileStmt::emit(Program &prog) const {
   codegen_error("TODO: implement WhileStmt");
 }
 
+// 5.6 For Statement
 void AST::ForStmt::emit(Program &prog) const {
   codegen_error("TODO: implement ForStmt");
 }
@@ -283,16 +303,20 @@ void AST::CallExpr::emit(Program &prog) const {
                       name->string, argc, args.size()));
 
   // 5.1 emit and store arguments
-  for(int i = argc - 1; i >= 0 ; i-- ){
+  int j = 0;
+  for(int i = argc - 1; i >= 0 ; i-- ){ // reverse order!!
     args[i]->emit(prog);
+    prog << Instruction{"popq", {param_regs[j]}};
+    j++;
   }
+
+  
 
   // 5.1 generating the call
   prog << Instruction{"call", {name->string}};
 
   // 5.1 return a value
   if(std::get<0>(decl) == T_void){
-    // the following gives a segmentation fault
     prog << Instruction{"pushq", {"$0xABCDEF"} , "void sentinel value"};
   }else {
     prog << Instruction{"pushq", {"%rax"}, "return value of the function"}; // %rax is the return registerexi
@@ -303,39 +327,66 @@ void AST::BinaryOp::emit(Program &prog) const {
   left->emit(prog);
   right->emit(prog);
 
-  prog << Instruction{"popq", {"%rbx"}, "binary op RHS"};
-  prog << Instruction{"popq", {"%rax"}, "binary op LHS"};
+  prog << Instruction{"popq", {"%rbx"}, "binary op RHS"}; // 5
+  prog << Instruction{"popq", {"%rax"}, "binary op LHS"}; // 6
+
 
   // 5.5 Binary Operators
-
-  /*EQUAL,
-  CEQ, CNE, CLT, CLE, CGT, CGE,
-  PLUS, MINUS, MUL, DIV, EXP, MOD,
-  */
   switch (op) {
     case cheetah::AST::Operator::PLUS:
-      prog << Instruction{"addq", {"%rbx", "%rax"}, "add numbers"}; 
+      prog << Instruction{"addq", {"%rbx", "%rax"}, "add numbers"}; // 5 + 6, %rax = 11 
       break;
     case cheetah::AST::Operator::MINUS:
-      prog << Instruction{"subq", {"%rax", "%rbx"}, "subtract numbers"}; // subtraction is not commutative
-      prog << Instruction{"movq", {"%rbx", "%rax"}, "put subtraction result in %rax"};
+      prog << Instruction{"subq", {"%rbx", "%rax"}, "subtract numbers"}; // 5 - 6, %rax = -1
       break;
     case cheetah::AST::Operator::MUL:
-      prog << Instruction{"mulq", {"%rbx"}, "multiply"};
+      prog << Instruction{"mulq", {"%rbx"}, "multiply"}; // 5 * 6, %rax = 30, 
       break;
     case cheetah::AST::Operator::DIV:
       prog << Instruction{"divq", {"%rbx"}, "divide"};
       prog << Instruction{"addq", {"%rdx", "%rax"}, "add remainder"};
       break;
-    case cheetah::AST::Operator::CEQ:
-      prog << Instruction{"cmp", {"%rbx", "%rax"}, "compare operands"};
-      //prog << Instruction{"je", {"true"}};
-      //prog << Block{}
-      //prog << Instruction{"pushq", {"$1"}};
-      //prog << Instruction{""}
+    case cheetah::AST::Operator::EXP:
       break;
-    default:
-      codegen_error("TODO: implement BinaryOp");
+    case cheetah::AST::Operator::MOD:
+      prog << Instruction{"divq", {"%rbx"}, "modulo operation"};
+      break;
+    case cheetah::AST::Operator::EQUAL:
+      break;
+    case cheetah::AST::Operator::CEQ:  
+      prog << Instruction{"cmp", {"%rbx", "%rax"}, "compare operands"};
+      prog << Instruction{"pushf", {}, "push vaue of EFLAGS register on stack"};
+      prog << Instruction{"popq", {"%rsi"}, "get EFLAGS value"};
+      prog << Instruction{"and", {"$64", "%rsi"}, "check if 7th bit is set"}; // zero bit
+      prog << Instruction{"shr", {"$6", "%rsi"}};
+      prog << Instruction{"movq", {"%rsi", "%rax"}};
+      break;
+      
+    case cheetah::AST::Operator::CNE:
+      prog << Instruction{"cmp", {"%rbx", "%rax"}, "compare operands"};
+      prog << Instruction{"pushf", {}, "push vaue of EFLAGS register on stack"};
+      prog << Instruction{"popq", {"%rsi"}, "get EFLAGS value"};
+      prog << Instruction{"not" , {"%rsi"}, "one's complement negation"};
+      prog << Instruction{"and", {"$64", "%rsi"}, "check if 7th bit is not set"}; // zero bit
+      prog << Instruction{"shr", {"$6", "%rsi"}};
+      prog << Instruction{"movq", {"%rsi", "%rax"}};
+      break;
+    case cheetah::AST::Operator::CLT:
+      prog << Instruction{"cmp", {"%rbx", "%rax"}, "compare operands"};
+      prog << Instruction{"pushf", {}, "push vaue of EFLAGS register on stack"};
+      prog << Instruction{"popq", {"%rsi"}, "get EFLAGS value"};
+      
+      prog << Instruction{"not" , {"%rsi"}, "one's complement negation"};
+      prog << Instruction{"and", {"$64", "%rsi"}, "check if 7th bit is not set"}; // zero bit
+      prog << Instruction{"shr", {"$6", "%rsi"}};
+      prog << Instruction{"movq", {"%rsi", "%rax"}};
+      break;    
+    case cheetah::AST::Operator::CLE:
+      break;
+    case cheetah::AST::Operator::CGT:
+      break;
+    case cheetah::AST::Operator::CGE:
+      break;
   }
 
   prog << Instruction{"pushq", {"%rax"}, "binary op result"};
@@ -346,13 +397,13 @@ void AST::UnaryOp::emit(Program &prog) const {
   prog << Instruction{"popq", {"%rax"}, "unary op RHS"};
 
   // 5.5 Unary Operators
-  switch (op) {
-    case cheetah::AST::Operator::MINUS:
+  switch(op){
+    case cheetah::AST::Operator::MINUS:  
       prog << Instruction{"movq", {"$-1", "%rsi"}};
       prog << Instruction{"mulq", {"%rsi"}, "negative number"};
       break;
   }
-
+   // no other unary operations
   prog << Instruction{"pushq", {"%rax"}, "unary op result"};
 }
 

@@ -18,24 +18,37 @@
 
 \usetheme{AnnArbor}
 \usecolortheme{beaver}
+\usepackage{graphicx}
+
+\graphicspath{{./img/}}
 
 
 \begin{document}	
-	\begin{frame}
-		\begin{enumerate}
-			\item Preprocessing
-			\begin{itemize}
-				\item Translatie: heup centrum joint wordt de oorsprong
-				\item Schaal: Elke coördinaat normaliseren met de langste afstand (heup centrum joint tot hoofd joint)
-				\item View invariant: via rotatiematrix naar nieuw coördinatensysteem
-			\end{itemize} 
-			\item Classificatie
-			\begin{itemize}
-				\item Eenvoudige per frame classificatie
-				\item Eenvoudige buffer classificatie (majority vote per 30 frames)
-				\item Algemeen: classificatie duurt nog vrij lang
-			
-			\end{itemize}
-		\end{enumerate}
+	\begin{frame}{Vorige week}
+		\begin{itemize}
+			\item View Invariantie (hoe rotatie uitvoeren)
+			\item Schaal (welke joint als norm gebruiken)
+			\item (Code profiling)
+		\end{itemize}
+	\end{frame}
+	\begin{frame}{Preprocessing}
+			\begin{figure}
+				\includegraphics[width=\textwidth]{skeleton_preprocessing}
+			\end{figure}
+	\end{frame}
+	\begin{frame}{Classification}
+		\begin{figure}
+			\includegraphics[width=0.7\textwidth]{PerFrameClassification}
+		\end{figure} 
+	\end{frame}
+	\begin{frame}{Classification}
+		\begin{figure}
+			\includegraphics[width=0.7\textwidth]{SimpleBufferClassification}
+		\end{figure} 
+	\end{frame}
+	\begin{frame}{Classification}
+		\begin{figure}
+			\includegraphics[width=0.7\textwidth]{WeightedBufferClassification}
+		\end{figure} 
 	\end{frame}
 \end{document}

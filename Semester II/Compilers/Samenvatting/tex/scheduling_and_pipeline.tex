@@ -1,0 +1,87 @@
+\chapter{Scheduling and Software Pipelining}
+
+
+\section{VLIW architecturen}
+\begin{itemize}
+	\item Meerdere, gespecialiseerde instructieslots (voor parallellisme)
+	\item Vaste, manifeste latenties instructies
+	\item Statisch schedule door compilter te bepalen
+\end{itemize}
+
+\begin{table}
+	\begin{tabular}{l | l | l | l}
+		& 0 & 1 & 2 \\
+		1 & ADD R1, R2 & MUL R3 & \\
+		2 & LD R3 & DIV & \\
+		3 & & ADD R4 &  \\
+		4 & & & \\
+		5 & ADD R3 & ADD R4 & \\
+	\end{tabular}
+\end{table}
+
+Stel dat MUL R3 drie cycli duurt, 
+
+
+Hoe wordt de statische schedule bepaald? Data dependence graph: een graaf waarin afhankelijkheden gemodelleerd worden.
+
+Drie typen afhankelijkheden:
+\begin{itemize}
+	\item Read afer write:
+	\item Write after read: 
+	\item Write after write: 
+\end{itemize}
+
+\subsection{Reservation Table}
+
+
+
+\subsection{List Scheduling}
+De data ready set bevat knopen die niet afhankelijk meer zijn van voorgaande instructies. Voor elke knoop in de data ready set wordt er via een heuristiek de plaats in de tabel bepaald.
+
+Welke keuze maken uit knopen in de data ready set?
+\begin{itemize}
+	\item Kritisch pad
+	\item Slack: de knopen met het minst keuzemogelijkheden krijgt voorrang.
+	\item Resource availability: stel dat je 3 loads moet uitvoeren, en die kunnen maar op 1 slot uitgevoerd worden, dan is het niet interessant om andere instructies op die slots te steken.
+	\item Fan-out in data dependence graph: De knopen die meer kinderen hebben krijgen voorrang
+\end{itemize}
+
+\section{Software Pipelining}
+\begin{lstlisting}
+for(i = 0; i < 4; i++){
+	// some code
+	
+	// some code
+	
+	// some code
+}
+\end{lstlisting}
+
+Elk stukje code bestaat uit drie instructies. Als we ze allemaal achter elkaar uitvoeren krijgen we $4 * 9 = 36$ cycli. In een VLIW architectuur met drie slots kunnen deze stukjes code parrallel uitgevoerd worden. We krijgen dan $3 * 6 = 18$ cycli. Voor de eerste 2 en laatste 2 iteraties moeten ervoor gezorgd worden dat ze niet uitgevoerd worden. Ook het probleem van data overschrijving moet opgelost worden.
+
+De lus (bij epilogue en prologue) wordt maar 2 maal uitgevoerd.
+
+
+
+\begin{lstlisting}
+for(i = 0; i < N; i++){
+	x = a[i];
+	y = b[i];
+	t1 = x - y;
+	t2 = x + y;
+	t = t1 * t2;
+	c[i] = t;
+}
+\end{lstlisting}
+
+Om de 2 cycli  (initiation interval) de code opnieuw uitvoeren (tabel)
+
+Hoe initiation interval bepalen?
+
+minII = max(minResourceII, minRecurrenceII)
+
+minResourceII: niet meer operaties per II cycli dan er slots zijn voor dat soort operaties (bv 8 MUL opdrachten maar er is maar 1 multiply unit, dus zeker 8 cycli)
+
+minRecurrenceII: als operaties in verschillende iteraties afhankelijk zijn
+
+

@@ -54,6 +54,15 @@ void cheetah::optimize(Program &prog) {
           }
         }
 
+        // 2-instruction patterns
+        {
+            // push ...
+            // pop %reg
+            // -> simplify to mov ..., %reg
+
+
+            
+        }
         // TODO: add more patterns
 
         ++inst;

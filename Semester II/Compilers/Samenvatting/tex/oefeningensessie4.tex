@@ -1,0 +1,58 @@
+\chapter{Oefeningensessie 3}
+
+
+\section{Oefening Scheduling}
+
+Gegeven de volgende machinecode:
+\begin{lstlisting}
+a	ld r1, [0x8000]
+b	ld r2, [0x8004]
+c	add r3, r1, 1
+d	mul r4, r1, r2
+e	sal r5, r2, 1
+f	lea r6, [0x8000 + r4]
+g	div r7, r5, r3
+h	add r8, r6, r3
+i	mul	r9, r4, r7
+j	lea r10, •[0x8000 + r5]
+k	add r11, r9, r8
+l	add r12, r9, r10
+m	ld r13, [r12]
+n	st [r11], r13
+\end{lstlisting}
+Veronderstel ook geen geheugenafhankelijkheden, en de volgende cycli:
+\begin{table}
+	\begin{tabular}{| l | l |}
+		\hline 
+		\textbf{Instructie} & \textbf{Cycli} \\
+		\hline
+		ld, st, mul & 2 \\
+		div & 3 \\
+		add, lea, sal & 1
+	\end{tabular}
+\end{table}
+
+\begin{enumerate}
+	\item Geef de data dependence graph.
+	\item Schedule het basisblok op een 3-slot VLIW architectuur met 3 pipeline stages (OF, FU en WB) met operand forwarding.
+	
+\end{enumerate}
+
+\section{Oefening 18.1 p431}
+Gegeven de volgende flow graph
+
+\begin{enumerate}
+	\item Bepaal de dominators van elke node.
+	\item Geef de immediate dominator tree.
+	\item Identificeer de verzameling van nodes van elke natuurlijke lus.
+\end{enumerate}
+
+\section{Oefening Static Single Assignment}
+Gegegeven het volgende programma:
+
+
+
+
+\begin{enumerate}
+	\item 
+\end{enumerate}

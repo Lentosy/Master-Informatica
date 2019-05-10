@@ -8,13 +8,68 @@ main:                           # start of function main
     pushq     %r13              # save callee-saved register
     pushq     %r14              # save callee-saved register
     pushq     %r15              # save callee-saved register
-    movq      %rsp, %rbx        # copy value of stack pointer into base pointer
+    pushq     %rbp              # store value of base pointer on stack
+    movq      %rsp, %rbp        # copy value of stack pointer into base pointer
     subq      $16, %rsp         # align the stack pointer by 16 bytes
     pushq     $1
-    popq      %rax              # unary op RHS
-    movq      $-1, %rsi
-    mulq      %rsi              # negative number
-    pushq     %rax              # unary op result
+    pushq     $2
+    popq      %rbx              # binary op RHS
+    popq      %rax              # binary op LHS
+    cmp       %rbx, %rax        # compare operands
+    pushf                       # push vaue of EFLAGS register on stack
+    popq      %rsi              # get EFLAGS value
+    and       $64, %rsi         # check if 7th bit is set
+    shr       $6, %rsi
+    movq      %rsi, %rax
+    pushq     %rax              # binary op result
+    popq      %rdi
+    call      echo
+    pushq     $0xABCDEF         # void sentinel value
+    popq      %rax              # discard expr output
+    pushq     $1
+    pushq     $1
+    popq      %rbx              # binary op RHS
+    popq      %rax              # binary op LHS
+    cmp       %rbx, %rax        # compare operands
+    pushf                       # push vaue of EFLAGS register on stack
+    popq      %rsi              # get EFLAGS value
+    and       $64, %rsi         # check if 7th bit is set
+    shr       $6, %rsi
+    movq      %rsi, %rax
+    pushq     %rax              # binary op result
+    popq      %rdi
+    call      echo
+    pushq     $0xABCDEF         # void sentinel value
+    popq      %rax              # discard expr output
+    pushq     $1
+    pushq     $2
+    popq      %rbx              # binary op RHS
+    popq      %rax              # binary op LHS
+    cmp       %rbx, %rax        # compare operands
+    pushf                       # push vaue of EFLAGS register on stack
+    popq      %rsi              # get EFLAGS value
+    not       %rsi              # one's complement negation
+    and       $64, %rsi         # check if 7th bit is not set
+    shr       $6, %rsi
+    movq      %rsi, %rax
+    pushq     %rax              # binary op result
+    popq      %rdi
+    call      echo
+    pushq     $0xABCDEF         # void sentinel value
+    popq      %rax              # discard expr output
+    pushq     $1
+    pushq     $1
+    popq      %rbx              # binary op RHS
+    popq      %rax              # binary op LHS
+    cmp       %rbx, %rax        # compare operands
+    pushf                       # push vaue of EFLAGS register on stack
+    popq      %rsi              # get EFLAGS value
+    not       %rsi              # one's complement negation
+    and       $64, %rsi         # check if 7th bit is not set
+    shr       $6, %rsi
+    movq      %rsi, %rax
+    pushq     %rax              # binary op result
+    popq      %rdi
     call      echo
     pushq     $0xABCDEF         # void sentinel value
     popq      %rax              # discard expr output
@@ -22,7 +77,8 @@ main:                           # start of function main
     popq      %rax              # return a value
     jmp       main.exit         # exit function
 main.exit:                      # end of function main
-    movq      %rbx, %rsp        # restore stack pointer value to base pointer value
+    movq      %rbp, %rsp        # restore stack pointer value to base pointer value
+    popq      %rbp              # restore base pointer value
     popq      %r15              # restore callee-saved register
     popq      %r14              # restore callee-saved register
     popq      %r13              # restore callee-saved register

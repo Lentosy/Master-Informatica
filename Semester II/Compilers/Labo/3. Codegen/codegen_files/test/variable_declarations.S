@@ -8,17 +8,19 @@ do_echo:                        # start of function do_echo
     pushq     %r13              # save callee-saved register
     pushq     %r14              # save callee-saved register
     pushq     %r15              # save callee-saved register
-    pushq     %rbx              # store value of base pointer on stack
-    movq      %rsp, %rbx        # copy value of stack pointer into base pointer
-    subq      $16, %rsp         # align the stack pointer by 16 bytes
+    pushq     %rbp              # store value of base pointer on stack
+    movq      %rsp, %rbp        # copy value of stack pointer into base pointer
+    and       $-16, %rsp        # align the stack pointer by 16 bytes
     subq      $4, %rsp          # allocate space for the variable
-    movq      -4(%rbp), %rax    # access variable 'i'
+    movq      4(%rbp), %rax     # access variable 'i'
     pushq     %rax
+    popq      %rdi
     call      echo
+    pushq     $0xABCDEF         # void sentinel value
     popq      %rax              # discard expr output
 do_echo.exit:                   # end of function do_echo
-    movq      %rbx, %rsp        # restore stack pointer value to base pointer value
-    popq      %rbx              # restore base pointer value
+    movq      %rbp, %rsp        # restore stack pointer value to base pointer value
+    popq      %rbp              # restore base pointer value
     popq      %r15              # restore callee-saved register
     popq      %r14              # restore callee-saved register
     popq      %r13              # restore callee-saved register
@@ -38,17 +40,18 @@ main:                           # start of function main
     pushq     %r13              # save callee-saved register
     pushq     %r14              # save callee-saved register
     pushq     %r15              # save callee-saved register
-    pushq     %rbx              # store value of base pointer on stack
-    movq      %rsp, %rbx        # copy value of stack pointer into base pointer
-    subq      $16, %rsp         # align the stack pointer by 16 bytes
+    pushq     %rbp              # store value of base pointer on stack
+    movq      %rsp, %rbp        # copy value of stack pointer into base pointer
+    and       $-16, %rsp        # align the stack pointer by 16 bytes
     call      do_echo
+    pushq     $0xABCDEF         # void sentinel value
     popq      %rax              # discard expr output
     pushq     $0
     popq      %rax              # return a value
     jmp       main.exit         # exit function
 main.exit:                      # end of function main
-    movq      %rbx, %rsp        # restore stack pointer value to base pointer value
-    popq      %rbx              # restore base pointer value
+    movq      %rbp, %rsp        # restore stack pointer value to base pointer value
+    popq      %rbp              # restore base pointer value
     popq      %r15              # restore callee-saved register
     popq      %r14              # restore callee-saved register
     popq      %r13              # restore callee-saved register
