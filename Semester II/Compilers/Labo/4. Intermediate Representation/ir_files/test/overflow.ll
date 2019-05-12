@@ -27,12 +27,12 @@ declare i32 @rand()
 ; Function Attrs: nounwind
 define dso_local i32 @main() #0 !dbg !4 {
 entry:
-  %foo = alloca [10 x i32], !dbg !8
-  %n = alloca i32, !dbg !9
-  store i32 10, i32* %n, !dbg !9
-  %0 = load i32, i32* %n, !dbg !10
-  %1 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %0, !dbg !10
-  store i32 5, i32* %1, !dbg !11
+  %n = alloca i32, !dbg !8
+  %foo = alloca [10 x i32], !dbg !9
+  store i32 10, i32* %n, !dbg !10
+  %0 = load i32, i32* %n, !dbg !11
+  %1 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %0, !dbg !11
+  store i32 5, i32* %1, !dbg !12
   ret i32 0
 }
 
@@ -50,6 +50,7 @@ attributes #0 = { nounwind }
 !6 = !{!7}
 !7 = !DIBasicType(name: "int", size: 32, encoding: DW_ATE_signed)
 !8 = !DILocation(line: 1, column: 1, scope: !4)
-!9 = !DILocation(line: 1, column: 14, scope: !4)
-!10 = !DILocation(line: 2, column: 5, scope: !4)
-!11 = !DILocation(line: 2, column: 1, scope: !4)
+!9 = !DILocation(line: 2, column: 1, scope: !4)
+!10 = !DILocation(line: 3, column: 1, scope: !4)
+!11 = !DILocation(line: 4, column: 5, scope: !4)
+!12 = !DILocation(line: 4, column: 1, scope: !4)
