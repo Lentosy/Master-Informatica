@@ -29,7 +29,8 @@ namespace {
             /// The returned boolean should be `true` if the function was modified,
             /// `false` if it wasn't.
             bool runOnFunction(Function &F) override {
-                IRBuilder<> Builder(F.getContext());
+                LLVMContext& context = F.getContext();
+                IRBuilder<> Builder(context);
 
                 LLVM_DEBUG({
                     dbgs() << "BoundsCheck: processing function '";
@@ -84,13 +85,13 @@ namespace {
                     uint64_t numOfElements = ((ArrayType*) GEP->getSourceElementType())->getNumElements(); // this is the upper array bound
                     LLVM_DEBUG(dbgs() << "BoundsCheck\tnumber of elements:" << numOfElements << "\n");
 
-                    uint64_t accessIndex; // the index that is used to access the array
+                    uint64_t accessIndex = 4; // the index that is used to access the array
 
                     
                     // Case 1 : all indices are known at compile time
                     if(GEP->hasAllConstantIndices()){
                         LLVM_DEBUG(dbgs() << "BoundsCheck\tall the indices are constant" << "\n");
-                        User::const_op_iterator indices = GEP->idx_begin() + 1; // skip first index
+                        User::const_op_iterator indices = GEP->idx_begin() + 1; // skip first index ( see explanation above about getelementptr)
                         Value* iVal = indices->get();
 
                         assert(iVal->getType()->getTypeID() == Type::TypeID::IntegerTyID);
@@ -106,33 +107,40 @@ namespace {
                             report_fatal_error(reason.str());
                         }
                     } else {
-                        BasicBlock* parent = GEP->getParent();
-                        parent->getInstList();
-                        //ConstantInt* cond = ConstantInt::getTrue(GEP->getContext());
-                        //BasicBlock* ifTrue = BasicBlock::Create(GEP->getContext(), "trap", &F);
-                        //UnreachableInst unreachableInst(GEP->getContext());
-                        //ifTrue->getInstList().insert(ifTrue->getInstList().end(), &unreachableInst);
+                        Builder.SetInsertPoint(GEP->getNextNode());
+                        Constant* index = ConstantInt::getSigned(Type::getInt32Ty(context), accessIndex);
+                        Constant* arraySize = ConstantInt::getSigned(Type::getInt32Ty(context), numOfElements);
+                        
+                        ICmpInst* compareInstruction = (ICmpInst*) Builder.CreateICmpSGE(index, arraySize);
+
+                        BasicBlock* ifTrue = BasicBlock::Create(context, "trap", &F);
+                        ifTrue->getInstList().push_back(new UnreachableInst(context));
+                        BasicBlock* ifFalse = BasicBlock::Create(context, "cont", &F);
+                        ifFalse->getInstList().push_back(ReturnInst::Create(context, ConstantInt::getSigned(Type::getInt32Ty(context), 0)));
+                                                
+                        BranchInst* branchInstruction = (BranchInst*) Builder.CreateCondBr(compareInstruction, ifTrue, ifFalse);
+                        branchInstruction->getParent()->dump();
+                        //Builder.Insert(branchInstruction);
+                    
+
                         //ifTrue->dump();
-                        //BasicBlock* ifFalse = BasicBlock::Create(GEP->getContext(), "cont", &F);
-                        //BranchInst* branch = BranchInst::Create(ifTrue, ifFalse, cond);
-                        //GEP->insertAfter(branch);
+                        //ifFalse->dump();
+                        //Builder.CreateCondBr(trueVal, ifTrue, ifFalse);
+                        
+                        
+                        //Builder.SetInsertPoint(GEP);
+                        //accessIndex = 4;
+                        //// LHS =  accessIndex
+                        //// RHS = size of array
+                        //// cast the number of elements to a Value pointer
+                        //Constant* index = ConstantInt::getSigned(Type::getInt32Ty(context), accessIndex);
+                        //Constant* arraySize = ConstantInt::getSigned(Type::getInt32Ty(context), numOfElements);
+                        //Twine t;
+                        //ICmpInst* compareInstruction = new ICmpInst(ICmpInst::ICMP_SGE, index, arraySize, t);
+                        //compareInstruction->
+                        
+
                     }
-
-
-                    // else {
-                    //    User::const_op_iterator indices = GEP->idx_begin() + 1; // skip first index
-                    //    while(indices != GEP->idx_end()){
-                    //        Value* iVal = indices->get();
-                    //        LoadInst* loadInstruction = (LoadInst*) iVal;
-                    //        loadInstruction->dump();
-                    //        AllocaInst* allocationInstruction = (AllocaInst*) loadInstruction->getPointerOperand();
-                    //        allocationInstruction->dump();
-                    //        allocationInstruction->getArraySize()->dump();
-                    //        //LLVM_DEBUG(dbgs() << instruction->isSimple() << " : " << instruction->isUnordered() << "\n");
-                    //        indices++;                        
-                    //    }
-//
-                    //}
 
                 }
                 return Changed;
