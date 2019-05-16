@@ -63,7 +63,7 @@ id := num ; id := id + (id := num + num, id)
 
 Code \ref{lst:vb_afleiding} toont een illustratie van hoe het afleidingsproces te werk gaat, toegepast op voorbeeldzin \ref{eqn:voorbeeldzin}. Bij elke iteratie wordt het niet-terminale token dat onderlijnt is verwerkt.
 
-\QA{Is dit een linkse of een rechtste afleiding?}{Geen van beide, omdat er gekozen kan worden om zowel de meest linkse als de meest rechtse token te verwerken.
+\QA{Is dit een linkse of een rechtste afleiding?}{Geen van beide, omdat zowel de meest linkse als de meeste rechtse token verwerkt kan worden.
 }
 
 Figuur \ref{fig:vb_tree_1} toont de bijhorende parse tree. Hier zijn de bladeren ook een verzameling van terminale tokens. De taak van een parser is om de bijhorende boom op te stellen, uitgaande van enkel de bladeren.
@@ -93,7 +93,7 @@ Een grammatica hoeft niet perse de regels van de wiskunde te volgen. Daarom is h
 	\item * en / voorrang heeft op + en -,
 	\item a + b + c = (a + b) + c, dus + is links associatief.
 \end{itemize}
-Om dit te realiseren worden er \textbf{termen} en \textbf{factoren} ingevoerd. Op die manier kan Grammatica \ref{grammar:3_5} omgevormd worden tot \ref{grammar:3_8}.
+Om dit te realiseren worden er \textbf{expressie}, \textbf{termen} en \textbf{factoren} ingevoerd. Op die manier kan Grammatica \ref{grammar:3_5} omgevormd worden tot \ref{grammar:3_8}.
 
 \begin{grammarfigure}
 	\centering
@@ -146,7 +146,7 @@ void E(void) {
 }
 \end{lstlisting}
 
-Een recursive descent parser werkt enkel als het eerste terminale symbool van een subexpressie genoeg informatie oplevert.
+Een recursive descent parser werkt enkel als het eerste terminale symbool van een subexpressie genoeg informatie oplevert. Om dit te bepalen worden \texttt{FIRST} sets geïntroduceerd.
 
 \subsection{First and follow sets}
 Om de begrippen \textbf{first set} en \textbf{follow set} uit te leggen wordt Grammatica \ref{grammar:3_12} gebruikt.
@@ -173,13 +173,11 @@ Om de begrippen \textbf{first set} en \textbf{follow set} uit te leggen wordt Gr
 	
 	\item \textbf{FIRST($\gamma$)}: verzameling terminals waarmee strings kunnen beginnen die van expressie $\gamma$ kunnen afgeleid worden.
 	
-	Uitgewerkt voor de drie startsymbolen:
+	Uitgewerkt voor de drie symbolen:
 	\begin{itemize}
-		\item[$X:$] Vanuit $X$ zijn er twee mogelijkheden: $X \rightarrow a$ en $X \rightarrow Y$. We zien dat $a$ een terminal is dus die behoort al zeker tot de FIRST set. Vanuit $Y$ kan ook nog de lege string en $c$ bereikt worden. Hieruit volgt FIRST($X$) = $\{a\;c\}$.
-		\item[$Y:$] Vanuit $Y$ kan enkel $c$ bereikt worden: FIRST($Y$) = $\{c\}$.
-		\item[$Z:$] In eerste instantie kan $Z$ direct $d$ bereiken, dus die zit zeker in de FIRST set. Aangezien ook de productieregel $Z \rightarrow X\;Y\;Z$ bestaat en zowel $X$ als $Y$ nullable zijn, kan zowel de FIRST set van $X$ als van $Y$ overgenomen worden.
-		
-		FIRST($Z$) = $\{a\;c\;d\}$
+		\item[$X:$] Vanuit $X$ zijn er twee mogelijkheden: $X \rightarrow a$ en $X \rightarrow Y$. We zien dat $a$ een terminal is dus die behoort al zeker tot de \texttt{FIRST} set. Vanuit $Y$ kan ook nog de lege string en $c$ bereikt worden. Hieruit volgt \texttt{FIRST}($X$) = $\{a\;c\}$.
+		\item[$Y:$] Vanuit $Y$ kan enkel $c$ bereikt worden: \texttt{FIRST}($Y$) = $\{c\}$.
+		\item[$Z:$] In eerste instantie kan $Z$ direct $d$ bereiken, dus die zit zeker in de \texttt{FIRST} set. Aangezien ook de productieregel $Z \rightarrow X\;Y\;Z$ bestaat en zowel $X$ als $Y$ nullable zijn, kan zowel de \texttt{FIRST} set van $X$ als van $Y$ overgenomen worden zodat \texttt{FIRST}($Z$) = $\{a\;c\;d\}$
 	\end{itemize}
 
 	\begin{table}[h]
@@ -193,7 +191,26 @@ Om de begrippen \textbf{first set} en \textbf{follow set} uit te leggen wordt Gr
 		\end{tabular}
 	\end{table}
 	
-	\item \textbf{FOLLOW($X$)}: is de verzameling van terminals $t$ die meteen op $X$ kunnen volgen, dus waarvoor de afleiding $X_t$ bestaat. 
+	\item \textbf{FOLLOW($X$)}: is de verzameling van terminals $t$ die meteen op $X$ kunnen volgen, dus waarvoor de afleiding $Xt$ bestaat. 
+	Uitgewerkt voor de drie symbolen:
+	\begin{itemize}
+		\item[$X:$]  De regel $Z \rightarrow X Y Z$ legt vast dat $X$ door $Y$ en $Z$ kan gevolgd worden. De terminalen dat $Y$ en $Z$ kunnen genereren zijn respectievelijk $c$ en $d$ zodat die zeker al in de \texttt{FOLLOW} set zitten van $X$. Dezelfde regel $Z \rightarrow X Y Z$ kan ook $X Y X Y Z$ genereren. 
+		Als $Y$ en $Z$ de lege string afleiden, dan kan de eerste $X$ gevolgd worden door de tweede $X$ die $a$ afleidt. De terminaal $a$ zit dus ook in de \texttt{FOLLOW} set van $X$ zodat \texttt{FOLLOW}($X$) = $\{a\;c\;d\}$.
+		
+		
+		\item[$Y:$] Dezelfde redenering geldt voor $Y$: aangezien $Z$ een recursieve definitie is en het alle andere niet-terminalen bevat, is \texttt{FOLLOW}($Y$) = $\{a\;c\;d\}$. 
+		\item[$Z:$] Er is geen enkele productie waarbij er een terminaal of niet-terminaal na $Z$ komt. Daarom is de \texttt{FOLLOW} set van $Z$ leeg.
+	\end{itemize}
+	\begin{table}[h]
+		\centering
+		\begin{tabular}{c | c c c}
+			& nullable & FIRST & FOLLOW \\
+			\hline
+			X & yes & a c & a c d\\
+			Y & yes & c & a c d\\
+			Z & no & a c d & 
+		\end{tabular}
+	\end{table}
 \end{itemize}
 
 Algoritme \ref{algo:first_follow_nullable} is een fixpoint algoritme die de first, follow en nullable berekent.
@@ -218,16 +235,23 @@ Algoritme \ref{algo:first_follow_nullable} is een fixpoint algoritme die de firs
 
 
 \subsection{Opstellen Predictive Parsing Tabel}
+Stel dat we een niet-terminaal $X$ hebben en een volgende input token $T$, hoe kan de beste productieregel gekozen worden? De informatie kan geëncodeerd worden in een twee-dimensionale \texttt{predictive parsing} tabel. De tabel wordt opgesteld door elke productie $X \rightarrow \gamma$ in rij $X$ en kolom $T$ te zetten voor elke $T \in \texttt{FIRST}(\gamma)$. Ook als $\gamma$ nullable is, wordt de productie in rij $X$ en kolom $T$ geplaatst voor elke $T \in \texttt{FOLLOW}[X]$. Figuur \ref{fig:predictive_parsing_table} toont de bijhorende tabel voor grammatica \ref{grammar:3_12}.
+\begin{figure}
+	\includegraphics[width=\textwidth]{predictive_parsing_table}
+	\caption{Predictive parsing tabel voor \ref{grammar:3_12}}.
+	\label{fig:predictive_parsing_table}
+\end{figure}
+
 Uitbreiden definitie van first naar strings:
 \begin{itemize}
 	\item \texttt{FIRST($W\gamma$)} = \texttt{FIRST($W$)} als niet nullable($W$)
 	\item \texttt{FIRST($W\gamma$)} = \texttt{FIRST($W$)} $\cup$ \texttt{FIRST($\gamma$)} 
 \end{itemize}
 
-
-Er zijn drie gevallen waarbij er twee keuzes zijn. Moeten we $X \rightarrow a$ of $X \rightarrow Y$ nemen? De string $d$ levert minstens twee parse tree op. De grammatica was zelfs ambigu. Dit kan nooit geparsed worden.
+Aangezien er meerdere producties zijn per cel, zal predictive parsing niet werken. Dit komt overeen met het feit dat de grammatica ambigue is.
 
 \subsection{LL(1) Parsers}
+Grammatica's waarbij de predictive parsing tabellen geen duplicate entries per cel bevat worden \texttt{LL(1)} grammatica's genoemd. Een recursive-descent parser is een voorbeeld van een \texttt{LL(1)} parser.
 \begin{itemize}
 	\item Elk vak in de tabel bevat slechts 1 productieregel.
 	\item Left-to-right parse: begin vooraan in broncode en verwerk van links naar rechts. 
@@ -237,18 +261,47 @@ Er zijn drie gevallen waarbij er twee keuzes zijn. Moeten we $X \rightarrow a$ o
 	\begin{itemize}
 		\item $k$ symbolen vooraf bekijken. De first sets bevatten sequenties van $k$ terminals.
 	\end{itemize}
+	
 	\alert Mogelijke problemen:
 	\begin{itemize}
 		\item Linkse recursie.
 		\begin{itemize}
-			\item Probleem: zekerheid van meerdere productieregels in een vak want $\texttt{FIRST(T)} \in \texttt{FIRST(E - T)}$. 
-			\item Oorzaak: $E$ verschijnt links in de rechterkant van een $E$-productie.
-			\item Oplossing: 
+			\item \textbf{Probleem}: Veronderstel volgende grammatica:
+			\begin{equation*}
+				\begin{split}
+					E & \rightarrow E + T \\
+					E & \rightarrow T
+				\end{split}
+			\end{equation*}
+			Er zullen duplicate waarden in de predictive parsing tabel voorkomen omdat $\texttt{FIRST(T)} \in \texttt{FIRST(E + T)}$
+			\item \textbf{Oorzaak}: $E$ verschijnt als eerste symbool in de rechterkant van een $E$-productie.
+			\item \textbf{Oplossing}: Herschrijf de productie met rechtse recursie.
+			\begin{equation*}
+				\begin{split}
+				E &\rightarrow T E' \\
+				E'& \rightarrow + T E' \\
+				E'& \rightarrow 
+				\end{split}
+			\end{equation*}
 		\end{itemize} 
 		\item Linkse factorisatie.
 		\begin{itemize}
-			\item Probleem: De parser kan geen onderscheid maken tussen twee gelijkaardige strings.
-			\item Oplossing: grammatica herschrijven.
+			\item \textbf{Probleem}: De parser kan geen onderscheid maken tussen twee gelijkaardige strings.
+			\begin{equation*}
+				\begin{split}
+				S &\rightarrow \hbox{if } E \hbox{ then } S \hbox{ else } S \\
+				S &\rightarrow \hbox{if } E \hbox{ then } S 
+				\end{split}
+			\end{equation*}
+			\item \textbf{Oplossing}: Neem het gelijkaardige stuk samen en introduceer nieuwe niet-terminalen die de afwijkingen beschrijven.
+			\begin{equation*}
+			\begin{split}
+			S &\rightarrow \hbox{if } E \hbox{ then } S X \\
+			X &\rightarrow  \\
+			X &\rightarrow \hbox{else } S
+			\end{split}
+			\end{equation*}
+			
 		\end{itemize}
 	\end{itemize}
 	\item Error recovery is mogelijk.
@@ -259,11 +312,12 @@ Er zijn drie gevallen waarbij er twee keuzes zijn. Moeten we $X \rightarrow a$ o
 \subsection{Error Recovery}
 Probleem: pseudocode voor error. We willen geen compiler die geen nuttige foutboodschappen kan geven. Compiler mag ook niet stoppen bij eerste fout, omdat meerdere fouten nog verder kunnen voorkomen.
 \begin{itemize}
-	\item Gewoon een print statement = vrij slechte methode aangezien er geen tokens opgegeten worden. De parser doet voort alsof hij F en Tprime al geparsed heeft. De parser komt in foute toestand.
+	\item Gewoon een print statement = vrij slechte methode aangezien er geen tokens opgegeten worden. De parser doet voort alsof hij F en T' al geparsed heeft. De parser komt in foute toestand.
 	\item Print statement combineren met de skipto functie, die tokens zal opeten totdat er een token tegenkomt die in de follow set zit. Alle karakters die niet in de follow zitten, zal nog deel uitmaken van de subexpressie. 
 \end{itemize}
 
 \section{LR($k$) parser}
+Het probleem met $LL(k)$ parsers is dat ze moeten voorspellen welke productieregel dat ze moeten gebruiken op basis van de eerste $k$ tokens. Een $LR(k)$ parser stelt dit uit tot dat de $k$ input tokens overeenkomen met een complete productieregel.
 \begin{itemize}
 	\item Left-to-right parse.
 	\item \underline{Rightmost}-derivation.

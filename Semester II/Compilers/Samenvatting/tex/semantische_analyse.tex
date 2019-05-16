@@ -24,7 +24,7 @@ In code \protect\ref{code:symboltable_example} wordt er een nullbyte weggeschrev
 Een symbooltabel bestaat uit een \textbf{omgeving} $\sigma_i$ en een verzameling \textbf{bindings}:
 $$\sigma_1 = \{g \mapsto string, a \mapsto int\}$$
 
-Elke environment $\sigma_i$ bestaat uit de samenstelling van zijn specifieke bindings en eventueel de bindings van andere $\sigma_{j}$ voor $j \neq i$. De specifieke bindings van $\sigma_i$ hebben voorrang op de bindings van $\sigma_{j}$.
+Elke omgeving $\sigma_i$ bestaat uit de samenstelling van zijn specifieke bindings en eventueel de bindings van andere $\sigma_{j}$ voor $j \neq i$. De specifieke bindings van $\sigma_i$ hebben voorrang op de bindings van elke andere $\sigma_{j}$.
 
 \begin{figure}[h]
 	\centering
@@ -44,10 +44,10 @@ De omgevingen kunnen voor de code uit figuur \ref{fig:symbooltabellen_code} gede
 \end{equation*}
 
 \begin{itemize}
-	\alert De $+$ operatie is hier niet commutatief. De precieze betekenis hangt af van de scoping regels van een taal.
+	\alert De $+$ operatie bij twee omgevingen is hier niet commutatief. De precieze betekenis hangt af van de scoping regels van een taal.
 	\item Er zijn \underline{twee mogelijke implementaties}:
 	\begin{itemize}
-		\item \textbf{Imperatieve implementatie:} Er is slechts één omgeving $\sigma$ die aangepast wordt naar $\sigma_1$, $\sigma_2$, ... wanneer dit nodig is. Deze \textbf{destructieve update} zal $\sigma_1$ vernietigen wanneer $\sigma_2$ vereist is, maar kan via de \textbf{undo stack} terug naar $\sigma_1$ gaan. Dit kan bijvoorbeeld geïmplementeerd worden met een hashtabel. De operatie $\sigma' = \sigma + \{a \mapsto \tau \}$ wordt geïmplementeerd door de sleutel $a$ met waarde $\tau$ toe te voegen aan de hashtabel. Om $\sigma$ te bekomen wordt de sleutel $a$ dan verwijderd. Dit werkt natuurlijk alleen als er toegevoegd wordt op een stacksgewijze manier.
+		\item \textbf{Imperatieve implementatie:} Er is slechts één omgeving $\sigma$ die aangepast wordt naar $\sigma_1$, $\sigma_2$, ... wanneer dit nodig is. Een \textbf{destructieve update} zal $\sigma_1$ vernietigen wanneer $\sigma_2$ vereist is, maar kan via de \textbf{undo stack} terug naar $\sigma_1$ gaan. Dit kan bijvoorbeeld geïmplementeerd worden met een hashtabel. De operatie $\sigma' = \sigma + \{a \mapsto \tau \}$ wordt geïmplementeerd door de sleutel $a$ met waarde $\tau$ toe te voegen aan de hashtabel. Om $\sigma$ te bekomen wordt de sleutel $a$ dan verwijderd. Dit werkt natuurlijk alleen als er toegevoegd wordt op een stacksgewijze manier.
 		\item \textbf{Functionele implementatie:} In deze implementatie wordt de originele $\sigma$ onaangetast en wordt er een nieuwe datastructuur voor $\sigma'$ gemaakt. Dit kan ook met hashtabellen geïmplementeerd worden, maar wordt eerder met binaire zoekboomen, eventueel gebalanceerd, geïmplementeerd.
 	\end{itemize}
 \end{itemize}

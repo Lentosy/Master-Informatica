@@ -81,7 +81,7 @@ exp : INT            {$$ = $1;}
     | exp TIMES exp  {$$ = $1 * $3;}
     | MINUS exp      %prec UMINUS {$$ = - $2;}
 \end{lstlisting}
-Figuur \ref{fig:semantische_stack} toont een LR parse of een string, gebruik makend van code \ref{code:yacc}.
+Figuur \ref{fig:semantische_stack} toont een LR parse van een string, gebruik makend van code \ref{code:yacc}.
 \begin{figure}[h]
 	\includegraphics[width=\textwidth]{semantische_stack}
 	\caption{Parsen met een semantische stack.}
@@ -90,8 +90,8 @@ Figuur \ref{fig:semantische_stack} toont een LR parse of een string, gebruik mak
 
 Interpreteren met behulp van semantische acties is dus zeer haalbaar. In feite kan compilatie ook uitgevoerd worden met semantische acties, maar wordt in de praktijk afgeraden:
 \begin{itemize}
-	\item Analyse kan enkel uitgevoerd worden in de volgorde waarin de inputstream geparsed wordt. 
-	\item Code wordt gegenereerd op basis van de parse tree, maar zo een tree is niet geschikt. Er zit te veel nutteloze informatie in zoals de := operator, en dient eerder om de syntax uit te drukken en niet de semantiek.
+	\alert De analyse zou enkel uitgevoerd kunnen worden in de volgorde waarin de inputstream geparsed wordt. 
+	\alert Code wordt gegenereerd op basis van de parse tree, maar zo een tree is niet geschikt. Er zit te veel nutteloze informatie in zoals de := operator, en dient eerder om de syntax uit te drukken en niet de semantiek.
 \end{itemize}
 
 \section{Abstract Parse Tree Construction}
@@ -100,7 +100,6 @@ Interpreteren met behulp van semantische acties is dus zeer haalbaar. In feite k
 	\caption{}
 	\label{fig:grammar_4_5}
 \end{grammarfigure}
-In principe 
-Grammatica 4.5 is ambigue. Binaire operator specificeert geen associativiteit. Dit is geen probleem, aangezien de parser dit al beslist heeft. Dus de grammatica die de parser gebruikt mag niet ambigue zijn, wel die van de abstract syntax tree, aangezien die dient om de semantiek te definiëren.
+Grammatica 4.5 is ambigue. De binaire operatoren specificeren geen associativiteit. Dit is geen probleem aangezien de parser dit al beslist heeft. Dus de grammatica die de abstract syntax tree gebruikt mag wel ambigue zijn aangezien die dient om de semantiek te definiëren.
 \subsection{Posities}
-Als je tree opbouwt, wordt deze geanalyseerd om bv types te checken. Bij foutboodschappen moet de compiler weten waar in de inputstroom deze fout gegenereerd wordt. Er kan een \textbf{positiestack} bijgehouden worden die de positie van elke token bevat.
+Als je tree opbouwt, wordt deze geanalyseerd om bijvoorbeeld types te checken. Bij foutboodschappen moet de compiler weten waar in de inputstroom deze fout gegenereerd wordt. Er kan een \textbf{positiestack} bijgehouden worden die de positie van elke token bevat.
