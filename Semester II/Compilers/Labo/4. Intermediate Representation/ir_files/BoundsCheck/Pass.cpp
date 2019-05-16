@@ -8,6 +8,7 @@
 #include <list>
 #include <cassert>
 #include <sstream>
+#include <typeinfo>
 
 #define DEBUG_TYPE "cheetah::boundscheck"
 
@@ -28,7 +29,8 @@ namespace {
             /// The returned boolean should be `true` if the function was modified,
             /// `false` if it wasn't.
             bool runOnFunction(Function &F) override {
-                IRBuilder<> Builder(F.getContext());
+                LLVMContext& context = F.getContext();
+                IRBuilder<> Builder(context);
 
                 LLVM_DEBUG({
                     dbgs() << "BoundsCheck: processing function '";
@@ -51,6 +53,7 @@ namespace {
                 //      i32 0                specifies the steps from the base pointer (0 because start of array)
                 //      i32 %0               specifies the index offset which gets accessed
                 // Find all GEP instructions (GetElementPointer instructions)
+                // https://users.elis.ugent.be/~tbesard/compilers/llvm/doxygen/d0/d74/classllvm_1_1GetElementPtrInst.html
                 // NOTE: we need to do this first, because the iterators get invalidated
                 //       when modifying underlying structures
                 std::list<GetElementPtrInst *> WorkList;
@@ -65,40 +68,81 @@ namespace {
                 for (auto *GEP : WorkList) {
                     // IMPLEMENTATION:
 
+                    // get debug information such as line and column of the instruction
+                    const DebugLoc& debugLocation = GEP->getDebugLoc();
+                    unsigned line = debugLocation.getLine();
+                    unsigned column = debugLocation.getCol();
+                    
                     LLVM_DEBUG(dbgs() << "\n");
                     LLVM_DEBUG(dbgs() << "BoundsCheck\tfound a GEP: " << *GEP << "\n");
                     LLVM_DEBUG(dbgs() << "BoundsCheck\tname: " << GEP->getPointerOperand()->getName() << "\n");
                     LLVM_DEBUG(dbgs() << "BoundsCheck\ttype: " << GEP->getSourceElementType()->getTypeID() << "\n");
                     LLVM_DEBUG(dbgs() << "BoundsCheck\tnumber of indices: " << GEP->getNumIndices() << "\n");
-
+                    LLVM_DEBUG(dbgs() << "BoundsCheck\t(line, column): (" << line << "," << column << ")\n");
+                    
                     assert(GEP->getSourceElementType()->getTypeID() == Type::TypeID::ArrayTyID); // 14 is ArrayTyID                    
+                    
                     uint64_t numOfElements = ((ArrayType*) GEP->getSourceElementType())->getNumElements(); // this is the upper array bound
                     LLVM_DEBUG(dbgs() << "BoundsCheck\tnumber of elements:" << numOfElements << "\n");
 
-                    uint64_t accessIndex; // the index that is used to access the array
+                    uint64_t accessIndex = 4; // the index that is used to access the array
 
                     
+                    // Case 1 : all indices are known at compile time
                     if(GEP->hasAllConstantIndices()){
                         LLVM_DEBUG(dbgs() << "BoundsCheck\tall the indices are constant" << "\n");
-
-                        User::const_op_iterator indices = GEP->idx_begin() + 1; // skip first index
+                        User::const_op_iterator indices = GEP->idx_begin() + 1; // skip first index ( see explanation above about getelementptr)
                         Value* iVal = indices->get();
+
                         assert(iVal->getType()->getTypeID() == Type::TypeID::IntegerTyID);
+                        
                         ConstantInt* integer = (ConstantInt*)iVal;
                         accessIndex = integer->getValue().getLimitedValue();
+                        
                         LLVM_DEBUG(dbgs() << "BoundsCheck\taccessIndex: " << accessIndex << "\n");
+                        
                         if(accessIndex >= numOfElements){
                             std::ostringstream reason;
-                            reason << "Index out of bounds:\n\tIndex: " << accessIndex << "\n\tMax: " << numOfElements - 1 << "\n";
+                            reason << "Index out of bounds (line " << line << ", column " << column <<  ")\n\tIndex: " << accessIndex << "\n\tMax: " << numOfElements - 1 << "\n";
                             report_fatal_error(reason.str());
                         }
-                    }
-               
-                    // TODO: other checks
+                    } else {
+                        Builder.SetInsertPoint(GEP->getNextNode());
+                        Constant* index = ConstantInt::getSigned(Type::getInt32Ty(context), accessIndex);
+                        Constant* arraySize = ConstantInt::getSigned(Type::getInt32Ty(context), numOfElements);
+                        
+                        ICmpInst* compareInstruction = (ICmpInst*) Builder.CreateICmpSGE(index, arraySize);
 
+                        BasicBlock* ifTrue = BasicBlock::Create(context, "trap", &F);
+                        ifTrue->getInstList().push_back(new UnreachableInst(context));
+                        BasicBlock* ifFalse = BasicBlock::Create(context, "cont", &F);
+                        ifFalse->getInstList().push_back(ReturnInst::Create(context, ConstantInt::getSigned(Type::getInt32Ty(context), 0)));
+                                                
+                        BranchInst* branchInstruction = (BranchInst*) Builder.CreateCondBr(compareInstruction, ifTrue, ifFalse);
+                        branchInstruction->getParent()->dump();
+                        //Builder.Insert(branchInstruction);
+                    
+
+                        //ifTrue->dump();
+                        //ifFalse->dump();
+                        //Builder.CreateCondBr(trueVal, ifTrue, ifFalse);
+                        
+                        
+                        //Builder.SetInsertPoint(GEP);
+                        //accessIndex = 4;
+                        //// LHS =  accessIndex
+                        //// RHS = size of array
+                        //// cast the number of elements to a Value pointer
+                        //Constant* index = ConstantInt::getSigned(Type::getInt32Ty(context), accessIndex);
+                        //Constant* arraySize = ConstantInt::getSigned(Type::getInt32Ty(context), numOfElements);
+                        //Twine t;
+                        //ICmpInst* compareInstruction = new ICmpInst(ICmpInst::ICMP_SGE, index, arraySize, t);
+                        //compareInstruction->
+                        
+
+                    }
 
                 }
-
                 return Changed;
             }
 

@@ -1,2 +1,4 @@
-int foo[10]; int n = 10;
+int n;
+int foo[10];
+n = 10;
 foo[n] = 5;
