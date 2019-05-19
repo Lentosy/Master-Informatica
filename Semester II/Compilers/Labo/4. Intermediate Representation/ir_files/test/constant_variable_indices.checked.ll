@@ -35,15 +35,45 @@ entry:
   %c = alloca i32, !dbg !11
   store i32 10, i32* %c, !dbg !11
   %0 = load i32, i32* %a, !dbg !12
-  %1 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %0, !dbg !12
-  store i32 1, i32* %1, !dbg !13
-  %2 = load i32, i32* %b, !dbg !14
-  %3 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %2, !dbg !14
-  store i32 1, i32* %3, !dbg !15
-  %4 = load i32, i32* %c, !dbg !16
-  %5 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %4, !dbg !16
-  store i32 1, i32* %5, !dbg !17
+  %1 = alloca i32, !dbg !12
+  store i32 10, i32* %1, !dbg !12
+  %2 = load i32, i32* %1, !dbg !12
+  %3 = icmp sge i32 %0, %2, !dbg !12
+  br i1 %3, label %trap, label %cont, !dbg !12
+
+cont:                                             ; preds = %entry
+  %4 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %0, !dbg !12
+  store i32 1, i32* %4, !dbg !13
+  %5 = load i32, i32* %b, !dbg !14
+  %6 = alloca i32, !dbg !14
+  store i32 10, i32* %6, !dbg !14
+  %7 = load i32, i32* %6, !dbg !14
+  %8 = icmp sge i32 %5, %7, !dbg !14
+  br i1 %8, label %trap2, label %cont1, !dbg !14
+
+cont1:                                            ; preds = %cont
+  %9 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %5, !dbg !14
+  store i32 1, i32* %9, !dbg !15
+  %10 = load i32, i32* %c, !dbg !16
+  %11 = alloca i32, !dbg !16
+  store i32 10, i32* %11, !dbg !16
+  %12 = load i32, i32* %11, !dbg !16
+  %13 = icmp sge i32 %10, %12, !dbg !16
+  br i1 %13, label %trap4, label %cont3, !dbg !16
+
+cont3:                                            ; preds = %cont1
+  %14 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %10, !dbg !16
+  store i32 1, i32* %14, !dbg !17
   ret i32 0
+
+trap:                                             ; preds = %entry
+  unreachable
+
+trap2:                                            ; preds = %cont
+  unreachable
+
+trap4:                                            ; preds = %cont1
+  unreachable
 }
 
 ; Function Attrs: noreturn

@@ -2,6 +2,7 @@
 #include <llvm/IR/Function.h>
 #include <llvm/IR/Instructions.h>
 #include <llvm/IR/IRBuilder.h>
+#include <llvm/Transforms/Utils/BasicBlockUtils.h>
 #include <llvm/Pass.h>
 #include <llvm/Support/Debug.h>
 
@@ -61,6 +62,7 @@ namespace {
                     for (auto &BI : FI)  // Iterate basic block -> instructions
                         if (auto *GEP = dyn_cast<GetElementPtrInst>(&BI))
                             WorkList.push_back(GEP);
+            
 
 
                 // Process any GEP instructions
@@ -91,7 +93,7 @@ namespace {
                     // Case 1 : all indices are known at compile time
                     if(GEP->hasAllConstantIndices()){
                         LLVM_DEBUG(dbgs() << "BoundsCheck\tall the indices are constant" << "\n");
-                        User::const_op_iterator indices = GEP->idx_begin() + 1; // skip first index ( see explanation above about getelementptr)
+                        User::const_op_iterator indices = GEP->idx_begin() + 1; // skip first index ( see explanation above about getelementptr )
                         Value* iVal = indices->get();
 
                         assert(iVal->getType()->getTypeID() == Type::TypeID::IntegerTyID);
@@ -107,39 +109,51 @@ namespace {
                             report_fatal_error(reason.str());
                         }
                     } else {
-                        Builder.SetInsertPoint(GEP->getNextNode());
-                        Constant* index = ConstantInt::getSigned(Type::getInt32Ty(context), accessIndex);
-                        Constant* arraySize = ConstantInt::getSigned(Type::getInt32Ty(context), numOfElements);
-                        
-                        ICmpInst* compareInstruction = (ICmpInst*) Builder.CreateICmpSGE(index, arraySize);
 
-                        BasicBlock* ifTrue = BasicBlock::Create(context, "trap", &F);
-                        ifTrue->getInstList().push_back(new UnreachableInst(context));
-                        BasicBlock* ifFalse = BasicBlock::Create(context, "cont", &F);
-                        ifFalse->getInstList().push_back(ReturnInst::Create(context, ConstantInt::getSigned(Type::getInt32Ty(context), 0)));
+                        // Divide the main parent block into three blocks
+                        BasicBlock* parent = GEP->getParent();
+                        // Split the block at the getelementptrinst so that the 'cont' block keeps this instruction and the following instructions
+                        BasicBlock* cont = parent->splitBasicBlock(GEP->getIterator(), "cont");
+                        // Create a trap block which consists of an assert call and an "unreachable instruction"
+                        BasicBlock* trap = BasicBlock::Create(context, "trap", &F);
+                        
+                        //std::vector<Value *, 3> argVector; 
+                        //ArrayRef<Value *> args;
+                        //CallInst* assertCall = CallInst::Create(Assert, args);
+                        //trap->getInstList().push_back(assertCall);
+                        trap->getInstList().push_back(new UnreachableInst(context));
+
+                        
+                         // set insertion point to be before the terminator. This is where we will insert new code
+
+                        TerminatorInst* branchInstruction = parent->getTerminator();
+                        Builder.SetInsertPoint(branchInstruction);
+
+                        // Get the value which holds the index value
+                        // the compare instruction expects two values of same type, to get the array size as a load instruction, we first have to allocate the neccesary
+                        // space, store the actaul number, and then load it
+                        AllocaInst* allocateArraySize = new AllocaInst(Type::getInt32Ty(context), 0);
+                        ConstantInt* bounds = ConstantInt::get(IntegerType::get(context, 32), numOfElements);
+                        StoreInst* storeArraySize = new StoreInst(bounds, allocateArraySize);
+                        LoadInst* loadArraySize = new LoadInst(allocateArraySize);
+                        Builder.Insert(allocateArraySize);
+                        Builder.Insert(storeArraySize);
+                        Builder.Insert(loadArraySize);
+
+                        Value *iVal = (GEP->idx_begin() + 1)->get();
+                        LoadInst* loadInstructionArrayIndex = (LoadInst*)iVal;
                                                 
-                        BranchInst* branchInstruction = (BranchInst*) Builder.CreateCondBr(compareInstruction, ifTrue, ifFalse);
-                        branchInstruction->getParent()->dump();
-                        //Builder.Insert(branchInstruction);
-                    
+                        ICmpInst* compareInstruction = new ICmpInst(ICmpInst::ICMP_SGE, loadInstructionArrayIndex, loadArraySize);
 
-                        //ifTrue->dump();
-                        //ifFalse->dump();
-                        //Builder.CreateCondBr(trueVal, ifTrue, ifFalse);
-                        
-                        
-                        //Builder.SetInsertPoint(GEP);
-                        //accessIndex = 4;
-                        //// LHS =  accessIndex
-                        //// RHS = size of array
-                        //// cast the number of elements to a Value pointer
-                        //Constant* index = ConstantInt::getSigned(Type::getInt32Ty(context), accessIndex);
-                        //Constant* arraySize = ConstantInt::getSigned(Type::getInt32Ty(context), numOfElements);
-                        //Twine t;
-                        //ICmpInst* compareInstruction = new ICmpInst(ICmpInst::ICMP_SGE, index, arraySize, t);
-                        //compareInstruction->
-                        
+                        Builder.Insert(compareInstruction);
+                        ReplaceInstWithInst(branchInstruction, BranchInst::Create(trap,cont,compareInstruction));
+                        //branchInstruction->replaceAllUsesWith(BranchInst::Create(trap,cont,compareInstruction));
 
+                        trap->dump();
+                        cont->dump();              
+                        parent->dump();
+
+                        Changed = true;
                     }
 
                 }

@@ -31,9 +31,19 @@ entry:
   %foo = alloca [10 x i32], !dbg !9
   store i32 10, i32* %n, !dbg !10
   %0 = load i32, i32* %n, !dbg !11
-  %1 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %0, !dbg !11
-  store i32 5, i32* %1, !dbg !12
+  %1 = alloca i32, !dbg !11
+  store i32 10, i32* %1, !dbg !11
+  %2 = load i32, i32* %1, !dbg !11
+  %3 = icmp sge i32 %0, %2, !dbg !11
+  br i1 %3, label %trap, label %cont, !dbg !11
+
+cont:                                             ; preds = %entry
+  %4 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %0, !dbg !11
+  store i32 5, i32* %4, !dbg !12
   ret i32 0
+
+trap:                                             ; preds = %entry
+  unreachable
 }
 
 ; Function Attrs: noreturn
