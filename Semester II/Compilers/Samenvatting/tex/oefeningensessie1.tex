@@ -18,7 +18,7 @@ Gegeven de volgende grammatica:
 	\item \textbf{Bereken nullable, FIRST en FOLLOW.}
 	\begin{table}[h]
 		\centering
-		\begin{tabular}{| l | l | l | l |}
+		\begin{tabular}{| l | c | c | c |}
 			\hline
 			& nullable & FIRST & FOLLOW \\
 			\hline
@@ -52,7 +52,7 @@ Gegeven de volgende grammatica:
 	
 	\item \textbf{Wijzig de grammatica \emph{zo weinig mogelijk} om een $LL(1)$ grammatica te hebben dat dezelfde taal aanvaardt.}
 	
-	Door de linkse recursiviteit van de productieregel $B \mapsto Bv$, kan je volgende veranderingen invoeren:
+	Door de linkse recursiviteit van de productieregel $B \mapsto Bv$, kunnen volgende veranderingen ingevoerd worden:
 	\begin{equation*}
 		\begin{split}
 		& B \mapsto wB' \\
@@ -78,7 +78,52 @@ Gegeven de reguliere expressie $S = ab+c$.
 	
 	\item \textbf{Geef de $LR(0)$ statentabel en $LR(0)$ parsingtabel.}
 	
-	Altijd de closure nemen van productieregel van niet-terminal waar het puntje voor staat. dus alle productieregels opnemen in toestand van die niet-terminal. Uiteindelijk moet elk puntje op het einde staan
+	Altijd de closure nemen van productieregel van niet-terminal waar het puntje voor staat. dus alle productieregels opnemen in toestand van die niet-terminal. Uiteindelijk moet elk puntje op het einde staan.
+	
+	\begin{figure}[ht]
+		\centering
+		\begin{tikzpicture}[state/.style={rectangle, draw, inner sep = 2mm}]
+		\node (1) [state] {$\begin{aligned}S' \mapsto& .S\$ \\ S \mapsto& .aBc\end{aligned}$};
+		\node (2) [state, right = 1.5cm of 1] {$S \mapsto S.\$$};
+		\node (3) [state, below = 1cm of 1] {$\begin{aligned}
+			S \mapsto& a.Bc \\
+			B \mapsto& .bB \\
+			B \mapsto& .b
+			\end{aligned}$};
+		\node (4) [state, right = 1.5cm of 3] {$\begin{aligned}
+			S \mapsto& aB.c
+			\end{aligned}$};
+		\node (7) [state, right = 1.5cm of 4] {$\begin{aligned}
+			S \mapsto& aBc.
+			\end{aligned}$};
+		\node (5) [state, below = 1cm of 3] {$\begin{aligned}
+			B \mapsto& b.B \\
+			B \mapsto& b. \\
+			B \mapsto& .bB \\
+			B \mapsto& .b
+			\end{aligned}$};
+		\node (6) [state, right = 1.5cm of 5] {$\begin{aligned}
+			B \mapsto& bB. 
+			\end{aligned}$};
+		
+		\draw [->] (1) -- node[yshift=0.25cm] {S} (2);
+		\draw [->] (1) -- node[xshift=0.25cm] {a} (3);
+		\draw [->] (3) -- node[yshift=0.25cm] {B} (4);
+		\draw [->] (3) -- node[xshift=0.25cm] {b} (5);
+		\draw [->] (4) -- node[yshift=0.25cm] {c} (7);
+		\draw [->] (5) -- node[yshift=0.25cm] {B} (6);
+		\path [->] (5) edge[loop left] node[yshift=0.25cm] {c} ();
+		
+		\node (label1) [anchor=north east, inner sep = 1pt] at (1.north east) {\textbf{1.}};
+		\node (label1) [anchor=north east, inner sep = 1pt] at (2.north east) {\textbf{2.}};
+		\node (label1) [anchor=north east, inner sep = 1pt] at (3.north east) {\textbf{3.}};
+		\node (label1) [anchor=north east, inner sep = 1pt] at (4.north east) {\textbf{4.}};
+		\node (label1) [anchor=north east, inner sep = 1pt] at (5.north east) {\textbf{5.}};
+		\node (label1) [anchor=north east, inner sep = 1pt] at (6.north east) {\textbf{6.}};
+		\node (label1) [anchor=north east, inner sep = 1pt] at (7.north east) {\textbf{7.}};
+		\end{tikzpicture}
+	\end{figure}
+
 	
 	\begin{table}[h]
 		\centering

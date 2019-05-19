@@ -23,8 +23,9 @@ $ docker run --rm -it -v "$(pwd)":/files tbesard/compilers:practx
 	After the container has launched, you can navigate to the correct directory with 
 	$$\texttt{cd files}$$
 	
-	You can edit these files on your local host machine, but it is recommended to edit in the container (see next section).
+	You can edit these files on your local host machine, but it is recommended to edit in the container (see section \ref{sec:install_nano}).
 	\section{Installing the nano editor}
+	\label{sec:install_nano}
 	Editing files on a Windows computer brings incompatibility with linux tools. It is recommended to install a text editor on the container.
 	\begin{lstlisting}
 $ apt-get update
@@ -165,38 +166,208 @@ void Lexer::error(const std::string &message) {
 	\end{lstlisting}
 	\chapter{Parsing}
 	\section{Setup}
-	The goal of this lab is to complete the implementation of a parser for the same C-like language we have worked with in the first lab. This will be realised with the Bison parser-generator tool in order to generate the BNF grammar that implements the rule of this language.
+	The goal of this lab is to complete the implementation of the parser for the same C-like language we have worked with in the first lab. This will be realised with the Bison parser-generator tool in order to generate the BNF grammar that implements the rule of this language.
 	
-	After mounting the image, configure the project using 
+	The grammar is to be processed by the Bison LALR(1) parser generator. A LALR parser, or Look-Ahead LR parser, parses a text according to a set of production rules specified by a formal grammar. The \textbf{LR} stands for \textbf{L}eft-to-right, \textbf{R}ightmost derivation. A left-to-right parser reads input text from left to right. Rightmost derivation always choses the rightmost nonterminal to rewrite. The (1) denotes one-token lookahead, which allows the parser to peek ahead at 1 input symbol before deciding how to parse earlier symbols. 
+	
+	After mounting the image (see section \ref{sec:using_docker}), configure the project using 
 	$$\texttt{cmake .}$$
 	This only need to be done once. To actaully compile the files, use
 	$$\texttt{make}$$
 	After compiling, a binary named \texttt{cheetah} will be created. This binary will visualize the AST of a source file in GraphViz DOT format. This DOT format can be rendered to a PNG.
 	$$\texttt{./cheetah ../test/dummy.c > dummy.dot \&\& dot -Tpng dummy.dot > dummy.png}$$ 
 	\section{Function call}
-	We will first implement the function call expression. The rule needs to produce an expression, and as such needs to be part of the \texttt{expr} production. A function call is represented by a \texttt{AST::CallExpr} object and the argument list is of type \texttt{AST::ExprList}. In \texttt{parser.y} we first add two new representations to the \texttt{\%union} clause.
+	We will first implement the function call expression. The rule needs to produce an expression, and as such needs to be part of the \texttt{expr} production. A function call is represented by a \texttt{AST::CallExpr} object and the argument list is of type \texttt{AST::ExprList}. In \texttt{parser.y}, we first add two new semantic values to the \texttt{\%union} clause.
 	\begin{lstlisting}
 %union {
 	...
-	...
 	AST::CallExpr *call_expr_t;
-	AST::ExprList *expr_list_t;
+	AST::ExprList *exprlist_t;
+	...
 }
 	\end{lstlisting}
-		These symbols also need to be classified as a nonterminal symbol.
+	These symbols also need to be classified as a nonterminal symbol.
 	\begin{lstlisting}
-%type <call_expr_t> func_call
-%type <expr_list_t> expr_list
+%type <call_expr_t> call
+%type <exprlist_t> call_args
 	\end{lstlisting}
+	
+Now we can create a rule for a function call. The first step is to add \texttt{call} to the \texttt{expr} rule.
+\begin{lstlisting}
+expr:
+	 	... {
+	 		...
+		}
+	| call
+	| ...
+\end{lstlisting}
+Now a \texttt{call} rule must be made. A function call consists of two parts: the function identifier and the optional argument list. The semantic value of this rule is a \texttt{AST::CallExpr} object. 
+\begin{lstlisting}
+call:
+	ident '(' call_args ')' {
+		$$ = new AST::CallExpr($1, *$3);
+		delete $3;
+	};
+\end{lstlisting}
+Consequently, a rule for \texttt{call\_args} must be made. There are three cases:
+\begin{enumerate}
+	\item The argument list is empty.
+	\item The argument list contains only one expression.
+	\item The argument list contains more than one expressions.
+\end{enumerate}
+
+In the first case, we can use the pseudo rule \texttt{\%empty} to indicate there is nothing. In the last case, we have to define a recursive rule that creates an expression list.  The function \texttt{Sema::ParseExprList()} is used which returns pointers to \texttt{AST::ExprList} objects.
+\begin{lstlisting}
+call_args:
+		%empty {
+			$$ = sema.ParseExprList();
+		}
+	|	expr {
+			$$ = sema.ParseExprList($1);
+		}
+	|   call_args ',' expr {
+			$$ = sema.ParseExprList($3, $1);
+		};
+\end{lstlisting}
+
 	\section{Literals}
+	The next step will take care of the rules for literals (integer, floating-point and string). These rules return an expression but require a semantic action to parse the token value to a semantic value. The \texttt{Sema} class does not contain such functions and have to be defined for the \texttt{IntLiteral} and \texttt{FloatLiteral} types in \texttt{semaexpr.cpp}.
+	\begin{lstlisting}
+AST::IntLiteral *Sema::ParseIntLiteral(const Location &Loc,
+                                       std::string IntToken){
+	return new AST::IntLiteral(atoi(IntToken.c_str()));
+}
+AST::FloatLiteral *Sema::ParseFloatLiteral(const Location &Loc,
+                                           std::string FloatToken){
+	return new AST::FloatLiteral(atof(FloatToken.c_str()));
+}
+AST::StringLiteral *Sema::ParseStringLiteral(const Location &Loc,
+                                             std::string StringToken){
+	// remove quotes " " around string
+	for(int i = 1; i < StringToken.size(); i++){
+		StringToken[i - 1] = StringToken[i];
+	}										
+	StringToken.resize(StringToken.size() - 2)
+	return new AST::StringLiteral(StringToken); 
+}
+	\end{lstlisting}
+Before rules will be created, we first add a new \texttt{literal} nonterminal symbol of type \texttt{expr\_t}.
+\begin{lstlisting}
+%type <expr_t> ... literal ...
+\end{lstlisting}
+This nonterminal is also added to the \texttt{expr} rule.
+\begin{lstlisting}
+expr:
+		... {
+			...
+		}
+	| call
+	| literal
+	| ...
+\end{lstlisting}
+
+Now the \texttt{literal} rule can be defined.
+\begin{lstlisting}
+literal:
+		INTEGER {
+			$$ = sema.ParseIntLiteral(@$, yytext(lexer));
+		}
+	|   FLOAT {
+			$$ = sema.ParseFloatLiteral(@$, yytext(lexer));
+		}
+	|	STRING {
+			$$ = sema.ParseStringLiteral(@$, yytext(lexer));
+		};
+\end{lstlisting}
 	\section{Operators}
+To allow operators to be parsed, it is neccesary to define the precedence rules first. The precedence list is defined in reverse order such that the lowest item in the list has the highest associativity. In the following example, the \texttt{EXP} is the most tightly bound, right-associative operator.
+\begin{lstlisting}
+%precedence EQUAL
+%nonassoc CEQ CNE CLT CLE CGT CGE
+%left PLUS MINUS
+%left MUL DIV MOD
+%precedence UNARY
+%right EXP
+\end{lstlisting}
+These rules do not need semantic actions, and as such can directly construct the relevent AST Nodes. All these rules are put in the \texttt{expr} rule.
+\begin{lstlisting}[basicstyle=\footnotesize]
+expr:
+		... {
+			...
+		}
+	| call
+	| literal
+	| expr CEQ expr          { $$ = new AST::BinaryOp($1, AST::Operator::CEQ,   $3); }
+	| expr CNE expr          { $$ = new AST::BinaryOp($1, AST::Operator::CNE,   $3); }
+	| expr CLT expr          { $$ = new AST::BinaryOp($1, AST::Operator::CLT,   $3); }
+	| expr CLE expr          { $$ = new AST::BinaryOp($1, AST::Operator::CLE,   $3); }
+	| expr CGT expr          { $$ = new AST::BinaryOp($1, AST::Operator::CGT,   $3); }
+	| expr CGE expr          { $$ = new AST::BinaryOp($1, AST::Operator::CGE,   $3); }
+	| expr PLUS expr         { $$ = new AST::BinaryOp($1, AST::Operator::PLUS,  $3); }
+	| expr MINUS expr        { $$ = new AST::BinaryOp($1, AST::Operator::MINUS, $3); }
+	| expr MUL expr          { $$ = new AST::BinaryOp($1, AST::Operator::MUL,   $3); }
+	| expr DIV expr          { $$ = new AST::BinaryOp($1, AST::Operator::DIV,   $3); }
+	| expr MOD expr          { $$ = new AST::BinaryOp($1, AST::Operator::MOD,   $3); }
+	| MINUS expr %prec UNARY { $$ = new AST::UnaryOp(     AST::Operator::MINUS, $2); }
+	| PLUS expr %prec UNARY  { $$ = new AST::UnaryOp(     AST::Operator::PLUS,  $2); }
+	| expr EXP expr          { $$ = new AST::BinaryOp($1, AST::Operator::EXP,   $3); }
+	;
+\end{lstlisting}
 	\section{Control flow}
+To make implementation easier, we first add new nonterminal symbols of type \texttt{stmt\_t}.
+\begin{lstlisting}
+%type <stmt_t> ... ifstmt whilestmt forstmt
+\end{lstlisting}
+
+The \texttt{stmt} rule can now be expanded with these three new symbols. We also define the \texttt{return} inline.
+\begin{lstlisting}
+stmt:
+	...
+	|	ifstmt
+	|	whilestmt
+	|	forstmt
+	|	RETURN expr ';' {
+			$$ = new AST::ReturnStmt($2);
+	 	}
+	|	RETURN ';' {
+			$$ = new AST::ReturnStmt();
+		}
+\end{lstlisting}
+Each of the other three statements is a rule on its own.
+\begin{lstlisting}
+ifstmt:
+		IF '(' expr ')' block {
+			$$ = new AST::IfStmt($3, $5);
+		}
+	|	IF '(' expr ')' block ELSE block {
+			$$ = new AST::IfStmt($3, $5, $7);
+		}
+
+whilestmt:
+		WHILE '(' expr ')' block {
+			$$ = new AST::WhileStmt($3, $5);
+		}
+		
+forstmt:
+		FOR '(' forinit ';' expr ';' expr ')' block {
+			$$ = new AST::ForStmt($<stmt_t>3, $5, $7, $9);
+		}
+forinit:
+		var_decl {
+			$<stmt_t>$ = new AST::DeclStmt($1);
+		}
+	| 	expr {
+			$<stmt_t>$ = $1;
+		}
+\end{lstlisting}
 	
 	\chapter{Code Generation}
 	\section{Setup}
 	Run a docker container and configure the project with CMake.
 	\begin{lstlisting}
-$ docker run --rm -it -v "$(pwd)":/files tbesard/compilers:pract3
+$ docker run --rm -it  --cap-add=SYS_PTRACE 
+             --security-opt seccomp=unconfined
+             -v "$(pwd)":/files tbesard/compilers:pract3
 $ cd /files
 $ cmake .
 	\end{lstlisting}
@@ -209,6 +380,10 @@ main:
 	popq	%rax
 	...
 	\end{lstlisting}
+	It is also possible to write this to a file:
+\begin{lstlisting}
+$ ./cheetah -o test/dummy.S test/dummy.c
+\end{lstlisting}
 	Een executable aanmaken kan met \texttt{make dummy}, of als je alle testen wilt compileren kan je \texttt{make test} gebruiken.
 	
 	\section{Debugging}
@@ -216,7 +391,6 @@ main:
 	\begin{lstlisting}
 $ gdb ./test/dummy
 (gdb) run
-
 	\end{lstlisting}
 	
 	\section{Compiler infrastructure}
@@ -262,11 +436,14 @@ $ gdb ./test/dummy
 	\begin{itemize}
 		\item \textbf{emit and store arguments}
 		\begin{lstlisting}
+int j = 0;
 for (size_t i = 0; i < argc; i++){
 	args[i]->emit(prog)
+	prog << Instruction{"popq", {param_regs[j]}};
+	j++;
 }
 		\end{lstlisting}
-		Remember that this is a method of the class \texttt{CallExpr}, so we can use the attributes \texttt{args} and \texttt{name} of this class. The attribute \texttt{args} is of type \texttt{ExprList}, which can contain pointers to various expression types such as \texttt{FloatLiteral} or \texttt{Assignment} (see \texttt{expr.hpp}). We will simply call the emit method for each \texttt{Expr} in this list.
+		Remember that this is a method of the class \texttt{CallExpr}, so we can use the attributes \texttt{args} and \texttt{name} of this class. The attribute \texttt{args} is of type \texttt{ExprList}, which can contain pointers to various expression types such as \texttt{FloatLiteral} or \texttt{Assignment} (see \texttt{expr.hpp}). First we call the emit method for each \texttt{Expr} in this list. Afterwards the value gets put into the predefined parameter registers.
 		
 		\item \textbf{generate a call}
 		\begin{lstlisting}
@@ -277,12 +454,12 @@ prog << Instruction{"call", {name->string}};
 		\item \textbf{return a value}
 		\begin{lstlisting}
 if(std::get<0>(decl) == T_void){
-	prog << Instruction{"pushq", {"0xABCDEF"}, "void return value"}
+	prog << Instruction{"pushq", {"$0xABCDEF"}};
 } else if(std::get<0>(decl) == T_int){
-
+	prog << Instruction{"pushq", {"%rax"}};
 }
 		\end{lstlisting}
-		Our language only has two possible return types: \texttt{void} and \texttt{int}. 
+		Our language only has two possible return types: \texttt{void} and \texttt{int}. Because we implement the compiler as a stack machine, we also have to put a void sentinel value on the stack, which is \texttt{\$0xABCDEF}. For an integer value we just push the return value on the stack.
 	\end{itemize}
 
 	\subsection{Function Declarations}
@@ -291,15 +468,117 @@ if(std::get<0>(decl) == T_void){
 		\item \textbf{The function prologue}:
 		\begin{itemize}
 			\item save callee-saved registers
+			\begin{lstlisting}
+for(const std::string& s : callee_saved_regs){
+	prog << Instruction{"pushq", {s}};
+}
+			\end{lstlisting}
 			\item set the base pointer
+			\begin{lstlisting}
+prog << Instruction{"pushq", {"%rbp"}};
+prog << Instruction{"movq", {"%rsp", "%rbp"}};
+			\end{lstlisting}
 			\item align the stack pointer by 16 bytes
+			\begin{lstlisting}
+prog << Instruction{"subq", {"$16", "%rsp"}};
+			\end{lstlisting}
 		\end{itemize}
 		\item \textbf{The function epilogue}:
 		\begin{itemize}
 			\item restore the stack pointer
+			\begin{lstlisting}
+prog << Instruction{"movq", {"%rbp", "%rsp"}};
+prog << Instruction{"pushq", {"%rbp"}};
+			\end{lstlisting}
 			\item restore callee-saved registers
+			\begin{lstlisting}
+for(int i = callee_saved_regs.size() - 1; i >=0 ; i--){
+	prog << Instruction{"popq", {callee_saved_regs[i]}};
+}
+			\end{lstlisting}
 		\end{itemize}
 	\end{itemize}
+\chapter{Compiler transformation at LLVM IR level}	
+
+\section{Setup}
+
+\section{Introduction to LLVM bitcode}
+\begin{itemize}
+	\item LLVM intermediate representation is a low-level Static Single Assignment representation.
+	\item Code is grouped in \textit{basic blocks}.
+	\begin{itemize}
+		\item Control flow within the application can only change at the boundaries of basic blocks.
+		\item Each basic block has to be terminated with an instruction directing control flow.
+		\item These instructions are derived from the \texttt{TerminatorInst} super class.
+	\end{itemize}
+	\item To modify the IR:
+	\begin{itemize}
+		\item \texttt{BasicBlocks::Create} adds new basic blocks to a function.
+		\item \texttt{Value::replaceAllUsesWith} changes the value of the \texttt{Value} object.
+		\item For more complex operations, use the \texttt{IRBuilder} class which points at a location in the IR. The \texttt{IRBuilder::Create} method inserts code after this location.
+	\end{itemize}
+	\item Each LLVM object has a \texttt{dump()} method which is very handy for debugging purposes.
+\end{itemize}
+\section{Array accesses in LLVM}
+\begin{itemize}
+	\item Goal of this lab:
+	\begin{itemize}
+		\item Prevent out of bounds crashes.
+		\item Display a message to the user when such an error occurs.
+	\end{itemize}
+\end{itemize}
+\section{Protecting array accesses}
+The operands of \texttt{getelementptr} instruction:
+\begin{itemize}
+	\item A base pointer containing the memory address of the array;
+	\item An index stepping in terms of the base pointer;
+	\item An index stepping in terms of pointer elements.
+\end{itemize}
+
+
+\section{Implementation}
+\subsection{Decode array accesses}
+The first step is to determine which array index is accessed. For every \texttt{getelementptr} instruction we which to analyse if the indexing is out of bounds or not. First the whole source is iterated to find such instructions:
+\begin{lstlisting}
+std::list<GetElementPtrInst *> WorkList;
+for(auto &FI : F)
+	for(auto &BI : FI)
+		if(auto *GEP = dyn_cast<GetElementPtrInst>(&BI))
+			WorkList.push_back(GEP);
+\end{lstlisting}
+
+Now every instruction can be iterated and some basic information can be gathered, such as the number of elements of the array:
+\begin{lstlisting}
+for(auto *GEP : WorkList){
+	ArrayType* array = (ArrayType*) GEP->getSourceElement();
+	uint64_t numOfElements = array->getNumElements();
 	
- 
+	// implement checks
+}
+\end{lstlisting}
+The further implementation of the checks are discussed in the following sections.
+\subsubsection{Constant Integer Expressions}
+We first start with constant integer expressions and make a test file called \texttt{constant\_indices.c}:
+\begin{lstlisting}
+int foo[10];
+foo[5] = 1;
+foo[0] = 1;
+foo[10] = 1;
+\end{lstlisting}
+We create an array that can hold 10 integers. The first two indexing operations are valid while the last one is invalid. Constant expressions can be evaluated at compile time so we can abort the compilation prematurely here. 
+
+\begin{lstlisting}
+if(GEP->hasAllConstantIndices()){
+	User::const_op_iterator indices = GEP->idx_begin() + 1;
+	Value* iVal = indices->get();
+	ConstantInt* integer = (ConstantInt*) iVal;
+	accessIndex = integer->getValue()->getLimitedValue();
+	if(accessIndex >= numOfElements){
+		report_fatal_error(...);
+	}
+}
+\end{lstlisting}
+
 \end{document}
+
+

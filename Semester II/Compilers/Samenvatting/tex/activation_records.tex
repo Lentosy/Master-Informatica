@@ -44,7 +44,7 @@ val w = j(7)
 		\item Lokale variabelen zijn niet altijd geïnitialiseerd.
 		\item Ook al zijn de variabele gepushed, is er nog steeds random access nodig.
 	\end{itemize}  
-	\item \textbf{Oplossing:} De stack als een array beschouwen met een speciaal register - de stack pointer. Elke lokatie na de stack poitner is rommel, alles ervoor is gealloceerd.
+	\item \textbf{Oplossing:} De stack als een array beschouwen met een speciaal register - de stack pointer. Elke lokatie na de stack pointer is rommel, alles ervoor is gealloceerd.
 	\item Het gebied op de stack voor een functie $f$ die zijn lokale variabelen, parameters, returnadres en andere temporaries bevat wordt een \textbf{activation record} of \textbf{stack frame} genoemd.
 \end{itemize}
 
@@ -57,7 +57,7 @@ Wat is het verschill tussen een caller-safed register en een callee-saved regist
 		CALL	F
 		MUL		R4, R1, R7 // R4 = R1 * R7
 		\end{lstlisting}
-		Gaat F de waarde R1 overschrijven of niet? Als dit onbepaald is het geen geldige code. Een Calee-safed register is de restrictie dat F deze waarde niet mag aanpassen. Een caller-safed register legt de restrictie op aan de caller van F. De assembly moet dan uitgebreidt worden:
+		Gaat F de waarde R1 overschrijven of niet? Als dit onbepaald is, is het geen geldige code. Een callee-saved register is de restrictie dat F deze waarde niet kan aanpassen. Een caller-safed register legt de restrictie op aan de caller van F. De assembly moet dan uitgebreidt worden:
 		\begin{lstlisting}
 		ADD		R1, R2, R3
 		ST		R1, SP[...] // store R1 
