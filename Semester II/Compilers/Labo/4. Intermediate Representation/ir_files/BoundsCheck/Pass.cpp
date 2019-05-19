@@ -18,7 +18,7 @@ using namespace llvm;
 
 
 namespace {
-    // FunctionPass operators on a function at a time
+    // FunctionPass operates on a single function at a time
     struct BoundsCheck : public FunctionPass {
         public:
             static char ID; // PassID
@@ -43,8 +43,6 @@ namespace {
                     Assert = getAssertFunction(F.getParent());
                 
                     
-
-                
                 // A getelementptr instruction is used to get the address of a subelement of an aggregate data structure (arrays, structs)
                 // It performs address calculation only and does not access memory
                 // getelementptr       <ty>,       <ty>* <ptrval> {, [inrange] <ty> <idx>}*
@@ -90,7 +88,7 @@ namespace {
                     uint64_t accessIndex = 4; // the index that is used to access the array
 
                     
-                    // Case 1 : all indices are known at compile time
+                    // Case 1 : Constant indices are used, this will result in a compiler error if index is out of bounds
                     if(GEP->hasAllConstantIndices()){
                         LLVM_DEBUG(dbgs() << "BoundsCheck\tall the indices are constant" << "\n");
                         User::const_op_iterator indices = GEP->idx_begin() + 1; // skip first index ( see explanation above about getelementptr )
@@ -108,54 +106,58 @@ namespace {
                             reason << "Index out of bounds (line " << line << ", column " << column <<  ")\n\tIndex: " << accessIndex << "\n\tMax: " << numOfElements - 1 << "\n";
                             report_fatal_error(reason.str());
                         }
+                    // Case 2 : Variables are used, this will result in a runtime error if index is out of bounds
                     } else {
 
-                        // Divide the main parent block into three blocks
+
                         BasicBlock* parent = GEP->getParent();
                         // Split the block at the getelementptrinst so that the 'cont' block keeps this instruction and the following instructions
                         BasicBlock* cont = parent->splitBasicBlock(GEP->getIterator(), "cont");
-                        // Create a trap block which consists of an assert call and an "unreachable instruction"
+                        
                         BasicBlock* trap = BasicBlock::Create(context, "trap", &F);
                         
-                        //std::vector<Value *, 3> argVector; 
-                        //ArrayRef<Value *> args;
-                        //CallInst* assertCall = CallInst::Create(Assert, args);
-                        //trap->getInstList().push_back(assertCall);
-                        trap->getInstList().push_back(new UnreachableInst(context));
+                        //*** TRAP BLOCK ***//
+                        {
+                            // Create a trap block which consists of an assert call and an "unreachable instruction"    
+                            
+                            std::vector<Value *> argVector(3); // the vector which will contain the parameters
+                            ArrayRef<Constant *> c;
 
-                        
-                         // set insertion point to be before the terminator. This is where we will insert new code
+                            //TODO: ervoor zorgen dat de eerste twee pointers zijn naar een char, niet naar null
+                            argVector[0] = ConstantPointerNull::get(Type::getInt8PtrTy(context));
+                            argVector[1] = ConstantPointerNull::get(Type::getInt8PtrTy(context));
+                            argVector[2] = ConstantInt::get(Type::getInt32Ty(context), line);
+                            FunctionType* assertType = Assert->getFunctionType();
+                            for(int i = 0; i < argVector.size(); i++){
+                                assert(assertType->getParamType(i)->getTypeID() == argVector[i]->getType()->getTypeID());
+                            }
+                            // The CallInst Create method needs an ArrayRef object instead of a vector, but it accepts a vector as argument
+                            ArrayRef<Value *> args(argVector);
+                            CallInst* assertCall = CallInst::Create(Assert, args);
+                            trap->getInstList().push_back(assertCall);
+                            trap->getInstList().push_back(new UnreachableInst(context));                         
+                        }
+                        //*** END TRAP BLOCK ***//
 
+                        // set insertion point to be before the terminator. This is where we will insert new code
                         TerminatorInst* branchInstruction = parent->getTerminator();
                         Builder.SetInsertPoint(branchInstruction);
 
-                        // Get the value which holds the index value
-                        // the compare instruction expects two values of same type, to get the array size as a load instruction, we first have to allocate the neccesary
-                        // space, store the actaul number, and then load it
-                        AllocaInst* allocateArraySize = new AllocaInst(Type::getInt32Ty(context), 0);
                         ConstantInt* bounds = ConstantInt::get(IntegerType::get(context, 32), numOfElements);
-                        StoreInst* storeArraySize = new StoreInst(bounds, allocateArraySize);
-                        LoadInst* loadArraySize = new LoadInst(allocateArraySize);
-                        Builder.Insert(allocateArraySize);
-                        Builder.Insert(storeArraySize);
-                        Builder.Insert(loadArraySize);
-
                         Value *iVal = (GEP->idx_begin() + 1)->get();
+
                         LoadInst* loadInstructionArrayIndex = (LoadInst*)iVal;
-                                                
-                        ICmpInst* compareInstruction = new ICmpInst(ICmpInst::ICMP_SGE, loadInstructionArrayIndex, loadArraySize);
+
+                        ICmpInst* compareInstruction = new ICmpInst(ICmpInst::ICMP_SGE, (Value*)loadInstructionArrayIndex, (Value*)bounds);
 
                         Builder.Insert(compareInstruction);
                         ReplaceInstWithInst(branchInstruction, BranchInst::Create(trap,cont,compareInstruction));
-                        //branchInstruction->replaceAllUsesWith(BranchInst::Create(trap,cont,compareInstruction));
 
-                        trap->dump();
-                        cont->dump();              
-                        parent->dump();
-
+                        
+                        //F.dump();              
+                     
                         Changed = true;
                     }
-
                 }
                 return Changed;
             }
@@ -183,7 +185,6 @@ namespace {
                 F->setCallingConv(CallingConv::C);
                 return F;
             }
-
     };
 }
 

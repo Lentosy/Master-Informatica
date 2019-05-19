@@ -86,22 +86,19 @@ for.body3:                                        ; preds = %for.cond2
   %13 = srem i32 %12, 32768, !dbg !33
   store i32 %13, i32* %rand, !dbg !34
   %14 = load i32, i32* %j, !dbg !35
-  %15 = alloca i32, !dbg !35
-  store i32 512, i32* %15, !dbg !35
-  %16 = load i32, i32* %15, !dbg !35
-  %17 = icmp sge i32 %14, %16, !dbg !35
-  br i1 %17, label %trap, label %cont, !dbg !35
+  %15 = icmp sge i32 %14, 512, !dbg !35
+  br i1 %15, label %trap, label %cont, !dbg !35
 
 cont:                                             ; preds = %for.body3
-  %18 = getelementptr [512 x i32], [512 x i32]* %numbers, i32 0, i32 %14, !dbg !35
-  %19 = load i32, i32* %rand, !dbg !36
-  store i32 %19, i32* %18, !dbg !37
+  %16 = getelementptr [512 x i32], [512 x i32]* %numbers, i32 0, i32 %14, !dbg !35
+  %17 = load i32, i32* %rand, !dbg !36
+  store i32 %17, i32* %16, !dbg !37
   br label %for.inc4, !dbg !37
 
 for.inc4:                                         ; preds = %cont
-  %20 = load i32, i32* %j, !dbg !38
-  %21 = add i32 %20, 1, !dbg !38
-  store i32 %21, i32* %j, !dbg !39
+  %18 = load i32, i32* %j, !dbg !38
+  %19 = add i32 %18, 1, !dbg !38
+  store i32 %19, i32* %j, !dbg !39
   br label %for.cond2, !dbg !39
 
 for.end5:                                         ; preds = %for.cond2
@@ -109,9 +106,9 @@ for.end5:                                         ; preds = %for.cond2
   br label %while.cond, !dbg !41
 
 while.cond:                                       ; preds = %for.end10, %for.end5
-  %22 = load i32, i32* %switches, !dbg !42
-  %23 = icmp sgt i32 %22, 0, !dbg !42
-  br i1 %23, label %while.body, label %while.end, !dbg !42
+  %20 = load i32, i32* %switches, !dbg !42
+  %21 = icmp sgt i32 %20, 0, !dbg !42
+  br i1 %21, label %while.body, label %while.end, !dbg !42
 
 while.body:                                       ; preds = %while.cond
   store i32 0, i32* %switches, !dbg !43
@@ -125,77 +122,65 @@ for.init6:                                        ; preds = %while.body
   br label %for.cond7, !dbg !46
 
 for.cond7:                                        ; preds = %for.inc9, %for.init6
-  %24 = load i32, i32* %j, !dbg !47
-  %25 = load i32, i32* %n, !dbg !48
-  %26 = sub i32 %25, 1, !dbg !48
-  %27 = icmp slt i32 %24, %26, !dbg !47
-  br i1 %27, label %for.body8, label %for.end10, !dbg !47
+  %22 = load i32, i32* %j, !dbg !47
+  %23 = load i32, i32* %n, !dbg !48
+  %24 = sub i32 %23, 1, !dbg !48
+  %25 = icmp slt i32 %22, %24, !dbg !47
+  br i1 %25, label %for.body8, label %for.end10, !dbg !47
 
 for.body8:                                        ; preds = %for.cond7
-  %28 = load i32, i32* %j, !dbg !49
-  %29 = alloca i32, !dbg !49
-  store i32 512, i32* %29, !dbg !49
-  %30 = load i32, i32* %29, !dbg !49
-  %31 = icmp sge i32 %28, %30, !dbg !49
-  br i1 %31, label %trap2, label %cont1, !dbg !49
+  %26 = load i32, i32* %j, !dbg !49
+  %27 = icmp sge i32 %26, 512, !dbg !49
+  br i1 %27, label %trap2, label %cont1, !dbg !49
 
 cont1:                                            ; preds = %for.body8
-  %32 = getelementptr [512 x i32], [512 x i32]* %numbers, i32 0, i32 %28, !dbg !49
-  %33 = load i32, i32* %32, !dbg !50
-  store i32 %33, i32* %a, !dbg !51
-  %34 = load i32, i32* %j, !dbg !52
-  %35 = add i32 %34, 1, !dbg !52
-  %36 = alloca i32, !dbg !52
-  store i32 512, i32* %36, !dbg !52
-  %37 = load i32, i32* %36, !dbg !52
-  %38 = icmp sge i32 %35, %37, !dbg !52
-  br i1 %38, label %trap4, label %cont3, !dbg !52
+  %28 = getelementptr [512 x i32], [512 x i32]* %numbers, i32 0, i32 %26, !dbg !49
+  %29 = load i32, i32* %28, !dbg !50
+  store i32 %29, i32* %a, !dbg !51
+  %30 = load i32, i32* %j, !dbg !52
+  %31 = add i32 %30, 1, !dbg !52
+  %32 = icmp sge i32 %31, 512, !dbg !52
+  br i1 %32, label %trap4, label %cont3, !dbg !52
 
 cont3:                                            ; preds = %cont1
-  %39 = getelementptr [512 x i32], [512 x i32]* %numbers, i32 0, i32 %35, !dbg !52
-  %40 = load i32, i32* %39, !dbg !53
-  store i32 %40, i32* %b, !dbg !54
-  %41 = load i32, i32* %b, !dbg !55
-  %42 = load i32, i32* %a, !dbg !56
-  %43 = icmp slt i32 %41, %42, !dbg !55
-  br i1 %43, label %if.then, label %if.else, !dbg !55
+  %33 = getelementptr [512 x i32], [512 x i32]* %numbers, i32 0, i32 %31, !dbg !52
+  %34 = load i32, i32* %33, !dbg !53
+  store i32 %34, i32* %b, !dbg !54
+  %35 = load i32, i32* %b, !dbg !55
+  %36 = load i32, i32* %a, !dbg !56
+  %37 = icmp slt i32 %35, %36, !dbg !55
+  br i1 %37, label %if.then, label %if.else, !dbg !55
 
 for.inc9:                                         ; preds = %if.end
-  %44 = load i32, i32* %j, !dbg !57
-  %45 = add i32 %44, 1, !dbg !57
-  store i32 %45, i32* %j, !dbg !45
+  %38 = load i32, i32* %j, !dbg !57
+  %39 = add i32 %38, 1, !dbg !57
+  store i32 %39, i32* %j, !dbg !45
   br label %for.cond7, !dbg !45
 
 for.end10:                                        ; preds = %for.cond7
   br label %while.cond, !dbg !45
 
 if.then:                                          ; preds = %cont3
-  %46 = load i32, i32* %switches, !dbg !58
-  %47 = add i32 %46, 1, !dbg !58
-  store i32 %47, i32* %switches, !dbg !59
-  %48 = load i32, i32* %j, !dbg !60
-  %49 = alloca i32, !dbg !60
-  store i32 512, i32* %49, !dbg !60
-  %50 = load i32, i32* %49, !dbg !60
-  %51 = icmp sge i32 %48, %50, !dbg !60
-  br i1 %51, label %trap6, label %cont5, !dbg !60
+  %40 = load i32, i32* %switches, !dbg !58
+  %41 = add i32 %40, 1, !dbg !58
+  store i32 %41, i32* %switches, !dbg !59
+  %42 = load i32, i32* %j, !dbg !60
+  %43 = icmp sge i32 %42, 512, !dbg !60
+  br i1 %43, label %trap6, label %cont5, !dbg !60
 
 cont5:                                            ; preds = %if.then
-  %52 = getelementptr [512 x i32], [512 x i32]* %numbers, i32 0, i32 %48, !dbg !60
-  %53 = load i32, i32* %b, !dbg !61
-  store i32 %53, i32* %52, !dbg !62
-  %54 = load i32, i32* %j, !dbg !63
-  %55 = add i32 %54, 1, !dbg !63
-  %56 = alloca i32, !dbg !63
-  store i32 512, i32* %56, !dbg !63
-  %57 = load i32, i32* %56, !dbg !63
-  %58 = icmp sge i32 %55, %57, !dbg !63
-  br i1 %58, label %trap8, label %cont7, !dbg !63
+  %44 = getelementptr [512 x i32], [512 x i32]* %numbers, i32 0, i32 %42, !dbg !60
+  %45 = load i32, i32* %b, !dbg !61
+  store i32 %45, i32* %44, !dbg !62
+  %46 = load i32, i32* %j, !dbg !63
+  %47 = add i32 %46, 1, !dbg !63
+  %48 = icmp sge i32 %47, 512, !dbg !63
+  br i1 %48, label %trap8, label %cont7, !dbg !63
 
 cont7:                                            ; preds = %cont5
-  %59 = getelementptr [512 x i32], [512 x i32]* %numbers, i32 0, i32 %55, !dbg !63
-  %60 = load i32, i32* %a, !dbg !64
-  store i32 %60, i32* %59, !dbg !65
+  %49 = getelementptr [512 x i32], [512 x i32]* %numbers, i32 0, i32 %47, !dbg !63
+  %50 = load i32, i32* %a, !dbg !64
+  store i32 %50, i32* %49, !dbg !65
   br label %if.end, !dbg !65
 
 if.else:                                          ; preds = %cont3
@@ -209,46 +194,40 @@ for.init11:                                       ; preds = %for.end
   br label %for.cond12, !dbg !66
 
 for.cond12:                                       ; preds = %for.inc14, %for.init11
-  %61 = load i32, i32* %j, !dbg !67
-  %62 = load i32, i32* %n, !dbg !68
-  %63 = sub i32 %62, 1, !dbg !68
-  %64 = icmp slt i32 %61, %63, !dbg !67
-  br i1 %64, label %for.body13, label %for.end15, !dbg !67
+  %51 = load i32, i32* %j, !dbg !67
+  %52 = load i32, i32* %n, !dbg !68
+  %53 = sub i32 %52, 1, !dbg !68
+  %54 = icmp slt i32 %51, %53, !dbg !67
+  br i1 %54, label %for.body13, label %for.end15, !dbg !67
 
 for.body13:                                       ; preds = %for.cond12
-  %65 = load i32, i32* %j, !dbg !69
-  %66 = alloca i32, !dbg !69
-  store i32 512, i32* %66, !dbg !69
-  %67 = load i32, i32* %66, !dbg !69
-  %68 = icmp sge i32 %65, %67, !dbg !69
-  br i1 %68, label %trap10, label %cont9, !dbg !69
+  %55 = load i32, i32* %j, !dbg !69
+  %56 = icmp sge i32 %55, 512, !dbg !69
+  br i1 %56, label %trap10, label %cont9, !dbg !69
 
 cont9:                                            ; preds = %for.body13
-  %69 = getelementptr [512 x i32], [512 x i32]* %numbers, i32 0, i32 %65, !dbg !69
-  %70 = load i32, i32* %69, !dbg !70
-  %71 = load i32, i32* %j, !dbg !71
-  %72 = add i32 %71, 1, !dbg !71
-  %73 = alloca i32, !dbg !71
-  store i32 512, i32* %73, !dbg !71
-  %74 = load i32, i32* %73, !dbg !71
-  %75 = icmp sge i32 %72, %74, !dbg !71
-  br i1 %75, label %trap12, label %cont11, !dbg !71
+  %57 = getelementptr [512 x i32], [512 x i32]* %numbers, i32 0, i32 %55, !dbg !69
+  %58 = load i32, i32* %57, !dbg !70
+  %59 = load i32, i32* %j, !dbg !71
+  %60 = add i32 %59, 1, !dbg !71
+  %61 = icmp sge i32 %60, 512, !dbg !71
+  br i1 %61, label %trap12, label %cont11, !dbg !71
 
 cont11:                                           ; preds = %cont9
-  %76 = getelementptr [512 x i32], [512 x i32]* %numbers, i32 0, i32 %72, !dbg !71
-  %77 = load i32, i32* %76, !dbg !72
-  %78 = icmp sgt i32 %70, %77, !dbg !70
-  br i1 %78, label %if.then16, label %if.else17, !dbg !70
+  %62 = getelementptr [512 x i32], [512 x i32]* %numbers, i32 0, i32 %60, !dbg !71
+  %63 = load i32, i32* %62, !dbg !72
+  %64 = icmp sgt i32 %58, %63, !dbg !70
+  br i1 %64, label %if.then16, label %if.else17, !dbg !70
 
 for.inc14:                                        ; preds = %if.end18
-  %79 = load i32, i32* %j, !dbg !73
-  %80 = add i32 %79, 1, !dbg !73
-  store i32 %80, i32* %j, !dbg !74
+  %65 = load i32, i32* %j, !dbg !73
+  %66 = add i32 %65, 1, !dbg !73
+  store i32 %66, i32* %j, !dbg !74
   br label %for.cond12, !dbg !74
 
 for.end15:                                        ; preds = %for.cond12
-  %81 = load i32, i32* %sorted, !dbg !75
-  call void @echo(i32 %81), !dbg !75
+  %67 = load i32, i32* %sorted, !dbg !75
+  call void @echo(i32 %67), !dbg !75
   ret i32 0
 
 if.then16:                                        ; preds = %cont11
@@ -262,24 +241,31 @@ if.end18:                                         ; preds = %if.else17, %if.then
   br label %for.inc14, !dbg !76
 
 trap:                                             ; preds = %for.body3
+  call void (i8*, i8*, i32, ...) @__assert(i8* null, i8* null, i32 24)
   unreachable
 
 trap2:                                            ; preds = %for.body8
+  call void (i8*, i8*, i32, ...) @__assert(i8* null, i8* null, i32 33)
   unreachable
 
 trap4:                                            ; preds = %cont1
+  call void (i8*, i8*, i32, ...) @__assert(i8* null, i8* null, i32 34)
   unreachable
 
 trap6:                                            ; preds = %if.then
+  call void (i8*, i8*, i32, ...) @__assert(i8* null, i8* null, i32 37)
   unreachable
 
 trap8:                                            ; preds = %cont5
+  call void (i8*, i8*, i32, ...) @__assert(i8* null, i8* null, i32 38)
   unreachable
 
 trap10:                                           ; preds = %for.body13
+  call void (i8*, i8*, i32, ...) @__assert(i8* null, i8* null, i32 47)
   unreachable
 
 trap12:                                           ; preds = %cont9
+  call void (i8*, i8*, i32, ...) @__assert(i8* null, i8* null, i32 47)
   unreachable
 }
 

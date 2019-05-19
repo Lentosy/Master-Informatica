@@ -37,12 +37,24 @@ entry:
   %0 = load i32, i32* %a, !dbg !12
   %1 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %0, !dbg !12
   store i32 1, i32* %1, !dbg !13
-  %2 = load i32, i32* %b, !dbg !14
+  %2 = load i32, i32* %a, !dbg !14
   %3 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %2, !dbg !14
-  store i32 1, i32* %3, !dbg !15
-  %4 = load i32, i32* %c, !dbg !16
-  %5 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %4, !dbg !16
-  store i32 1, i32* %5, !dbg !17
+  %4 = load i32, i32* %3, !dbg !15
+  call void @echo(i32 %4), !dbg !15
+  %5 = load i32, i32* %b, !dbg !16
+  %6 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %5, !dbg !16
+  store i32 1, i32* %6, !dbg !17
+  %7 = load i32, i32* %b, !dbg !18
+  %8 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %7, !dbg !18
+  %9 = load i32, i32* %8, !dbg !19
+  call void @echo(i32 %9), !dbg !19
+  %10 = load i32, i32* %c, !dbg !20
+  %11 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %10, !dbg !20
+  store i32 1, i32* %11, !dbg !21
+  %12 = load i32, i32* %c, !dbg !22
+  %13 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %12, !dbg !22
+  %14 = load i32, i32* %13, !dbg !23
+  call void @echo(i32 %14), !dbg !23
   ret i32 0
 }
 
@@ -65,7 +77,13 @@ attributes #0 = { nounwind }
 !11 = !DILocation(line: 4, column: 1, scope: !4)
 !12 = !DILocation(line: 5, column: 5, scope: !4)
 !13 = !DILocation(line: 5, column: 1, scope: !4)
-!14 = !DILocation(line: 6, column: 5, scope: !4)
-!15 = !DILocation(line: 6, column: 1, scope: !4)
+!14 = !DILocation(line: 6, column: 10, scope: !4)
+!15 = !DILocation(line: 6, column: 6, scope: !4)
 !16 = !DILocation(line: 7, column: 5, scope: !4)
 !17 = !DILocation(line: 7, column: 1, scope: !4)
+!18 = !DILocation(line: 8, column: 10, scope: !4)
+!19 = !DILocation(line: 8, column: 6, scope: !4)
+!20 = !DILocation(line: 9, column: 5, scope: !4)
+!21 = !DILocation(line: 9, column: 1, scope: !4)
+!22 = !DILocation(line: 10, column: 10, scope: !4)
+!23 = !DILocation(line: 10, column: 6, scope: !4)

@@ -31,18 +31,16 @@ entry:
   %foo = alloca [10 x i32], !dbg !9
   store i32 10, i32* %n, !dbg !10
   %0 = load i32, i32* %n, !dbg !11
-  %1 = alloca i32, !dbg !11
-  store i32 10, i32* %1, !dbg !11
-  %2 = load i32, i32* %1, !dbg !11
-  %3 = icmp sge i32 %0, %2, !dbg !11
-  br i1 %3, label %trap, label %cont, !dbg !11
+  %1 = icmp sge i32 %0, 10, !dbg !11
+  br i1 %1, label %trap, label %cont, !dbg !11
 
 cont:                                             ; preds = %entry
-  %4 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %0, !dbg !11
-  store i32 5, i32* %4, !dbg !12
+  %2 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %0, !dbg !11
+  store i32 5, i32* %2, !dbg !12
   ret i32 0
 
 trap:                                             ; preds = %entry
+  call void (i8*, i8*, i32, ...) @__assert(i8* null, i8* null, i32 4)
   unreachable
 }
 
