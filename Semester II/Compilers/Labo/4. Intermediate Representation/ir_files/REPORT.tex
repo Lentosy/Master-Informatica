@@ -12,6 +12,7 @@
 \begin{document}
 	\maketitle
 	\tableofcontents
+	
 	\section{Introduction}
 	This report describes the performance of three different \texttt{IR} representations of a single \texttt{C} program, \texttt{bubble\_sort.c}. The first \texttt{IR} representation is the standard representation without a function pass. The second implementation modifies the \texttt{IR} by applying bound checking using branch instructions for each \texttt{getelementptr} instruction. The third representation also applies bound checking, but with an extra optimalisation: 
 	
@@ -42,11 +43,9 @@ The second array indexing on line 4 should result in a runtime error. The origin
 	\section{Analysis}
 	Using the method above, a program that contains $n$ \texttt{getelementptr} instructions will contain $2n$ extra basic blocks, $n$ extra \texttt{icmp} instructions and $n$ extra \texttt{br} instructions. To measure the impact of these extra instructions and basic blocks, the program \texttt{bubble\_sort.c} is executed 30 times for both representations. Afterwards, average statistics such as runtime can be calculated for each representation. It can be assumed that inserting more code to perform the runtime bounds checking will increase performance overhead. Indeed, the average runtime for the original and modified representation is respectively \texttt{2758 ms} and \texttt{3141 ms}, resulting in a 13\% increase for the modified version. This has a straightforward explanation: each \texttt{getelementptr} is preceded by a \texttt{icmp} and \texttt{br} instruction. To explain this, we consider line 33 of \texttt{bubble\_sort.c}, which contains the following code:
 	$$\texttt{a = numbers[j]}$$
-	The value of the $j$ variable resides in the \texttt{\%rax} register. The generated assembly code is shown on figure \ref{fig:machine_code}. This shows a straightforward
-	
-	
-	
-	The first instruction is a \texttt{cmp} instruction, which compares the array size to the index value. The second instruction is a \texttt{jg} instruction, which jumps to its corresponding \texttt{trap} block. A third instruction is \texttt{cltq}, which converts the value in the \texttt{EAX} register from a long (4 bytes) to a quad (8 bytes). This conversion is neccesary because the register \texttt{EAX} is used to hold 
+ 	The generated assembly code is shown on figure \ref{fig:machine_code}. This shows how the value of $j$, which resides at an offset of $4$ bytes from the base pointer, is put in the \texttt{\%RAX} register. Then the array \texttt{numbers} is accessed by calculating the correct address and putting the value which resides at this address in the \texttt{\%ECX} register. This value is then put into the variable $a$, which resides at an offset of 28 ($0x1c$) bytes from the base pointer. Now compare this to figure \ref{fig_machine_code_checked}, which contains 3 new instructions as a result of the runtime bounds check. The first instruction is a \texttt{cmp} instruction, which compares the maximum array offset (0x1ff = 511)  to the index value (the $j$ variable). The second instruction is a \texttt{jg} instruction, which jumps to its corresponding \texttt{trap} block if the previous \texttt{cmp} instruction holds true ($j > 511$). A third instruction is \texttt{cltq}, which converts the value in the \texttt{EAX} register from a long (4 bytes) to a quad (8 bytes). This conversion is neccesary because the register \texttt{\%EAX} is a 32-bit register and the following operations use 64-bit registers. The word length of each register in an instruction must be equal. Of these three new instructions, the \texttt{cltq} instruction takes the most time.
+ 	
+ 	 However, this could be avoided if a 64-bit integer type was used in the IR instead of a 32-bit integer type. Unfortunately, this requires that the source program also uses unsigned integers.
 	
 	\begin{figure}
 		\centering

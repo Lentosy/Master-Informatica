@@ -53,29 +53,44 @@ main:                                   # @main
 	.cfi_def_cfa_offset 64
 .Ltmp0:
 	.loc	1 2 1 prologue_end      # overflow.c:2:1
-	movl	$10, 12(%rsp)
-	movb	$1, %al
+	movl	$9, 12(%rsp)
+	xorl	%eax, %eax
 	.loc	1 3 5                   # overflow.c:3:5
 	testb	%al, %al
-	jne	.LBB2_2
+	jne	.LBB2_3
 # %bb.1:                                # %cont
 	.loc	1 0 5 is_stmt 0         # overflow.c:0:5
-	movl	$10, %eax
+	movl	$9, %eax
 	.loc	1 3 5                   # overflow.c:3:5
 	movl	%eax, %eax
 	.loc	1 3 1                   # overflow.c:3:1
+	movl	$5, 16(%rsp,%rax,4)
+	.loc	1 4 5 is_stmt 1         # overflow.c:4:5
+	movl	12(%rsp), %eax
+	incl	%eax
+	cmpl	$9, %eax
+	jg	.LBB2_4
+# %bb.2:                                # %cont1
+	cltq
+	.loc	1 4 1 is_stmt 0         # overflow.c:4:1
 	movl	$5, 16(%rsp,%rax,4)
 	xorl	%eax, %eax
 	addq	$56, %rsp
 	.cfi_def_cfa_offset 8
 	retq
 .Ltmp1:
-.LBB2_2:                                # %trap
+.LBB2_3:                                # %trap
 	.cfi_def_cfa_offset 64
 	.loc	1 0 1                   # overflow.c:0:1
 	leaq	.L__unnamed_1(%rip), %rdi
 	leaq	.L__unnamed_2(%rip), %rsi
 	movl	$3, %edx
+	xorl	%eax, %eax
+	callq	__assert@PLT
+.LBB2_4:                                # %trap2
+	leaq	.L__unnamed_3(%rip), %rdi
+	leaq	.L__unnamed_4(%rip), %rsi
+	movl	$4, %edx
 	xorl	%eax, %eax
 	callq	__assert@PLT
 .Lfunc_end2:
@@ -105,6 +120,19 @@ main:                                   # @main
 .L__unnamed_2:
 	.asciz	"overflow.c"
 	.size	.L__unnamed_2, 11
+
+	.type	.L__unnamed_3,@object   # @2
+	.section	.rodata.str1.16,"aMS",@progbits,1
+	.p2align	4
+.L__unnamed_3:
+	.asciz	"out-of-bounds array access"
+	.size	.L__unnamed_3, 27
+
+	.type	.L__unnamed_4,@object   # @3
+	.section	.rodata.str1.1,"aMS",@progbits,1
+.L__unnamed_4:
+	.asciz	"overflow.c"
+	.size	.L__unnamed_4, 11
 
 	.section	.debug_str,"MS",@progbits,1
 .Linfo_string0:

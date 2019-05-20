@@ -15,8 +15,6 @@
 
 using namespace llvm;
 
-
-
 namespace {
     // FunctionPass operates on a single function at a time
     struct BoundsCheck : public FunctionPass {
@@ -32,6 +30,13 @@ namespace {
             bool runOnFunction(Function &F) override {
                 LLVMContext& context = F.getContext();
                 IRBuilder<> Builder(context);
+
+                //const char * prefix = "llvm";
+                //ArrayRef<Type *> intArgs = {
+                //    Type::getInt32Ty(context),
+                //    Type::getInt32Ty(context)
+                //};
+               // Function *expectFunction = Intrinsic::getDeclaration(F.getParent(), Intrinsic::getIntrinsicForGCCBuiltin(prefix, "expect"), intArgs);
                 
                 LLVM_DEBUG({
                     dbgs() << "BoundsCheck: processing function '";
@@ -128,8 +133,6 @@ namespace {
                             
 
                             //TODO: ervoor zorgen dat de eerste twee pointers zijn naar een char, niet naar null
-
-                            
                             argVector[0] = trapBuilder.CreateGlobalStringPtr("out-of-bounds array access");
                             argVector[1] = trapBuilder.CreateGlobalStringPtr(fileName);
                             argVector[2] = ConstantInt::get(Type::getInt32Ty(context), line);
@@ -151,6 +154,7 @@ namespace {
 
                         ConstantInt* bounds = ConstantInt::get(IntegerType::get(context, 32), numOfElements);
                         Value *iVal = (GEP->idx_begin() + 1)->get();
+
 
                         LoadInst* loadInstructionArrayIndex = (LoadInst*)iVal;
 

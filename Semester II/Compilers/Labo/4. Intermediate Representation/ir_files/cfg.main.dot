@@ -1,5 +1,13 @@
 digraph "CFG for 'main' function" {
 	label="CFG for 'main' function";
 
-	Node0x55c67467eb30 [shape=record,label="{entry:\l  %foo = alloca [10 x i32], !dbg !8\l  %n = alloca i32, !dbg !9\l  store i32 9, i32* %n, !dbg !9\l  %0 = load i32, i32* %n, !dbg !10\l  %1 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %0, !dbg !10\l  store i32 5, i32* %1, !dbg !11\l  %2 = load i32, i32* %n, !dbg !12\l  %3 = add i32 %2, 1, !dbg !12\l  %4 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %3, !dbg !12\l  store i32 5, i32* %4, !dbg !13\l  ret i32 0\l}"];
+	Node0x564b106a6370 [shape=record,label="{entry:\l  %foo = alloca [10 x i32], !dbg !8\l  %n = alloca i32, !dbg !9\l  store i32 9, i32* %n, !dbg !9\l  %0 = load i32, i32* %n, !dbg !10\l  %1 = icmp sge i32 %0, 10, !dbg !10\l  br i1 %1, label %trap, label %cont, !dbg !10\l|{<s0>T|<s1>F}}"];
+	Node0x564b106a6370:s0 -> Node0x564b106a7760;
+	Node0x564b106a6370:s1 -> Node0x564b106a7810;
+	Node0x564b106a7810 [shape=record,label="{cont:                                             \l  %2 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %0, !dbg !10\l  store i32 5, i32* %2, !dbg !11\l  %3 = load i32, i32* %n, !dbg !12\l  %4 = add i32 %3, 1, !dbg !12\l  %5 = icmp sge i32 %4, 10, !dbg !12\l  br i1 %5, label %trap2, label %cont1, !dbg !12\l|{<s0>T|<s1>F}}"];
+	Node0x564b106a7810:s0 -> Node0x564b106a8470;
+	Node0x564b106a7810:s1 -> Node0x564b106a8540;
+	Node0x564b106a8540 [shape=record,label="{cont1:                                            \l  %6 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %4, !dbg !12\l  store i32 5, i32* %6, !dbg !13\l  ret i32 0\l}"];
+	Node0x564b106a7760 [shape=record,label="{trap:                                             \l  call void (i8*, i8*, i32, ...) @__assert(i8* getelementptr inbounds ([27 x\l... i8], [27 x i8]* @0, i32 0, i32 0), i8* getelementptr inbounds ([11 x i8], [11\l... x i8]* @1, i32 0, i32 0), i32 3)\l  unreachable\l}"];
+	Node0x564b106a8470 [shape=record,label="{trap2:                                            \l  call void (i8*, i8*, i32, ...) @__assert(i8* getelementptr inbounds ([27 x\l... i8], [27 x i8]* @2, i32 0, i32 0), i8* getelementptr inbounds ([11 x i8], [11\l... x i8]* @3, i32 0, i32 0), i32 4)\l  unreachable\l}"];
 }
