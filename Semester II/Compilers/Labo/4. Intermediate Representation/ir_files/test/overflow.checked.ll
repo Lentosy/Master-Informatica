@@ -27,19 +27,31 @@ declare i32 @rand()
 ; Function Attrs: nounwind
 define dso_local i32 @main() #0 !dbg !4 {
 entry:
-  %n = alloca i32, !dbg !8
-  %foo = alloca [10 x i32], !dbg !9
-  store i32 10, i32* %n, !dbg !10
-  %0 = load i32, i32* %n, !dbg !11
-  %1 = icmp sge i32 %0, 10, !dbg !11
-  br i1 %1, label %trap, label %cont, !dbg !11
+  %foo = alloca [10 x i32], !dbg !8
+  %n = alloca i32, !dbg !9
+  store i32 9, i32* %n, !dbg !9
+  %0 = load i32, i32* %n, !dbg !10
+  %1 = icmp sge i32 %0, 10, !dbg !10
+  br i1 %1, label %trap, label %cont, !dbg !10
 
 cont:                                             ; preds = %entry
-  %2 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %0, !dbg !11
-  store i32 5, i32* %2, !dbg !12
+  %2 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %0, !dbg !10
+  store i32 5, i32* %2, !dbg !11
+  %3 = load i32, i32* %n, !dbg !12
+  %4 = add i32 %3, 1, !dbg !12
+  %5 = icmp sge i32 %4, 10, !dbg !12
+  br i1 %5, label %trap2, label %cont1, !dbg !12
+
+cont1:                                            ; preds = %cont
+  %6 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 %4, !dbg !12
+  store i32 5, i32* %6, !dbg !13
   ret i32 0
 
 trap:                                             ; preds = %entry
+  call void (i8*, i8*, i32, ...) @__assert(i8* null, i8* null, i32 3)
+  unreachable
+
+trap2:                                            ; preds = %cont
   call void (i8*, i8*, i32, ...) @__assert(i8* null, i8* null, i32 4)
   unreachable
 }
@@ -63,6 +75,7 @@ attributes #1 = { noreturn }
 !7 = !DIBasicType(name: "int", size: 32, encoding: DW_ATE_signed)
 !8 = !DILocation(line: 1, column: 1, scope: !4)
 !9 = !DILocation(line: 2, column: 1, scope: !4)
-!10 = !DILocation(line: 3, column: 1, scope: !4)
-!11 = !DILocation(line: 4, column: 5, scope: !4)
-!12 = !DILocation(line: 4, column: 1, scope: !4)
+!10 = !DILocation(line: 3, column: 5, scope: !4)
+!11 = !DILocation(line: 3, column: 1, scope: !4)
+!12 = !DILocation(line: 4, column: 5, scope: !4)
+!13 = !DILocation(line: 4, column: 1, scope: !4)

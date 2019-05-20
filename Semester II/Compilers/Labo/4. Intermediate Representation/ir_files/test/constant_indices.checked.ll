@@ -28,12 +28,13 @@ declare i32 @rand()
 define dso_local i32 @main() #0 !dbg !4 {
 entry:
   %foo = alloca [10 x i32], !dbg !8
-  %0 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 5, !dbg !9
+  %0 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 0, !dbg !9
   store i32 1, i32* %0, !dbg !9
-  %1 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 0, !dbg !10
+  %1 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 9, !dbg !10
   store i32 1, i32* %1, !dbg !10
-  %2 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 10, !dbg !11
-  store i32 1, i32* %2, !dbg !11
+  %2 = getelementptr [10 x i32], [10 x i32]* %foo, i32 0, i32 9, !dbg !11
+  %3 = load i32, i32* %2, !dbg !11
+  call void @echo(i32 %3), !dbg !11
   ret i32 0
 }
 
@@ -57,4 +58,4 @@ attributes #1 = { noreturn }
 !8 = !DILocation(line: 1, column: 1, scope: !4)
 !9 = !DILocation(line: 2, column: 1, scope: !4)
 !10 = !DILocation(line: 3, column: 1, scope: !4)
-!11 = !DILocation(line: 4, column: 1, scope: !4)
+!11 = !DILocation(line: 4, column: 6, scope: !4)

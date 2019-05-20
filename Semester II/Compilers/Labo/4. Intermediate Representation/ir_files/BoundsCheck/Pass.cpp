@@ -36,6 +36,7 @@ namespace {
                 LLVM_DEBUG({
                     dbgs() << "BoundsCheck: processing function '";
                     dbgs().write_escaped(F.getName()) << "'\n";
+                    
                 });
 
                 // Instantiate the assert function once per module
@@ -73,12 +74,15 @@ namespace {
                     unsigned line = debugLocation.getLine();
                     unsigned column = debugLocation.getCol();
                     
-                    LLVM_DEBUG(dbgs() << "\n");
-                    LLVM_DEBUG(dbgs() << "BoundsCheck\tfound a GEP: " << *GEP << "\n");
-                    LLVM_DEBUG(dbgs() << "BoundsCheck\tname: " << GEP->getPointerOperand()->getName() << "\n");
-                    LLVM_DEBUG(dbgs() << "BoundsCheck\ttype: " << GEP->getSourceElementType()->getTypeID() << "\n");
-                    LLVM_DEBUG(dbgs() << "BoundsCheck\tnumber of indices: " << GEP->getNumIndices() << "\n");
-                    LLVM_DEBUG(dbgs() << "BoundsCheck\t(line, column): (" << line << "," << column << ")\n");
+                    LLVM_DEBUG({
+                        dbgs() << "\n";
+                        dbgs() << "BoundsCheck\tfound a GEP: " << *GEP << "\n";
+                        dbgs() << "BoundsCheck\tname: " << GEP->getPointerOperand()->getName() << "\n";
+                        dbgs() << "BoundsCheck\ttype: " << GEP->getSourceElementType()->getTypeID() << "\n";
+                        dbgs() << "BoundsCheck\tnumber of indices: " << GEP->getNumIndices() << "\n";
+                        dbgs() << "BoundsCheck\t(line, column): (" << line << "," << column << ")\n";
+                    });
+
                     
                     assert(GEP->getSourceElementType()->getTypeID() == Type::TypeID::ArrayTyID); // 14 is ArrayTyID                    
                     
