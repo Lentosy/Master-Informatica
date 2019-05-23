@@ -3,18 +3,15 @@ from constants import ACTIONS
 class ClassificationStrategy(object):
     """
     A classification strategy implements a classification method. This strategy is independent of the chosen features.
-    To evaluate the classifier, it's precision, recall and F1score is calculated. First, a list of precisions and recalls
+    To evaluate the classifier, it's precision, recall and F1score are calculated. First, a list of precisions and recalls
     are generated from the confusion matrix for each action. The average precision, recall and f1score is then calculated for 
     the global performance of the classifier.
     """
-    def __init__(self, trainingset, validationset, classifier):
+    def __init__(self):
         self.confusionMatrix = [] # The confusion matrix is represented by list in this order: [TP, FP, FN, TN]
         self.recalls = []
         self.precisions = []
-        self.trainingset = trainingset
-        self.validationset = validationset
-        self.classifier = classifier
-        self.classifier.fit(self.trainingset.data, self.trainingset.target)
+        
     
     def __str__(self):
         raise NotImplementedError("This is an abstract method. Implement this in a subclass")
@@ -34,8 +31,14 @@ class ClassificationStrategy(object):
                 pass
         return f1score / len(self.precisions)
 
-    def perform(self):
-        raise NotImplementedError("This is an abstract method. Implement this in a subclass")
+    def getStatistics(self):
+        """
+        Returns a tuple containing the values of the calculateRecall, calculatePrecision and calculateF1Score methods.
+        """
+        return (self.calculateRecall(), self.calculatePrecision(), self.calculateF1Score())
+
+    def perform(self, validationset, classifier):
+        raise NotImplementedError("This is an abstract method, implement this in a subclass.")
 
 
 
@@ -45,24 +48,25 @@ class PerFrameClassification(ClassificationStrategy):
     This is the simplest method as it classifies each frame individually.
     """ 
 
-    def __init__(self, trainingset, validationset, classifier):
-        ClassificationStrategy.__init__(self, trainingset, validationset, classifier)
+    def __init__(self):
+        ClassificationStrategy.__init__(self)
 
     def __str__(self):
         return "PerFrameClassification"
 
-    def perform(self):
-        predictions = self.classifier.predict(self.validationset.data)
+
+    def perform(self, validationset, classifier):
+        predictions = classifier.predict(validationset.data)
      
         for i in range(0, len(ACTIONS)):
             self.confusionMatrix = [0] * 4
             for j in range(0, len(predictions)):
-                if(self.validationset.target[j] == i):
+                if(validationset.target[j] == i):
                     if(predictions[j] == i):
                         self.confusionMatrix[0] += 1
                     else:
                         self.confusionMatrix[2] += 1
-                elif(self.validationset.target[j] != i):
+                elif(validationset.target[j] != i):
                     if(predictions[j] == i):
                         self.confusionMatrix[1] += 1
                     else:
@@ -80,21 +84,21 @@ class SimpleBufferClassification(ClassificationStrategy):
     This classification strategy forms groups of 30 frames in a buffer. The majority action gets calculated incrementally for each frame in this buffer.
 
     """
-    def __init__(self, trainingset, validationset, classifier):
-        ClassificationStrategy.__init__(self, trainingset, validationset, classifier)
+    def __init__(self):
+        ClassificationStrategy.__init__(self)
         self.bufferSize = 30
 
     def __str__(self):
         return "SimpleBufferClassification"
 
-    def perform(self):
-        iterations = (len(self.validationset) // self.bufferSize)
+    def perform(self, validationset, classifier):
+        iterations = (len(validationset) // self.bufferSize)
         for i in range(0, len(ACTIONS)):
             self.confusionMatrix = [0] * 4
             for currentIteration in range(0, iterations):
-                bufferTarget = [self.validationset.target[j] for j in range(currentIteration*self.bufferSize, (currentIteration+1)*self.bufferSize)]
-                bufferData =  [self.validationset.data[j] for j in range(currentIteration*self.bufferSize, (currentIteration+1)*self.bufferSize)]
-                predictions = self.classifier.predict(bufferData)  # let classifier classify the individual frames first
+                bufferTarget = [validationset.target[j] for j in range(currentIteration*self.bufferSize, (currentIteration+1)*self.bufferSize)]
+                bufferData =  [validationset.data[j] for j in range(currentIteration*self.bufferSize, (currentIteration+1)*self.bufferSize)]
+                predictions = classifier.predict(bufferData)  # let classifier classify the individual frames first
                 vote = self._getMajorityVote(predictions)
                 for j in range(0, len(bufferTarget)):
                     if(bufferTarget[j] == vote):
@@ -127,22 +131,22 @@ class SimpleBufferClassification(ClassificationStrategy):
         return maxKey
 
 class WeightedBufferClassification(ClassificationStrategy):
-    def __init__(self, trainingset, validationset, classifier):
-        ClassificationStrategy.__init__(self, trainingset, validationset, classifier)
+    def __init__(self):
+        ClassificationStrategy.__init__(self)
         self.bufferSize = 30
 
     def __str__(self):
         return "WeightedBufferClassification"
 
 
-    def perform(self):
-        iterations = (len(self.validationset) // self.bufferSize)
+    def perform(self, validationset, classifier):
+        iterations = (len(validationset) // self.bufferSize)
         for i in range(0, len(ACTIONS)):
             self.confusionMatrix = [0] * 4
             for currentIteration in range(0, iterations):
-                bufferTarget = [self.validationset.target[j] for j in range(currentIteration*self.bufferSize, (currentIteration+1)*self.bufferSize)]
-                bufferData =  [self.validationset.data[j] for j in range(currentIteration*self.bufferSize, (currentIteration+1)*self.bufferSize)]
-                predictions = self.classifier.predict(bufferData)  # let classifier classify the individual frames first
+                bufferTarget = [validationset.target[j] for j in range(currentIteration*self.bufferSize, (currentIteration+1)*self.bufferSize)]
+                bufferData =  [validationset.data[j] for j in range(currentIteration*self.bufferSize, (currentIteration+1)*self.bufferSize)]
+                predictions = classifier.predict(bufferData)  # let classifier classify the individual frames first
                 vote = self._getWeightedVote(predictions)
                 for j in range(0, len(bufferTarget)):
                     if(bufferTarget[j] == vote):

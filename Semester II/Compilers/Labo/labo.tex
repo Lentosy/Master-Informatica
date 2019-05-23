@@ -501,6 +501,12 @@ for(int i = callee_saved_regs.size() - 1; i >=0 ; i--){
 \chapter{Compiler transformation at LLVM IR level}	
 
 \section{Setup}
+Installing \texttt{perf} on the docker machine:
+\begin{lstlisting}
+apt-get update
+apt-get install linux-tools-generic
+/usr/lib/linux-tools/4.18.0.20-genric/perf ...
+\end{lstlisting}
 
 \section{Introduction to LLVM bitcode}
 \begin{itemize}
@@ -528,6 +534,7 @@ for(int i = callee_saved_regs.size() - 1; i >=0 ; i--){
 	\end{itemize}
 \end{itemize}
 \section{Protecting array accesses}
+
 The operands of \texttt{getelementptr} instruction:
 \begin{itemize}
 	\item A base pointer containing the memory address of the array;
@@ -574,10 +581,17 @@ if(GEP->hasAllConstantIndices()){
 	ConstantInt* integer = (ConstantInt*) iVal;
 	accessIndex = integer->getValue()->getLimitedValue();
 	if(accessIndex >= numOfElements){
+		std::ostringstream reason;
+		reason << "Index out of bounds(line " << line << 
+		                               ", column " << column <<
+		                               ")\n\tIndex: " << accessIndex << 
+		                               "\n\tMax: " << numOfElements - 1 <<
+		                               "\n";
 		report_fatal_error(...);
 	}
 }
 \end{lstlisting}
+This simple case will stop the compilation for expressions such as \texttt{foo[10]}. 
 
 \end{document}
 

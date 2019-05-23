@@ -10,7 +10,7 @@ from mpl_toolkits import mplot3d
 
 rawData = []
 with open(f"data\\DEBUG\\joints.txt") as dataFile:
-    csvReader = csv.reader(dataFile, delimiter=';')
+    csvReader = csv.reader(dataFile, delimiter=';', quoting=csv.QUOTE_NONNUMERIC)
     for row in csvReader:
         rawData.append(row)
 
@@ -25,8 +25,7 @@ for i in range(0, 2):
 
 
 ft = FeatureTransformer(rawData)
-ft.preProcessing()
-exit(1)
+
 for featureVector in ft.featureVectors:
     ft._translateToOrigin(featureVector)
 processed = ft.featureVectors
@@ -54,9 +53,9 @@ for featureVector in ft.featureVectors:
 processed = ft.featureVectors
 for i in range(0, 2):
     for j in range(0, 75, 3):
-        graphData[3][i].append(-processed[i][j]) 
-        graphData[3][i].append(-processed[i][j+1])
-        graphData[3][i].append(processed[i][j+2])
+        graphData[3][i].append(processed[i][j]) 
+        graphData[3][i].append(processed[i][j+1])
+        graphData[3][i].append(-processed[i][j+2])
 
 fig, axes = plot.subplots(nrows=4, ncols=2)
 
@@ -84,6 +83,10 @@ axes[1][1].set_title("Frame 2 translatie")
 
 axes[2][0].set_title("Frame 1 geschaald")
 axes[2][1].set_title("Frame 2 geschaald")
+
+axes[3][0].set_title("Frame 1 geroteerd")
+axes[3][1].set_title("Frame 2 geroteerd")
+
 fig.tight_layout(pad=0.0, w_pad=0, h_pad=0)
 
 fig.legend(labels=('Skelet joints', 'Heup joint'), loc='upper left')

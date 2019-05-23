@@ -1,11 +1,15 @@
 \documentclass{article}
-\usepackage{graphicx}
-\graphicspath{{./}}
+\usepackage{ugentstyle}
 
-\title{Lab 4: Bounds Check Analysis}
-\author{Bert De Saffel, Xandro Vermeulen}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\graphicspath{{img/}}
+
+
 
 \begin{document}
+	\title{Lab 4: Bounds Check Analysis}
+	\author{Bert De Saffel, Xandro Vermeulen}
 	\maketitle
 	\tableofcontents
 	\section{Introduction}
@@ -13,24 +17,27 @@
 	
 	\section{Modification of the IR}
 	Before the analysis is explained, a description of the transformations made to the IR are described. To demonstrate, a simple $C$ program is used:
-%	\begin{lstlisting}
-%int foo[10];
-%int n = 9;
-%foo[n] = 5;
-%foo[n + 1] = 5;
-%	\end{lstlisting}
+	\begin{lstlisting}
+int foo[10];
+int n = 9;
+foo[n] = 5;
+foo[n + 1] = 5;
+	\end{lstlisting}
 The second array indexing must result in a runtime error. The original IR is shown next to the modified IR in figure 
-
-\begin{figure}
-	\begin{minipage}{0.5\textwidth}
-		\includegraphics[width=\linewidth]{fig_overflow}
-	\end{minipage}
+\begin{figure}[h!]
+	\centering
+	\begin{subfigure}[b]{0.4\linewidth}
+		\includegraphics[width=\linewidth]{fig_overflow.jpg}
+		\caption{Coffee.}
+	\end{subfigure}
+	\begin{subfigure}[b]{0.4\linewidth}
+		\includegraphics[width=\linewidth]{fig_overflow.jpg}
+		\caption{More coffee.}
+	\end{subfigure}
+	\caption{The same cup of coffee. Two times.}
+	\label{fig:coffee}
 \end{figure}
 
-This program results in the IR shown in figure 
-\begin{figure}
-	content...
-\end{figure}
 	\section{Analysis}
 	To perform the analysis, the program \texttt{bubble\_sort.c} is executed 30 times for each representation. Afterwards, average statistics such as runtime can be calculated for each representation. It can be assumed that inserting more code to perform the runtime boundchecking will increase performance overhead. Indeed, table \ref{table:1} shows that applying runtime bounds checking increases the runtime by an average of 13\%. This has a straightforward explanation: each \texttt{getelementptr} gets preceded by a \texttt{cmp} and \texttt{br} instruction.
 	
