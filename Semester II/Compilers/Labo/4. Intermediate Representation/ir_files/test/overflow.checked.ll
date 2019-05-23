@@ -3,6 +3,10 @@ source_filename = "overflow"
 
 @format = private unnamed_addr constant [4 x i8] c"%d\0A\00"
 @format.1 = private unnamed_addr constant [3 x i8] c"%d\00"
+@0 = private unnamed_addr constant [27 x i8] c"out-of-bounds array access\00"
+@1 = private unnamed_addr constant [11 x i8] c"overflow.c\00"
+@2 = private unnamed_addr constant [27 x i8] c"out-of-bounds array access\00"
+@3 = private unnamed_addr constant [11 x i8] c"overflow.c\00"
 
 declare i32 @printf(i8*, ...)
 
@@ -48,11 +52,11 @@ cont1:                                            ; preds = %cont
   ret i32 0
 
 trap:                                             ; preds = %entry
-  call void (i8*, i8*, i32, ...) @__assert(i8* null, i8* null, i32 3)
+  call void (i8*, i8*, i32, ...) @__assert(i8* getelementptr inbounds ([27 x i8], [27 x i8]* @0, i32 0, i32 0), i8* getelementptr inbounds ([11 x i8], [11 x i8]* @1, i32 0, i32 0), i32 3)
   unreachable
 
 trap2:                                            ; preds = %cont
-  call void (i8*, i8*, i32, ...) @__assert(i8* null, i8* null, i32 4)
+  call void (i8*, i8*, i32, ...) @__assert(i8* getelementptr inbounds ([27 x i8], [27 x i8]* @2, i32 0, i32 0), i8* getelementptr inbounds ([11 x i8], [11 x i8]* @3, i32 0, i32 0), i32 4)
   unreachable
 }
 

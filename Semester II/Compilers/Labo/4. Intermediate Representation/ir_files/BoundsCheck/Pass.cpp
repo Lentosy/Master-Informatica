@@ -15,8 +15,6 @@
 
 using namespace llvm;
 
-
-
 namespace {
     // FunctionPass operates on a single function at a time
     struct BoundsCheck : public FunctionPass {
@@ -33,6 +31,13 @@ namespace {
                 LLVMContext& context = F.getContext();
                 IRBuilder<> Builder(context);
 
+                //const char * prefix = "llvm";
+                //ArrayRef<Type *> intArgs = {
+                //    Type::getInt32Ty(context),
+                //    Type::getInt32Ty(context)
+                //};
+               // Function *expectFunction = Intrinsic::getDeclaration(F.getParent(), Intrinsic::getIntrinsicForGCCBuiltin(prefix, "expect"), intArgs);
+                
                 LLVM_DEBUG({
                     dbgs() << "BoundsCheck: processing function '";
                     dbgs().write_escaped(F.getName()) << "'\n";
@@ -73,7 +78,7 @@ namespace {
                     const DebugLoc& debugLocation = GEP->getDebugLoc();
                     unsigned line = debugLocation.getLine();
                     unsigned column = debugLocation.getCol();
-                    
+                    std::string fileName = cast<DIScope>(debugLocation->getScope())->getFilename();    
                     LLVM_DEBUG({
                         dbgs() << "\n";
                         dbgs() << "BoundsCheck\tfound a GEP: " << *GEP << "\n";
@@ -123,32 +128,33 @@ namespace {
                         //*** TRAP BLOCK ***//
                         {
                             // Create a trap block which consists of an assert call and an "unreachable instruction"    
-                            
+                            IRBuilder<> trapBuilder(trap);
                             std::vector<Value *> argVector(3); // the vector which will contain the parameters
-                            ArrayRef<Constant *> c;
+                            
 
                             //TODO: ervoor zorgen dat de eerste twee pointers zijn naar een char, niet naar null
-                            argVector[0] = ConstantPointerNull::get(Type::getInt8PtrTy(context));
-                            argVector[1] = ConstantPointerNull::get(Type::getInt8PtrTy(context));
+                            argVector[0] = trapBuilder.CreateGlobalStringPtr("out-of-bounds array access");
+                            argVector[1] = trapBuilder.CreateGlobalStringPtr(fileName);
                             argVector[2] = ConstantInt::get(Type::getInt32Ty(context), line);
-                            FunctionType* assertType = Assert->getFunctionType();
+                            
                             for(int i = 0; i < argVector.size(); i++){
-                                assert(assertType->getParamType(i)->getTypeID() == argVector[i]->getType()->getTypeID());
+                                assert(Assert->getFunctionType()->getParamType(i)->getTypeID() == argVector[i]->getType()->getTypeID());
                             }
                             // The CallInst Create method needs an ArrayRef object instead of a vector, but it accepts a vector as argument
+                            
                             ArrayRef<Value *> args(argVector);
-                            CallInst* assertCall = CallInst::Create(Assert, args);
-                            trap->getInstList().push_back(assertCall);
-                            trap->getInstList().push_back(new UnreachableInst(context));                         
+                            trapBuilder.CreateCall(Assert, args);
+                            trapBuilder.CreateUnreachable();                        
                         }
                         //*** END TRAP BLOCK ***//
-
+                        
                         // set insertion point to be before the terminator. This is where we will insert new code
                         TerminatorInst* branchInstruction = parent->getTerminator();
                         Builder.SetInsertPoint(branchInstruction);
 
                         ConstantInt* bounds = ConstantInt::get(IntegerType::get(context, 32), numOfElements);
                         Value *iVal = (GEP->idx_begin() + 1)->get();
+
 
                         LoadInst* loadInstructionArrayIndex = (LoadInst*)iVal;
 
