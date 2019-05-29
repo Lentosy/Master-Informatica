@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta name="generator" content="intranetr/0.10.0">
+<title>OEFENINGEN: Rood-zwarte bomen | iii intranet</title>    <link rel="stylesheet" type="text/css" media="screen,handheld" href="opgave_files/default.css">
+    <link rel="stylesheet" type="text/css" media="print" href="opgave_files/print.css">
+    <link rel="stylesheet" type="text/css" media="screen,handheld" href="opgave_files/default_002.css">
+    <script type="text/javascript" async="" src="opgave_files/ga.js"></script><script type="text/javascript" src="opgave_files/0d6197553acf19ea859c96f7caf7d8fa6c6519b8.js"></script><style>#header + #content > #left > #rlblock_left,
+#content > #center > .dose > .dosesingle,
+#content > #right > .dose > .dosesingle
+{display:none !important;}</style>
+<!--[if lt IE 8]>
+<link rel="stylesheet" type="text/css" href="/css/ie.css">
+<![endif]-->
+    <script type="text/javascript">
+    (function() {
+        var month = 5;
+        iii.semester = month == 1 ? 1
+            : month <= 6 ? 2
+            : month <= 9 ? 0 : 1;
+        if (iii.semester > 0) {
+            var hideOtherSemester = function() {
+                var other = iii.semester == 1 ? 2 : 1;
+                $('#breadcrumbs li.group-sem'
+                        + other
+                        + ':not(.group-sem'
+                        + iii.semester + '):not(.active)')
+                    .hide();
+            };
+            $(document)
+                .ready(hideOtherSemester)
+                .on("contentUpdate.iii", hideOtherSemester);
+        }
+    })();
+    </script>
+</head>
+
+<body>
+
+ 
+    <h2>OEFENINGEN: Rood-zwarte bomen</h2>
+    <div id="page-content">
+        <strong>OEFENINGEN<br>
+bij<br>
+ALGORITMEN en GEGEVENSSTRUCTUREN</strong><br>
+<p>2017-2018<br></p>
+<br>
+<ul>
+<li><strong>LES 4</strong>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</li>
+<li><strong>ROOD-ZWARTE
+BOMEN</strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+5
+ oktober 2017<br></li>
+</ul>
+<p><strong>Rood-zwarte bomen</strong> zijn altijd <em>nogal</em>
+evenwichtig. Je betaalt er wel een prijs voor: toevoegen en
+verwijderen is ingewikkeld. Voor we ze implementeren zijn hier een
+paar toepassingen om <em>op papier</em> op te lossen.</p>
+<p>De eerste oefening maakt duidelijk dat top-down- en
+bottom-upmethodes niet altijd hetzelfde resultaat opleveren. Bekijk
+de kleine boom.</p>
+<img src="opgave_files/rzwklein.gif" width="400"><br>
+<p>Verwijder de knoop met sleutel 8. Probeer het eerst bottom-up,
+daarna top-down. Verwijder ook eens 15: eerst bottom-up, dan top
+down.</p>
+<p>Bij de tweede oefening hebben we een zeer scheve boom:</p>
+<img src="opgave_files/rzwgroot.gif" width="750"><br>
+<p>als <em>l</em> de diepte aan de linkerkant is, en <em>r</em> de
+diepte aan de rechterkant, dan is</p>
+<em>r=2l+1.</em><br>
+<p>Slechter kan niet bij een rood-zwarte boom, en elke bewerking
+zal de situatie verbeteren. Probeer maar: elke keer vertrekkend van
+de beginsituatie van de tekening moet je</p>
+<ul>
+<li>sleutel 6 bottom-up toevoegen.</li>
+<li>sleutel -2 top-down verwijderen.</li>
+</ul>
+<strong>Implementatie.</strong>
+<p>Als je dit alles implementeert moet je een rood-zwarteboomklasse
+hebben. Omdat elke knoop een kleur heeft moet er dan in elke knoop
+een attribuut bijkomen. Ook treaps hebben een attribuut. Een manier
+om een gelijkaardige structuur (een binaire boom met de data
+ingepakt in een wrapper) te bekomen als bij zoekbomen is om een
+klasse BinboomMetKnoopdata&lt;Sleutel,Data,Knoopdata&gt; te maken.
+Als je echt zoveel mogelijk code wil bewaren, kan je deze laten
+overerven van de Zoekboomklasse:</p>
+<p>class ZoekboomMetKnoopdata&lt;Sleutel,Data,Knoopdata&gt;: public
+Zoekboom&lt;Sleutel,pair&lt;Data,Knoopdata&gt; &gt;</p>
+Dit laatste wordt door sommigen enthousiast (want code wordt
+hergebruikt) en door anderen sceptisch (want niet gemakkelijk te
+begrijpen) onthaald.
+<p>Het is mogelijk een tussenweg te bewandelen en te zorgen voor
+een</p>
+<p>enum RZWKleur {rood, zwart};</p>
+<p>class RZWBoom&lt;Sleutel,Data,&gt;: protected
+Zoekboom&lt;Sleutel,pair&lt;Data,RZWKleur&gt; &gt;</p>
+Ook deze weg levert problemen op, onderandere door de
+<tt>friend</tt>-declaratie.
+<p>Tenslotte is er de lelijke weg: je kopieert gewoon de code van
+een zoekboom en verandert overal <tt>Zoekboom</tt> door
+<tt>RZWBoom</tt>. Dat is niet flexibel --als je verbeteringen
+aanbrengt aan de Zoekboomcode wordt die niet meegenomen naar de
+RZWBoom, maar het werkt wel.</p>
+<p>Ook voor deze nieuwe klasse ga je eerst een
+<tt>repOK()</tt>-functie schrijven. Zoals gebruikelijk bij
+overerving is de <tt>repOK()</tt>-functie van de bovenklasse een
+deel van die voor de onderklasse.</p>
+<p>Daarna schrijf je een bottom-up toevoegmethode. De voorbeeldjes
+op de tekeningen leveren handige stof voor tests. Daar zit je met
+een probleem: hoe zorg je ervoor dat je een rood-zwarte boom krijgt
+met de structuur vanop de tekeningen?</p>
+<p><strong>Programmeertip:</strong> elke knoop is de wortel van een
+(deel)boom. Het is handig als je een functie <tt>geefKleur()</tt>
+maakt die geen lid is van de Knoopklasse maar van de Boomklasse.
+Waarom is dat?</p>
+
+        <div id="page-content-end"></div>
+   
+</div>
+
+<!-- 29 ms / 478 KB -->
+</div>
+
+
+
+
+
+<div id="popout"><div id="popout-panel"><div id="popout-grow" class="popout-button"></div><div id="popout-shrink" class="popout-button"></div><div id="popout-close" class="popout-button"></div><div id="popout-contents"></div></div></div><img src="opgave_files/throbber.gif" style="position: absolute; left: 50%; top: 50%;margin: -15px 0 0 -15px; z-index: 100; display: none;"></body></html>
+<!-- 25 ms / 515 KB -->
