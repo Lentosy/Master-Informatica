@@ -17,7 +17,7 @@ Het basisidee van parsing is om een string van tokens te analyseren en kijken of
 		\item De lexicale tokens zijn de symbolen.
 		\item Het alfabet is de verzameling tokentypes die gegenereerd worden door de lexicale analyzer.
 	\end{itemize}
-	\item De taal van een context-vrije
+	\item De taal van een context-vrije bevat alle strings die met productieregels kan afgeleidt worden.
 	\item Context-vrije grammatica definieert de \textbf{syntax} van de taal.
 \end{itemize}
 
@@ -195,7 +195,7 @@ Om de begrippen \textbf{first set} en \textbf{follow set} uit te leggen wordt Gr
 	Uitgewerkt voor de drie symbolen:
 	\begin{itemize}
 		\item[$X:$]  De regel $Z \rightarrow X Y Z$ legt vast dat $X$ door $Y$ en $Z$ kan gevolgd worden. De terminalen dat $Y$ en $Z$ kunnen genereren zijn respectievelijk $c$ en $d$ zodat die zeker al in de \texttt{FOLLOW} set zitten van $X$. Dezelfde regel $Z \rightarrow X Y Z$ kan ook $X Y X Y Z$ genereren. 
-		Als $Y$ en $Z$ de lege string afleiden, dan kan de eerste $X$ gevolgd worden door de tweede $X$ die $a$ afleidt. De terminaal $a$ zit dus ook in de \texttt{FOLLOW} set van $X$ zodat \texttt{FOLLOW}($X$) = $\{a\;c\;d\}$.
+		Als $Y$ de lege string afleidt, dan kan de eerste $X$ gevolgd worden door de tweede $X$ die $a$ kan afleiden. De terminaal $a$ zit dus ook in de \texttt{FOLLOW} set van $X$ zodat \texttt{FOLLOW}($X$) = $\{a\;c\;d\}$.
 		
 		
 		\item[$Y:$] Dezelfde redenering geldt voor $Y$: aangezien $Z$ een recursieve definitie is en het alle andere niet-terminalen bevat, is \texttt{FOLLOW}($Y$) = $\{a\;c\;d\}$. 

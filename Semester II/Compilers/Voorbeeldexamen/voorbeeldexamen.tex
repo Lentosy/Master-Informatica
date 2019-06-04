@@ -1,0 +1,127 @@
+\documentclass{report}
+\usepackage{ugentstyle}
+
+\newcommand{\answer}[1]{
+		\subsubsection*{Antwoord}
+			#1
+}
+
+\begin{document}
+	\maketitle{Compilers - Voorbeeldexamen}
+	\tableofcontents
+	\chapter{Vragen}
+	\section{Compilerfasen - I}
+	Gegeven de opeenvolgende fasen van een compiler, geef aan de programmavoorstellingen, grafen of datastructuren die aan het \textit{eind} van elke fase geproduceerd worden. Geef uw antwoord in de vorm: a-7, b-3, ...
+	\begin{table}[ht]
+		\begin{tabular}{l l}
+			\hline
+			Compilerfase & Programmavoorstelling \\
+			\hline 
+			(a) scanning (lexicale analyse) & 1.  intermediaire boomtaal \\
+			(b) parsing  (syntactische analyse) & 2.  control flow graaf (CFG) \\
+			(c) type checking (semantische analyse) & 3.  frame layout, activation records \\
+			(d) vertaling (translate) & 4.  symbooltabellen \\
+			(e) canonicalisering & 5.  interferentiegraaf \\
+			(f) instructieselectie & 6.  gekleurde interference graph \\
+			(g) controlestroom analyse & 7.  tokens \\
+			(h) dataflow analyse (liveness) & 8.  assembler code \\
+			(i) register allocatie & 9.  assembler instructies \\
+			(j) code emission & 10.  abstracte syntax tree (AST)
+		\end{tabular}
+	\end{table}
+
+	\answer{a-7, b-10, c-?, d-?, e-?, f-9, g-?, h-6, i-?, j-8}
+
+	\newpage
+	\section{Lexicale analyse}
+	\label{sec:lexicale_analyse}
+	
+	Volgende nondeterministische eindige automaat herkent geldige tokens \texttt{(aa)+} en \texttt{(aaa)+}. 
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{vr2_niet_deterministische_automaat}
+	\end{figure}
+	\begin{enumerate}
+		\item Beschrijf de manier om in het algemeen verschillende NFA's samen te voegen tot 1 DFA. Bespreek daarbij de definitie van \textit{sluiting}, \textit{DFAedge} en het \textit{algoritme} dat de NFA-toestanden samenvoegt tot toestanden in een DFA.
+		\item Pas dit toe op dit voorbeeld: de herkenning van twee- en drievouden van \texttt{a} en teken de bekomen DFA.
+		\item Zijn er in de gevonden DFA nog equivalente toestanden die men kan vereenvoudigen?
+	\end{enumerate}
+
+	\answer{
+	\begin{enumerate}
+		\item Een deterministische eindige automaat (DFA) is een eindige automaat waarbij elke transitie uniek is. Het algoritme om een NFA om te vormen naar een DFA maakt enerzijds gebruik van sluitingen. De sluiting $T$ van een verzameling van toestanden $S$, of \texttt{closure(S)}, bevat alle toestanden die kunnen bereikt worden voor de lege transitie $\epsilon$ voor elke staat in $S$. Dit kan wiskundig gedefinieerd worden als:
+		$$T = S \cup \bigg(\bigcup_{s \in T} edge(s, \epsilon) \bigg)$$
+		waarbij \texttt{edge(s, c)} de staten geeft die vanuit $s$ via symbool $c$ kan bereikt worden.
+		
+		Anderzijds maakt het algoritme ook gebruik van de functie \texttt{DFAedge(d, c)}, die de staten teruggeeft die vanuit $d$ kunnen bereikt worden bij symbool $c$.
+		
+		\todo{verder uitleggen}
+		
+		\item De automaat is enkel in staat om enkelvoudige $a$ symbolen te verwerken en aangezien er geen lege strings zijn, draagt de \texttt{closure(S)} functie hier niets bij. De eerste verwerking zorgt ervoor dat staten 1 en 3 bereikt worden. Vanuit 1 kan er naar 2 gegaan worden en vanuit 3 kan er naar 4 gegaan worden. In dit geval moet dit herhaald worden tot dat er een combinatie van staten gevonden is die al eerder gecombineerd zijn. Dit is het geval als uiteindelijk de staten 6 en 2 bereikt worden. Vanuit 6 kan naar 3 gegaan worden en vanuit 2 kan naar 1 gegaan worden. Die combinatie bestaat al, en da DFA is voltooid.
+			
+		\begin{figure}[ht]
+			\centering
+			\includegraphics[width=\textwidth]{vr2_deterministische_automaat}
+		\end{figure}
+	
+		\item Het algoritme garandeerd niet dat de opgeleverde DFA optimaal is, maar er kunnen nadien wel nog optimalisaties doorgevoerd worden. Staten die equivalent zijn kunnen samengenomen worden. Een staat $s_1$ is equivalent met staat $s_2$ als ze beiden finaal of niet finaal zijn voor dezelfde symbolen en als voor elk symbool $c$, trans[$s_1, c$] = trans[$s_1, c$]. In dit geval is dit waar voor staat $\{3, 1\}$ met $\{1, 5\}$ en voor staat $\{4, 2\}$ met $\{6, 2\}$. Deze kunnen gecombineerd worden.
+		
+		\begin{figure}[ht]
+			\centering
+			\includegraphics[width=\textwidth]{vr2_deterministische_automaat_minified}
+		\end{figure}
+		
+		
+	\end{enumerate}	
+}
+
+	\newpage
+	\section{Compilerfasen - II}
+	
+	De volgende figuur toont de intermediaire voorstellingen die gebruikt worden als interface tussen de verschillende fasen van een compiler. Vul de nummers in van de corresponderende fasen in een compiler.
+	\begin{figure}[ht]
+		\includegraphics[width=\textwidth]{compiler_fasen}
+	\end{figure}
+	\begin{enumerate}
+		\item Canonicalize
+		\item Code Emission
+		\item Control Flow Analysis
+		\item Data Flow Analysis
+		\item Environments
+		\item Frame Layout
+		\item Instruction Selection
+		\item Lex
+		\item Parse
+		\item Parsing Actions
+		\item Register Allocation
+		\item Semantic Analysis
+		\item Translate
+	\end{enumerate}
+	\answer{
+		\begin{figure}[ht]
+			\includegraphics[width=\textwidth]{compiler_fasen_solved}
+		\end{figure}
+	}
+
+	\newpage
+	\section{NFA}
+	\begin{figure}[ht]
+		\includegraphics[width=\textwidth]{vr4_niet_deterministische_automaat}
+	\end{figure}
+	\begin{enumerate}
+		\item Converteer deze NFA naar een DFA.
+		\item Welke reguliere expressie wordt hiermee voorgesteld?
+	\end{enumerate}
+	\answer{
+		\begin{enumerate}
+			\item Gebruik dezelfde methodologie als in vraag \ref{sec:lexicale_analyse}.	\begin{figure}[ht]
+				\centering
+				\includegraphics[width=0.5\textwidth]{vr4_deterministische_automaat}
+			\end{figure}
+		\item De reguliere expressie die voorgesteld wordt is $$\texttt{a+ba+bb}$$
+		\todo{hoe bekomen}
+		\end{enumerate}
+	}
+	
+	
+\end{document}
