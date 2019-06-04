@@ -86,7 +86,6 @@ class Evaluator(object):
     
             print(areaPrediction, areaGroundTruth, areaIntersection, ":", ratio , "% match")
             percentages.append(ratio)
-            #highgui.showImage("canvas", image)
         
         groups = [0] * 10
         for percentage in sorted(percentages):
@@ -121,4 +120,4 @@ class Evaluator(object):
 
 
 evaluator = Evaluator()
-evaluator.evaluateMatching()
+evaluator.evaluateSegmentation()

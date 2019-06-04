@@ -17,8 +17,8 @@ float match0(char * s) {/* find a zero */
 		return 0.;
 }
 	\end{lstlisting}
-	, dan worden volgende tokens gegenereerd, waarbij dat sommige tokens een {\color{red}attribuut} hebben:
-	\texttt{FLOAT ID({\color{red}match0}) LPAREN CHAR START ID({\color{red}s}) RPAREN LBRACE IF LPAREN BANG ID ({\color{red}strncmp}) LPAREN ID({\color{red}s}) COMMA STRING({\color{red}''0.0''}) COMMA NUM({\color{red}3}) RPAREN RPAREN  RETURN REAL({\color{red}0.0}) SEMI RBRACE EOF}
+	dan worden volgende tokens gegenereerd, waarbij dat sommige tokens een {\color{red}attribuut} hebben:
+	\texttt{FLOAT ID({\color{red}match0}) LPAREN CHAR STAR ID({\color{red}s}) RPAREN LBRACE IF LPAREN BANG ID ({\color{red}strncmp}) LPAREN ID({\color{red}s}) COMMA STRING({\color{red}''0.0''}) COMMA NUM({\color{red}3}) RPAREN RPAREN  RETURN REAL({\color{red}0.0}) SEMI RBRACE EOF}
 	\end{itemize}
 \section{Eindige automaten}
 	\begin{itemize}
@@ -119,7 +119,7 @@ int edges[][256] = { /* ... 0 1 2 ... - ... e f g h i j ... */
 	\item Drie functies:
 	\begin{enumerate}
 		\item \textbf{edge(s, c)} = alle NFA staten bereikbaar uit toestand $s$ over pijlen met transitiesymbool $c$.
-		\item \textbf{closure(S)} = de kleinste verzameling $T$ voor een subset $S$ waarvoor geldt:
+		\item \textbf{closure(S)} = de kleinste verzameling van staten die bereikbaar zijn voor het transitiesymbool $\epsilon$ voor elke staat in $S$:
 		$$
 		T = S \cup \bigg(\bigcup_{s \in T} \hbox{\textbf{edge}}(s, \epsilon)\bigg)
 		$$
@@ -157,7 +157,7 @@ int edges[][256] = { /* ... 0 1 2 ... - ... e f g h i j ... */
 		Via deze functie, de startstaat $s_1$ en input string $c_1, ..., c_k$ kan de NFA simulatie als volgt geschreven worden:
 			\begin{lstlisting}[escapeinside={(*}{*)}]
 (*$d \leftarrow \hbox{\textbf{closure}}(\{s_1\})$*)
-(*$\hbox{\textbf{for}} i \leftarrow 1\;\hbox{\textbf{to}}\;k$*)
+(*$\hbox{\textbf{for}}\; i \leftarrow 1\;\hbox{\textbf{to}}\;k$*)
   (*$d \leftarrow \hbox{\textbf{DFAedge}}(d, c_i)$*)
 			\end{lstlisting}
 	
@@ -168,7 +168,7 @@ int edges[][256] = { /* ... 0 1 2 ... - ... e f g h i j ... */
 (*$\hbox{states[0]} \leftarrow \{\};$*)
 (*$\hbox{states[1]} \leftarrow \hbox{\textbf{closure}}(\{s_1\});$*)
 (*$p \leftarrow 1;\qquad j \leftarrow 0;$*)
-(*$\hbox{\textbf{while}} j \leq p$*)
+(*$\hbox{\textbf{while}}\;j \leq p$*)
   (*$\hbox{\textbf{foreach}}\;c \in \Sigma$*)
   (*$e \leftarrow \hbox{\textbf{DFAedge}}(\hbox{states[j]}, c)$*)
   (*$\hbox{\textbf{if}}\;e == \hbox{states[i]}\;\hbox{for some}\; i\leq p$*)
