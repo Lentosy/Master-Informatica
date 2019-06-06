@@ -1,6 +1,6 @@
 \chapter{Abstracte syntax}
 \label{ch:abstract_syntax}
-Abstract syntax tree stelt eerder semantiek voor, parse trees de constructieregels. De abstract syntax tree wordt opgebouwd tijdens het parsen.
+De parse tree herkent strings van een bepaalde grammatica, maar het geeft geen betekenis aan deze strings. De abstract syntax tree kent semantische acties toe aan statements. De abstract syntax tree wordt 
 \section{Semantische acties}
 
 
@@ -100,6 +100,6 @@ Interpreteren met behulp van semantische acties is dus zeer haalbaar. In feite k
 	\caption{}
 	\label{fig:grammar_4_5}
 \end{grammarfigure}
-Grammatica 4.5 is ambigue. De binaire operatoren specificeren geen associativiteit. Dit is geen probleem aangezien de parser dit al beslist heeft. Dus de grammatica die de abstract syntax tree gebruikt mag wel ambigue zijn aangezien die dient om de semantiek te definiëren.
+Grammatica \ref{fig:grammar_4_5} is ambigue want de binaire operatoren specificeren geen associativiteit. Dit is geen probleem aangezien de parser dit al beslist heeft. De grammatica die de abstract syntax tree gebruikt mag wel ambigue zijn aangezien die dient om de semantiek te definiëren.
 \subsection{Posities}
 Als je tree opbouwt, wordt deze geanalyseerd om bijvoorbeeld types te checken. Bij foutboodschappen moet de compiler weten waar in de inputstroom deze fout gegenereerd wordt. Er kan een \textbf{positiestack} bijgehouden worden die de positie van elke token bevat.

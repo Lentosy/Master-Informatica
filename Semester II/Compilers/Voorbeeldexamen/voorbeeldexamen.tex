@@ -122,6 +122,259 @@
 		\todo{hoe bekomen}
 		\end{enumerate}
 	}
+
+	\newpage
+	\section{Parsing - I}
+	Gegeven de grammatica
+	\begin{align*}
+	S & \mapsto E \\
+	E & \mapsto E + T \\
+	E & \mapsto T \\
+	T & \mapsto F \\
+	F & \mapsto a \\
+	F & \mapsto b
+	\end{align*}
+
+	\begin{enumerate}
+		\item Welke zijn de items in de initiële toestand (1) van de LR(0) parser generator?
+		\item Teken de toestanden die bereikt worden na één shift of reduce actie van de LR(0) parser generator vanuit toestand 1. Teken ook de items in elke toestand.
+	\end{enumerate}
+	\answer{
+		\begin{enumerate}
+			\item 	Elke productieregel wordt een item in deze initiële toestand voor deze grammaatica.
+			\begin{figure}[ht]
+				\centering
+				\begin{tikzpicture}[state/.style={rectangle, draw, inner sep = 2mm}]
+				\node (1) [state] {
+					$\begin{aligned}
+					S & \mapsto .E \\
+					E & \mapsto .E + T \\
+					E & \mapsto .T \\
+					T & \mapsto .F \\
+					F & \mapsto .a \\
+					F & \mapsto .b
+					\end{aligned}$};
+				\node (label1) [anchor=north east, inner sep = 1pt] at (1.north east) {\textbf{1.}};
+				\end{tikzpicture}
+			\end{figure}
+			\item Vanuit de eerste toestand zijn er enkel shift acties mogelijk. 
+			\begin{figure}[ht]
+				\centering
+				\begin{tikzpicture}[state/.style={rectangle, draw, inner sep = 2mm}]
+				\node (1) [state] {
+					$\begin{aligned}
+					S & \mapsto .E \\
+					E & \mapsto .E + T \\
+					E & \mapsto .T \\
+					T & \mapsto .F \\
+					F & \mapsto .a \\
+					F & \mapsto .b
+					\end{aligned}$};
+				
+			\node (2) [state, above = 1.5cm of 1] {$
+				\begin{aligned}
+					S & \mapsto E. \\
+					E & \mapsto E. + T \\
+				\end{aligned}
+				$};
+			\node (3) [state, right = 1.5cm of 1] {$
+				\begin{aligned}
+				E & \mapsto T. \\
+				\end{aligned}
+				$};
+			\node (4) [state, below = 1.5cm of 3] {$
+				\begin{aligned}
+				T & \mapsto F. \\
+				\end{aligned}
+				$};
+			
+			\node (5) [state, left = 1.5cm of 1] {$
+				\begin{aligned}
+				F & \mapsto a. \\
+				\end{aligned}
+				$};
+			\node (6) [state, below = 1.5cm of 5] {$
+				\begin{aligned}
+				F & \mapsto b. \\
+				\end{aligned}
+				$};
+			
+			
+			
+			
+			\draw [->] (1) -- node[xshift=0.25cm] {E} (2);
+			\draw [->] (1) -- node[yshift=0.25cm] {T} (3);
+			\draw [->] (1) -- node[yshift=0.25cm] {F} (4);
+			\draw [->] (1) -- node[yshift=0.25cm] {a} (5);
+			\draw [->] (1) -- node[yshift=0.25cm] {b} (6);
+			
+			\node (label1) [anchor=north east, inner sep = 1pt] at (1.north east) {\textbf{1.}};
+			\node (label2) [anchor=north east, inner sep = 1pt] at (2.north east) {\textbf{2.}};
+			
+			\node (label3) [anchor=north east, inner sep = 1pt] at (3.north east) {\textbf{3.}};
+			\node (label4) [anchor=north east, inner sep = 1pt] at (4.north east) {\textbf{4.}};
+						
+			\node (label5) [anchor=north east, inner sep = 1pt] at (5.north east) {\textbf{5.}};
+			\node (label6) [anchor=north east, inner sep = 1pt] at (6.north east) {\textbf{6.}};
+
+			\end{tikzpicture}
+		\end{figure}
+	\end{enumerate}}
 	
+	\newpage
+	\section{Parsing - II}
+	Gegeven de volgende context-vrije grammatica:
 	
+	\centering
+	\begin{minipage}{0.5\textwidth}
+		\begin{enumerate}
+			\item[0.] $S  \mapsto E\$$
+			\item[1.] $E  \mapsto id$
+			\item[2.] $E  \mapsto id(E)$
+			\item[3.] $E  \mapsto E + id$
+		\end{enumerate}
+	\end{minipage}
+
+	\begin{enumerate}
+		\item Bouw een LR(0) DFA voor deze grammatica.
+		\item Is dit een LR(0) grammatica? Toon aan Waarom.
+		\item Is dit een SLR grammatica? Toon aan Waarom.
+		\item Is dit een LR(1) grammatica? Toon aan Waarom.
+	\end{enumerate}
+	\answer{
+		\begin{enumerate}
+			\item De LR(0) toestandenautomaat:
+			
+				\begin{figure}[ht]
+				\centering
+				\begin{tikzpicture}[state/.style={rectangle, draw, inner sep = 2mm}]
+				\node (1) [state] {
+					$\begin{aligned}
+						S & \mapsto .E\$ \\
+						E & \mapsto .id\\
+						E & \mapsto .id(E) \\
+						E & \mapsto .E + id
+					\end{aligned}$};
+				
+				\node (2) [state, right = 1.5cm of 1] {$
+					\begin{aligned}
+					S & \mapsto E.\$ \\
+					E & \mapsto E. + id\\
+					\end{aligned}
+					$};
+				
+				\node (3) [state, below = 1.5cm of 2] {$
+					\begin{aligned}
+					E & \mapsto E+.id \\
+					\end{aligned}
+					$};
+				\node (4) [state, right = 1.5cm of 3] {$
+					\begin{aligned}
+					E & \mapsto E+id. \\
+					\end{aligned}
+					$};
+				
+				\node (5) [state, below = 1.5cm of 1] {$
+					\begin{aligned}
+					E & \mapsto id. \\
+					E & \mapsto id.(E) \\
+					\end{aligned}
+					$};
+				
+				\node (6) [state, below = 1.5cm of 5] {$
+					\begin{aligned}
+					E & \mapsto id(.E) \\
+					E & \mapsto .id \\
+					E & \mapsto .id(E) \\
+					E & \mapsto .E + id
+					\end{aligned}
+					$};
+			   \node (7) [state, right = 1.5cm of 6] {$
+					\begin{aligned}
+					E & \mapsto id(E.) \\
+					E & \mapsto E. + id
+					\end{aligned}
+					$};
+				
+				\node (8) [state, right = 1.5cm of 7] {$
+					\begin{aligned}
+					E & \mapsto id(E). \\
+					\end{aligned}
+					$};
+				
+				\draw [->] (1) -- node[yshift=0.25cm] {E} (2);
+				\draw [->] (2) -- node[xshift=0.25cm] {+} (3);
+				\draw [->] (3) -- node[yshift=0.25cm] {id} (4);
+				\draw [->] (1) -- node[xshift=0.25cm] {id} (5);
+				\draw [->] ([xshift=-20pt] 5.south) -- node[xshift=-0.5cm] {(} ([xshift=-20pt] 6.north);
+				\draw [->] ([xshift=20pt] 6.north) -- node[xshift=0.5cm] {id} ([xshift=20pt] 5.south);
+				\draw [->] (6) -- node[yshift=0.25cm] {E} (7);
+				
+				\draw [->] (7) -- node[xshift=0.25cm] {+} (3);
+				\draw [->] (7) -- node[yshift=0.25cm] {)} (8);
+				
+				\node (label1) [anchor=north east, inner sep = 1pt] at (1.north east) {\textbf{1.}};
+				\node (label2) [anchor=north east, inner sep = 1pt] at (2.north east) {\textbf{2.}};
+				
+				\node (label3) [anchor=north east, inner sep = 1pt] at (3.north east) {\textbf{3.}};
+				\node (label4) [anchor=north east, inner sep = 1pt] at (4.north east) {\textbf{4.}};
+				
+				\node (label5) [anchor=north east, inner sep = 1pt] at (5.north east) {\textbf{5.}};
+				\node (label6) [anchor=north east, inner sep = 1pt] at (6.north east) {\textbf{6.}};
+				
+				\node (label7) [anchor=north east, inner sep = 1pt] at (7.north east) {\textbf{7.}};
+				\node (label8) [anchor=north east, inner sep = 1pt] at (8.north east) {\textbf{8.}};
+				
+				\end{tikzpicture}
+			\end{figure}
+		
+			\item Dit is geen LR(0) grammatica. De LR(0) parsetabel (tabel \ref{LR0PARSETABEL})  toont aan dat er een shift-reduce conflict is in toestand 5 voor symbool (.
+			\begin{table}[ht]
+				\centering
+				\begin{tabular}{c|ccccc|cc|}
+					& id & ( & ) & + & \$ & S & E \\
+					\hline 
+					1 & s5 & & & & & & g2 \\
+					2 & & & & s3 & a & & \\
+					3 & s4 & & & & & & \\
+					4 & r3 & r3 & r3 & r3 & r3 & & \\
+					5 & r1 & s6, r1 & r1 & r1 & r1 & & \\
+					6 & s5 & & & & & & g7 \\
+					7 & & & s8 & s3 & & & \\
+					8 & r2 & r2 & r2 & r2 & r2 & & \\
+					\hline
+				\end{tabular}
+			\caption{De LR(0) parsetabel.}
+			\label{LR0PARSETABEL}
+			\end{table}
+		
+			\item Voor de SLR parsetabel moet eerst de follow set bepaald worden van elke niet-terminaal dat niet $S$ is.
+			\begin{itemize}
+				\item FOLLOW($E$) = + )
+			\end{itemize}
+			De reductie voor elke niet-terminaal moet nu enkel uitgevoerd worden voor de terminalen in de follow set. De SLR parsetabel (tabel \ref{SLRPARSETABEL}) toont aan dat er geen shift-reduce conflicten zijn. Dit is een SLR grammatica.
+			\begin{table}[ht]
+				\centering
+				\begin{tabular}{c|ccccc|cc|}
+					& id & ( & ) & + & \$ & S & E \\
+					\hline 
+					1 & s5 & & & & & & g2 \\
+					2 & & & & s3 & a & & \\
+					3 & s4 & & & & & & \\
+					4 & & & r3 & r3 & & & \\
+					5 & & s6 & r1 & r1 & & & \\
+					6 & s5 & & & & & & g7 \\
+					7 & & & s8 & s3 & & & \\
+					8 & & & r2 & r2 & & & \\
+					\hline
+				\end{tabular}
+				\caption{De SLR parsetabel.}
+				\label{SLRPARSETABEL}
+			\end{table}
+			
+			\item Als een grammatica SLR is, is het ook een LR(1) grammatica vanwege de hiërarchische ordening.  
+			
+		\end{enumerate}
+
+	}
 \end{document}
