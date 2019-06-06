@@ -336,4 +336,169 @@ Het probleem met $LL(k)$ parsers is dat ze moeten voorspellen welke productiereg
 	\end{itemize}
 \end{itemize}
 
+
+
+\subsection{LR($0$) parser}
+
+Eerst en vooral moet de toestandsautomaat opgesteld worden. De toestandsautomaat voor een LR(0) bestaat uit toestanden die elk een aantal \textbf{items} kan bevatten. Een item bestaat uit een \textbf{productieregel} en de \textbf{positie} (aangegeven met een punt). De toestandsautomaat voor grammatica \ref{grammar:3_20} wordt gedemonstreerd op figuur \ref{fig:toestandsautomaat_3_20}. De eerste toestand bevat altijd de startproductie $S'$. In dit geval is dat de productieregel $S' \mapsto S\$$. Er wordt een puntje geplaatst voor de $S$ om aan te tonen dat deze $S$ nog niet op de stapel zit. Als er een puntje staat voor een niet-terminaal, moeten alle productieregels voor die niet-terminaal ook opgenomen worden. Voor elke productieregel in een toestand, kan de volgende token op de stapel geplaatst worden en moet er dus een nieuwe toestand aangemaakt worden per token. Het puntje verschuift dan voorbij de token die op de stapel geplaatst wordt. Als er in dit geval terug een puntje staat voor een niet-terminaal (bv. toestand 3, $S \mapsto (.L)$) moet opnieuw de bijhorende productieregels van die niet-terminaal ook in de toestand opgenomen worden. Als er een puntje op het einde staat (bv. toestand 2), dan kan de reductie actie toegepast worden. De overeenkomstige productieregel wordt toegepast en alle bijhorende tokens worden van de stapel genomen.
+\begin{grammarfigure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{grammar_3_20}
+	\caption{}
+	\label{grammar:3_20}
+\end{grammarfigure}
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.7\textwidth]{toestandsautomaat_3_20}
+	\caption{LR(0) toestanden voor grammatica \ref{grammar:3_20}}
+	\label{fig:toestandsautomaat_3_20}
+\end{figure}
+
+Op die manier kan direct shift-reduce conflicten herkent worden. Als er in een toestand een productieregel is met een puntje op het einde, maar ook een productieregel zonder puntje op het einde, dan is er een \textbf{shift-reduce} conflict. Voor grammatica \ref{grammar:3_20} wordt de LR(0) \textbf{parsetabel} getoond in tabel \ref{table:parsingtable_3_20}. Deze tabel beschrijft dezelfde informatie. Een \textbf{shift} wordt voorgesteld door $s$. In toestand 3 kan $x$ op de stapel geplaatst worden, en moet er naar toestand 2 gegaan worden. Een \textbf{reduce} wordt voorgesteld door een $r$. Bij een LR(0) parser moet de reductieregel voor eender welke volgende terminaal uitgevoerd worden (aangezien 0 lookahead symbols). In toestand 6 wordt productieregel $1$ toegepast. Als er een niet-terminaal de volgende token is, wordt niet de shift, maar de \textbf{goto} operatie gebruikt, aangeduid met een $g$. In toestand 8 kan naar toestand 9 gegaan worden door $S$ te verwerken. In de tabel kunnen ook shift-reduce conflicten gezien worden als er in één cel zowel een shift als reduce operatie staat.
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{l|lllll|ll|}
+		  & (  & )  & x  & ,  & \$ & S  & L  \\
+		  \hline
+		1 & s3 &    & s2 &    &    & g4 &    \\
+		2 & r2 & r2 & r2 & r2 & r2 &    &    \\
+		3 & s3 &    & s2 &    &    & g7 & g5 \\
+		4 &    &    &    &    & a  &    &    \\
+		5 &    & s6 &    & s8 &    &    &    \\
+		6 & r1 & r1 & r1 & r1 & r1 &    &    \\
+		7 & r3 & r3 & r3 & r3 & r3 &    &    \\
+		8 & s3 &    & s2 &    &    & g9 &    \\
+		9 & r4 & r4 & r4 & r4 & r4 &    &   \\
+		\hline
+	\end{tabular}
+	\caption{LR(0) parsetabel voor grammatica \ref{grammar:3_20}}.
+	\label{table:parsingtable_3_20}
+\end{table}
+
+Grammatica \ref{grammar:3_20} is een geldige LR(0) grammatica aangezien er geen shift-reduce conflicten zijn bij de LR(0) parsetabel. Voor grammatica \ref{grammar:3_23} bestaat er geen geldige LR(0) parser. Op figuur \ref{fig:shift_reduce_conflict} worden de shift-reduce conflicten voorgesteld in zowel de tabel als de toestandsautomaat.
+\begin{grammarfigure}
+	\centering
+	\includegraphics[width=0.7\textwidth]{grammar_3_23}
+	\caption{}
+	\label{grammar:3_23}
+\end{grammarfigure}
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.7\textwidth]{shift_reduce_conflict}
+	\caption{Shift-reduce conflicten bij een LR(0) parser}.
+	\label{fig:shift_reduce_conflict}
+\end{figure}
+
+
+
+\subsection{SLR parser}
+Een LR(0) parser heeft als nadeel dat de reductie voor elke terminaal moet uitgevoerd worden. Een SLR parser minimaliseerd dit door enkel reducties voor $A \mapsto \alpha$ toe te voegen voor terminalen die in de follow set zitten van $A$. Een SLR parser is geen echte lookahead parser want enkel voor het vullen van de tabel wordt lookahead gebruikt. De SLR parsetabel voor grammatica \ref{grammar:3_23} wordt getoond op tabel \ref{table:slr_parse_table_3_23}.
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{l|lll|ll|}
+		& x  & +  & \$ & E  & T  \\
+		\hline
+		1 & s5 &    &    & g2 & g3 \\
+		2 &    &    &    &    &    \\
+		3 &    & s4 & r2 &    &    \\
+		4 & s5 &    &    & g6 & g3 \\
+		5 &    & r3 & r3 &    &    \\
+		6 &    &    & r1 &    &   \\
+		\hline
+	\end{tabular}
+\caption{SLR parsetabel voor grammatica \ref{grammar:3_23}.}
+\label{table:slr_parse_table_3_23}
+\end{table}
+
+\subsection{LR($1$) parser}
+Bij zowel LR(0) als SLR wordt er geen gebruik gemaakt van lookahead symbols. Bij een LR(1) parser wordt er 1 token als lookahead gebruikt. De toestandsautomaten zien er ook een beetje anders uit. Een \textbf{item} bevat nu niet alleen de \textbf{productieregel} en \textbf{positie}, maar ook het \textbf{lookahead symbool}. Een item $A \mapsto \alpha.\beta, x$ toont aan dat $\alpha$ op de stack zit, en dat de volgende string van de inputstroom kan afgeleidt worden van $\beta x$. Bij de eerste staat van de toestandsautomaat wordt opnieuw eerst de startproductie $S \mapsto S\$$ opgenomen. Die heeft als lookahead symbool $?$, om dat de EOF marker niet op de stapel zal geplaatst worden. Zoals bij de LR(0) toestandenautomaat, wordt ook de positie aangeduid met een punt. Nu volgt het \textbf{Closure(I)} algoritme. Dit is een fixed point algoritme die de toestand zal uitbreiden met nieuwe productieregels.
+
+\begin{lstlisting}[escapeinside={(*}{*)}]
+Closure(I) =
+  repeat
+    for any item (A (*$\mapsto \alpha.X\beta, \zeta$*))
+      for any production (*$X \mapsto \gamma$*)
+        for any (*$\omega \in FIRST(\beta\zeta)$*)
+          (*$I \leftarrow I \cup \{(X \mapsto .\gamma, \omega)\}$*)
+  until I does not change
+  return I
+\end{lstlisting}
+
+In woorden uitgelegd: 
+\begin{enumerate}
+	\item De eerste for-loop overloopt elke productieregel waarbij er een puntje staat voor een niet-terminaal $X$. Deze $X$ wordt gevolgd door een string $\beta$. De string $\alpha$ is minder relevant aangezien die ook de lege string kan zijn. Het symbool $\zeta$ is het lookahead symbool voor deze productieregel. 
+	\item De tweede for-loop overloopt elke productieregel van de gevonden niet-terminaal $X$, $X \mapsto \gamma$.
+	\item Dan moet de \texttt{FIRST} set bepaald worden van $\beta\zeta$. Voor elk van deze terminalen $\omega$ in de first set wordt de productieregel $X \mapsto .\gamma, \omega$ toegevoegd.
+\end{enumerate}
+
+Verder verloopt het opbouwen van de toestandsautomaat zoals bij een gewone LR(0) parser. Toepassing van dit algoritme geeft de toestandsautomaat zoals op figuur \ref{fig:parsing_table_3_26}.
+\begin{grammarfigure}
+	\centering
+	\includegraphics[width=0.5\textwidth]{grammar_3_26}
+	\caption{}
+	\label{grammar:3_26}
+\end{grammarfigure}
+
+De \textbf{reduce} wordt nu enkel toegepast bij de terminalen die als look-ahead bij die productieregel zijn. De parsetabel wordt getoond op tabel \ref{table:slr_parse_table_3_26_LR1}.
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{l|llll|lll|}
+		  & x   & *  & = & \$ & S  & E  & V \\
+		\hline
+		1 & s8  & s6 &   &    & g2 & g5 & g3 \\
+		2 &     &    &   &  a &    &    &    \\
+		3 &     &    & s4& r3 &    &    &    \\
+		4 & s11 & s13&   &    &    & g9 &  g7  \\
+		5 &     &    &   & r2 &    &    &    \\
+		6 & s8  & s6 &   &    &    & g10& g12\\
+		7 &     &    &   & r3 &    &    &    \\
+		8 &     &    &r4 & r4 &    &    &    \\
+		9 &     &    &   & r1 &    &    &    \\
+		10 &     &    & r5& r5 &    &    &    \\
+		11 &     &    &   &  r4&    &    &    \\
+		12 &     &    & r3& r3 &    &    &    \\
+		13 & s11 & s13&   &    &    & g14 & g7   \\
+		14 &     &    &   &  r5  &    &    &    \\
+		\hline
+	\end{tabular}
+	\caption{LR(1) parsetabel voor grammatica \ref{grammar:3_23}.}
+	\label{table:slr_parse_table_3_26_LR1}
+\end{table}
+
+
+\begin{figure}[ht]
+	\centering
+	\includegraphics[width=0.75\textwidth]{parsing_table_3_26}
+	\caption{De LR(1) parsetabel voor grammatica \ref{grammar:3_26}. Productieregels die meerdere malen voorkomen met verschillende lookahead symbolen, worden samengevoegd. Op die manier bevat elk item nu een verzameling lookahead symbolen.}
+	\label{fig:parsing_table_3_26}
+\end{figure}
+
+
+\subsection{LALR($1$) parser}
+Een LR(1) parsetabel kan vrij groot worden, met veel staten. Een kleinere tabel kan bekomen worden door items samen te voegen die identiek zijn behalve voor de lookahead verzameling. Zo wordt de LALR(1) parser bekomen. Zo bevatten staten 6 en 13 op figuur \ref{fig:parsing_table_3_26} dezelfde productieregels en ze verschillen enkel in lookahead symbolen. Die kunnen samengevoegd worden. De resulterende LALR(1) parsetabel is te zien in tabel \ref{table:slr_parse_table_3_26_LALR}. 
+
+\begin{table}[ht]
+	\centering
+	\begin{tabular}{l|llll|lll|}
+		& x   & *  & = & \$ & S  & E  & V \\
+		\hline
+		1 & s8  & s6 &   &    & g2 & g5 & g3 \\
+		2 &     &    &   &  a &    &    &    \\
+		3 &     &    & s4& r3 &    &    &    \\
+		4 & s8  & s6 &   &    &    & g9 &  g7  \\
+		5 &     &    &   & r2 &    &    &    \\
+		6 & s8  & s6 &   &    &    & g10& g7\\
+		7 &     &    & r3 & r3 &    &    &    \\
+		8 &     &    &r4 & r4 &    &    &    \\
+		9 &     &    &   & r1 &    &    &    \\
+		10 &     &    & r5& r5 &    &    &    \\
+		\hline
+	\end{tabular}
+	\caption{LALR(1) parsetabel voor grammatica \ref{grammar:3_23}.}
+	\label{table:slr_parse_table_3_26_LALR}
+\end{table}
+
 \section{Local Error Recovery}
