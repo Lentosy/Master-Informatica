@@ -17,3 +17,21 @@ Twee heuristieken die het kleuren zeker niet moeilijker maken:
 	\item heuristiek van Briggs: als samengevoegde knoop minder dan $K$ buren van significante graad heeft
 	\item heuristiek van George: Elke buur $t$ van $a$ is ofwel een buur van $b$ ofwel niet van significante graad.
 \end{itemize}
+
+Figuur \ref{fig:graph_coalescing} illustreert het algoritme en bestaat uit een aantal operaties.
+
+\begin{figure}
+	\includegraphics[width=\textwidth]{graph_coalescing}
+	\caption{Graafkleuring met \textit{coalescing}.}
+	\label{fig:graph_coalescing}
+\end{figure}
+
+\begin{itemize}
+	\item \textbf{Build:} Construeer de interferentiegraaf en markeer elke knoop als \textit{move-related} of \textit{non-move-related}. Een \textit{move-related} knoop is een knoop dat ofwel het doel of de bron is van een \textit{move} instructie.
+	\item \textbf{Simplify:} Verwijder iteratief één \textit{non-move-related} knoop die  graad minder dan $K$ heeft.
+	\item \textbf{Coalesce:} Pas \textit{conservative coalescing} toe op de gereduceerde graaf met behulp van Briggs of George. \textbf{Simplify} en \textbf{Coalesce} wordt uitgevoerd tot dat er 
+	\item \textbf{Freeze:}
+	\item \textbf{Potential Spill:}
+	\item \textbf{Select:}
+	\item \textbf{Actual spill:}
+\end{itemize}

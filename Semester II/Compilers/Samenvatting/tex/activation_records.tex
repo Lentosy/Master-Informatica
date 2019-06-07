@@ -50,22 +50,24 @@ val w = j(7)
 
 
 
-Wat is het verschill tussen een caller-safed register en een callee-saved register
+Wat is het verschill tussen een caller-safed register en een callee-saved register?
+\begin{lstlisting}
+	ADD		R1, R2, R3 // R1 = R2 + R3
+	CALL	F
+	MUL		R4, R1, R7 // R4 = R1 * R7
+	\end{lstlisting}
+	Gaat F de waarde R1 overschrijven of niet? Als dit onbepaald is, is het geen geldige code. Een callee-saved register is de restrictie dat F deze waarde niet kan aanpassen. Een caller-safed register legt de restrictie op aan de caller van F. De assembly moet dan uitgebreidt worden:
+	\begin{lstlisting}
+	ADD		R1, R2, R3
+	ST		R1, SP[...] // store R1 
+	CALL	F
+	LD      R1, SP[...] // load R1
+	MUL		R4, R1, R7
+	\end{lstlisting}
+	Een deel van de registers worden caller-safed gemaakt, de rest is dan callee-safed. Dit wordt manueel vastgelegd. De compiler kan dan oproepen optimaliseren.
 
-		\begin{lstlisting}
-		ADD		R1, R2, R3 // R1 = R2 + R3
-		CALL	F
-		MUL		R4, R1, R7 // R4 = R1 * R7
-		\end{lstlisting}
-		Gaat F de waarde R1 overschrijven of niet? Als dit onbepaald is, is het geen geldige code. Een callee-saved register is de restrictie dat F deze waarde niet kan aanpassen. Een caller-safed register legt de restrictie op aan de caller van F. De assembly moet dan uitgebreidt worden:
-		\begin{lstlisting}
-		ADD		R1, R2, R3
-		ST		R1, SP[...] // store R1 
-		CALL	F
-		LD      R1, SP[...] // load R1
-		MUL		R4, R1, R7
-		\end{lstlisting}
-		Een deel van de registers worden caller-safed gemaakt, de rest is dan callee-safed. Dit wordt manueel vastgelegd. De compiler kan dan oproepen optimaliseren.
+
+
 
 
 
@@ -91,7 +93,7 @@ Een variable \textit{escapet} uit een stack frame als:
 	\item of hij geaccessed wordt vanuit een geneste functie.
 \end{itemize}
 
-Een veranderlijke is \textit{memory-resident} (op de stack plaatsen) als
+Een veranderlijke is \textit{memory-resident} (in het geheugen steken) als
 \begin{itemize}
 	\item hij escapet
 	\item of niet in een register past
@@ -124,7 +126,7 @@ Er is een abstracte representatie nodig van een frame want deze hangt af van de 
 	\item \texttt{F\_access}: datastructuur die specifieert hoe lokale variabelen moeten geaccesseerd worden (register of geheugen).
 	\item \texttt{F\_accessList}: Lijst van \texttt{F\_access} structuren.
 	\item \texttt{newFrame(Temp\_label name, U\_boolList formals)}: formals bevat booleans die voor elke parameter aangeeft of hij deze escapet moet worden of niet.
-	\item \texttt{allocLocal(F\_frame f, bool escape)}: maakt plaats voor nieuwe veranderlijke in frame $f$, en eventueel is deze escapet.
+	\item \texttt{allocLocal(F\_frame f, bool escape)}: maakt plaats voor nieuwe veranderlijke in frame $f$, en eventueel wordt hij in het geheugen geplaatst in plaats van de stack.
 \end{itemize}
 
 Voorbeeld:
@@ -141,7 +143,7 @@ F_Frame frame = F_frame(g, U_BoolList(TRUE,
 	\label{fig:create_frames}
 \end{figure}
 
-Bij Pentium moet alles op de stack. In MIPS wordt standaard de eerste 3 argumenten in registers gestoken, maar $x_1$ escapet dus wordt toch in de stack gestoken. 
+Bij Pentium moet alles op de stack. In MIPS wordt standaard de eerste 3 argumenten in registers gestoken, maar $x_1$ escapet dus wordt hij in het geheugen bewaard.
  
  \subsection{Escapes berekenen}
  Een variable \textit{escapet} uit een stack frame als:

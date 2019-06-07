@@ -20,7 +20,7 @@ void foobar(float b){
 }
 \end{lstlisting}
 
-In code \protect\ref{code:symboltable_example} wordt er een nullbyte weggeschreven naar $b$. Is dit een string, float, 32 bit integer, 64 bit integer? Het algemene probleem is dat er verschillende scopes zijn, en binnen elke scope kan dezelfde variabele identifier gebruikt worden. Via \textbf{symbooltabellen} wordt dit efficiënt opgelost.
+In code \protect\ref{code:symboltable_example} wordt er een nullbyte weggeschreven naar $b$. Is dit een string, float, 32 bit integer of 64 bit integer? Het algemene probleem is dat er verschillende scopes zijn, en binnen elke scope kan dezelfde variabele identifier gebruikt worden. Via \textbf{symbooltabellen} wordt dit efficiënt opgelost.
 Een symbooltabel bestaat uit een \textbf{omgeving} $\sigma_i$ en een verzameling \textbf{bindings}:
 $$\sigma_1 = \{g \mapsto string, a \mapsto int\}$$
 

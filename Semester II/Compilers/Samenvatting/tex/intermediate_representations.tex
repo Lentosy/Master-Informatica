@@ -31,18 +31,19 @@ Typen van statements:
 	\item \texttt{MOVE(TEMP t, e)}: evalueer $e$ en wijs toe aan temp $t$.
 	\item \texttt{MOVE(MEM($e_1$), $e_2$)}: evalueer $e_1$ tot adres $a$, evalueer $e_2$ en schijf het in de $w$ bytes vanaf $a$.
 	\item \texttt{EXP(e)}: evalueer $e$ en negeer het resultaat.
-	\item \texttt{JUMP(e, labs)}: evalueer $e$ tot een adres en spring er naar. 
-	\item \texttt{CJUMP(e ...)}:
+	\item \texttt{JUMP(e, labs)}: evalueer $e$ tot een adres en spring er naar. $labs$ is een lijst met mogelijke doelen.
+	\item \texttt{CJUMP($o, e_1, e_2, t, f$)}: Conditionele sprong met relationele operator $o$ toegepast op $e_1$ en $e_2$. Afhankelijk van het resultaat wordt er naar $t$ of $f$ gesprongen.
 	\item \texttt{SEQ($s_1$, $s_2$)}: sequentie van statements 
 \end{itemize}
 
-Er is geen 1-op-1 mapping van \texttt{A\_EXP} naar \texttt{T\_EXP}.
+\section{AST naar IRT}
+Er is geen 1-op-1 mapping van \texttt{A\_EXP} naar \texttt{T\_EXP}. Sommige expressies hebben geen return value en worden beter gerepresenteerd door \texttt{T\_STM}. Andere expressies met logische operators zoals $a > b$ worden beter voorgesteld als een conditionele jump: een combinatie van \texttt{T\_STM} en twee \texttt{TEMP\_LABEL} adressen.
 
-\QA{Waarom staan er NULL pointers?}{We weten nog niet naar waar we moeten springen. Er moeten labels inkomen, maar we kennen ze nog niet. Voorlopig dienen die dus als placeholders.}
+\QA{Waarom staan er NULL pointers (slide 13)?}{We weten nog niet naar waar we moeten springen. Er moeten labels inkomen, maar we kennen ze nog niet. Voorlopig dienen die dus als placeholders.}
 
 patchlist bevat de labels (in gelinkte lijst vorm) in geval van true en geval van false. De constructor bevat het hele pad in de IR tree naar het lege veld vanaf de root van het statement ($s_1$ in voorbeeld). Als de waarde 0 of 1 in \texttt{flag} moet komen kan de expressie geconverteerd worden naar een andere expressies. Program 7.3: steek 1 in temporary, als we false uitkomen wordt 0 in temporary gestoken. De doPatch functie kent een label toe aan een bepaald veld in de boom.
 
-\subsection{Omzetting enkelvoudige veranderlijken}
+\section{Omzetting enkelvoudige veranderlijken}
 
 $+$ symbool is dereference operator
 

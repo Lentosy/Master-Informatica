@@ -19,4 +19,18 @@ Door associativiteit kan de tree omgevormd worden tot een lijst van statements. 
 Algemene definitie: een sequentie van statements. Als één statement uitgevoerd wordt, moeten alle andere statements van dit block uitgevoerd worden. Een basic block start met een \texttt{LABEL} statement en eindigt met een \texttt{JUMP} of \texttt{CJUMP} statement.
 
 \subsection{Traces aanmaken}
-Een trace is een sequentie van basisblokken die mogelijk na elkaar uitgevoerd kunnen worden. De trace kan nog opgekuist worden zodat het false pad van een basisblok gevolgd wordt door zijn opvolger binnen een trace.
+Een trace is een sequentie van basisblokken die mogelijk na elkaar uitgevoerd kunnen worden. De trace kan nog opgekuist worden zodat het false pad van een basisblok gevolgd wordt door zijn opvolger binnen een trace. 
+\begin{itemize}
+	\item Als een \texttt{CJUMP} gevolgd wordt door zijn true label kan de true en false labels omgewisseld worden. De sprongconditie moet ook geïnverteerd worden.
+	\item Als een \texttt{CJUMP} niet gevolgd wordt door één van zijn labels:
+	
+	Vervang $$\texttt{CJUMP}(cond, a, b, t, f)$$
+	
+	door
+	\begin{align*}
+		& \texttt{CJUMP}(cond, a, b, t, f) \\
+		& \texttt{LABEL}(f') \\
+		& \texttt{JUMP}(\texttt{NAME} f) \\
+	\end{align*}
+\end{itemize}
+
