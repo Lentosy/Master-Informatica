@@ -6,11 +6,35 @@
 			#1
 }
 
+
 \begin{document}
 	\maketitle{Compilers - Voorbeeldexamen}
 	\tableofcontents
 	\chapter{Vragen}
-	\section{Compilerfasen - I}
+	\newpage
+\section{Grammatica}
+	Gegeven de taal $L = \{a^mb^nc^p\}$ met $m > p$.
+	\begin{enumerate}
+		\item Kan een reguliere expressie gevormd worden die de woorden uit deze taal herkent? Waarom wel/niet?
+		\item Maak een niet-ambigue grammatica voor taal L.
+		\item Kan de taal uitgebreidt worden met de woorden waarvoor geldt $m < p$ en $m \neq p$? Geef de aangepaste grammatica.
+	\end{enumerate} 
+
+	\answer{
+		\begin{enumerate}
+			\item xd
+
+		\end{enumerate}
+	}
+	\newpage
+\section{Deterministische Eindige Automaten}
+	Herschrijf de volgende deterministische eindige automaat als een reguliere expressie.
+	\begin{figure}
+		\includegraphics[width=\textwidth]{dfa_to_re}
+	\end{figure}
+	$$\texttt{[a-z][0-9a-z]*|[0-9]+(e[0-9|+|-][0-9]*)+}$$
+	\newpage
+\section{Compilerfasen - I}
 	Gegeven de opeenvolgende fasen van een compiler, geef aan de programmavoorstellingen, grafen of datastructuren die aan het \textit{eind} van elke fase geproduceerd worden. Geef uw antwoord in de vorm: a-7, b-3, ...
 	\begin{table}[ht]
 		\begin{tabular}{l l}
@@ -30,7 +54,7 @@
 		\end{tabular}
 	\end{table}
 
-	\answer{a-7, b-10, c-?, d-?, e-?, f-9, g-?, h-6, i-?, j-8}
+	\answer{a-7, b-10, c-4, d-3, e-1, f-9, g-2, h-5, i-6, j-8}
 
 	\newpage
 	\section{Lexicale analyse}
@@ -102,6 +126,53 @@
 			\includegraphics[width=\textwidth]{compiler_fasen_solved}
 		\end{figure}
 	}
+
+	\newpage
+	\section{Compilerfasen - III}
+	\begin{enumerate}
+		\item Onderlijn de zo goed als verplichte analyse- en transformatiestappen in een complete compiler in de onderstaande figuur. Onderlijn dus niet de optionele optimalisaties en enkel daarvoor benodigde analyses.
+		\item Geef met pijlen met volle lijnen de volgorde aan waarin die verplichte stappen normaal uitgevoerd worden.
+		\item Geef met pijlen met stippelijnen aan in welke volgorde en waar tussen de verplichte stappen de optionele analyses en transformaties normaal uitgevoerd worden.
+	\end{enumerate}
+
+	\newpage
+	\section{Vergelijkingen}
+	Bij elke set vergelijkingen passen één of meerdere termen uit onderstaand lijstje. Welke?
+	\begin{enumerate}
+		\item voorwaarts
+		\item achterwaarts
+		\item cascading analysis
+		\item liveness analysis
+		\item available expression analysis
+		\item generational collection
+		\item worklist
+		\item reaching definition analysis
+		\item dominator analysis
+		\item initialisatie normaal gezien met lege sets
+		\item initialisatie normaal gezien met volle sets
+	\end{enumerate}
+	\begin{table}[ht]
+		\centering
+		\begin{tabular}{| l | l |}
+			\hline
+			vergelijkingen & bijpassende termen \\
+			\hline
+			$in[n] = \bigcup_{p \in pred[n]} out[p]$ & 1,8,10 \\
+			$out[n] = gen[n] \cup (in[n] - kill[n])$ & \\
+			\hline
+			$in[n] = \bigcap_{p \in pred[n]} out[p]$ & 1, 5, 11\\
+			$out[n] = gen[n] \cup (in[n] - kill[n])$ & \\
+			\hline
+			$in[n] = use[n] \cup (out[n] - def[n])$ & 2, 4, 10\\
+			$out[n] = \bigcup_{s \in succ[n]} in[s]$ & \\
+			\hline
+			$D[n] = \{n\} \cup \bigg(\bigcap_{p \in pred[n]} D[p]\bigg)$ & 1, 9, 11\\
+			\hline
+			$in[n] = gen[n] \cup (out[n] - kill[n])$ & \\
+			$out[n] = \bigcup_{s \in succ[n]} in[s]$ & \\
+			\hline
+		\end{tabular}
+	\end{table}
 
 	\newpage
 	\section{NFA}
@@ -224,16 +295,14 @@
 	\newpage
 	\section{Parsing - II}
 	Gegeven de volgende context-vrije grammatica:
+
 	
-	\centering
-	\begin{minipage}{0.5\textwidth}
 		\begin{enumerate}
 			\item[0.] $S  \mapsto E\$$
 			\item[1.] $E  \mapsto id$
 			\item[2.] $E  \mapsto id(E)$
 			\item[3.] $E  \mapsto E + id$
 		\end{enumerate}
-	\end{minipage}
 
 	\begin{enumerate}
 		\item Bouw een LR(0) DFA voor deze grammatica.
@@ -376,5 +445,245 @@
 			
 		\end{enumerate}
 
+	}
+\newpage
+\section{Liveness en registerallocatie}
+	Gegeven volgend programma:
+	\begin{lstlisting}
+	1.  a = 1
+	2.  b = 2
+	3.  c = a + b
+	4.  d = a
+	5.  e = c + 2*b
+	6.  f = b + e
+	7.  return [d,f]
+	\end{lstlisting}
+	\begin{enumerate}
+		\item Doe de liveness analyse.
+		\item Teken de interferentiegraaf.
+		\item Maak een registerallocatie via graafkleuring, met het minimum aantal registers.
+	\end{enumerate}
+
+	\answer{
+		\begin{enumerate}
+			\item Deel het programma op in individuele instructies en bepaal per instructie zijn succesor set, use set en def set. Pas daarna het iteratief algoritme toe om de in en out sets te berekenen.
+			\begin{align*}
+				in[n] & = use[n] \cup (out[n] - def[n])\\
+				out[n] & = \bigcup_{s \in succ[n]} in[s]
+			\end{align*}
+			\begin{table}[ht]
+				\centering
+				\begin{tabular}{| c | c c c || l l | l l|}
+					\hline
+								& Succ & Use & Def & Out        	& In				\\
+					\hline
+					7          &  /   & d,f &  /  &            	&  d,f   			\\
+					6          &  7   & b,e &  f  & d,f        	&  b,d,e		\\
+					5          &  6   & b,c &  e  & b,d,e 		&  c,b,d		\\
+					4          &  5   &  a  &  d  & c,b,d    	&  a,b,c			\\
+					3          &  4   & a,b &  c  & a,b,c     	&  a,b		\\
+					2          &  3   &  /  &  b  & a,b     	&  a    		\\
+					1          &  2   &  /  &  a  & a        	&  /     		\\
+					\hline
+				\end{tabular}
+			\end{table}
+			\item De interferentiegraaf wordt bekomen door variabelen te verbinden die op hetzelfde moment live kunnen zijn (in set). De graaf is te zien op figuur \ref{fig:interferentie_graaf}
+			\begin{figure}
+				\includegraphics[width=0.5\textwidth]{interferentie_graaf}
+				\caption{De interferentiegraaf.}
+				\label{fig:interferentie_graaf}
+			\end{figure}
+			\item Er zijn minimum 3 registers nodig aangezien er zeker drie variabelen op hetzelfde moment nodig zullen zijn (afleiden uit de in set). Volgende procedure wordt uitgevoerd:
+			\begin{enumerate}
+				\item Simplify \textbf{f}.
+				\item Simplify \textbf{e}.
+				\item Simplify \textbf{d}.
+				\item Simplify \textbf{c}.
+				\item Simplify \textbf{b}.
+				\item Simplify \textbf{a}.
+				\item Select \textbf{a} - rood.
+				\item Select \textbf{b} - groen.
+				\item Select \textbf{c} - blauw.
+				\item Select \textbf{d} - rood.
+				\item Select \textbf{e} - blauw.
+				\item Select \textbf{f} - groen.
+
+			\end{enumerate}
+			De resulterende graaf is te zien op figuur \ref{fig:interferentie_graaf_gekleurd}. Er kan dus afgeleidt worden dat c en d 
+			\begin{figure}
+				\includegraphics[width=0.5\textwidth]{interferentie_graaf_gekleurd}
+				\caption{De gekleurde interferentiegraaf.}
+				\label{fig:interferentie_graaf_gekleurd}
+			\end{figure}
+		\end{enumerate}
+
+	}
+	\newpage
+\section{Registerallocatie}
+	\begin{enumerate}
+		\item Beschrijf kort de verschillende fasen van het registerallocatie-algoritme.
+		\item Wat is de betekenis van "moves"?
+		\item Hoe worden ze vermeden/weggewerkt?
+		\item Geef de 2 algoritmen + tekening. 
+	\end{enumerate} 
+	\answer{
+		\begin{enumerate}
+			\item Er zijn twee varianten van het registerallocatie-algoritme. Eerst wordt het algoritme uitgelegd zonder \textit{conservative coalescing}, daarna met \textit{conservative coalescing}. Beide algoritmen hebben een restrictie op het aantal kleuren ($K$) die gebruikt mogen worden.
+			\begin{enumerate}
+				\item Als er geen \textit{conservative coalescing} gebruikt wordt, dan zijn er 5 fasen:
+				\begin{enumerate}
+					\item \textbf{Build}: deze fase stelt de interferentiegraaf op door behulp van liveness analyse.
+					\item \textbf{Simplify}: Per iteratie in deze stap wordt er een knoop op een stack geplaatst en die minder dan $K$ buren heeft. Die knoop zal zeker een kleur kunnen krijgen. Deze stap wordt herhaald totdat er ofwel geen knopen meer zijn in de graaf ofwel als er geen knopen meer zijn die minder dan $K$ buren hebben.
+					\item \textbf{Spill}: Als alle resterende knopen $K$ of meer buren hebben, dan wordt een willekeurige knoop gekozen om te \textit{spillen} en wordt deze ook op de stack geplaatst. Spilling zorgt ervoor dat de temporary in het geheugen bewaard zal worden in plaats van het register, dus de interferentie tussen de temporary en alle andere temporaries verdwijnt.
+					\item \textbf{Select}: Vanaf dat elke knoop zich op de stack bevindt, worden ze één per één terug afgehaald en krijgen ze een kleur toegekend. Knopen die met de \textbf{simplify} opdracht op de stack geplaatst zijn kunnen zeker een kleur krijgen. Wanneer een knoop met de \textbf{spill} opdracht op de stack geplaatst wordt, is er geen garantie dat deze gekleurd kan worden. Als ze niet gekleurd kan worden praten we over een echte spill in plaats van een potentiële spill.
+					\item \textbf{Start Over}: Als de \textbf{select} fase niet alle knopen heeft kunnen kleuren (door het plaatsvinden van echte spills), wordt het algoritme opnieuw uitgevoerd met een licht gewijzigd programma: de temporary die de spill veroorzaakte wordt nu in het geheugen opgeslagen na elke definitie en uit het geheugen gelezen voor elke use. Dit zorgt voor meer temporaries, maar ze hebben elk een kortere liveness range zodat ze minder interferen met andere temporaries.
+				\end{enumerate}
+				\item Er kan ook \textit{conservative coalescing} toegepast worden. Dit is het samenvoegen van twee move-gerelateerde knopen die het kleuren van de graaf zeker niet moeilijker zal maken. Het algoritme bevat nu twee extra stappen, alle andere stappen zijn hetzelfde als zonder \textit{conservative coalescing}:
+				\begin{enumerate}
+					\item \textbf{Build}
+					\item \textbf{Simplify}
+					\item \textbf{Coalesce:} Knopen die samen move-gerelateerd zijn kunnen samengevoegd worden. Er kunnen hier twee heuristieken gebruikt worden om knopen $a$ en $b$ samen te voegen:
+					\begin{itemize}
+						\item heuristiek van Briggs: als de resulterende knoop $ab$ minder dan $K$ buren heeft met $K$ of meer buren.
+						\item heuristiek van George: als elke buur $t$ van $a$ ofwel een buur is van $b$ ofwel een knoop is met minder dan $K$ buren. 
+					\end{itemize}
+					\item \textbf{Freeze:} Wanneer zowel \textbf{simplify} als \textbf{coalesce} niet meer van toepassing zijn, kunnen de move-gerelateerde knopen bevrozen worden. Dit komt er op neer dat de move-interferentie tussen elke andere knoop die buur is verwijdert wordt, zodat de graaf vereenvoudig is.
+					\item \textbf{Spill}
+					\item \textbf{Select}
+					\item \textbf{Start Over}
+				\end{enumerate}
+			\end{enumerate}
+			\item Een move komt voor wanneer een temporary naar een andere temporary gekopieerd wordt: $t \leftarrow z$. 
+			\item Via het registerallocatie-algoritme met \textit{conservative coalescing} kunnen zulke operaties weggewerkt worden. Inderdaad, knopen die \textit{gecoalesced} zijn krijgen hetzelfde register toegewezen. 
+			\begin{align*}
+				z &\leftarrow x \oplus y \\
+				t &\leftarrow z 
+			\end{align*}
+			In dit geval zullen $z$ en $t$ hetzelfde register krijgen (bv $r3$):
+			\begin{align*}
+				r3 &\leftarrow x \oplus y \\
+				r3 &\leftarrow r3 
+			\end{align*}
+			zodat de laatste toekenning geschrapt kan worden.
+
+			\item 
+			\begin{itemize}
+				\item Registerallocatie zonder \textit{conservative coalescing}.
+				\begin{figure}[ht]
+					\centering
+					\includegraphics[width=\textwidth]{registerallocatie_nocoalescing}
+				\end{figure}
+				\item Registerallocatie met \textit{conservative coalescing}.
+				\begin{figure}[ht]
+					\centering
+					\includegraphics[width=\textwidth]{registerallocatie_coalescing}
+				\end{figure}
+			\end{itemize}
+
+		\end{enumerate}
+	}
+	\newpage
+\section{Bevriezen}
+	 In welke fase van de compiler wordt de term bevriezen (freeze) gebruikt? Wanneer wordt deze techniek toegepast, en wat is het nut ervan?
+	 \answer{
+		Bevriezen heeft betrekking tot registerallocatie. In de interferentiegraaf kunnen move-gerelateerde verbindingen zijn. Wanneer een knoop met een move-gerelateerde verbinding bevrozen wordt, worden alle move-gerelateerde verbindingen van die knoop verwijderd. Dit heeft als gevolg dat eventueel de move operatie twee verschillende registers nodig heeft. Het wordt gebruikt om de interferentiegraaf eenvoudiger te maken.
+	 }
+	 \newpage
+\section{Bereikende definities}
+	\begin{enumerate}
+		\item Wat zijn bereikende definities (reaching definitions)?
+		\item Wat zijn de gen- en kill-verzamelingen voor de statements voor volgende types van statements?
+		\begin{table}[ht]
+			\centering
+			\begin{tabular}{l l l}
+				Statement $s$ & gen[s] & kill[s] \\
+				\hline
+				$d : t \leftarrow b \oplus c$ & & \\
+				$d : t \leftarrow M[b]$  & & \\
+				$M[a] \leftarrow b$  & & \\
+				if $a$ relop $b$ goto $L_1$ else goto $L_2$  & & \\
+				goto $L$  & & \\
+				$L :$  & & \\
+				$f(a_1, ... , a_n)$  & & \\
+				$d : t \leftarrow f(a_1, ..., a_n)$  & & \\
+			\end{tabular}
+		\end{table}
+		\item Worden reaching definities gebruikt bij
+		\begin{enumerate}
+			\item eliminatie van gemeenschappelijke subexpressies?
+			\item copy propagatie?
+			\item dode code eliminatie?
+		\end{enumerate}
+		Geef alle mogelijkheden. Verklaar uw antwoord, zo mogelijk met een voorbeeld.
+		\item Geef de vergelijkingen van de in- en out-verzamelingen voor een statement $n$.
+		\item Gegeven twee opeenvolgende statements $p$ en $n$ in een basisblok. Bereken de vergelijkingen van de in- en out-verzamelingen van het blok $pn$ van de tweede opeenvolgende statements.
+	\end{enumerate}
+	\answer{
+		\begin{enumerate}
+			\item Een reaching definition voor een statement $n$ zijn alle statements $s_i$ die een waarde toekennen aan een temporary, waarbij de waarde nog steeds beschikbaar is in $n$. 
+			\item 		
+			Stel $defs(t)$ alle statements waarin $t$ gedefinieerd wordt:
+			\begin{table}[ht]
+				\centering
+				\begin{tabular}{l l l}
+					Statement $s$ & gen[s] & kill[s] \\
+					\hline
+					$d : t \leftarrow b \oplus c$ & \{d\} & defs(t) - \{d\} \\
+					$d : t \leftarrow M[b]$  & \{d\} & defs(t) - \{d\} \\
+					$M[a] \leftarrow b$ & \{\} & \{\} \\
+					if $a$ relop $b$ goto $L_1$ else goto $L_2$  & \{\} & \{\} \\
+					goto $L$  & \{\} & \{\} \\
+					$L :$  & \{\} & \{\} \\
+					$f(a_1, ... , a_n)$  & \{\} & \{\} \\
+					$d : t \leftarrow f(a_1, ..., a_n)$  & \{d\} & defs(t) - \{d\} \\
+				\end{tabular}
+			\end{table}
+			\item 
+			\begin{enumerate}
+				\item Nee. 
+
+				Een reaching definition heeft enkel betrekking tot definities van temporaries. Om gemeenschappelijke subexpressies te elimineren moeten de reaching expressions bepaald worden. Een expressie $t \leftarrow x \oplus y$ (binnen een knoop $s$) bereikt een knoop $n$ als er een pad bestaat van $s$ naar $n$ waarbij er in geen enkele knoop op dat pad een  toekenning is aan $x$ of $y$.
+
+				\item Ja.
+
+				Een definitie $n : t \leftarrow t \oplus x$ en $d : t \leftarrow z$  kan vervangen worden door $n : t \leftarrow z \oplus x$ als er een pad bestaat van $d$ naar $n$ en als er geen andere definitie van $t$ statement $n$ bereikt. 
+				
+				\item Nee.
+
+				Dode code elmination verwijdert statements die nergens gebruikt worden. Stel een definitie $s : a \leftarrow b$. Als $a$ niet live-out $s$ is, dan kan $s$ verwijderd worden. Dit wordt geïmplementeerd via de out-verzamelingen bij liveness analyse.
+			\end{enumerate}
+			\item Voor een statement $n$ zijn de vergelijkingen van de in- en out-verzamelingen
+			\begin{align*}
+				in[n]  &= \bigcup_{p \in pred[n]} out[p] \\
+				out[n] &= gen[n] \cup (in[n] - kill[n])
+			\end{align*}
+			Hierbij is $pred[n]$ de verzameling statements die $n$ als directe opvolger hebben.
+
+			\item Als $p$ de enige voorganger is van $n$, dan kan eerst de vergelijking opnieuw geschreven worden:
+			\begin{align*}
+				out[n] &= gen[n] \cup (in[n] - kill[n]) \\
+				in[n] & = out[p] = gen[p] \cup (in[p] - kill[p])\\
+				out[n] & = gen[n] \cup ((gen[p] \cup (in[p] - kill[p])) - kill[n]) \\
+				out[n] & = gen[n] \cup (gen[p] - kill[n]) \cup (in[p] - (kill[p] \cup kill[n]))
+			\end{align*}
+			Dus de vergelijkingen worden:
+			\begin{align*}
+				in[pn] & = gen[p] \cup (in[p] - kill[p])\\
+				out[pn] & = gen[pn] \cup (in[pn] - kill[pn])
+			\end{align*}
+		\end{enumerate}
+	}
+		\newpage
+\section{Constantenpropagatie}
+	Veronderstel een statement $d : t \leftarrow c$ met $c$ een constante. Een ander statement $n$ gebruikt $t$, zoals in $n : y \leftarrow t \oplus x$. Onder welke voorwaarden mag men statement $n$ herschrijven als $y \leftarrow c \oplus x$?
+	\begin{enumerate}
+		\item Geef de precieze voorwaarden.
+		\item Definieer de gebruikte termen.
+	\end{enumerate}
+	\answer{
+		\begin{enumerate}
+			\item Statement $d$ moet in eerste geval statement $n$ bereiken. Verder mag er geen andere definitie van $t$ statement $n$ bereiken.
+			\item Om te bepalen of een andere definitie van $t$ statement $n$ bereikt, worden \textit{reaching definitions} gebruikt. Dit is de verzameling van statements $s_i$, waarvan de waarde van de variabele die gedefinieerd wordt door dat statement, bereikt kan worden in $n$.  
+		\end{enumerate}
 	}
 \end{document}

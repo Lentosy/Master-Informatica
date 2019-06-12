@@ -30,8 +30,14 @@ Figuur \ref{fig:graph_coalescing} illustreert het algoritme en bestaat uit een a
 	\item \textbf{Build:} Construeer de interferentiegraaf en markeer elke knoop als \textit{move-related} of \textit{non-move-related}. Een \textit{move-related} knoop is een knoop dat ofwel het doel of de bron is van een \textit{move} instructie.
 	\item \textbf{Simplify:} Verwijder iteratief één \textit{non-move-related} knoop die  graad minder dan $K$ heeft.
 	\item \textbf{Coalesce:} Pas \textit{conservative coalescing} toe op de gereduceerde graaf met behulp van Briggs of George. \textbf{Simplify} en \textbf{Coalesce} wordt uitgevoerd tot dat er 
-	\item \textbf{Freeze:}
-	\item \textbf{Potential Spill:}
-	\item \textbf{Select:}
-	\item \textbf{Actual spill:}
+	\item \textbf{Freeze:} Als zowel \textit{simplify} als \textit{coalesce} niet toepasbaar zijn, wordt er een \textit{move-related} knoop bevrozen. Dit heeft als gevolg dat elke \textit{move-related} verbinding naar die knoop geschrapt wordt. Nu wordt \textbf{Simplify} en \textbf{Coalesce} uitgevoerd.
+	\item \textbf{Potential Spill:} Als er geen knopen zijn met een graad kleiner dan $K$, een knoop wordt geselecteerd en wordt een \textit{potential spill}.
+	\item \textbf{Select:} Pop de hele stack en ken kleuren toe aan de knopen.
+	\item \textbf{Actual spill:} Als er een knoop niet gekleurd kan worden, wordt het een echte \textit{spill}. Het programma moet herschreven worden, maar door de variabele in het geheugen op te slaan. De graaf wordt ook opnieuw opgebouwd (figuur \ref{fig:example_spilling}).
+	\begin{figure}[ht]
+		\includegraphics[width=\textwidth]{example_spilling}
+		\caption{De knoop $c$ was eerst een potentiële spill, maar kon niet meer gekleurd worden. Het programma moet herschreven worden zodat er twee nieuwe temporaries $c_1$ en $c_2$ ontstaan, die elk een kortere liveness range hebben dan de originele $c$ waardoor er minder interferentie is met andere temporaries.}
+		\label{fig:example_spilling}
+	\end{figure}
+
 \end{itemize}

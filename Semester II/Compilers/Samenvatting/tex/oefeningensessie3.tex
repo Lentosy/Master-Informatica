@@ -80,14 +80,65 @@ Gegeven het volgende programma:
 
 \newpage
 \section{Oefening 11.3 p263}
-Beschouw volgende graaf. De volle lijnstukken stellen interferenties voor en de gestreepte lijnen een \texttt{MOVE}.
+Beschouw de graaf op figuur \ref{fig:ex11_3p263}. De volle lijnstukken stellen interferenties voor en de gestreepte lijnen een \texttt{MOVE}.
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.5\textwidth]{ex11_3p263}
+	\caption{}
+	\label{fig:ex11_3p263}
 \end{figure}
 
 \begin{enumerate}
-	\item Kleur de graaf zonder \textit{coalescing} en $k = 4$. Toon de \textit{select}-stack die de volgorde aangeeft waarin knopen verwijderd worden. Is er een potentiële \textit{spill}? Is er een echte \textit{spill}?
-	\item Kleur de graaf met \textit{conservative coalescing} en $k = 4$. Wanneer wordt Briggs of George gebruikt?  Is er een potentiële \textit{spill}? Is er een echte \textit{spill}?
+	\item \textbf{Kleur de graaf zonder \textit{coalescing} en $k = 4$. Toon de \textit{select}-stack die de volgorde aangeeft waarin knopen verwijderd worden. Is er een potentiële \textit{spill}? Is er een echte \textit{spill}?} (Figuur \ref{fig:ex11_3p263_partone})
+	\begin{figure}
+		\centering
+		\includegraphics[width=0.5\textwidth]{ex11_3p263_partone}
+		\caption{}
+		\label{fig:ex11_3p263_partone}
+	\end{figure}
+	De knoop $g$ was een potentiële spill, maar de graaf kon nog steeds helemaal gekleurd worden dus was het geen echte spill.
+	\item \textbf{Kleur de graaf met \textit{conservative coalescing} en $k = 4$. Wanneer wordt Briggs of George gebruikt?  Is er een potentiële \textit{spill}? Is er een echte \textit{spill}?}
 \end{enumerate}
 
+
+\newpage
+\section{Oefening 17.5 p408 (licht gewijzigd)}
+Gegeven het volgende programma:
+\begin{lstlisting}
+1.	y := x
+2.  z := 1
+3.  if y == 0: goto 7
+4.  z := z * y
+5.  y := y - 1
+6.  goto 3
+7.  y := 0
+\end{lstlisting}
+
+\begin{enumerate}
+	\item \textbf{Teken de CFG.} (Figuur \ref{fig:ex17_5p408_cfg})
+	\begin{figure}[ht]
+		\centering
+		\includegraphics[width=\textwidth]{ex17_5p408_cfg}
+		\caption{De CFG.}
+		\label{fig:ex17_5p408_cfg}
+	\end{figure}
+	\item \textbf{Bereken de \textit{reaching definitions} waarbij het resultaat van elke iteratie getoond wordt. Hoeveel iteraties zijn er nodig.}
+	Er zijn 3 iteraties nodig (want laatste iteratie verandert niets meer). (Tabel \ref{table:reaching_definitions})
+	\begin{table}[ht]
+		\centering
+		\begin{tabular}{| c | c c c || l l | l l|}
+			\hline
+				& Pred 	& Gen 	& Kill 	&	In	&	Out		&	In 	&	Out		\\
+			\hline
+			1	&	/	&	1	&	5,7	&	/	&	1		&	/	&	1		\\
+			2	&	1	&	2	&	4	&	1	&	1,2		&	1	&	1,2		\\
+			3	&	2,5	&	/	&	/	&	1,2	&	1,2		&1,2,4,5&	1,2,4,5	\\
+			4	&	3	&	4	&	2	&	1,2	&	1,4		&1,2,4,5&	1,4,5	\\
+			5	&	4	&	5	&	1,7	&	1,4	&	4,5		&1,4,5	&	4,5		\\
+			7	&	3	&	7	&	1,5	&	1,2	&	2,7		&1,2,4,5&	2,4,7		\\
+			\hline
+		\end{tabular}
+		\caption{De reaching definition tabel.}
+		\label{table:reaching_definitions}
+	\end{table}
+\end{enumerate}

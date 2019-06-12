@@ -1,4 +1,5 @@
 \chapter{Data Flow Analysis}
+\label{ch:data_flow_analysis}
 Compilers maken programma's kleiner, sneller. Zelfs perfecte $C++$ code kan nog steeds verbeterd worden. Een ontwerper van een programmeertaal gaat ervan uit dat een compiler veel \textit{under the hood} functies heeft.
 
 
@@ -58,59 +59,95 @@ Voorbeeld slide 4
 
 Niet altijd nuttig om zo sensitief mogelijk te gaan = te veel geheugen nodig.
 
-\section{Reaching definitions}
-Een niet-ambigue definitie $d$ van $t$ is
-$$d: t \leftarrow M[a] \quad\hbox{of}\quad t \leftarrow a + b$$
-Een ambigue definitie: call die al dan niet de waarde van $t$ wijzigt.
 
-Een statement $d$ is reaching definition van statement $u$ als er een pad van $d$ naar $u$ bestaat waarop geen niet-ambigue definitie van $t$ voorkomt. Controleer in de controleverloopgraaf. Als de definitie van $t$ niet aangepast wordt dan is $d$ een reaching definition van $u$.  Zie tabel 17.2: de gen- en killset zijn sets van statements, bij liveliness is het set van temporaries. In andere woorden: hoe lang is een definitie van een veranderlijke geldig (vergelijkbaar met liveliness analyse, maar de vergelijking is met de unie van predecessors).
-\begin{lstlisting}
-d_2: t \left ...  
-d_1: t \left ... 
-d:t \left ... 
-... 
-... 
- u: ...
-\end{lstlisting}
+\section{Verschillende dataflow analyses}
+\subsection{Reaching definitions}
+\begin{itemize}
+	\item Nagaan of een toekenning aan een temporary $t$ de waarde van $t$ op een andere punt in het programma wijzigt.
+	\item Een \textbf{niet-ambigue} definitie van $t$ is een statement van de vorm:
+	\begin{itemize}
+		\item $t \leftarrow a + b$, of 
+		\item $t \leftarrow M[a]$;
+		\item Een niet-ambigue definitie $d$ bereikt een statement $u$ zals er een pad van $d$ naar $u$ bestaat waarop geen niet-ambigue definitie van $t$ voorkomt.
 
+	\end{itemize}
+	\item Een \textbf{ambigue} definitie is een statement dat al dan niet een waarde aan $t$ toekent. \uline{Er wordt verondersteld dat elke definitie niet-ambigue is.}
+	\item Om de \textit{reaching definitions} te bepalen wordt er gebruik gemaakt van een \textbf{gen[n]} set en \textbf{kill[n]} set, die beiden een lijst van statements bevat voor elk statement.
+	\begin{itemize}
+		\item Een statement $d_1 : t \leftarrow x \oplus y$ genereert de definitie $d_1$, want elke andere definitie van $d_1$ die dit statement bereikt wordt toch ongedaan gemaakt.
+		\item Een statement $d_1 : t \leftarrow x \oplus y$ \textit{kills} elke andere definitie van $t$ want elke andere definitie van $t$ is ongeldig na dit statement.
+	\end{itemize}
+	\item Via \textit{gen} en \textit{kill} kunnen de \textbf{in[n]} set en \textbf{out[n]} set bepaald worden; de set van definities die respectievelijk het begin en einde van een statement $n$ bereiken. Deze sets kunnen bepaald worden door de \textit{dataflow} vergelijkingen.
+	\begin{align*}
+		in[n] & = \bigcup_{p \in pred[n]} out[p] \\
+		out[n] & = gen[n] \cup (in[n] - kill[n])
+	\end{align*}
+	\item Deze vergelijkingen moeten \textbf{voorwaards} opgelost worden (in volgorde van programma, in tegenstelling tot liveness analyse, die in omgekeerde volgorde werkt).
+	\item Met behulp van reaching definitions kan bijvoorbeeld nagegaan worden of een variabele uninitialized is, of variabelen vervangen door constanten (\textit{constant propagation}).
 
-\QA{Waarom is reaching definitions nuttig?}{
-Als je op een bepaald punt ziet dat er geen reaching definition is, dan zit je met een uninitialized variabele.
-}
+\end{itemize}
 
-\section{Available expressions}
-Een expressie $a op b$ is available bij statement $u$ als $a op b$ op elk een pad naar $u$ berekend wodt, en tussen die berekening en $u$ worden $a$ en $b$ niet meer gewijzigd.
-De gen- en killset zijn nu verzamelingen van expressies. 
-\begin{lstlisting}
-x \leftarrow t \times u
-t \leftarrow ...
-x \leftarrow t \times u
-\end{lstlisting}
-De killset zijn alle expressies waar $t$ in zit.
+\subsection{Available expressions}
+\begin{itemize}
+	\item Nagaan of een bepaalde expressie meerdere malen berekend wordt met dezelfde parameters.
+	\item Een expressie $x \oplus y$ is \textit{available} (bereikbaar) in statement $n$ als er op elk pad van het begin van het programma tot aan $n$ als:
+	\begin{itemize}
+		\item de expressie minstens éénmaal berekend wordt, en
+		\item als er geen definities zijn van $x$ of $y$ vanaf de laatste keer dat de expressie berekend wordt.
+	\end{itemize} 
+	\item Ook hier zijn er \textbf{gen[n]} en \textbf{kill[n]} sets, maar in plaats van definities bevat het nu expressies.
+	\item Opnieuw worden de \textbf{in[n]} en \textbf{out[n]} sets bepaald; de set van expressies die respectievelijk het begin en einde van een statement $n$ bereiken. Het enige verschil met \textit{reaching definitions} is dat nu de \textbf{intersectie} genomen wordt in plaats van de \textbf{unie}. Dit is nodig omdat de expressie op elk pad berekend moet worden.
+	\begin{align*}
+		in[n] & = \bigcap_{p \in pred[n]} out[p] \\
+		out[n] & = gen[n] \cup (in[n] - kill[n])
+	\end{align*}
+	\item Deze vergelijkingen moeten ook \textbf{voorwaards} opgelost worden.
+	\alert Omdat we met de intersectie werken (zal sets kleiner maken), moet de \textbf{out} set geïnitialiseerd worden als de volledige set van expressies.
+\end{itemize}
+\subsection{Reaching expressions}
+Hetzelfde als reaching definitions, maar met expressies.
+\subsection{Liveness analyse}
+\begin{itemize}
+	\item Zelfde als hoofdstuk \ref{ch:liveness_analyse}.
+	\item Maar $use[n] = gen[n]$ en $def[n] = kill[n]$.
+	\item Logisch aangezien elke \textit{use} liveness genereert, en elke \textit{def} liveness killt.
+\end{itemize}
 
-\QA{Waarom is het nuttig?}{
-Om te controleren of dat expressies opnieuw moeten berekend worden of niet.
-}
-
-Terug voorwaartste vergelijking: belangrijk verschil met vorige vergelijkingen: het gaat over de doorsnede van de predecessors. Hoe initialiseren? De maximale set: alle expressies in het programma.
 
 \section{Optimalisaties}
 \begin{itemize}
 	\item Common-subexpression elimination
 	\begin{itemize}
-		\item In plaats van nieuwe berekeningen uit te voeren, gebruik het resultaat van vorige berekeningen
+		\item In plaats van nieuwe berekeningen uit te voeren, gebruik het resultaat van vorige berekeningen.
+		\item \textbf{Formeel}: voor een statement $s : t \leftarrow x \oplus y$ waarbij de expressie $x \oplus y$ \textit{available} is, kan de bewerking voor $s$ geëlimineerd worden.
+		\item \textbf{Algoritme}:
+		\begin{enumerate}
+			\item Bereken de \textit{reaching expressions} voor $s$.
+			\item Voor elke statement $n$ in de reaching expression set van $s$:
+			\begin{itemize}
+				\item Kies een nieuwe temporary $w$
+				\item Herschrijf:
+				\begin{align*}
+					n  & : w \leftarrow x \oplus y \\
+					n' & : v \leftarrow w
+				\end{align*}
+			\end{itemize}
+			Statement $s$ kan nu herschreven worden:
+			$$s : t \leftarrow w$$
+		\end{enumerate}
+		\item Met \textit{constant propagation} worden sommige assignments vereenvoudigd.
 	\end{itemize}
 	\item Constant propagation
 	\begin{itemize}
-		\item Stel dat je aan $t \leftarrow 3$
-		\item Dan $a = t x b$
-		\item Als je weet dat er slechts één toekenning (via reaching definitions) is van $t$, dan kan $t$ vervangen worden door de constante $3$.
-		\item Als dit voor $b$ ook zou zijn, dan wordt (voor $b = 2$) $a = 6$.
-		\item Via reaching definitions voor $a$ kan zo verder geoptimaliseerd worden.
+		\item Stel een statement $d : t \leftarrow c$ waarbij $c$ een constante is.
+		\item Stel een andere statement $n : \leftarrow t \oplus x$
+		\item Als statement $d$ statement $n$ bereikt, en er geen definities van $t$ het statement $n$ bereiken, dan kan $t$ vervangen worden door de constante waarde.
+
 		
 	\end{itemize}
 	\item Copy propagation
 	\begin{itemize}
+		\item Zelfde princiepe als constant propagation, maar met een variabele $z$.
 		\alert Waarom niet gewoon coalescing tijdens register allocation?
 		\begin{itemize}
 			\item Omdat sommige optimalisatiemogelijkheden  verdwijnen
@@ -129,7 +166,21 @@ Deze optimalisaties worden iteratief uitgevoerd: het toepassen van een optimalis
 
 \begin{enumerate}
 	\item Bitvectors
-	\item Slechts voor elk basic blok toepassen.
+	\item Slechts voor elk basic blok toepassen (statements samenvoegen die slechts 1 successor en 1 predecessor hebben). 
+	\begin{itemize}
+		\item Voorbeeld \textit{reaching definitions}
+		\begin{align*}
+			out[n] & = gen[n] \cup (in[n] - kill[n]) \\
+			out[n] & = gen[n] \cup ((gen[p] \cup (in[p] - kill[p])) - kill[n]) \\
+			out[n] & = gen[n] \cup (gen[p] - kill[n]) \cup (in[p] - (kill[p] \cup kill[n]))
+		\end{align*}
+		Voor een knoop $pn$ dat knoop $p$ en $n$ combineert, dan komt dit neer op:
+		\begin{align*}
+			gen[pn] &= gen[n] \cup (gen[p] - kill[n]) \\
+			kill[pn] &= kill[p] \cup kill[n]
+		\end{align*}
+	\end{itemize}
+
 	\item Volgorde van toepassen aanpassen (zie algoritme onderaan slide 15)
 	\item Er wordt enkel de out set bijhouden, de inset wordt telkens opnieuw berekend omdat die vaak kleiner zijn, zodat er minder geheugen nodig is om al de sets bij te houden.
 	\item chains 
@@ -143,10 +194,10 @@ Deze optimalisaties worden iteratief uitgevoerd: het toepassen van een optimalis
 \section{Incrementele analyses}
 Elke transformatie heeft invloed op resultaten van de analyse. Moeten we dan de hele analyse opniew doen? Als $z$ dood is, moet van onder naar boven elke keer het statement verwijderd worden bij elke iteratie.
 
-\section{Value Numbering}
+\subsection{Value Numbering}
 Elke expressie een nummer geven en hergebruiken van die expressies.
 
-\section{Incremente livenessanalyse}
+\subsection{Incremente livenessanalyse}
 Veel te moeilijk om te implementeren, wordt bijna nooit gebruikt.
 
 \section{Alias Analysis}
