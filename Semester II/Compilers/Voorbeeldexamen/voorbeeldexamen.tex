@@ -12,7 +12,7 @@
 	\tableofcontents
 	\chapter{Vragen}
 	\newpage
-\section{Grammatica}
+\section{Grammatica - I}
 	Gegeven de taal $L = \{a^mb^nc^p\}$ met $m > p$.
 	\begin{enumerate}
 		\item Kan een reguliere expressie gevormd worden die de woorden uit deze taal herkent? Waarom wel/niet?
@@ -26,10 +26,150 @@
 
 		\end{enumerate}
 	}
-	\newpage
+
+
+\newpage
+\section{Grammatica - II}
+Gegeven de grammatica:
+\begin{align*}
+	X & \rightarrow YaYb|ZbZa \\
+	Y & \rightarrow \epsilon \\
+	Z & \rightarrow \epsilon
+\end{align*}
+\begin{enumerate}
+	\item Zoek de FIRST, FOLLOW en nullable verzamelingen.
+	\item Creëer een LL(1) parser.
+	\item Bepaal de toestanden van een LR(0) parser en hun overgangen en de LR(0) parsetabel.
+	\item Welke van deze 2 parsers is niet ambigu? Waarom? 
+\end{enumerate}
+
+\answer{
+	\begin{enumerate}
+		\item 
+		De productieregel $X \rightarrow YaYb|ZbZa$ is equivalent met twee productieregels $X \rightarrow YaYb$ en $X \rightarrow ZbZa$. 
+		
+		\begin{align*}
+			1.\qquad X & \rightarrow YaYb\\
+			2.\qquad X & \rightarrow ZaZb\\
+			3.\qquad Y & \rightarrow  \\
+			4.\qquad Z & \rightarrow 
+		\end{align*}
+
+		\begin{table}[ht]
+			\centering
+			\begin{tabular}{l | l | l | l }
+				\hline
+					& 	nullable & first & follow \\
+					\hline
+					X & nee & \{a, $\epsilon$\}, & / \\
+					Y & ja & \{$\epsilon$\} & \{a, b\}\\ 
+					Z & ja & \{$\epsilon$\} & \{a, b\}\\ 
+			\end{tabular}
+		\end{table}
+
+		\item De LL(1) parsetabel:
+
+	
+		\begin{table}[ht]
+			\centering
+			\begin{tabular}{l | l | l}
+				  & a                                          	& b \\
+				  \hline
+				X & $X \rightarrow YaYb$, $X \rightarrow ZaZb$ 	& \\
+				Y & $Y \rightarrow \epsilon$ 					& $Y \rightarrow  \epsilon$  \\
+				Z & $Z \rightarrow \epsilon$ 					& $Z \rightarrow  \epsilon$
+			\end{tabular}
+		\end{table}
+
+		\item De LR(0) toestandentabel en LR(0) parsetabel:
+		\begin{figure}[ht]
+			\centering
+			\begin{tikzpicture}[state/.style={rectangle, draw, inner sep = 2mm}]
+			\node (1) [state] {
+				$\begin{aligned}
+					X &\rightarrow .YaYb  \\
+					X &\rightarrow .ZaZb  \\
+					Y &\rightarrow . \\
+					Z &\rightarrow .
+				\end{aligned}$};
+				
+			\node (2) [state, below = 1cm of 1] {$X \rightarrow Y.aYb$};
+			\node (3) [state, right = 1cm of 2] {$X \rightarrow Z.aZb$};
+
+			\node (4) [state, below = 1cm of 2] {
+				$\begin{aligned}
+				X &\rightarrow Ya.Yb  \\
+				Y &\rightarrow . \\
+			\end{aligned}$
+			};
+			\node (5) [state, below = 1cm of 3] {
+				$\begin{aligned}
+					X &\rightarrow Za.Zb  \\
+					Z &\rightarrow . \\
+				\end{aligned}$
+				};
+
+			\node (6) [state, below = 1cm of 4] {$X \rightarrow YaY.b$};
+			\node (7) [state, below = 1cm of 5] {$X \rightarrow ZaZ.b$};
+
+			\node (8) [state, below = 1cm of 6] {$X \rightarrow YaYb.$};
+			\node (9) [state, below = 1cm of 7] {$X \rightarrow ZaZb.$};
+			
+			
+			\draw [->] (1) -- node[xshift=0.25cm] {Y} (2);
+			\draw [->] (1) -- node[xshift=0.25cm] {Z} (3);
+
+			\draw [->] (2) -- node[xshift=0.25cm] {a} (4);
+			\draw [->] (3) -- node[xshift=0.25cm] {a} (5);
+
+			\draw [->] (4) -- node[xshift=0.25cm] {Y} (6);
+			\draw [->] (5) -- node[xshift=0.25cm] {Z} (7);
+
+			\draw [->] (6) -- node[xshift=0.25cm] {b} (8);
+			\draw [->] (7) -- node[xshift=0.25cm] {b} (9);
+
+			
+			\node (label1) [anchor=north east, inner sep = 1pt] at (1.north east) {\textbf{1.}};
+			\node (label2) [anchor=north east, inner sep = 1pt] at (2.north east) {\textbf{2.}};
+			\node (label3) [anchor=north east, inner sep = 1pt] at (3.north east) {\textbf{3.}};
+			\node (label4) [anchor=north east, inner sep = 1pt] at (4.north east) {\textbf{4.}};
+			\node (label5) [anchor=north east, inner sep = 1pt] at (5.north east) {\textbf{5.}};
+			\node (label6) [anchor=north east, inner sep = 1pt] at (6.north east) {\textbf{6}};
+			\node (label7) [anchor=north east, inner sep = 1pt] at (7.north east) {\textbf{7.}};
+			\node (label8) [anchor=north east, inner sep = 1pt] at (8.north east) {\textbf{8.}};
+			\node (label9) [anchor=north east, inner sep = 1pt] at (9.north east) {\textbf{9.}};
+
+			\end{tikzpicture}
+		\end{figure}
+
+		\begin{table}
+			\centering
+			\begin{tabular}{| l | l | l | l | l | l |}
+				\hline
+					& a & b & \$ & Y & Z \\
+					\hline
+				1   &   &   &    & g2&g3 \\
+				2   & s4  &   &    & & \\
+				3   & s5  &   &    & & \\
+				4   &   &   &    & g6& \\
+				5   &   &   &    & & g7\\
+				6   &   & s8  &    & & \\
+				7   &   & s9  &    & & \\
+				8   & r1  & r1  & r1   & & \\
+				9   & r2  & r2  &  r2  & & \\
+				\hline
+			\end{tabular}
+		\end{table}
+
+		\item De LR(0) parser is niet ambigue aangezien er geen shift-reduce conflicten aanwezig zijn. De LL(0) parser is wel ambigue omdat er meerdere productieregels kunnen toegepast worden bij het "verwerken" van de lege string.
+	\end{enumerate}
+}
+
+
+\newpage
 \section{Deterministische Eindige Automaten}
 	Herschrijf de volgende deterministische eindige automaat als een reguliere expressie.
-	\begin{figure}
+	\begin{figure}[ht]
 		\includegraphics[width=\textwidth]{dfa_to_re}
 	\end{figure}
 	$$\texttt{[a-z][0-9a-z]*|[0-9]+(e[0-9|+|-][0-9]*)+}$$

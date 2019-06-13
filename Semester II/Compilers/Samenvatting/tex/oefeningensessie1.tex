@@ -209,12 +209,12 @@ Zowel een SLR als een LALR parser maken gebruik van een LR(0) statentabel, deze 
 	\begin{tikzpicture}[state/.style={rectangle, draw, inner sep = 2mm}]
 	\node (1) [state] {
 		$\begin{aligned}
-			S \mapsto& .X\& \\
-			X \mapsto& .Ma \\
+			S \mapsto& .X\&   \\
+			X \mapsto& .Ma  \\
 			X \mapsto& .bMc \\
-			X \mapsto& .dc \\
+			X \mapsto& .dc  \\
 			X \mapsto& .bda \\
-			M \mapsto&.d
+			M \mapsto&  .d 
 		\end{aligned}$};
 	\node (2) [state, right = 1.5cm of 1] {$S \mapsto X.\&$};
 
@@ -284,4 +284,6 @@ Zowel een SLR als een LALR parser maken gebruik van een LR(0) statentabel, deze 
 	\end{tikzpicture}
 \end{figure}
 
-Een grammatica is LALR(1) of SLR indien respectievelijk de LALR(1) en SLR parsetabellen geen shift-reduce conflicten bevat. Een SLR parsetabel wordt bijna identiek hetzelfde opgesteld als een LR(0) parsetabel. Het enige verschil is dat reduce acties enkel geplaatst worden bij de terminalen die in de FOLLOW set zitten. Analoog bij een LALR(1) parsetabel, maar de reduce acties worden enkel geplaatst bij terminalen die in de FIRST set zitten.
+Een grammatica is LALR(1) of SLR indien respectievelijk de LALR(1) en SLR parsetabellen geen shift-reduce conflicten bevat. Een SLR parsetabel wordt bijna identiek hetzelfde opgesteld als een LR(0) parsetabel. Het enige verschil is dat reduce acties enkel geplaatst worden bij de terminalen die in de FOLLOW set zitten. 
+
+Een LALR(1) parsetabel wordt opgesteld door eerst de LR(1) parsetabel op te bouwen. Daarna worden staten samengevoegd die dezelfde productieregels bevat, maar waarbij de lookahead tokens eventueel verschillen. De reduce acties worden enkel toegepast op de terminalen die in de lookahead set zitten.

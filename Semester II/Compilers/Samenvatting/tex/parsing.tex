@@ -472,14 +472,14 @@ De \textbf{reduce} wordt nu enkel toegepast bij de terminalen die als look-ahead
 \begin{figure}[ht]
 	\centering
 	\includegraphics[width=0.75\textwidth]{parsing_table_3_26}
-	\caption{De LR(1) parsetabel voor grammatica \ref{grammar:3_26}. Productieregels die meerdere malen voorkomen met verschillende lookahead symbolen, worden samengevoegd. Op die manier bevat elk item nu een verzameling lookahead symbolen.}
-	\label{fig:parsing_table_3_26}
+	\caption{De LR(1) parsetabel voor grammatica \ref{grammar:3_26}. Productieregels die meerdere malen voorkomen met verschillende lookahead symbolen, worden samengevoegd (bv staat 6 en 13). Op die manier bevat elk item nu een verzameling lookahead symbolen.}
+	\label{fig:parsing_table_3_26} 
 \end{figure}
 
 
 \subsection{LALR($1$) parser}
-Een LR(1) parsetabel kan vrij groot worden, met veel staten. Een kleinere tabel kan bekomen worden door items samen te voegen die identiek zijn behalve voor de lookahead verzameling. Zo wordt de LALR(1) parser bekomen. Zo bevatten staten 6 en 13 op figuur \ref{fig:parsing_table_3_26} dezelfde productieregels en ze verschillen enkel in lookahead symbolen. Die kunnen samengevoegd worden. De resulterende LALR(1) parsetabel is te zien in tabel \ref{table:slr_parse_table_3_26_LALR}. 
-
+Een LR(1) parsetabel kan vrij groot worden, met veel staten. Een kleinere tabel kan bekomen worden door items samen te voegen die identiek zijn behalve voor de lookahead verzameling. Zo wordt de LALR(1) parser bekomen. Zo bevatten staten 6 en 13 op figuur \ref{fig:parsing_table_3_26} dezelfde productieregels en ze verschillen enkel in lookahead symbolen. Die kunnen samengevoegd worden. De resulterende LALR(1) parsetabel is te zien in tabel \ref{table:slr_parse_table_3_26_LALR}. De reduce acties worden enkel toegepast op de symbolen die in de lookahead set zitten.
+ 
 \begin{table}[ht]
 	\centering
 	\begin{tabular}{l|llll|lll|}
