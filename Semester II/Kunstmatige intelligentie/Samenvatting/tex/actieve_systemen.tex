@@ -174,5 +174,49 @@
 \end{itemize}
 
 \section{Optimalisatie van één strategie}
+\begin{itemize}
+	\item Elke regel krijgt een waardering $\omega(r)$, die aangeeft wat de verwachte winst is wanneer $r$ toegepast wordt, als ervan uitgegaan wordt dat voor de rest van de oplossing dezelfde strategie gebruikt wordt.
+	\item Een regel die uitgevoerd wordt kan ook de waarde van andere regels wijzigen.
+	\item Het \textbf{leerproces}:
+	\begin{itemize}
+		\item Normaal gezien zijn overlappende regels slecht, maar hier zijn ze nuttig:
+		\begin{itemize}
+			\item Als er twee regels zijn met dezelfde premise maar andere actie, wordt diegene bijgehouden die de hoogste waardering oplevert.
+			\item Als er twee regels zijn met verschillende premissen maar dezelfde acties, waarbij premisse 1 meer algemeen is dan premisse 2, dan behouden we premisse 1 als er visies zien waarbij de tweede regel niet van toepassing is, anders premisse 2.
+		\end{itemize}
+		\item Twee fasen:
+		\begin{enumerate}
+			\item De \textbf{exploratiefase}:
+			\begin{itemize}
+				\item Er is een \textbf{regelverzameling} $A(v)$ van een visie. 
+				\item Dit is de verzameling regels waarvan de premisse beantwoord aan $v$.
+				\item Als we in visie $v$ zitten nemen we een regel uit $A(v)$, en voeren de daarbijhorende actie $\alpha$ uit. De regel kan gekozen worden door bijvoorbeeld een random keuze te maken met de waarderingen van de regels als gewicht.
+				\item De actie $\alpha$ zorgt voor een nieuwe visie $v'$.
+				\item Om na te gaan hoe goed deze actie is, moet er een waarde toegekend worden aan $v'$.
+				$$\omega(v') = b(v') + \max_{r \in A(v')} \omega(r)$$
+				\item De verzameling $A(v)$ wordt in twee delen opgesplitst:
+				\begin{enumerate}
+					\item[1. ] Elke regel $r$ in $A(v)$ die als actie $a$ voorstelt, kan de waardering $\omega(r)$ door onzekerheid aangepast worden met een vergeetfactor $\alpha, 0 < \alpha < 1$:
+					$$\omega(r) \rightarrow (1 - \alpha)\omega(r) + \alpha\omega(v')$$
+					\item[2. ] Voor elke andere regel $r$ in $A(v)$ die een andere actie al $a$ voorstelt, vermindert de waardering met een vergeetfactor $\beta$ die kleiner is dan $\alpha$:
+					$$\omega(r) \rightarrow (1 - \beta)\omega(r)$$
+				\end{enumerate}
+			\end{itemize}
+
+			\item De \textbf{regelaanpassingsfase}:
+			\begin{itemize}
+				\item Regels met een lage waardering worden verwijderd, vaak door ze te veranderen.
+				\item Er kan bijgehouden worden hoe vaak regels gebruikt werden in de exploratiefase. Deze hebben minder kans om verwijderd te worden.
+				\item Als een regel soms heel goed en soms heel slecht presteert, dan kan de regel \textbf{gesplitst} worden:
+				\regel{$3 \leq x \leq 5$}{Actie A}
+				Er kan een variabele ingevoerd die tracht het goede en het slechte deel te scheiden:
+				\regel{$3 \leq x \leq 5$ en $y < 10$}{Actie A}
+				\regel{$3 \leq x \leq 5$ en $y > 10$}{Actie A}
+				\item Regels kunnen ook \textbf{samengevoegd} worden. Als twee regels dezelfde actie voorstellen, en een grote overlapping hebben kan dit nuttig zijn.
+				\item De premissen van regels die goed presteren kunnen ook verruimd worden.
+			\end{itemize}
+		\end{enumerate}
+	\end{itemize}
+\end{itemize}
 \section{Combinaties}
 

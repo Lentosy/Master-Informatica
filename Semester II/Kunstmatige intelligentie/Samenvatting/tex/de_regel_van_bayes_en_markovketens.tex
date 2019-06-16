@@ -91,25 +91,38 @@
 			\item De expliciete waarde van $p(d)$ is eigenlijk niet nodig aangezien deze onafhankelijk is van $i$. We weten dat $d$ waar is uit de waarnemingen en is dus een constante factor.
 		\end{itemize}
 	\end{itemize}
-	
+	\item $p(h_i)$ is de \textbf{a prioriverdeling}: de waarschijnlijkheid dat $h_i$ waar is vooraleer de data $d$ bekend is.
+	\begin{itemize}
+		\item Als deze niet gekend is, moet ze geschat worden.
+		\item Bijvoorbeeld via uniforme verdeling, elke hypothese krijgt dezelfde waarschijnlijkheid.
+		\begin{itemize}
+			\alert Slechts een noodoplossing.
+		\end{itemize}
+	\end{itemize}
+	\item $p(h_i|d)$ is de \textbf{a posterioriverdeling}: de waarschijnlijkheid dat $h_i$ waar is wanneer de data $d$ gekend is.	
 \end{itemize}
 \section{Markovketens en -modellen}
 \begin{itemize}
+	\item Een speciaal soort automaat met twee essentiële verschillen:
+	\begin{enumerate}
+		\item Een Markovketen is een \textbf{producerende} eenheid: het genereert uitvoer zonder een specifieke invoer;
+		\item Een Markovketen heeft een \textbf{stochastische} werking: de overgang naar een andere staat is gebaseerd op kans.
+	\end{enumerate}
 	\item Wordt gebruikt om tijdsafhankelijke processen te modelleren. 
 	\item Formele definitie van een \textbf{Markov model}:
 	\begin{enumerate}
-		\item Een eindige verzameling van \textbf{staten} $S = \{s_1, ..., s_n\}$. Er is een beginstaat $(s_1)$ en een eindstaat $(s_n)$.
+		\item Een eindige verzameling van \textbf{staten} $S = \{s_1, ..., s_n\}$. Er is een beginstaat $(s_1)$ en eventueel een eindstaat $(s_n)$.
 		\item Een \textbf{transitiematrix} $T$. Dit is een $n \times n$ matrix die de probabiliteit van een toestand $s_i$ naar een andere toestand $s_j$ bevat.
 		\item Een \textbf{uitvoeralfabet} $A = \{a_1, ..., a_{k - 1}\} \cup \{a_k\}$. Hier is $a_k$ het lege symbool.
-		\item Een \textbf{uitvoermatrix} $U$. Een $a \times k$ matrix.
+		\item Een \textbf{uitvoermatrix} $U$. Een $a \times k$ matrix. Voor $i$, de huidige staat, en $t$, het huidige tijdstip, dan geeft $U_{ij}$ de kans op $j$ als uitvoer.
 	\end{enumerate}
 	\item Een Markovketen kent een probabiliteit toe aan elke string van karakters in $A$. 
 	\item Een Markovketen produceert een string, maar niet noodzakelijk altijd dezelfde. Het is \textbf{niet-deterministisch}, maar de kans op een bepaalde string kan wel berekent worden.
 	\item Op elk ogenblik is de Markovketen in een bepaalde staat. Voor $t = 0$ is dit $s_1$.
 	\item De keten activeren levert een functie $i : \mathcal{N} \rightarrow \{1, ..., n\}$ op die voor elk moment $t$ de index van de staat op dat moment geeft. Op een ogenblik $t$ is de staat $s_{i(t)}$.
-	\item De probabiliteiten om van één staat naar een andere te gaan worden in $T$ beschreven:
+	\item De probabiliteiten om van één staat naar een andere te gaan worden in de transitiematrix $T$ beschreven:
 	
-	$$T_{kj} = p(i(t + 1) = j|i(t) = k)$$
+	$$T_{kj} = p(i(t + 1)) = p(j|i(t)) = p(k)$$
 	
 	Voor een willekeurige $k$ geldt (som der kansen):
 	
@@ -136,29 +149,61 @@
 			\item Homoniemen worden als hetzelfde woord beschouwd: meid, mijd, mijdt, mijt, ...
 			\item Hetzelfde foneem kan traag of snel uitgesproken worden. Deze variatie van lengte wordt aangegeven als de probabiliteit om in dezelfde staat te blijven.
 		\end{itemize}
-		\item Het meest gebruikelijke model maakt gebruik van drie staten: $B$, $M$ en $E$ (Begin, Midden en Eind), gevolgd door een eindstaat $s_4$. Figuur \ref{fig:hmm_voor_t} toont het HMM voor het foneem 't'.
+		\item[1. ] Het meest gebruikelijke modelvoor een foneem  maakt gebruik van drie staten: $B$, $M$ en $E$ (Begin, Midden en Eind), gevolgd door een eindstaat $s_4$. Figuur \ref{fig:hmm_voor_t} toont het HMM voor het foneem 't'.
 		\begin{figure}
 			\includegraphics[width=\textwidth]{hmm_voor_t}
 			\caption{Het HMM voor het foneem 't'.}
 			\label{fig:hmm_voor_t}
 		\end{figure}
 	
-		\item Het HMM voor een woord wordt gevormd door de HMM's voor zijn fonemen aaneen te schakelen. Als een woord $w_i$ de fonemen $f_i$ heeft, dan heeft het HMM 3 $f_i$ staten
-		\item Er moet ook nog een model opgebouwd worden om de waarschijnlijkheid van zinnen te modelleren. Dit is echter zeer complex en hierbij wordt er gebruik gemaakt van \textbf{$n$-grammodellen}.
+		\item[2. ] Het HMM voor een woord wordt gevormd door de HMM's voor zijn fonemen aaneen te schakelen. Als een woord $w_i$ de fonemen $f_i$ heeft, dan heeft het HMM 3 $f_i$ staten (eindstaat wordt niet mee gerekend).
+		\item[3. ] Er moet ook nog een model opgebouwd worden om de waarschijnlijkheid van zinnen te modelleren. Dit is echter zeer complex en hierbij wordt er gebruik gemaakt van \textbf{$n$-grammodellen}.
 		\begin{itemize}
 			\item Een $n$-gram is een sequentie van $n$ woorden.
 			\item Als de probabiliteit van alle $n$-grammen gekent is, dan kan dit gebruikt worden om bij $n-1$ woorden het volgende woord te voorspellen.
 			\item Een \textbf{unigram} is een $1$-gram dat dan de relatieve frequentie van alle woorden bevat.
 			\item Een \textbf{bigram} is een $2$-gram bevat alle mogelijke combinaties van twee opeenvolgende woorden.
-		\end{itemize}
+		
 		\item Een bigram heeft een beginknoop. Deze beginknoop is verbonden met alle beginknopen van woorden en genereert zelf geen uitvoer. De overgangswaarschijnlijkheid wordt gegeven door de unigrammen. De overgangswaarschijnlijkheid van de eindknoop van een woord naar de beginknoop van een volgend woord is gegeven door de relatieve frequentie van het bijbehorende bigram.
 		\item Stel $W$ het aantal woorden en $f$ het gemiddeld aantal fonemen per woord, dan is het totaal aantal staten $3fW$.
 	\end{itemize}
-	\item In een HMM kan gebruikt worden om de waarschijnlijkheid van een bepaalde uitvoer te berekenen. Maar wat als we willen weten hoe de uitvoer gegenereerd is? 
-	\begin{itemize}
-		\item 
 	\end{itemize}
-	
+	\item Een HMM kan gebruikt worden om de waarschijnlijkheid van een bepaalde uitvoer te berekenen. Maar wat als we willen weten hoe de uitvoer gegenereerd is? 
+	\begin{itemize}
+		\item De functie $j(t)$ is gekend, die voor tijdstip $t$ aangeeft dat de uitvoer $a_{j(t)}$ was.
+		\item De functie $i(t)$, die de staat geeft als functie van de tijd $t$, kan hier niet uit afgeleidt worden.
+		\item Op een tijdstip $t$ is de uitvoer $a_j$, dus weten we enkel dat op tijdstip $t$ de staat $s_i$ moet zijn met $U_{ij} \neq 0$.
+		\item We zoeken een indexfunctie $i(.)$ die de meest waarschijnlijke is, gegeven de uitvoer $j(.)$. 
+		\item We zoeken $i(.)$ die $p(i(.)|j(.))$ maximaliseert. Volgens Bayes:
+		$$p(i(.)|j(.)) = \frac{p(i(.))p(j(.)|i(.))}{p(j(.))}$$
+		\begin{itemize}
+			\item $p(j(.))$ is onbelangrijk aangezien deze hetzelfde is voor alle mogelijke sequenties.
+			\item $p(i(.))$ kan berekend worden door het product te nemen van de overgangswaarschijnlijkheden $T_{i(t),i(t + 1)}$ en $T$ het totaal aantal tijdstappen.
+			\item $p(j(.)|i(.))$ is de waarde $U_{i(t)j(t)}$
+		\end{itemize}
+		\item De formule van bayes kan dan gesubstitueerd worden, met $\alpha = \frac{1}{p(j(.))}$:
+		$$p(i(.)|j(.)) = \alpha \prod_{t = 0}^{t = T - 1} T_{i(t),i(t + 1)} \prod_{t=0}^{t=T}U_{i(t)j(t)}$$
+		\item Om $p(i(.)|j(.))$ te maximaliseren kan het probleem opgevat worden als het zoeken van een optimaal pad doorheen een gerichte graaf.
+	\end{itemize}
+	\item Constructie graaf:
+	\begin{itemize}
+		\item De knopenverzameling van de graaf is de verzameling koppels $(s_i, t)$ waarbij $0 \leq t \leq T$.
+		\item Er is een verbinding van $(s_i, t_1)$ naar $(s_j, t_2)$ als $t_2 = t_1 + 1$ en er een verbinding is van $s_i$ naar $s_j$ in het HMM (dus $T_{ij} \neq 0$).
+		\item Probleem: in klassiek optimaal pad wordt de kost zo klein mogelijk gemaakt, terwijl we hier een zo groot mogelijke probabiliteit willen bereiken. De kost tussen twee knopen kan berekend worden via:
+
+		$$c((s_i, t) \rightarrow (s_k, t + 1)) = - \log_2(T_{ik}\cdot U_{kj(t + 1)})$$
+	\end{itemize}
+	De graaf doorzoeken gebeurd via het \textbf{Viterbialgoritme}:
+	\begin{itemize}
+		\item Loop de graaf tijdslaag per tijdslaag af.
+		\item Als we voor een waarde $t$ alle knopen $(s_i, t)$ ontwikkeld hebben, dan kennen we voor elke knoop $(s_i, t + 1)$ de geschatte kost $g$ voor de kortste weg van de startknoop naar de huidige knoop. 
+		\item We zoeken een functie $e$ zodanig dat $log_2(e((s_i, t))) = g((s_i, t))$.
+		\begin{enumerate}
+			\item Voor $t = 0$, initialiseer $e((s_1, 0)) = 1$ en $e((s_i, 0)) = 0$ voor $i \neq 1$.
+			\item Voor $t = 1, 2, ...,$ en voor alle staten $s_i$, zoek de $k$ die de functie $e((s_k, t - 1))T_{ki}$ maximaliseert, en stel 
+			$$e((s_i, t)) = e((s_k, t - 1))T_{ki}U_{ij(t)}$$ 
+		\end{enumerate}
+	\end{itemize}
 	
 
 \end{itemize}
