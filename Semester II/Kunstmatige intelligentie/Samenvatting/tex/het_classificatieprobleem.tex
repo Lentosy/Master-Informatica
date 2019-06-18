@@ -1,1 +1,132 @@
 \chapter{Het Classificatieprobleem}
+
+\begin{itemize}
+    \item Slechts 2 klassen
+    \begin{itemize}
+        \item Geen probleem indien meerdere klassen: ze kunnen beschouwd worden als een combinatie van tweeklassenproblemen.
+        \item Stel drie klassen $A$, $B$ en $C$: los eerst classificatieprobleem op met $A$ en niet$-A$, en daarna voor $niet-A$ het probleem $B$ en $C$ op te lossen.
+    \end{itemize}
+    \item Een neuron deelt de $n$-dimensionale ruimte op in twee stukken, die men halfruimten noemnt.
+    \item De scheiding tussen deze twee halfruimten is een verzameling van de vorm:
+    $$\{\textbf{x} : \textbf{x} \cdot \textbf{w} - T = 0\}$$
+\end{itemize}
+
+\section{Harde classificatie}
+\begin{itemize}
+    \item Stel $\mathcal{L}$ de leerverzameling.
+    \item Deze is verdeeld in twee klassen $\mathcal{L}^+$ en $\mathcal{L}^-$.
+    \item $\mathcal{L}$ is lineair scheidbaar als er een halfruimte bestaat die alle punten van $L^+$ bevat, en geen enkele van $L^-$, terwijl er ook geen punten op de rand mogen liggen. 
+    $$\textbf{x} \cdot \textbf{w} = \begin{cases}
+        > T \quad \hbox{als} \quad \textbf{X} \in \mathcal{L}^+ \\
+        < T \quad \hbox{als} \quad \textbf{X} \in \mathcal{L}^-
+    \end{cases}$$
+    \item Dit komt overeen met het bestaan van een neuron met $n$ invoerkanalen, elk met gewicht $w_i$, en met een drempel $T$ zodanig dat de invoer strikt positief is voor een punt uit $\mathcal{L}^+$ en strikt negatief voor een punt uit $\mathcal{L}^-$.
+    \item Neem een polaire TLU, dan is de uitvoer +1 voor elementen uit $\mathcal{L}^+$ en -1 voor elementen uit $\mathcal{L}^-$. Dit is de eenvoudigste vorm van het \textbf{perceptron}.
+    \item Hoe moeten de gewichten gekozen worden?
+    \begin{itemize}
+        \item Om berekeningen te vergemakkelijken wordt de drempel $T$ weggewerkt door een extra dimensie toe te voegen, waarbij elk component in die dimensie altijd de waarde 1 bevat en zodat $T = -\omega_0$.
+        \item We zoeken nu een vector in $\mathcal{R}^{n + 1}$ zodanig dat
+        $$\textbf{x} \cdot \textbf{w} > 0 \; \hbox{als}\;\textbf{x} \in \mathcal{L}^+ \qquad \textbf{-x} \cdot \textbf{w} > 0 \; \hbox{als}\;\textbf{x} \in \mathcal{L}^-$$
+        \item Vervang $\mathcal{L}$ door $\mathcal{P}$
+        $$\mathcal{P}_i = \begin{cases}
+            \textbf{x} \; & \hbox{als}  \;\textbf{x} \in \mathcal{L}_i^+ \\
+            \textbf{-x} \; & \hbox{als}  \;\textbf{x} \in \mathcal{L}_i^-
+        \end{cases}$$
+        \item Als we een vector \textbf{x} uit $\mathcal{P}$ aanbieden aan perceptron, dan moet deze $1$ als uitvoer hebben. 
+        \item Algoritme:
+        \begin{enumerate}
+            \item Initialiseer de gewichten op 0
+            \item Zolang (geen foutlees parcours en niet te veel pogingen)
+   
+                \item Voor elke vector \textbf{x} uit $\mathcal{P}$
+                \begin{enumerate}
+                    \item Als $\textbf{x} \cdot \textbf{w} \leq 0$
+                    \item Vervang $\textbf{w}$ door $\textbf{w} + \textbf{x}$
+                \end{enumerate}       
+        \end{enumerate}
+        \item Eindigt dit algoritme?
+        \begin{itemize}
+            \alert Als we $\textbf{w}$ vervangen door $\textbf{w + x}$ kan het zijn dat $\textbf{x} \cdot (\textbf{w + x})$ nog altijd negatief is.
+            \alert Het kan zijn dat een vector $\textbf{v}$ uit $\mathcal{P}$, die al correct geklasseerd was, $\textbf{v \cdot x} > 0$ ,nu verkeerd wordt geklasseerd. Het zou kunnen dat $\textbf{x \cdot v} < 0$ en dan is $\textbf{v} \cdot (\textbf{w + x}) < \textbf{v \cdot w}$.
+            \item \textbf{Stelling} Als $\mathcal{L}$ lineair scheidbaar is en $\mathcal{P}$ een eindige verzameling, dan zal het algoritme na een eindig aantal stappen een $\textbf{w}$ vinden die het probleem oplost, en dus $\textbf{x} \cdot \textbf{w} > 0$ voor alle $\textbf{x}$ in $\mathcal{P}$.
+            \item Bewijs:
+            \begin{itemize}
+                \item Stel alle gewichten op 0, en nummer het aantal keer dat een verkeerd geklasseerde vector is tegengekomen.
+                \item De vector bij de $k-$de keer hoort noemen we $\textbf{x}(k)$.
+                \item De gewichtenvector waarmee we beginnen is $\textbf{w}(0)$, die na de $k-$de keer $\textbf{w}(k)$.
+                \item Ons algoritme stelt $\textbf{w}(k) = \textbf{w}(k - 1) + \textbf{x}(k)$ als $\textbf{x}(k) \cdot \textbf{w}(k - 1) \leq 0$
+                \item De bovengrens wordt dan:
+                \begin{align*}
+                    ||\textbf{w}(k)||^2 & = \textbf{w}(k) \cdot \textbf{w}(k) \\
+                                        & = (\textbf{w}(k - 1) + \textbf{x}(k)) \cdot (\textbf{w}(k - 1) + \textbf{x}(k)) \\
+                                        & = \textbf{w}(k - 1)\cdot \textbf{w}(k - 1) + 2\textbf{w}(k - 1)\cdot\textbf{x}(k) + \textbf{x}(k)\cdot \textbf{x}(k) \\
+                                        & = ||\textbf{w}(k - 1)||^2 + ||\textbf{x}(k)||^2 \\
+                                        & = ||\textbf{x}(1)||^2 + ... ||\textbf{x}(k)||^2
+                \end{align*}
+                \item De term $2\textbf{w}(k - 1)\cdot\textbf{x}(k)$ mag verwaarloosd worden, aangezien deze kleiner is dan nul en dus de bovengrens zeker niet zal beïnvloeden.
+                \item Er is nu een vector $\textbf{y}$ in $\mathcal{P}$ met de grootste norm, $||\textbf{y}||^2 = M$ en $||\textbf{x}||^2 \leq M$ voor alle andere $\textbf{x}$ in $\mathcal{P}$. Hieruit volgt
+                $$||\textbf{w}(k)||^2 \leq kM$$
+                \item ...
+            \end{itemize}
+        \end{itemize}
+        
+    \end{itemize}
+    \alert We weten niet of ons probleem lineair scheidbaar is.
+    \good Wel weten we dat voor een leerverzameling $\mathcal{L}$ waarbij $\mathcal{L}^+$ en $\mathcal{L}^-$ geen gemeenschappelijke elementen hebben, dat er een drielagig net kan geconstrueerd worden dat een scheiding van $\mathcal{L}$ kan uitvoeren.
+\end{itemize}
+
+
+\section{Zachte classificatie}
+
+
+\section{De deltaregel}
+\begin{itemize}
+    \item Twee versies:
+    \begin{enumerate}
+        \item \begin{itemize}
+            \item Analoog netwerk, dat bestaat uit één neuron.
+            \item Leerverzameling $\mathcal{L}$ die bestaat uit meetvectoren $\textbf{v}$ en gewenste uitvoer $y(\textbf{v}) \in [-1, +1]$ waarbij $y$ strikt stijgend is en overal een afgeleide heeft, en dat deze afgeleide verschilt van nul.
+            \item Bijvoorbeeld tangens hyperbolicus:
+            $$f(r) = \frac{e^{r} - e^{-r}}{e^r + e^{-r}}$$
+            \item De afgeleide is:
+            $$f'(r) = 1 - (f(r))^2$$
+            \item Veronderstel een meetvector $\textbf{v}$, en een resultaat $u$ die verschilt van $y(\textbf{v})$.
+            \item De uitvoerfout is hier $e = y(\textbf{v}) - u$.
+            \item De fout op de invoer van het neuron:
+            \begin{itemize}
+                \item De invoer van het neuron is $a = \sum_i(w_iv_i)$ en $f(a) = u$.
+                \item Voor kleine waarden van $\delta$ geldt:
+                $$f(a + \delta) \approx f(a) + \delta f'(a)$$
+                \item Neem $\delta = e/f'(a)$, dan is $f(a + \delta) \approx y(\textbf{v})$.
+                \item Vervang elke $\textbf{w}$ door $\textbf{w} + \Delta \textbf{w}$ zodat:
+                \begin{itemize}
+                    \item De nieuwe invoer van het neuron gelijk is aan $a + \delta$.
+                    \item De wijziging zo klein mogelijk is, $||\Delta \textbf{w}||$ is minimaal.
+                \end{itemize}
+                \item Hier volgt $(\textbf{w} + \Delta \textbf{w}) \cdot \textbf{v} = a + \delta$.
+                \item Schrijf $\Delta \textbf{w}$ als
+                $$\Delta \textbf{w} = A\textbf{v} + \textbf{y}$$
+                met $\textbf{y}$ loodrecht op $\textbf{v}$ en (als gevolg) $A = \frac{\delta}{||\textbf{v}||^2}$ 
+                \item $\textbf{y}$ moet gekozen worden zodanig dat $\Delta \textbf{w}$ minimaal is, en dat is bij $\textbf{y} = 0$.
+                \item De (eerste versie) deltaregel van een neuron is:
+                $$\Delta \textbf{w} = \frac{y(\textbf{v}) - u}{f'(a)||\textbf{v}||^2}\textbf{v}$$
+            \end{itemize}
+        \end{itemize}
+        \begin{itemize}
+            \item Gegeven een invoervector $\textbf{v}$.
+            \item Stel een kleine wijziging $\tau$ voor gewicht $w_i$.
+            \item Hoe wijzigt $u$, de uitvoer van het netwerk?
+            \item De invoer verandert: $a = a + \tau v_i$.
+            \item De uitvoer verandert: $f(a + \tau v_i) \approx f(a) + \tau v_i f'(a)$.
+            \item De factor $v_i f'(a)$ is de partiële afgeleide van $u$ naar $w_i$, die genoteerd wordt als $\partial_{w_i}i$.
+    
+            $$\partial_{\textbf{w}}u = (\partial_{w_{0}}u, ..., \partial_{w_{n}}u)$$
+            \item Hierbij is $\partial_{\textbf{w}}u = f'(a)\textbf{v}$
+            \item De (tweede versie) deltaregel van een neuron is:
+            $$\Delta \textbf{w} = \frac{y(\textbf{v}) - u}{||\partial_{\textbf{w}}u||^2}\partial_{\textbf{w}}u$$
+            \good Kan ook werken om een meerlagig net zonder terugkoppeling te laten leren.
+            \item Eventueel een leerfactor $A$ toevoegen, om al te grote schommelingen te vermijden.
+        \end{itemize}
+
+    \end{enumerate}
+\end{itemize}

@@ -1,0 +1,81 @@
+\chapter{Informatieverwerking met neurale netten}
+Drie vormen die zullen toegepast worden op TLU's:
+\begin{itemize}
+    \item Via binaire functies.
+    \item Via automaten.
+    \item Via associatieve geheugens (Hopfieldnet).
+\end{itemize}
+
+Belangrijk nadeel aan TLU: het geeft geen realistisch model van de manier waarop het netwerk leert.
+
+\section{Binaire functies}
+\begin{itemize}
+    \item Alle binaire functies kunnen gerealiseerd worden met een tweelagig net van TLU's (Stelling van McCulloch en Pitts).
+    \item Stel een aantal elementaire logische uitspraken $v_1, ... v_n$.
+    \item Hier kunnen complexe uitdrukkingen mee gevormd worden: $\neg v_1 \wedge (v_2 \vee v_3) \Rightarrow (v_1 \Rightarrow \neg v_3)$
+    \item Neuraal net opstellen om na te gaan of de uitspraak waar is of niet.
+    \begin{itemize}
+        \item Het netwerk bestaat uit TLU's die de waarden $v_i$ als invoer krijgen in de vorm van $0$ of $1$.
+        \item Als de stelling waar is geeft TLU $1$ terug, anders $0$.
+    \end{itemize}
+    \item Een binaire functie is een functie $F$ van de verzameling binaire getallen met $n$ cijfers, $\{0, 1\}^n$ naar deze van binaire getallen met $k$ cijfers $\{0, 1\}^k$, waarbij $n$ en $k$ vooraf positief gehele getallen zijn. 
+    \item Een neuraal net heeft dan $n$ ingangen en $k$ uitgangen.
+    \item Als de invoer aan het net gegeven wordt, wachten we tot alle neuronen een stabiele toestand bereiken, en zo is de uitvoer alleen afhankelijk van de invoer. 
+    \item Een net realiseert een binaire functie $F$ als de uitvoer beschreven wordt als functie van de invoer. 
+    \item Gegeven een binaire functie $F$, kan er een net gevonden worden die deze functie realiseert?
+    \begin{itemize}
+        \item We moeten alleen kijken naar $k = 1$ want als $k > 1$, dan kunnen $k$ netwerken gekozen worden met 1 uitvoercomponent. Elk van deze netwerken zorgt dan voor 1 component van $F$.
+        \begin{itemize}
+            \item Stel $n = k = 2, F : \{0, 1\}^2 \rightarrow \{0, 1\}^2, F_1 : \{0, 1\} \rightarrow \{0, 1\}^2, F_2 : \{0, 1\}^2 \rightarrow \{0, 1\}$
+
+            \begin{align*}
+                F(0, 0) = (0, 1) \quad F_1(0, 0) = 0 \quad F_2(0, 0) = 1 \\
+                F(0, 1) = (1, 1) \quad F_1(0, 1) = 1 \quad F_2(0, 1) = 1 \\
+                F(1, 0) = (1, 1) \quad F_1(1, 0) = 1 \quad F_2(1, 0) = 1 \\
+                F(1, 1) = (0, 0) \quad F_1(1, 1) = 0 \quad F_2(1, 1) = 0 \\
+            \end{align*}
+            \item Samenvoegen van $F_1$ en $F_2$ geeft $F$.
+        \end{itemize}
+        \item Stel binaire functie $F$ met invoer $(b_1, ..,. b_n)$ en uitvoer $F(b_1, ..., b_n)$.
+        \item Het net dat we zoeken heeft $n$ invoerneuronen en $k$ uitvoerneuronen. 
+        \item De laag van invoerneuronen (nulde laag) vormt geen deel van het neuraal net.
+        \item Dus een tweelagig net bevat de invoerneuronen, de uitvoerneuronen en nog één laag van tussenliggende neuronen.
+        \item Functies die met een éénlagig net kunnen gerealiseerd worden:
+        \begin{enumerate}
+            \item De \textbf{OF}-functie, die (0, ..., 0) op 0 afbeeldt, en alle andere combinaties op 1 $ \rightarrow$ neuron met $n$ ingangen en $T = 0.5$.
+            \item De \textbf{select}-functie die een vooropgegeven bitcombinatie $(b_1, ..., b_n)$ op 1 afbeeldt, en alle andere op 0 $\rightarrow$ neuron met $n$ ingangen en $w_i = 2b_i - 1$.
+        \end{enumerate}
+        \item \textbf{Stelling: (McCulloh en Pitts)} Zij $F : \{0, 1\}^n \rightarrow \{0, 1\}^k$ een willekeurige binaire functie. Dan is er een gesloten gelaagd netwerk met ten hoogste twee lagen dat $F$ weergeeft. Anderzijds bestaan er functies die niet door een netwerk met één laag kunnen worden weergegeven.
+        \begin{itemize}
+            \item Als $F$ $\ell$ bitcombinaties op $1$ afbeeldt:
+            \begin{enumerate}
+                \item De eerste laag bevat $\ell$ neuronen. Elk daarvan realiseert de selectiefunctie voor een bitcombinatie die op $1$ moet worden afgebeeld.
+                \item De tweede laag bestaat uit een neuron met $\ell$ ingangen die de OF-functie realiseert.
+            \end{enumerate}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+
+\section{Automaten}
+\begin{itemize}
+    \item De Mooreautomaat heeft volgende kenmerken:
+    \begin{itemize}
+        \item Een eindige verzameling staten $Q = \{q_1, ..., q_{|Q|}\}$.
+        \item Een invoeralfabet $S = \{s_1, ..., s_{|S}\}$.
+        \item Een uitvoeralfabet $G = \{g_1, ..., g_{|G|}\}$.
+        \item Een transitiefunctie $d : Q \times S \rightarrow Q$.
+        \item Een uitvoerfunctie $\ell : Q \rightarrow g$.
+        \item Een beginstaat $q_I \in Q$.
+    \end{itemize}
+    \item Aangezien we met TLU's werken is 
+    $$S \subset \{0, 1\}^n \qquad G \subset \{0, 1\}^k$$
+    \item Het is tijdsafhankelijk: de uitvoer van een neuron op tijdstip $t$ hangt af van de totale invoer op tijdstip $t - 1$. 
+    \item De invoer wordt aangevoerd op even tijdstippen, $t = 0, 2, 4, ...$. De oneven tijdstippen geeft de automaat de kans om de invoer te verwerken.
+    \item Twee veronderstellingen:
+    \begin{enumerate}
+        \item Het invoeralfabet is exact de verzameling van binaire strings van lengte $n$ bestaande uit $n - 1$ nullen en één 1.
+        \item Het invoeralfabet is exact de verzameling van binaire strings van lengte $k$ bestaande uit $n - 1$ nullen en één 1.
+    \end{enumerate}
+\end{itemize}
+

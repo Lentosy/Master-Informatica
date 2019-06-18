@@ -1,0 +1,82 @@
+\chapter{Steunvectoren}
+\begin{itemize}
+    \item Andere aanpak voor harde classificatie voor lineaire en niet-lineaire problemen.
+    \item Soms is er ruis en is het onbepaald hoeveel neuronen er nodig zijn.
+    \item Hier zien we SVM's (Support Vector Machine) die de vorm hebben van een stemmachine.
+\end{itemize}
+\section{Basisprincipes}
+\begin{itemize}
+    \item Terug een leerverzameling $\mathcal{L} = \mathcal{L}^+ \cup \mathcal{L}^-$, of
+    $\mathcal{L} = \{\textbf{x_1}, ..., \textbf{x_n}\}$
+    \item Een stemmachine heeft een gelijkaardigheidsfunctie $g$.
+    \begin{itemize}
+        \item Geeft aan hoe goed twee items op elkaar lijken.
+        \item Voor gegeven $\textbf{x}$ en variërende $\textbf{z}$ heeft $g(\textbf{x}, \textbf{z})$ de grootst mogelijke waarde voor $\textbf{x} = \textbf{z}$ en neemt de waarde af naarmate $\textbf{z}$ minder op $\textbf{x}$ begint te lijken.
+        \item Bijvoorbeeld:
+        $$g(\textbf{x}, \textbf{z}) = - ||\textbf{x} - \textbf{z} ||^2$$
+        waarbij $g(\textbf{x}, \textbf{z}) = g(\textbf{z}, \textbf{x})$
+    \end{itemize}
+    \item Basisidee: Vectoren die meer lijken op vectoren uit $\mathcal{L}^+$ worden positief geklasseerd. Vectoren die meer lijken op vectoren uit $\mathcal{L}^-$ worden negatief geklasseerd.
+    \begin{enumerate}
+        \item (Leerfase)
+        
+        Elke klasse geeft aan elk van zijn vectoren in $\mathcal{L}$ een gewicht dat aangeeft hoe belangrijk de vector voor de klasse is. De som van de gewichten moet gelijk zijn aan $1$ en de gewichten mogen niet negatief zijn. Ook moet een drempelwaarde $T$ bepaald worden.
+        \item (Gebruiksfase)
+        \begin{enumerate}
+            \item Voor een onbekende vector $\textbf{z}$ zendt elke vector $\textbf{x}_i$ in $\mathcal{L}$ een signaal uit dat aangeeft hoe sterk $\textbf{z}$ op $\textbf{x}$ lijkt.
+            \item De klasse telt deze signalen voor zijn klasse op, rekening houdend met de gewichten.
+            \item $\textbf{z}$ wordt toegewezen aan de klasse met het sterkste signaal.
+        \end{enumerate}
+    \end{enumerate}
+    \item We kunnen elk element $\textbf{x}$ uit $\mathcal{L}$ beschouwen als een invoerneuron dat, gegeven een item $\textbf{z}$, een signaal uitstuurt hoe goed $\textbf{z}$ lijkt op $\textbf{x}$.
+    \item Beide klassen hebben een neuron dat de outputs van alle invoerneuronen voor die klasse verzamelt. Ze kunnen beschreven worden door de reactiefunctie $f(r) = r$.
+    \item De gewichten zijn $\alpha_1, ..., \alpha_n$, zodat de totale uitvoer van het uitvoerneuron kan beschreven worden als:
+    $$a(\textbf{z}) = \sum_{i = 1}^{n}\alpha_iy_ig(\textbf{x}_i, \textbf{z})$$
+    Hierbij is $y_i = 1$ als $\textbf{x} \in \mathcal{L}^+$ en  $y_i = -1$ als $\textbf{x} \in \mathcal{L}^-$
+    \item $\textbf{z}$ wordt bij $\mathcal{L}^+$ geklasseerd als $a(\textbf{z}) \geq T$, en anders bij $\mathcal{L}^-$ als $a(\textbf{z}) < T$
+    \item De vectoren $\textbf{x}_i$ waarvoor $\alpha_i \neq 0$ worden de steunvectoren genoemd.
+    \item Hoe worden de gewichten $\alpha_i$ en de drempelwaarde $T$ bepaald?
+    \begin{itemize}
+        \item Twee grootheden belangrijk:
+        $$m^+ = \min_{y_1=1} a(\textbf{x}_i) \qquad m^- = \min_{y_1=-1} a(\textbf{x}_i)$$
+        \begin{enumerate}
+            \item De $\alpha_i$ horend bij $\mathcal{L}^+$ worden zo gekozen dat $m^+$ zo groot mogelijk is.
+            \item De $\alpha_i$ horend bij $\mathcal{L}^-$ worden zo gekozen dat $m^-$ zo klein mogelijk is.
+            \item De drempelwaarde wordt vastgelegd op $\frac{m^+ + m^-}{2}$
+        \end{enumerate}
+        \item Om regel (1) en (2) optimaal te houden, kan de energiefunctie gebruikt worden:
+        $$\mathcal{F}(\alpha_1, ..., \alpha_n) = \frac{1}{2}\sum_{i = 1}^{n}\sum_{j = 1}^{n} \alpha_i\alpha_jy_iy_jg(\textbf{x}_i, \textbf{x}_j)$$
+        \begin{itemize}
+            \item Beschouw de $\alpha$ die gehecht zijn aan een vector in $\mathcal{L}$.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+\section{Niet-lineaire classificatie}
+\begin{itemize}
+    \item Hier: kwadratisch oplosbare problemen
+    \item Een verzameling $\mathcal{L} = \mathcal{L}^+ \cup \mathcal{L}^-$ is kwadratisch scheidbaar als er een tweedegraadsveelterm $p_2$ bestaat zodanig dat $p_2(\textbf{z}) > 0$ voor alle $\textbf{z}$ in $\mathcal{L}^+$ en $p_2(\textbf{z}) < 0$ voor alle $\textbf{z}$ in $\mathcal{L}^-$. 
+    \item Kan een stemmachine diet probleem behandelen?
+    \begin{itemize}
+        \item Stel $g(\textbf{x}, \textbf{z}) = - ||\textbf{x} - \textbf{z} ||^2$
+        
+        \begin{align*}
+            a(\textbf{z}) & = \sum_{i = 1}^n \alpha_iy_ig(\textbf{x}_i, \textbf{z})\\
+                          & = \sum_{i = 1}^n \alpha_iy_i(- ||\textbf{x}_i||^2 - ||\textbf{z}||^2 + 2\textbf{x}_i\cdot\textbf{z})) \\
+                          & = -\sum_{i = 1}^n \alpha_iy_i||\textbf{x}_i||^2 - \sum_{i = 1}^n \alpha_iy_i||\textbf{z}||^2 + 2\sum_{i = 1}^n \alpha_iy_i\textbf{x}_i\cdot\textbf{z} \\
+                          & = -\sum_{i = 1}^n \alpha_iy_i||\textbf{x}_i||^2 - ||z||^2\bigg(\sum_{y_{i} = 1}^n \alpha_i - \sum_{y_{i} = -1}^n \alpha_i\bigg) + 2\sum_{i = 1}^n \alpha_iy_i\textbf{x}_i\cdot\textbf{z} \\
+                          & = -\sum_{i = 1}^n \alpha_iy_i||\textbf{x}_i||^2  + 2\sum_{i = 1}^n \alpha_iy_i\textbf{x}_i\cdot\textbf{z} \\
+        \end{align*}
+        \item Enkel de laatste term hangt af van $\textbf{z}$ en is lineair:
+        \begin{itemize}
+            \item De gelijkaardigheidsfunctie $g(\textbf{x}, \textbf{z}) = - ||\textbf{x} - \textbf{z} ||^2$ kan enkel lineair scheidbare problemen oplossen.
+        \end{itemize}
+    \end{itemize}
+    \item Bij een gelijkaardigheidsfunctie hoort er best een \textbf{kernfunctie}. Voorbeeld voor de 2de graad:
+    $$\kappa_2(\textbf{x},  \textbf{z}) = (\textbf{x}\cdot\textbf{z} + 1)^2$$
+
+    Deze functie kan alle kwadratische problemen oplossen.
+    \item Voor de $k-$de graad:
+    $$\kappa_2(\textbf{x},  \textbf{z}) = (\textbf{x}\cdot\textbf{z} + 1)^k$$
+    of
+    $$\kappa_2(\textbf{x},  \textbf{z}) = e^{- ||\textbf{x} - \textbf{z} ||^2}$$
+\end{itemize}
