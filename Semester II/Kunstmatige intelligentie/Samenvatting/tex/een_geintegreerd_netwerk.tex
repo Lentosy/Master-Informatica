@@ -1,1 +1,80 @@
 \chapter{Een geïntegreerd netwerk}
+\begin{itemize}
+    \item Kennis van vorige hoofdstukken toepassen op het \textbf{vertaalprobleem}.
+\end{itemize}
+
+\section{Het vertaalprobleem}
+\begin{itemize}
+    \item Dubbelzinngheid in een taal kan zich voordoen op drie niveaus:
+    \begin{enumerate}
+        \item Een woord kan verschillende betekenissen hebben.
+        \item Een woord kan zich in verschillende grammaticale klassen bevinden.
+        \item Woorden kunnen gecombineerd worden.
+    \end{enumerate}
+\end{itemize}
+
+\section{Overzicht van het netwerk}
+\begin{itemize}
+    \item \begin{enumerate}
+        \item De binnenkomende geluiden moeten omgezet worden in een reeks van fonemen.
+        \item De fonemenreeksen moeten gesplitst worden in woorden. De woorden voegen we samen in zinnen.
+        \item Van deze zinnen moet de grammaticale structuur bepaald worden.
+        \item Uit de woorden en de grammaticale structuur moeten we betekenissen halen.
+        \item Deze betekenissen moeten omgezet worden in de doeltaal, door de passende grammaticale structuur in de doeltaal te vinden en de juiste woorden daarin in te passen.
+        \item De resulterende woordenreeks moet omgezet worden in een fonemenreeks en uitgestuurd worden.
+    \end{enumerate}
+    \item Een verzameling woorden die instaan voor een begrip (een foneem, een woord, ...) worden clusters genoemd.
+    \item Twee belangrijke vormen van clusters:
+    \begin{itemize}
+        \item Clusters die verband houden met tijdssequentiële data zullen min of meer de vorm aannemen van een \textbf{automaat}.
+        \item Clusters die simultane data moeten verwerken gedragen zich als \textbf{associatieve geheugens}.
+    \end{itemize}
+    \item Het netwerk kan dan in drie eenheden onderscheiden worden:
+    \begin{enumerate}
+        \item Een woordherkenningseenheid (stap 2).
+        \item Een grammaticale eenheid (stap 3).
+        \item Een begripseenheid (stap 4).
+    \end{enumerate}
+    
+\end{itemize}
+
+\section{Van foneem naar woord}
+\begin{itemize}
+    \item Een reeks van fonemen wordt aangeboden.
+    \item De tijdsvolgorde is belangrijk.
+    \item Er is een aparte herkennende automaat voor elk woord.
+    \item Er is een apart detectiecluster voor elk woord die het woord analyseert.
+    \item Alle woordautomaten werken parallel en proberen hun woord te herkennen in de invoerstroom.
+    \begin{itemize}
+        \alert Er zullen veel valse positieven zijn.
+    \end{itemize}
+    \item Een kort woord kan deel uitmaken van een langer woord.
+    \item Detectie van een langer woord moet de detectie van een korter woord onderdrukken.
+    \item Er zijn dus terugkoppelingslussen van clusters die een lang woord verstellen naar clusters die een subwoord voorstellen om de subwoorden terug te desactiveren.
+\end{itemize}
+
+\section{Van woord naar betekenis}
+\begin{itemize}
+    \item Het betekenisgebied van het neuraal net bestaat uit verschillende modules die verbonden zijn zoals een Hopfieldnet.
+    \item Betekenissen die samen voorkomen zijn verbonden door positieve takken. 
+    \item Betekenissen die verbonden zijn met hetzelfde woord zijn verbonden met negatieve takken.
+    \item Het is een \textbf{winner-takes-all} netwerk.
+\end{itemize}
+
+\section{Grammaticale Analyse}
+\begin{itemize}
+    \item Via contextvrije grammatica's.
+    \begin{align*}
+        \langle\textbf{S}\rangle &::= \langle\textbf{WWG}\rangle\langle\textbf{LV}\rangle \\
+        \langle\textbf{WWG}\rangle &::= \langle\textbf{SG}\rangle\langle\textbf{WWG}\rangle \\
+        \langle\textbf{LV}\rangle &::= \langle\textbf{SG}\rangle \\
+        \langle\textbf{SG}\rangle &::= \langle\textbf{LW}\rangle\langle\textbf{SA}\rangle \\
+        \langle\textbf{SA}\rangle &::= \langle\textbf{ADJ}\rangle\langle\textbf{SA}\rangle|\langle\textbf{SUB}\rangle \\
+        \langle\textbf{LW}\rangle &::=  de\\
+        \langle\textbf{ADJ}\rangle &::= blauwe\\
+        \langle\textbf{SUB}\rangle &::=  vinvis|garnaal\\
+        \langle\textbf{WW}\rangle &::= verorberde\\
+    \end{align*}
+    \item Voor elke alternatieve substitutie voor een symbool is er een automaat die een lineaire sequentie detecteert bestaande uit de opeenvolging van de activaties van zijn delen.
+    
+\end{itemize}

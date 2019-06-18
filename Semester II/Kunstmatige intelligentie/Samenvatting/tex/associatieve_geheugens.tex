@@ -141,6 +141,20 @@
         \item Train het associatief geheugen op de gebruikelijke wijze met de gehele verzameling van punten.
         \item Houdt nu de gewichten van het associatief geheugen vast en presenteer weer alle punten. Punten die dezelfde uitvoer geven worden in dezelfde groep gestoken.
     \end{enumerate}
+    \item In een andere versie wordt bij stap 3 dezelfde invoer meerdere malen gepresenteerd, maar worden verschillende neuronen gekozen om te herberekenen.
+    \begin{itemize}
+        \item Een punt dat meerdere uitvoeren heeft, wordt als grenspunt beschouwd.
+        \item Als twee groepen meer grenspunten gemeen hebben dan een bepaald opgegeven getal, worden ze samengevoegd.
+        \item Dit komt nauw overeen met transitiviteit.
+    \end{itemize}
+    \item Nog een alternatief: \textbf{winner-takes-all} netwerk:
+    \begin{itemize}
+        \item Neem $n$ analoge neuronen met uitvoerwaarden tussen $0$ en $1$ zodat het omringende netwerk ervoor zorgt dat de activatie van de neuron een functie is van de waarschijnlijkheid van elk van de alternatieven.
+        \item Alle $n$ neuronen zijn nu onderling verbonden met negatieve gewichten.
+    \end{itemize}
 \end{itemize}
 
 \section{Patroonvervollediging}
+\begin{itemize}
+    \item 
+\end{itemize}
