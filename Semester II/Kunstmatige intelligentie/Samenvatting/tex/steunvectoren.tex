@@ -46,8 +46,27 @@
         \end{enumerate}
         \item Om regel (1) en (2) optimaal te houden, kan de energiefunctie gebruikt worden:
         $$\mathcal{F}(\alpha_1, ..., \alpha_n) = \frac{1}{2}\sum_{i = 1}^{n}\sum_{j = 1}^{n} \alpha_i\alpha_jy_iy_jg(\textbf{x}_i, \textbf{x}_j)$$
+        \item Deze zal altijd minimaal zijn voor $\alpha_1, ..., \alpha_n$ die een oplossing van ons probleem opleveren.
+        \item \underline{Bewijs:}
         \begin{itemize}
-            \item Beschouw de $\alpha$ die gehecht zijn aan een vector in $\mathcal{L}$.
+            \item Beschouw de $\alpha$s die gehecht zijn aan een vector in $\mathcal{L}$ en neem $k$ vast waarbij $y_k = 1$. 
+            $$\mathcal{F}(\alpha_1, ..., \alpha_n) = \alpha_k\bigg(\sum_{i \neq k}^n \alpha_iy_ig(\textbf{x}_i, \textbf{x}_k)\bigg) + \frac{1}{2}\alpha^2_kg(\textbf{x}_k, \textbf{x}_k)$$
+            \item Neem de afgeleide van $\mathcal{F}$ ten opzichte van $\alpha_k$:
+            \begin{align*}
+                \partial_{\alpha_{k}}\mathcal{F} & = \bigg(\sum_{i \neq k}^n \alpha_iy_ig(\textbf{x}_i, \textbf{x}_k)\bigg) + \alpha_kg(\textbf{x}_k, \textbf{x}_k) \\
+                & = \sum_{i}^n\alpha_iy_ig(\textbf{x}_i, \textbf{x}_k) \\
+                & = a(\textbf{x}_k)
+            \end{align*}
+            \item $\mathcal{F}$ wordt enkel kleiner als $\partial_{\alpha_{j}}\mathcal{F} < \partial_{\alpha_{k}}\mathcal{F}$.
+            \item $\mathcal{F}$ kan niet meer verkleind worden als:
+            \begin{enumerate}
+                \item $\partial_{\alpha_{k}}\mathcal{F}$ gelijk is voor alle $k$ waarvoor $\alpha_k > 0$.
+                \item $\partial_{\alpha_{j}}\mathcal{F}$ niet kleiner is als $\alpha_j = 0$.
+            \end{enumerate}
+            \item Als we een $\alpha_k$ met een term $\tau$ verminderen, en dus $\alpha_j$ met een term $\tau$ doen toenemen, dat dan $a(\textbf{x}_k)$ afneemt met een term 
+            $$\tau \cdot(g(\textbf{x}_k, \textbf{x}_k) - g(\textbf{x}_i, \textbf{x}_k))$$
+            en $a(\textbf{x}_k)$ toeneemt met diezelfde term.
+      
         \end{itemize}
     \end{itemize}
 \end{itemize}
@@ -55,7 +74,7 @@
 \begin{itemize}
     \item Hier: kwadratisch oplosbare problemen
     \item Een verzameling $\mathcal{L} = \mathcal{L}^+ \cup \mathcal{L}^-$ is kwadratisch scheidbaar als er een tweedegraadsveelterm $p_2$ bestaat zodanig dat $p_2(\textbf{z}) > 0$ voor alle $\textbf{z}$ in $\mathcal{L}^+$ en $p_2(\textbf{z}) < 0$ voor alle $\textbf{z}$ in $\mathcal{L}^-$. 
-    \item Kan een stemmachine diet probleem behandelen?
+    \item Kan een stemmachine dit probleem behandelen?
     \begin{itemize}
         \item Stel $g(\textbf{x}, \textbf{z}) = - ||\textbf{x} - \textbf{z} ||^2$
         
@@ -63,7 +82,7 @@
             a(\textbf{z}) & = \sum_{i = 1}^n \alpha_iy_ig(\textbf{x}_i, \textbf{z})\\
                           & = \sum_{i = 1}^n \alpha_iy_i(- ||\textbf{x}_i||^2 - ||\textbf{z}||^2 + 2\textbf{x}_i\cdot\textbf{z})) \\
                           & = -\sum_{i = 1}^n \alpha_iy_i||\textbf{x}_i||^2 - \sum_{i = 1}^n \alpha_iy_i||\textbf{z}||^2 + 2\sum_{i = 1}^n \alpha_iy_i\textbf{x}_i\cdot\textbf{z} \\
-                          & = -\sum_{i = 1}^n \alpha_iy_i||\textbf{x}_i||^2 - ||z||^2\bigg(\sum_{y_{i} = 1}^n \alpha_i - \sum_{y_{i} = -1}^n \alpha_i\bigg) + 2\sum_{i = 1}^n \alpha_iy_i\textbf{x}_i\cdot\textbf{z} \\
+                          & = -\sum_{i = 1}^n \alpha_iy_i||\textbf{x}_i||^2 - ||\textbf{z}||^2\bigg(\sum_{y_{i} = 1}^n \alpha_i - \sum_{y_{i} = -1}^n \alpha_i\bigg) + 2\sum_{i = 1}^n \alpha_iy_i\textbf{x}_i\cdot\textbf{z} \\
                           & = -\sum_{i = 1}^n \alpha_iy_i||\textbf{x}_i||^2  + 2\sum_{i = 1}^n \alpha_iy_i\textbf{x}_i\cdot\textbf{z} \\
         \end{align*}
         \item Enkel de laatste term hangt af van $\textbf{z}$ en is lineair:
