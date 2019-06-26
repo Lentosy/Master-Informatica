@@ -9,7 +9,7 @@ from mpl_toolkits import mplot3d
 
 
 rawData = []
-with open(f"data\\DEBUG\\joints.txt") as dataFile:
+with open(f"..\\data\\DEBUG\\joints.txt") as dataFile:
     csvReader = csv.reader(dataFile, delimiter=';', quoting=csv.QUOTE_NONNUMERIC)
     for row in csvReader:
         rawData.append(row)

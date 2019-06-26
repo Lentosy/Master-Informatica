@@ -2,12 +2,19 @@ from pykinect2 import PyKinectV2
 import pygame
 
 PERSONS = ['BERT', 'DEMING', 'NIELS'] 
-ACTIONS = ['DEFAULT',               'EMERGENCY_STOP',       
-           'RH_NORMAL_STOP',        'LH_NORMAL_STOP',
-           'RH_MOVE_FORWARD',       'RH_MOVE_BACKWARD',     'RH_MOVE_RIGHT',
-           'LH_MOVE_FORWARD',       'LH_MOVE_BACKWARD',     'LH_MOVE_LEFT',
-           'RH_ROTATE_ABOUT_AXIS',  'LH_ROTATE_ABOUT_AXIS',
-           'DEBUG']
+ACTIONS = ['DEFAULT',                       #0
+           'EMERGENCY_STOP',                #1
+           'RH_NORMAL_STOP',                #2
+           'LH_NORMAL_STOP',                #3
+           'RH_MOVE_FORWARD',               #4
+           'RH_MOVE_BACKWARD',              #5
+           'RH_MOVE_RIGHT',                 #6
+           'LH_MOVE_FORWARD',               #7
+           'LH_MOVE_BACKWARD',              #8
+           'LH_MOVE_LEFT',                  #9
+           'RH_ROTATE_ABOUT_AXIS',          #10
+           'LH_ROTATE_ABOUT_AXIS',          #11
+           'DEBUG']                         #0
 
 DEBUG_FPS = 2
 DEFAULT_FPS = 30
@@ -26,11 +33,11 @@ SKELETON_COLORS = [
 
 # List of all the available joints (same order as the PyKinectv2.JointType enumeration)
 JOINTS = [
-    PyKinectV2.JointType_SpineBase,           # 0 quaternion exists
-    PyKinectV2.JointType_SpineMid,            # 1 quaternion exists
-    PyKinectV2.JointType_Neck,                # 2 quaternion exists
+    PyKinectV2.JointType_SpineBase,           # 0 quaternion exists - parent is neck
+    PyKinectV2.JointType_SpineMid,            # 1 quaternion exists - parent is neck
+    PyKinectV2.JointType_Neck,                # 2 quaternion exists - parent is head
     PyKinectV2.JointType_Head,                # 3
-    PyKinectV2.JointType_ShoulderLeft,        # 4 quaternion exists
+    PyKinectV2.JointType_ShoulderLeft,        # 4 quaternion exists - parent is neck
     PyKinectV2.JointType_ElbowLeft,           # 5 quaternion exists
     PyKinectV2.JointType_WristLeft,           # 6 quaternion exists
     PyKinectV2.JointType_HandLeft,            # 7 quaternion exists

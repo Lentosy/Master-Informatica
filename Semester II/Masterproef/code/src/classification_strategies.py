@@ -78,7 +78,6 @@ class PerFrameClassification(ClassificationStrategy):
             except ZeroDivisionError:
                 pass
 
-
 class SimpleBufferClassification(ClassificationStrategy):
     """
     This classification strategy forms groups of 30 frames in a buffer. The majority action gets calculated incrementally for each frame in this buffer.

@@ -1,8 +1,9 @@
 \chapter{Evaluatie}
 
 \section{Preprocessing}
+Om goede resultaten te verkrijgen bij actieherkenning, is het noodzakelijk om allereerst de gegevens te normaliseren. Belangrijke factoren zijn onder andere de positie van de persoon ten opzichte van de Kinect camera in zowel de horizontale, verticale en diepterichting, de schaal van de persoon zoals de lengte van de armen en benen, en de rotatie. 
 
-Deze stap bestaat uit drie fasen:
+De \textit{preprocessing} stap voert deze normalisaties uit en bestaat uit drie stappen:
 \begin{enumerate}
 	\item Een translatie zorgt ervoor dat de \textit{Spine Base Joint} ($J_{sb}$) als oorsprong wordt genomen. Dit kan via een eenvoudige vectorbewerking 
 	$$\begin{pmatrix}
@@ -12,10 +13,10 @@ Deze stap bestaat uit drie fasen:
 	x \\ y \\ z
 	\end{pmatrix}
 	- \begin{pmatrix}
-	x_0 \\ y_0 \\ z_0
+	J_{sb_{x}} \\ J_{sb_{y}}\\ J_{sb_{z}}
 	\end{pmatrix}$$
 	
-	waarbij $x_0, y_0$ en $z_0$ de drie-dimensionale coördinaten van $J_{sb}$ zijn. Deze transformatie zorgt ervoor dat de features \textbf{plaats-invariant} zijn. Een persoon kan zich nu eender waar bevinden in het camerabereik van de Kinect sensor.
+	waarbij $J_{sb_{x}}, J_{sb_{y}}$ en $J_{sb_{z}}$ de drie-dimensionale coördinaten van $J_{sb}$ zijn. Deze transformatie zorgt ervoor dat de features \textbf{plaats-invariant} zijn. Een persoon kan zich nu eender waar bevinden in het camerabereik van de Kinect sensor.
 	\item Een tweede fase is het schalen van de features. Dit kan ook eenvoudig berekend worden door de componenten van elke positievector van elk skelet joint te delen door een bepaalde norm $||n||$. Als norm wordt hier de lengte van de positievector van de \textit{Neck Joint} ($J_n)$ genomen en is gelijk aan
 	$$||n|| = \sqrt{(J_{n_x})^2 + (J_{n_y})^2 + (J_{n_z})^2}$$
 	Elke positievector kan dan genormeerd worden:
