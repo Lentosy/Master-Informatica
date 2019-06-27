@@ -3,6 +3,7 @@ from pykinect2 import PyKinectV2
 from math import sqrt, acos, pi, cos, sin
 import numpy
 import time
+from pyquaternion import Quaternion
 
 class FeatureTransformer(object):
     @classmethod
@@ -53,15 +54,28 @@ class FeatureTransformer(object):
 
     @classmethod
     def _rotate(self, featureVector):
-        quaternion_ref = featureVector[75:78 + 1]
-        conjugate = [quaternion_ref[0], -quaternion_ref[1], -quaternion_ref[2], -quaternion_ref[3]]
-        print(quaternion_ref) 
+        qref = Quaternion(featureVector[75], featureVector[76], featureVector[77] ,featureVector[78])
+        print(qref)
+        conqref = qref.conjugate
+        print(conqref)
+        
         j = 0
         for i in range(0, 75, 3):
-            coordinates = [featureVector[i], featureVector[i + 1], featureVector[i + 2]] 
-            quaternion = [featureVector[(75 + j)], featureVector[76 + j], featureVector[77 + j], featureVector[78 + j]]
-            j+=4
+            coordinates = Quaternion(0, featureVector[i], featureVector[i + 1], featureVector[i + 2])
+            quaternion = Quaternion(featureVector[75 + j], featureVector[76 + j], featureVector[77 + j], featureVector[78 + j])
             
-           # print(coordinates, quaternion)
-             
+
+            coordinatesRot = coordinates * qref
+            quaternionRot = quaternion * qref
+
+            featureVector[i]      = coordinatesRot[1]
+            featureVector[i + 1]  = coordinatesRot[2]
+            featureVector[i + 2]  = coordinatesRot[3]
+
+            featureVector[75 + j] = quaternionRot[0]
+            featureVector[76 + j] = quaternionRot[1]
+            featureVector[77 + j] = quaternionRot[2]
+            featureVector[78 + j] = quaternionRot[3]
+
+            j+=4
             
