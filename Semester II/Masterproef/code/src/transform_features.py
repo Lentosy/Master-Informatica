@@ -15,16 +15,16 @@ class FeatureTransformer(object):
         if __debug__:
             start = time.time()
         for i in range(0, len(self.featureVectors)):
-            self._translateToOrigin(self.featureVectors[i])
-            self._scale(self.featureVectors[i])
+            self._translate(self.featureVectors[i])
             self._rotate(self.featureVectors[i])
+            self._scale(self.featureVectors[i])
         if __debug__:
             end = time.time()
             print(f"Preprocessing: {end - start} seconds")
         return self.featureVectors
 
     @classmethod
-    def _translateToOrigin(self, featureVector):
+    def _translate(self, featureVector):
         """
         This processing step translates the whole skeleton so that the spine base becomes the origin in the camera coördinate system.
         """
@@ -54,28 +54,35 @@ class FeatureTransformer(object):
 
     @classmethod
     def _rotate(self, featureVector):
-        qref = Quaternion(featureVector[75], featureVector[76], featureVector[77] ,featureVector[78])
-        print(qref)
-        conqref = qref.conjugate
-        print(conqref)
-        
+        qref = Quaternion( # the spine base joint quaternion
+            featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + (3 * 25) + 3],  #the constant is always the last one 
+            featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + (3 * 25) + 0],  
+            featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + (3 * 25) + 1], 
+            featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + (3 * 25) + 2]
+        )
+        conqref = qref.conjugate # the conjugate of the spine base joint quaternion
+        print(f"Reference Quaternion: {qref}")
+        print(f"Conjugate:{conqref}")
         j = 0
         for i in range(0, 75, 3):
-            coordinates = Quaternion(0, featureVector[i], featureVector[i + 1], featureVector[i + 2])
-            quaternion = Quaternion(featureVector[75 + j], featureVector[76 + j], featureVector[77 + j], featureVector[78 + j])
+            coordinates = Quaternion(w=0, x=featureVector[i], y=featureVector[i + 1], z=featureVector[i + 2])
+            quaternion = Quaternion(w=featureVector[78 + j], x=featureVector[75 + j], z=featureVector[76 + j], y=featureVector[77 + j])
+            print(f"-- Coordinates: {coordinates}")
+            print(f"-- Quaternion: {quaternion}")
+            coordinates = qref * coordinates * conqref
+            quaternion = quaternion * conqref
+            print(f"-- New Coordinates: {coordinates}")
+            print(f"-- New Quaternion: {quaternion}")
+            featureVector[i]      = coordinates[1]
+            featureVector[i + 1]  = coordinates[2]
+            featureVector[i + 2]  = coordinates[3]
+
+            featureVector[78 + j] = quaternion[0]
+            featureVector[75 + j] = quaternion[1]
+            featureVector[76 + j] = quaternion[2]
+            featureVector[77 + j] = quaternion[3]
             
 
-            coordinatesRot = coordinates * qref
-            quaternionRot = quaternion * qref
-
-            featureVector[i]      = coordinatesRot[1]
-            featureVector[i + 1]  = coordinatesRot[2]
-            featureVector[i + 2]  = coordinatesRot[3]
-
-            featureVector[75 + j] = quaternionRot[0]
-            featureVector[76 + j] = quaternionRot[1]
-            featureVector[77 + j] = quaternionRot[2]
-            featureVector[78 + j] = quaternionRot[3]
-
             j+=4
+            print()
             
