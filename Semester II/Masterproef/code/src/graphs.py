@@ -49,7 +49,7 @@ for i in range(0, 2):
 
 
 for featureVector in ft.featureVectors:
-    ft._toLocalSkeletonCoördinateSystem(featureVector)
+    ft._rotate(featureVector)
 processed = ft.featureVectors
 for i in range(0, 2):
     for j in range(0, 75, 3):
