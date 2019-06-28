@@ -1,0 +1,36 @@
+\chapter{Gegevensstructuren voor strings}
+\section{Inleiding}
+\begin{itemize}
+    \item Efficiënte gegevensstructuren kunnen een zoeksleutel lokaliseren door elementen één voor één te testen.
+    \item Dit heet \textbf{radix search}.
+    \item Meerdere soorten boomstructuren die radix search toepassen.
+    \alert Veronderstel dat geen enkele sleutel een prefix is van een ander.
+
+    De sleutels \texttt{test} en \texttt{testen} zullen dus nooit samen voorkomen aangezien \texttt{test} een prefix is van \texttt{testen}.
+\end{itemize}
+
+\section{Digitale zoekbomen}
+\begin{itemize}
+    \item Sleutels worden opgeslagen in de knopen.
+    \item Zoeken en toevoegen verloopt analoog.
+    \item Slechts één verschil:
+    \begin{itemize}
+        \item De juiste deelboom wordt niet bepaald door de zoeksleutel te vergelijken met de sleutel in de knoop.
+        \item Wel door enkel het volgende element (van links naar rechts) te vergelijken.
+        \item Bij de wortel wordt het eerste sleutelelement gebruikt, een niveau dieper het tweede sleutelelement, enz.
+    \end{itemize}
+    \item Hier zijn de sleutelelementen beperkt tot bits $\rightarrow$ \textbf{binaire digitale zoekbomen}.
+    \item Bij een knoop op diepte $i$ wordt bit $(i + 1)$ van de zoeksleutel gebruikt om af te dalen in de juiste deelboom.
+    \alert De zoeksleutels zijn niet noodzakelijk in volgorde van toevoegen.
+    \begin{itemize}
+        \item Sleutels in de linkerdeelboom van een knoop op diepte $i$ zijn kleiner dan deze in de rechterdeelboom, maar \todo{wat?}
+    \end{itemize}
+    \item De hoogte van een digitale zoekboom wordt bepaald door het aantal bits van de langste sleutel.
+    \item Performantie is vergelijkbaar met rood-zwarte bomen:
+    \begin{itemize}
+        \item Voor een groot aantal sleutels met relatief kleine bitlengte is het zeker beter dan een binaire zoekboom en vergelijkbaar met die van een rood-zwarte boom.
+        \item Het aantal vergelijkingen is trouwens nooit meer dan het aantal bits van de zoeksleutel.
+        \good Implementatie van een digitale zoekboom is eenvoudiger dan die van een rood-zwarte boom.
+        \alert De beperkende voorwaarde is echter dat er efficiënte toegang nodig is tot de bits van de sleutels.
+    \end{itemize}
+\end{itemize}

@@ -1,0 +1,50 @@
+\chapter{Stroomnetwerken}
+\begin{itemize}
+    \item Eigenschappen van een \textbf{stroomnetwerk}:
+    \begin{itemize}
+        \item Is een gerichte graaf.
+        \item Heeft twee speciale knopen:
+        \begin{enumerate}
+            \item Een \textbf{producent}.
+            \item Een \textbf{verbruiker}.
+        \end{enumerate}
+        \item Elke knoop van de graaf is bereikbaar vanuit de producent.
+        \item De verbruiker is vanuit elke knoop bereikbaar.
+        \item De graaf mag lussen bevatten.
+        \item Elke verbinding heeft een capaciteit.
+   
+        \item Alles wat in een knoop toestroomt, moet ook weer wegstromen. De stroom is dus \textbf{conservatief}.
+    \end{itemize}
+\end{itemize}
+\section{Maximalestroomprobleem}
+\begin{itemize}
+    \item Zoveel mogelijk materiaal van producent naar verbruiker laten stromen, zonder de capaciteiten van de verbindingen te overschrijden.
+    \item Wordt opgelost via de methode van \textbf{Ford-Fulkerson}. 
+    \begin{itemize}
+        \item Iteratief algoritme.
+        \item Bij elke iteratie neemt de nettostroom vanuit de producent toe, tot het maximum bereikt wordt.
+    \end{itemize}
+    \item Elke verbinding $(i, j)$ heeft:
+    \begin{itemize}
+        \item een capaciteit $c(i, j)$;
+        \begin{itemize}
+            \item  Als er geen verbinding is tussen twee knopen, dan wordt er toch een verbinding gemaakt met capaciteit 0. Dit dient om wiskundige notaties te vereenvoudigen.
+        \end{itemize}
+        \item de stroom $s(i, j)$ die er door loopt, waarbij $0 \leq s(i, j) \leq c(i, j)$.
+        
+    \end{itemize}
+    \item De totale nettostroom $f$ van alle knopen $K$ in de graaf is dan 
+    $$f = \sum_{j \in K} (s(p, j) - s(j, p))$$ 
+    \begin{itemize}
+        \item $s(p, j)$ is de uitgaande stroom vanuit de producent $p$ naar knoop $j$.
+        \item $s(j, p)$ is de totale inkomende stroom van elke knoop $j$ naar producent $p$ (komt bijna nooit voor maar just in case). 
+    \end{itemize}
+    \item De verzameling van stromen voor alle mogelijke knopenparen in beide richtingen wordt een \textbf{stroomverdeling} genoemd.
+    \item De verzameling mogelijke stroomtoename tussen elk paar knopen wordt het \textbf{restnetwerk} genoemd.
+    \begin{itemize}
+        \item Het restnetwerk bevat dezelfde knopen, maar niet noodzakelijk dezelfde verbindingen en capaciteiten.
+        \item In het restnetwerk wordt de \textbf{vergrotende weg} gezocht.
+        \item Als er geen vergrotende weg is dan zal de networkstroom maximaal zijn. 
+        \item Voor elk mogelijke stroomverdeling bestaat er een overeenkomstig restnetwerk.
+    \end{itemize}
+\end{itemize}

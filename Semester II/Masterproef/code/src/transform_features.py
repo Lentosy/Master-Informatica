@@ -1,4 +1,4 @@
-from constants import JOINTS
+from constants import JOINTS, JOINTS_NAMES
 from pykinect2 import PyKinectV2
 from math import sqrt, acos, pi, cos, sin
 import numpy
@@ -9,6 +9,7 @@ class FeatureTransformer(object):
     @classmethod
     def __init__(self, rawData):
         self.featureVectors = rawData
+        
 
     @classmethod
     def preProcessing(self):
@@ -53,6 +54,11 @@ class FeatureTransformer(object):
 
 
     @classmethod
+    #TODO: voor sommige joints is er een compleet foute z-waarde (diepte) geassocieerd.
+    # Aangezien elk component met elk ander component vermenigvuldigd wordt (Hamilton product),
+    #   zal dit een enorme invloed hebben op de geroteerde joints met een foute z-waarde.
+    #   -> nieuwe opnames maken 
+    #   -> VOORLOPIG: diepte negeren (krijgt waarde 0)
     def _rotate(self, featureVector):
         qref = Quaternion( # the spine base joint quaternion
             featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + (3 * 25) + 3],  #the constant is always the last one 
@@ -66,12 +72,16 @@ class FeatureTransformer(object):
         j = 0
         for i in range(0, 75, 3):
             coordinates = Quaternion(w=0, x=featureVector[i], y=featureVector[i + 1], z=featureVector[i + 2])
-            quaternion = Quaternion(w=featureVector[78 + j], x=featureVector[75 + j], z=featureVector[76 + j], y=featureVector[77 + j])
-            print(f"-- Coordinates: {coordinates}")
-            print(f"-- Quaternion: {quaternion}")
+            quaternion = Quaternion(w=featureVector[78 + j], x=featureVector[75 + j], y=featureVector[76 + j], z=featureVector[77 + j])
+            print(f"-- Joint: {JOINTS_NAMES[int(i / 3)]}")
+
             coordinates = qref * coordinates * conqref
-            quaternion = quaternion * conqref
+            quaternion *= conqref
+
+            print(f"-- Coordinates: {coordinates}")
             print(f"-- New Coordinates: {coordinates}")
+
+            print(f"-- Quaternion: {quaternion}")
             print(f"-- New Quaternion: {quaternion}")
             featureVector[i]      = coordinates[1]
             featureVector[i + 1]  = coordinates[2]

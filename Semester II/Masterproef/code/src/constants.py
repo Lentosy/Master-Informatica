@@ -58,6 +58,33 @@ JOINTS = [
     PyKinectV2.JointType_ThumbLeft,           # 22
     PyKinectV2.JointType_HandTipRight,        # 23
     PyKinectV2.JointType_ThumbRight,          # 24
+]
+JOINTS_NAMES = [
+    "SpineBase",           # 0 quaternion exists - parent is neck
+    "SpineMid",            # 1 quaternion exists - parent is neck
+    "Neck",                # 2 quaternion exists - parent is head
+    "Head",                # 3
+    "ShoulderLeft",        # 4 quaternion exists - parent is neck
+    "ElbowLeft",           # 5 quaternion exists
+    "WristLeft",           # 6 quaternion exists
+    "HandLeft",            # 7 quaternion exists
+    "ShoulderRight",       # 8 quaternion exists
+    "ElbowRight",          # 9 quaternion exists
+    "WristRight",          # 10 quaternion exists
+    "HandRight",           # 11 quaternion exists
+    "HipLeft",             # 12 quaternion exists
+    "KneeLeft",            # 13 quaternion exists
+    "AnkleLeft",           # 14 quaternion exists
+    "FootLeft",            # 15
+    "HipRight",            # 16 quaternion exists
+    "KneeRight",           # 17 quaternion exists
+    "AnkleRight",          # 18 quaternion exists
+    "FootRight",           # 19
+    "SpineShoulder",       # 20 quaternion exists
+    "HandTipLeft",         # 21
+    "ThumbLeft",           # 22
+    "HandTipRight",        # 23
+    "ThumbRight",          # 24
 
 ]
 
