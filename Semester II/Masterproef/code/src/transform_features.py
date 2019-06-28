@@ -1,4 +1,4 @@
-from constants import JOINTS, JOINTS_NAMES
+from constants import JOINTS, JOINTS_NAMES, JOINT_TREE, LENGTHS
 from pykinect2 import PyKinectV2
 from math import sqrt, acos, pi, cos, sin
 import numpy
@@ -39,25 +39,27 @@ class FeatureTransformer(object):
             featureVector[i+2] = featureVector[i+2] - spine_z
 
     @classmethod
-    def _scale(self, featureVector):
-        """
-        This processing step makes the feature vector scale invariant by dividing each position vector with the length of the Neck position vector.
-        """
-        neck_x = featureVector[JOINTS[PyKinectV2.JointType_Neck] + 0]
-        neck_y = featureVector[JOINTS[PyKinectV2.JointType_Neck] + 1]
-        neck_z = featureVector[JOINTS[PyKinectV2.JointType_Neck] + 2]
-        length = sqrt(neck_x * neck_x + neck_y * neck_y + neck_z * neck_z)
-        for i in range(0, 75, 3):
-            featureVector[i+0] = featureVector[i+0] / length
-            featureVector[i+1] = featureVector[i+1] / length
-            featureVector[i+2] = featureVector[i+2] / length
+    #TODO: ga de maximale pixelwaarde na die de Kinect kan detecteren. Zou normaal 1920 * 1080 moeten zijn
+    #      -> Methode zoeken om de centimeters van de ideale verhoudingen om te zetten naar pixelwaarden, of omgekeerd
+    def _scale(self, featureVector):        
+        for parent_joint in JOINT_TREE.keys():
+            parent_point = featureVector[(parent_joint*3):(parent_joint*3)+3]
+            print(f"{JOINTS_NAMES[parent_joint]} : {parent_point}")
+            for child_joint in JOINT_TREE[parent_joint]:
+                child_point = featureVector[(child_joint*3):(child_joint*3)+3]
+                diff = [child - parent for (child, parent) in zip(child_point, parent_point)]
+                norm = sqrt(diff[0] * diff[0] + diff[1] * diff[1] + diff[2] * diff[2])
+                featureVector[(child_joint * 3) + 0] = (LENGTHS[child_joint] * diff[0]/norm) + parent_point[0]
+                featureVector[(child_joint * 3) + 1] = (LENGTHS[child_joint] * diff[1]/norm) + parent_point[1]
+                featureVector[(child_joint * 3) + 2] = (LENGTHS[child_joint] * diff[2]/norm) + parent_point[2]
+        
 
 
     @classmethod
     #TODO: voor sommige joints is er een compleet foute z-waarde (diepte) geassocieerd.
     # Aangezien elk component met elk ander component vermenigvuldigd wordt (Hamilton product),
     #   zal dit een enorme invloed hebben op de geroteerde joints met een foute z-waarde.
-    #   -> nieuwe opnames maken 
+    #   -> nieuwe opnames maken (MAANDAG 1 juli)
     #   -> VOORLOPIG: diepte negeren (krijgt waarde 0)
     def _rotate(self, featureVector):
         qref = Quaternion( # the spine base joint quaternion
@@ -71,17 +73,17 @@ class FeatureTransformer(object):
         print(f"Conjugate:{conqref}")
         j = 0
         for i in range(0, 75, 3):
-            coordinates = Quaternion(w=0, x=featureVector[i], y=featureVector[i + 1], z=featureVector[i + 2])
+            coordinates = Quaternion(w=0, x=featureVector[i], y=featureVector[i + 1], z=0)
             quaternion = Quaternion(w=featureVector[78 + j], x=featureVector[75 + j], y=featureVector[76 + j], z=featureVector[77 + j])
             print(f"-- Joint: {JOINTS_NAMES[int(i / 3)]}")
 
-            coordinates = qref * coordinates * conqref
-            quaternion *= conqref
 
             print(f"-- Coordinates: {coordinates}")
-            print(f"-- New Coordinates: {coordinates}")
-
             print(f"-- Quaternion: {quaternion}")
+            
+            coordinates = qref * coordinates * conqref
+            quaternion *= conqref
+            print(f"-- New Coordinates: {coordinates}")
             print(f"-- New Quaternion: {quaternion}")
             featureVector[i]      = coordinates[1]
             featureVector[i + 1]  = coordinates[2]

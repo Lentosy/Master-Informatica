@@ -89,7 +89,7 @@ JOINTS_NAMES = [
 ]
 
 # List of all the connections between two joints
-CONNECTIONS = [
+JOINT_CONNECTIONS = [
     # Torso
     [PyKinectV2.JointType_Head,             PyKinectV2.JointType_Neck],
     [PyKinectV2.JointType_Neck,             PyKinectV2.JointType_SpineShoulder],
@@ -120,3 +120,81 @@ CONNECTIONS = [
     [PyKinectV2.JointType_KneeLeft,         PyKinectV2.JointType_AnkleLeft],
     [PyKinectV2.JointType_AnkleLeft,        PyKinectV2.JointType_FootLeft]
 ]
+
+LENGTHS = [
+    0,#"SpineBase",           
+    17.9,#"SpineMid",            
+    8.4, #"Neck",                
+    8.4, #"Head",               
+    11, #"ShoulderLeft",        
+    33.2, #"ElbowLeft",           
+    27.1, #"WristLeft",           
+    7, #"HandLeft",            
+    11, #"ShoulderRight",       
+    33.2, #"ElbowRight",          
+    27.1, #"WristRight",          
+    7, #"HandRight",           
+    14.15, #"HipLeft",             
+    55, #"KneeLeft",            
+    22, #"AnkleLeft",           
+    13, #"FootLeft",           
+    14.15, #"HipRight",            
+    55, #"KneeRight",           
+    22, #"AnkleRight",          
+    13, #"FootRight",          
+    33.7, #"SpineShoulder",       
+    13.9, #"HandTipLeft",         
+    7, #"ThumbLeft",          
+    13.9, #"HandTipRight",       
+    7, #"ThumbRight",        
+
+]
+
+JOINT_TREE = {
+
+    PyKinectV2.JointType_SpineBase: [
+        PyKinectV2.JointType_SpineMid,   # 17.9  cm
+        PyKinectV2.JointType_HipLeft,    # 14.15 cm
+        PyKinectV2.JointType_HipRight    # 14.15 cm
+        ],
+
+    PyKinectV2.JointType_SpineMid: [PyKinectV2.JointType_SpineShoulder],   # 33.7 cm
+
+    PyKinectV2.JointType_SpineShoulder: [
+        PyKinectV2.JointType_Neck,         # 8.4 cm
+        PyKinectV2.JointType_ShoulderLeft, # 11 cm
+        PyKinectV2.JointType_ShoulderRight  # 11 cm
+        ],
+        
+    PyKinectV2.JointType_Neck: [PyKinectV2.JointType_Head],    # 8.4 cm
+
+    PyKinectV2.JointType_HipLeft: [PyKinectV2.JointType_KneeLeft],   # 55 cm
+    PyKinectV2.JointType_KneeLeft: [PyKinectV2.JointType_AnkleLeft], # 22 cm
+    PyKinectV2.JointType_AnkleLeft: [PyKinectV2.JointType_FootLeft], # 13 cm
+
+    PyKinectV2.JointType_HipRight: [PyKinectV2.JointType_KneeRight], # 55 cm
+    PyKinectV2.JointType_KneeRight: [PyKinectV2.JointType_AnkleRight], # 22 cm
+    PyKinectV2.JointType_AnkleRight: [PyKinectV2.JointType_FootRight], # 13 cm
+
+    PyKinectV2.JointType_ShoulderLeft: [PyKinectV2.JointType_ElbowLeft], # 33.2 cm
+    PyKinectV2.JointType_ElbowLeft : [PyKinectV2.JointType_WristLeft],  # 27.1 cm
+
+    PyKinectV2.JointType_WristLeft : [
+        PyKinectV2.JointType_HandLeft, # 7cm
+        PyKinectV2.JointType_ThumbLeft# 7cm
+        ],
+
+    PyKinectV2.JointType_HandLeft : [PyKinectV2.JointType_HandTipLeft], # 13.2 cm
+
+    PyKinectV2.JointType_ShoulderRight: [PyKinectV2.JointType_ElbowRight], # 33.2 cm
+    PyKinectV2.JointType_ElbowRight : [PyKinectV2.JointType_WristRight],   # 27.1 cm
+
+    PyKinectV2.JointType_WristRight : [
+        PyKinectV2.JointType_HandRight, # 7cm
+        PyKinectV2.JointType_ThumbRight # 7cm
+        ], 
+
+    PyKinectV2.JointType_HandRight : [PyKinectV2.JointType_HandTipRight], # 13.2 cm
+}
+
+

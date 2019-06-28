@@ -38,6 +38,8 @@ class Runtime():
         self.fps = fps
    
     def extract_body_information(self, body):
+        #TODO: PyKinectV2 does not offer the 3D camera coordinates, only a mapping of those onto the color or depth space. 
+        # -> Try to find out how many pixels equals one meter
         joints = body.joints  
         orientations = body.joint_orientations
         
@@ -86,9 +88,9 @@ class Runtime():
         pygame.draw.circle(self.frame_surface, color, center, constants.SKELETON_CIRCLE_RADIUS, 0)
     
     def draw_body(self, joints, jointPoints, color):
-        for i in range(len(constants.CONNECTIONS)):
-            self.draw_body_bone(joints, jointPoints, color, constants.CONNECTIONS[i][0], constants.CONNECTIONS[i][1])
-            # optimalisation: CONNECTIONS list (from constants.py) contains  an equal amount of elements as the JOINTS list. So it can be put in one loop
+        for i in range(len(constants.JOINT_CONNECTIONS)):
+            self.draw_body_bone(joints, jointPoints, color, constants.JOINT_CONNECTIONS[i][0], constants.JOINT_CONNECTIONS[i][1])
+            # optimalisation: JOINT_CONNECTIONS list (from constants.py) contains  an equal amount of elements as the JOINTS list. So it can be put in one loop
             self.draw_joint_circle(joints, jointPoints, color, constants.JOINTS[i]) 
     
     def draw_color_frame(self, frame, target_surface):
