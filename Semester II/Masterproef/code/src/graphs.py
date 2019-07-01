@@ -27,7 +27,7 @@ with open(f"..\\data\\DEBUG\\joints.txt") as dataFile:
 
 
 graphData = [[[],[]], [[],[]], [[],[]], [[],[]]]
-ranges = [[-400, 400], [-400, 400], [-400, 400], [-2, 2]]
+ranges = [[-400, 400], [-400, 400], [-400, 400], [-400, 400]]
 for i in range(0, frames):
     for j in range(0, 75, 3):
         graphData[0][i].append(-float(rawData[i][j])) # negative so skeleton is standing upright

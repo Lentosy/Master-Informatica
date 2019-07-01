@@ -1,45 +1,46 @@
 \chapter{Evaluatie}
 
 \section{Preprocessing}
-Om goede resultaten te verkrijgen bij actieherkenning, is het noodzakelijk om allereerst de gegevens te normaliseren. Belangrijke factoren zijn onder andere de positie van de persoon ten opzichte van de Kinect camera in zowel de horizontale, verticale en diepterichting, de schaal van de persoon zoals de lengte van de armen en benen, en de rotatie. 
 
-De \textit{preprocessing} stap voert deze normalisaties uit en bestaat uit drie stappen:
-\begin{enumerate}
-	\item Een translatie zorgt ervoor dat de \textit{Spine Base Joint} ($J_{sb}$) als oorsprong wordt genomen. Dit kan via een eenvoudige vectorbewerking 
-	$$\begin{pmatrix}
-	x' \\ y' \\ z'
-	\end{pmatrix}
-	= \begin{pmatrix}
-	x \\ y \\ z
-	\end{pmatrix}
-	- \begin{pmatrix}
-	J_{sb_{x}} \\ J_{sb_{y}}\\ J_{sb_{z}}
-	\end{pmatrix}$$
-	
-	waarbij $J_{sb_{x}}, J_{sb_{y}}$ en $J_{sb_{z}}$ de drie-dimensionale coördinaten van $J_{sb}$ zijn. Deze transformatie zorgt ervoor dat de features \textbf{plaats-invariant} zijn. Een persoon kan zich nu eender waar bevinden in het camerabereik van de Kinect sensor.
-	\item Een tweede fase is het schalen van de features. Dit kan ook eenvoudig berekend worden door de componenten van elke positievector van elk skelet joint te delen door een bepaalde norm $||n||$. Als norm wordt hier de lengte van de positievector van de \textit{Neck Joint} ($J_n)$ genomen en is gelijk aan
-	$$||n|| = \sqrt{(J_{n_x})^2 + (J_{n_y})^2 + (J_{n_z})^2}$$
-	Elke positievector kan dan genormeerd worden:
-	$$
-	\begin{pmatrix}
-	x' \\ y' \\ z'
-	\end{pmatrix}
-	=				
-	\begin{pmatrix}
-	\frac{x}{||n||} \\ \frac{y}{||n||}  \\ \frac{z}{||n||} 
-	\end{pmatrix}$$
-	Men zou ook andere normen kunnen nemen. Figuur \todo{figuur} toont de impact van de keuze van verschillende normen.
-	
-	Deze schaaloperatie zorgt ervoor dat de features \textbf{schaal-invariant} zijn. Dit heeft vooral betrekking op personen met een kleiner en groter gestalte.
-	\item Tot slot is er nog een rotatietransformatie die een nieuw soort coördinatensysteem introduceert. De features zijn nu ook \textbf{rotatie-invariant}.
-\end{enumerate}
-Figuur \ref{fig:skeleton_preprocessing} toont de invloed van de verschillende preprocessing fasen op de skeletdata.
+Om goede resultaten te verkrijgen bij actieherkenning, is het noodzakelijk om allereerst de gegevens te normaliseren. Belangrijke factoren zijn onder andere de positie van de persoon ten opzichte van de Kinect camera in zowel de horizontale, verticale en diepterichting, de schaal van de persoon zoals de lengte van de armen en benen, en de oriëntatie van de persoon ten opzichte van de camera. Voor de normalisatie is er een \textit{referentiejoint} nodig om te voorkomen dat er gewerkt wordt met absolute waarden. Deze rol wordt vervuld door de \textit{Spine Base Joint} $(\textbf{J}_{sb})$ aangezien deze de enigste joint is die geen kind is van een andere \textit{joints}. Een \textit{joint} $p$ is een ouder van een andere \textit{joint} $c$ als er een pad bestaat vanuit $\textbf{J}_{sb}$ naar $c$ waarbij de voorlaatste knoop op dit pad $p$ is. Figuur \ref{fig:skeleton_graph} toont de boomstructuur die deze relaties voorstelt.
 
-\begin{figure}
-	\includegraphics[width=\textwidth]{skeleton_preprocessing}
-	\caption{De impact van de verschillende preprocessing fasen op twee gelijkaardige acties. Hierbij is de oranje joint de \textit{Spine Base joint}.}
-	\label{fig:skeleton_preprocessing}
-\end{figure}
+%\begin{figure}[ht]
+%	\centering
+%	\includegraphics[width=0.7\textwidth]{skeleton_graph}
+%	\caption{De \textit{joints} van de Kinect voorgesteld in een boomstructuur.}
+%	\label{fig:skeleton_graph}
+%\end{figure}
+
+
+De volgende drie onderdelen bespreken de verschillende stappen van de \textit{preprocessing} fase.
+
+\subsubsection{Plaats-invariantie}
+Om ervoor te zorgen dat een persoon zich eender waar kan bevinden in het bereik van de Kinect camera, zonder invloed te hebben op de classificatie, wordt een translatie uitgevoerd zodat $\textbf{J}_{sb}$ zich in de oorsprong bevindt. Voor elke joint $\textbf{J}_i$ wordt zijn bijhorende puntvector $\textbf{P}_i$ aangepast via volgende bewerking:
+$$\textbf{P}_i' = \textbf{P}_i - \textbf{P}_{sb}$$
+
+
+
+\subsubsection{Rotatie-invariantie}
+Een persoon kan verschillende oriëntaties aannemen ten opzichte van de camera, maar toch dezelfde actie uitvoeren. Elke joint $\textbf{J}_i$ bevat een \textit{quaternion} $\textbf{Q}_i = b\textbf{i} + c\textbf{j} + d\textbf{k} + w$ die de oriëntatie codeert van die joint. Aangezien $\textbf{J}_{sb}$ de referentiejoint is, zou deze de \textit{reeële quaternion} moeten bedragen. Dit is de \textit{quaternion} waarbij $w = 1$ en $b = c = d = 0$. Dit is mogelijk via het product van tussen $\textbf{Q}_{sb}$ en zijn conjugatie  $\textbf{Q}_{sb}^* = -b\textbf{i} - c\textbf{j} - d\textbf{k} + w$. Voor elke joint $\textbf{J}_i$ moeten nu twee bewerkingen uitgevoerd worden, enerzijds op de quaternion van de joint en anderzijds op de  drie-dimensionale coördinaten, waarop reeds een translatie is op uitgevoerd.
+
+De eerste bewerking wijzigt de quaternion $\textbf{Q}_i$ door het product $\textbf{Q}_i\textbf{Q}_{sb}^*$ te nemen:
+$$\textbf{Q}_i'' = \textbf{Q}_i\textbf{Q}_{sb}^*$$
+De multiplicatie van twee quaternionen noemt men het \textit{Hamilton product}, maar de bewerking volgt gewoon de distributieregel.
+
+Enkel de oriëntaties aanpassen is niet voldoende. Ook moeten de drie-dimensionale coördinaten aangepast worden om de juiste vorm van het skelet te behouden. Dit komt neer op het roteren van de puntvector $\textbf{P}_i'$ via de rotatie beschreven door $\textbf{Q}_{sb}$. Dit vertaalt zich in
+$$\textbf{P}_i'' = \textbf{Q}_{sb}\textbf{P}_i'\textbf{Q}_{sb}^*$$
+
+\subsubsection{Schaal-invariantie}
+
+
+
+\todo{toon figuur waarbij verschillende aanpassingen te zien zijn}
+
+%\begin{figure}
+%	\includegraphics[width=\textwidth]{skeleton_preprocessing}
+%	\caption{De impact van de verschillende preprocessing fasen op twee gelijkaardige acties. Hierbij is de oranje joint de \textit{Spine Base joint}.}
+%	\label{fig:skeleton_preprocessing}
+%\end{figure}
 
 \section{Classifiers}
 \label{ch:evaluatie}
@@ -90,6 +91,10 @@ De \textit{precision} bepaalt de kans dat een classificatie correct is als de cl
 %  	   	 	 given a positive prediction from the classifier, how likely is it to be correct?
 
 \section{Segmentatie}
+Een real-time systeem moet een manier hebben om de continue stroom van invoergegevens nuttig op te splitsen in korte stukjes die het classificeren van de actie betrouwbaarder maakt. Men zou segmentatie kunnen weglaten en de stroom van gegevens frame per frame kunnen bekijken, maar dan is informatie van voorgaande frames verloren.
+
+De segmentatie heeft als doel een buffer van acties op te bouwen. Hier is er een analogie bij spraakherkenning: de segmentatie bij dergelijke herkenningssystemen proberen bijvoorbeeld fonemen, of meer algemeen, woorden te segmenteren.
+
 
 
 
