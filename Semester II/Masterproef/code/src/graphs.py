@@ -2,14 +2,23 @@ import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1' # surpress pygame output
 import csv
 import numpy as np
+import matplotlib.projections as proj
 import matplotlib.pyplot as plot
+import sys
 from mpl_toolkits.mplot3d import Axes3D
 from transform_features import FeatureTransformer
 from pykinect2 import PyKinectV2
 from constants import JOINTS
 
-frames = 2
+print(proj.get_projection_names() )
+# 3d, aitoff, hammer, lambert, mollweide, polar, rectilinear
+try:
+    projection = sys.argv[1]
+except IndexError:
+    print('oops')
+    exit(1)
 
+frames = 2
 rawData = []
 with open(f"..\\data\\DEBUG\\joints.txt") as dataFile:
     csvReader = csv.reader(dataFile, delimiter=';', quoting=csv.QUOTE_NONNUMERIC)
@@ -64,28 +73,31 @@ plot_num = 1
 for i in range(0, 4):
     for j in range(0, frames):
        # ax = Axes3D(fig)
-        ax = fig.add_subplot(4, 2, plot_num, projection='3d')
+        ax = fig.add_subplot(4, 2, plot_num, projection=projection)
         plot_num += 1
         xdata, ydata, zdata = ([], [], [])
-        for k in range(3, 75, 3):
+        for k in range(0, 75, 3):
             xdata.append(graphData[i][j][k])
             ydata.append(graphData[i][j][k+1])
-            zdata.append(graphData[i][j][k+2])
-        
-        ax.scatter(xdata, ydata, zdata, label="skelet joints")
+            if(projection == '3d'):
+                zdata.append(graphData[i][j][k+2])
+            else:
+                zdata.append(10) # when projecting onto 2d, zdata must be a constant value for each entry
+        ax.scatter(xdata, ydata, zdata,
+                label="skelet joints")
         ax.scatter(
-                [graphData[i][j][(JOINTS[PyKinectV2.JointType_SpineBase] * 3) + 0]],
-                [graphData[i][j][(JOINTS[PyKinectV2.JointType_SpineBase] * 3) + 1]],
-                #graphData[i][j][(JOINTS[PyKinectV2.JointType_SpineBase] * 3) + 2]], 
+                [xdata[(JOINTS[PyKinectV2.JointType_SpineBase] * 3) + 0]],
+                [ydata[(JOINTS[PyKinectV2.JointType_SpineBase] * 3) + 1]],
+                [zdata[(JOINTS[PyKinectV2.JointType_SpineBase] * 3) + 2]], 
                 label="heup joint")
         ax.scatter(
-                [graphData[i][j][(JOINTS[PyKinectV2.JointType_Head] * 3) + 0]],
-                [graphData[i][j][(JOINTS[PyKinectV2.JointType_Head] * 3) + 1]],
-                [graphData[i][j][(JOINTS[PyKinectV2.JointType_Head] * 3) + 2]],
+                [xdata[(JOINTS[PyKinectV2.JointType_Head] * 3) + 0]],
+                [ydata[(JOINTS[PyKinectV2.JointType_Head] * 3) + 1]],
+                [zdata[(JOINTS[PyKinectV2.JointType_Head] * 3) + 2]],
                  label="head joint")
         ax.set_xlabel("X")
         ax.set_ylabel("Y", rotation=0, labelpad=20)
-        ax.set_zlabel("Z", rotation=0, labelpad=20)
+        #ax.set_zlabel("Z", rotation=0, labelpad=20)
         #ax.view_init(elev=100., azim=180)
 
 

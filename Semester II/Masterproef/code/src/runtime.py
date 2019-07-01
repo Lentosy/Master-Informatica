@@ -186,7 +186,8 @@ class DebugRuntime(Runtime):
                 joint_points = self.kinect.body_joints_to_color_space(body.joints)
                 self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])                    
                 features = self.extract_body_information(body)          
-                self.stdout.write(';'.join(str(x) for x in features) + "\n")
+                self.stdout.write(features[0:3])
+                #self.stdout.write(';'.join(str(x) for x in features) + "\n")
     
 class RecordRuntime(Runtime):
     def __init__(self, action_number, person_number):
