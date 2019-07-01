@@ -2,6 +2,7 @@ import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1' # surpress pygame output
 import csv
 import numpy as np
+import matplotlib
 import matplotlib.projections as proj
 import matplotlib.pyplot as plot
 import sys
@@ -27,12 +28,12 @@ with open(f"..\\data\\DEBUG\\joints.txt") as dataFile:
 
 
 graphData = [[[],[]], [[],[]], [[],[]], [[],[]]]
-ranges = [[-400, 400], [-400, 400], [-400, 400], [-400, 400]]
+ranges = [[-1, 1], [-1, 1], [-1, 1], [-1, 1]]
 for i in range(0, frames):
-    for j in range(0, 75, 3):
-        graphData[0][i].append(-float(rawData[i][j])) # negative so skeleton is standing upright
-        graphData[0][i].append(-float(rawData[i][j+1]))
-        graphData[0][i].append(float(rawData[i][j+2]))
+    for j in range(0, 25):
+        graphData[0][i].append(float(rawData[i][3*j]))
+        graphData[0][i].append(float(rawData[i][3*j + 1]))
+        graphData[0][i].append(float(rawData[i][3*j + 2]))
 
 
 ft = FeatureTransformer(rawData)
@@ -42,28 +43,28 @@ for featureVector in ft.featureVectors:
 processed = ft.featureVectors
 
 for i in range(0, frames):
-    for j in range(0, 75, 3):
-        graphData[1][i].append(-processed[i][j]) 
-        graphData[1][i].append(-processed[i][j+1])
-        graphData[1][i].append(processed[i][j+2])
+    for j in range(0, 25):
+        graphData[1][i].append(processed[i][3*j])
+        graphData[1][i].append(processed[i][3*j + 1])
+        graphData[1][i].append(processed[i][3*j + 2])
 
 for featureVector in ft.featureVectors:
     ft._rotate(featureVector)
 processed = ft.featureVectors
 for i in range(0, frames):
-    for j in range(0, 75, 3):
-        graphData[2][i].append(-processed[i][j]) 
-        graphData[2][i].append(-processed[i][j+1])
-        graphData[2][i].append(processed[i][j+2])
+    for j in range(0, 25):
+        graphData[2][i].append(processed[i][3*j])
+        graphData[2][i].append(processed[i][3*j + 1])
+        graphData[2][i].append(processed[i][3*j + 2])
 
 for featureVector in ft.featureVectors:
     ft._scale(featureVector)
 processed = ft.featureVectors
 for i in range(0, frames):
-    for j in range(0, 75, 3):
-        graphData[3][i].append(-processed[i][j]) 
-        graphData[3][i].append(-processed[i][j+1])
-        graphData[3][i].append(processed[i][j+2])
+    for j in range(0, 25):
+        graphData[3][i].append(processed[i][3*j])
+        graphData[3][i].append(processed[i][3*j + 1])
+        graphData[3][i].append(processed[i][3*j + 2])
 
 
 
@@ -72,7 +73,7 @@ fig = plot.figure()
 plot_num = 1
 for i in range(0, 4):
     for j in range(0, frames):
-       # ax = Axes3D(fig)
+       
         ax = fig.add_subplot(4, 2, plot_num, projection=projection)
         plot_num += 1
         xdata, ydata, zdata = ([], [], [])
@@ -82,33 +83,40 @@ for i in range(0, 4):
             if(projection == '3d'):
                 zdata.append(graphData[i][j][k+2])
             else:
-                zdata.append(10) # when projecting onto 2d, zdata must be a constant value for each entry
+                zdata.append(30) # when projecting onto 2d, zdata must be a constant value for each entry
         ax.scatter(xdata, ydata, zdata,
                 label="skelet joints")
+
         ax.scatter(
-                [xdata[(JOINTS[PyKinectV2.JointType_SpineBase] * 3) + 0]],
-                [ydata[(JOINTS[PyKinectV2.JointType_SpineBase] * 3) + 1]],
-                [zdata[(JOINTS[PyKinectV2.JointType_SpineBase] * 3) + 2]], 
+                [xdata[(JOINTS[PyKinectV2.JointType_SpineBase])]],
+                [ydata[(JOINTS[PyKinectV2.JointType_SpineBase])]],
+                [zdata[(JOINTS[PyKinectV2.JointType_SpineBase])]], 
                 label="heup joint")
         ax.scatter(
-                [xdata[(JOINTS[PyKinectV2.JointType_Head] * 3) + 0]],
-                [ydata[(JOINTS[PyKinectV2.JointType_Head] * 3) + 1]],
-                [zdata[(JOINTS[PyKinectV2.JointType_Head] * 3) + 2]],
+                [xdata[(JOINTS[PyKinectV2.JointType_Head])]],
+                [ydata[(JOINTS[PyKinectV2.JointType_Head])]],
+                [zdata[(JOINTS[PyKinectV2.JointType_Head])]],
                  label="head joint")
         ax.set_xlabel("X")
         ax.set_ylabel("Y", rotation=0, labelpad=20)
         #ax.set_zlabel("Z", rotation=0, labelpad=20)
-        #ax.view_init(elev=100., azim=180)
-
-
+        ax.set_xlim(ranges[i])
+        ax.view_init(90, 270)
+        plot.show()
 
 
 
 fig.tight_layout(pad=0.0, w_pad=0, h_pad=0)
 
-fig.legend(labels=('Skelet joints', 'Heup joint'), loc='upper left')
+fig.legend(labels=('Skelet joints', 'Heup joint', 'Hoofd joint'), loc='upper left')
 fig.title = "Preprocessingfase"
 fig.set_figheight(10)
 fig.set_figwidth(10)
 
+
+#mng = plot.get_current_fig_manager()
+#mng.resize(1366, 768)
+#mng.full_screen_toggle()
+plot.subplots_adjust(left=0.2, bottom=0.08, wspace=0.22, hspace=0.36)
+plot.draw()
 plot.show()

@@ -38,6 +38,7 @@ class Dataset(object):
             raise ValueError(f"The length of data and target are not the same (data = {len(data)}, target = {len(target)})")
         
         # remove features which have the same value for each sample. This is equivalent as removing the quaternions which do not actaully exist (see constants.py)
+        print(data)
         sel = VarianceThreshold(threshold=0.) 
         sel.fit_transform(data)
         
