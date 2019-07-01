@@ -33,18 +33,16 @@ class FeatureTransformer(object):
         spine_x = featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + 0]
         spine_y = featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + 1]
         spine_z = featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + 2]
-        for i in range(0, 75, 3):
-            featureVector[i+0] = featureVector[i+0] - spine_x
-            featureVector[i+1] = featureVector[i+1] - spine_y
-            featureVector[i+2] = featureVector[i+2] - spine_z
+        for i in range(0, 25):
+            featureVector[3*i+0] = featureVector[3*i+0] - spine_x
+            featureVector[3*i+1] = featureVector[3*i+1] - spine_y
+            featureVector[3*i+2] = featureVector[3*i+2] - spine_z
 
     @classmethod
-    #TODO: ga de maximale pixelwaarde na die de Kinect kan detecteren. Zou normaal 1920 * 1080 moeten zijn
-    #      -> Methode zoeken om de centimeters van de ideale verhoudingen om te zetten naar pixelwaarden, of omgekeerd
     def _scale(self, featureVector):        
         for parent_joint in JOINT_TREE.keys():
             parent_point = featureVector[(parent_joint*3):(parent_joint*3)+3]
-            print(f"{JOINTS_NAMES[parent_joint]} : {parent_point}")
+            #print(f"{JOINTS_NAMES[parent_joint]} : {parent_point}")
             for child_joint in JOINT_TREE[parent_joint]:
                 child_point = featureVector[(child_joint*3):(child_joint*3)+3]
                 diff = [child - parent for (child, parent) in zip(child_point, parent_point)]
@@ -71,13 +69,12 @@ class FeatureTransformer(object):
         conqref = qref.conjugate # the conjugate of the spine base joint quaternion
         print(f"Reference Quaternion: {qref}")
         print(f"Conjugate:{conqref}")
-        j = 0
-        for i in range(0, 75, 3):
-            coordinates = Quaternion(w=0, x=featureVector[i], y=featureVector[i + 1], z=0)
-            quaternion = Quaternion(w=featureVector[78 + j], x=featureVector[75 + j], y=featureVector[76 + j], z=featureVector[77 + j])
-            print(f"-- Joint: {JOINTS_NAMES[int(i / 3)]}")
+        
+        for i in range(0, 25):
 
-
+            coordinates = Quaternion(w=0, x=featureVector[3*i], y=featureVector[(3*i) + 1], z = 0)
+            quaternion = Quaternion(w=featureVector[75 + (4*i) + 3], x = featureVector[75 + (4*i)], y=featureVector[75 + (4*i) + 1], z=featureVector[75 + (4*i) + 2])
+            print(f"-- Joint: {JOINTS_NAMES[i]}")
             print(f"-- Coordinates: {coordinates}")
             print(f"-- Quaternion: {quaternion}")
             
@@ -85,16 +82,14 @@ class FeatureTransformer(object):
             quaternion *= conqref
             print(f"-- New Coordinates: {coordinates}")
             print(f"-- New Quaternion: {quaternion}")
-            featureVector[i]      = coordinates[1]
-            featureVector[i + 1]  = coordinates[2]
-            featureVector[i + 2]  = coordinates[3]
+            featureVector[3*i]      = coordinates[1]
+            featureVector[(3*i) + 1]  = coordinates[2]
+            featureVector[(3*i) + 2]  = coordinates[3]
 
-            featureVector[78 + j] = quaternion[0]
-            featureVector[75 + j] = quaternion[1]
-            featureVector[76 + j] = quaternion[2]
-            featureVector[77 + j] = quaternion[3]
+            featureVector[75 + (4*i) + 3] = quaternion[0]
+            featureVector[75 + (4*i) + 0] = quaternion[1]
+            featureVector[75 + (4*i) + 1] = quaternion[2]
+            featureVector[75 + (4*i) + 2] = quaternion[3]
             
-
-            j+=4
             print()
             

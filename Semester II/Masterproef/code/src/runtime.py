@@ -19,11 +19,16 @@ class Runtime():
         
         # get info about the current graphical environment (mostly the whole screen)
         displayInfo = pygame.display.Info()
-        width = displayInfo.current_w >> 1 # bit shift to the right so we dont take the full screen
+        width = displayInfo.current_w >> 1# bit shift to the right so we dont take the full screen
         height = displayInfo.current_h >> 1
+    
         self.screen = pygame.display.set_mode((width, height), # resolution
-                                              pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.RESIZABLE | pygame.NOFRAME)
+                                              pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.NOFRAME)
 
+        displayInfo = pygame.display.Info()
+        width = displayInfo.current_w
+        height = displayInfo.current_h
+        print(width, height)
         # Loop until the user clicks the close button.
         self.done = False
         # Used to manage how fast the screen updates
@@ -38,32 +43,27 @@ class Runtime():
         self.fps = fps
    
     def extract_body_information(self, body):
-        #TODO: PyKinectV2 does not offer the 3D camera coordinates, only a mapping of those onto the color or depth space. 
-        # -> Try to find out how many pixels equals one meter
+       
         joints = body.joints  
+    
         orientations = body.joint_orientations
         
         depth_points = self.kinect.body_joints_to_depth_space(joints)
         depth_list = self.kinect.get_last_depth_frame()
-
-        coordinates = []
-        quaternions = []
+        features = []
         
         for j in range(0, len(constants.JOINTS)):
-            try:
-                x = depth_points[j].x                    
-                y = depth_points[j].y
-                c = int(y) * 512 + int(x) # depth index to be used in depth_list
-                if(c > len(depth_list) or (x < 0 and y < 0)):
-                    z = -1 # joint is not in view, so no depth data exists
-                else:
-                    z = depth_list[c]
-                coordinates.extend([x, y, z])
-                quaternions.extend([orientations[j].Orientation.x, orientations[j].Orientation.y, orientations[j].Orientation.z, orientations[j].Orientation.w])
-            except: # error ocurred, treat joint as invalid
-                (x, y, z) = (-1, -1, -1)
-        return [';'.join(str(c) for c in coordinates), ';'.join(str(q) for q in quaternions)]
-
+            position = joints[j].Position
+            features.insert(3*j, position.x)
+            features.insert(3*j + 1, position.y)
+            features.insert(3*j + 2, position.z)
+            
+            features.insert(75 + (4*j), orientations[j].Orientation.x)
+            features.insert(75 + (4*j)+1, orientations[j].Orientation.y)
+            features.insert(75 + (4*j)+2, orientations[j].Orientation.z)
+            features.insert(75 + (4*j)+3, orientations[j].Orientation.w)
+        return features
+    
     def is_joint_tracked(self, joint):
         jointState = joint.TrackingState
         return not jointState == TrackingState_NotTracked and not jointState == TrackingState_Inferred
@@ -183,12 +183,15 @@ class DebugRuntime(Runtime):
             self.skeletons = self.kinect.get_last_body_frame()
         # --- draw skeletons to _frame_surface
         if self.skeletons is not None: 
-            body = self.skeletons.bodies[0]
-            if(body.is_tracked): 
-                joint_points = self.kinect.body_joints_to_color_space(body.joints)
-                self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])                    
-                features = self.extract_body_information(body)          
-                self.stdout.write(';'.join(str(x) for x in features) + "\n")
+            for body in self.skeletons.bodies:
+                if body.is_tracked:  
+                    joint_points = self.kinect.body_joints_to_color_space(body.joints)
+                    self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])                    
+                    features = self.extract_body_information(body)         
+                    #self.stdout.write(str(features[3*(PyKinectV2.JointType_Head)]) + '  -  ' + str(features[3*(PyKinectV2.JointType_Head) + 1]) +   "\n")
+                    self.stdout.write(';'.join(str(x) for x in features) + "\n")
+
+                    break; # break out of for loop - we are only interested in one skeleton
     
 class RecordRuntime(Runtime):
     def __init__(self, action_number, person_number):
