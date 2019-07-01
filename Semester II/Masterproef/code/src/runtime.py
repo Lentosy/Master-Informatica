@@ -19,8 +19,8 @@ class Runtime():
         
         # get info about the current graphical environment (mostly the whole screen)
         displayInfo = pygame.display.Info()
-        width = displayInfo.current_w >> 1# bit shift to the right so we dont take the full screen
-        height = displayInfo.current_h >> 1
+        width = displayInfo.current_w  #bit shift to the right so we dont take the full screen
+        height = displayInfo.current_h 
     
         self.screen = pygame.display.set_mode((width, height), # resolution
                                               pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.NOFRAME)
@@ -189,7 +189,7 @@ class DebugRuntime(Runtime):
                     self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])                    
                     features = self.extract_body_information(body)         
                     #self.stdout.write(str(features[3*(PyKinectV2.JointType_Head)]) + '  -  ' + str(features[3*(PyKinectV2.JointType_Head) + 1]) +   "\n")
-                    self.stdout.write(';'.join(str(x) for x in features) + "\n")
+                    self.stdout.write(';'.join(str(x) for x in features[0:3]) + "\n")
 
                     break; # break out of for loop - we are only interested in one skeleton
     

@@ -1,7 +1,11 @@
 from pykinect2 import PyKinectV2
 import pygame
 
-PERSONS = ['BERT', 'DEMING', 'NIELS'] 
+PERSONS = ['BERT',                          #0
+           'DEMING',                        #1
+           'NIELS',                         #2
+           'XANDRO'                         #3
+           ]                         
 ACTIONS = ['DEFAULT',                       #0
            'EMERGENCY_STOP',                #1
            'RH_NORMAL_STOP',                #2
@@ -14,13 +18,13 @@ ACTIONS = ['DEFAULT',                       #0
            'LH_MOVE_LEFT',                  #9
            'RH_ROTATE_ABOUT_AXIS',          #10
            'LH_ROTATE_ABOUT_AXIS',          #11
-           'DEBUG']                         #0
+           'DEBUG']                         #12
 
 DEBUG_FPS = 2
-DEFAULT_FPS = 30
+DEFAULT_FPS = 15
 
-SKELETON_LINE_THICKNESS = 28
-SKELETON_CIRCLE_RADIUS = 25
+SKELETON_LINE_THICKNESS = 18
+SKELETON_CIRCLE_RADIUS = 15
 
 SKELETON_COLORS = [
     (255, 0, 0), # red
