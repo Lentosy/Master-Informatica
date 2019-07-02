@@ -1,4 +1,6 @@
 from constants import ACTIONS
+from sklearn.metrics import recall_score, precision_score, f1_score, classification_report
+
 
 class ClassificationStrategy(object):
     """
@@ -8,34 +10,16 @@ class ClassificationStrategy(object):
     the global performance of the classifier.
     """
     def __init__(self):
-        self.confusionMatrix = [] # The confusion matrix is represented by list in this order: [TP, FP, FN, TN]
-        self.recalls = []
-        self.precisions = []
-        
+        self.report = {}
     
     def __str__(self):
         raise NotImplementedError("This is an abstract method. Implement this in a subclass")
 
-    def calculateRecall(self):  # given a positive example, how likely will the classifier correctly detect it?
-        return sum(self.recalls) / len(self.recalls)
-    
-    def calculatePrecision(self):# given a positive prediction from the classifier: how likely is it to be correct?
-        return sum(self.precisions) / len(self.precisions)
-
-    def calculateF1Score(self): # harmonic mean of precision and recall
-        f1score = 0
-        for precision, recall in zip(self.precisions, self.recalls):
-            try:
-                f1score += (2 * (precision*recall) / (precision+recall))
-            except ZeroDivisionError:
-                pass
-        return f1score / len(self.precisions)
-
     def getStatistics(self):
         """
-        Returns a tuple containing the values of the calculateRecall, calculatePrecision and calculateF1Score methods.
+        Returns the classifier report
         """
-        return (self.calculateRecall(), self.calculatePrecision(), self.calculateF1Score())
+        return self.report
 
     def perform(self, validationset, classifier):
         raise NotImplementedError("This is an abstract method, implement this in a subclass.")
@@ -57,65 +41,48 @@ class PerFrameClassification(ClassificationStrategy):
 
     def perform(self, validationset, classifier):
         predictions = classifier.predict(validationset.data)
-     
-        for i in range(0, len(ACTIONS)):
-            self.confusionMatrix = [0] * 4
-            for j in range(0, len(predictions)):
-                if(validationset.target[j] == i):
-                    if(predictions[j] == i):
-                        self.confusionMatrix[0] += 1
-                    else:
-                        self.confusionMatrix[2] += 1
-                elif(validationset.target[j] != i):
-                    if(predictions[j] == i):
-                        self.confusionMatrix[1] += 1
-                    else:
-                        self.confusionMatrix[3] += 1
-            try:
-                (TP, FP, FN) = (self.confusionMatrix[0], self.confusionMatrix[1], self.confusionMatrix[3])
-                self.precisions.append(round(TP/(TP + FP), 4) * 100)
-                self.recalls.append(round(TP/(TP + FN), 4) * 100)   
-            except ZeroDivisionError:
-                pass
+        print(set(validationset.target) - set(predictions))
+        self.report = classification_report(validationset.target, predictions, target_names=ACTIONS, digits=4, output_dict=True)
+    
+
+
+
 
 class SimpleBufferClassification(ClassificationStrategy):
     """
     This classification strategy forms groups of 30 frames in a buffer. The majority action gets calculated incrementally for each frame in this buffer.
 
     """
-    def __init__(self):
+    def __init__(self, buffersize):
         ClassificationStrategy.__init__(self)
-        self.bufferSize = 30
+        self.bufferSize = buffersize
 
     def __str__(self):
-        return "SimpleBufferClassification"
+        return f"SimpleBufferClassification (buffer={self.bufferSize})"
 
     def perform(self, validationset, classifier):
-        iterations = (len(validationset) // self.bufferSize)
-        for i in range(0, len(ACTIONS)):
-            self.confusionMatrix = [0] * 4
-            for currentIteration in range(0, iterations):
-                bufferTarget = [validationset.target[j] for j in range(currentIteration*self.bufferSize, (currentIteration+1)*self.bufferSize)]
-                bufferData =  [validationset.data[j] for j in range(currentIteration*self.bufferSize, (currentIteration+1)*self.bufferSize)]
-                predictions = classifier.predict(bufferData)  # let classifier classify the individual frames first
-                vote = self._getMajorityVote(predictions)
-                for j in range(0, len(bufferTarget)):
-                    if(bufferTarget[j] == vote):
-                        if(predictions[j] == vote):
-                            self.confusionMatrix[0] += 1
-                        else:
-                            self.confusionMatrix[2] += 1
-                    elif(bufferTarget[j] != vote):
-                        if(predictions[j] == vote):
-                            self.confusionMatrix[1] += 1
-                        else:
-                            self.confusionMatrix[3] += 1
-            try:
-                (TP, FP, FN) = (self.confusionMatrix[0], self.confusionMatrix[1], self.confusionMatrix[3])
-                self.precisions.append(round(TP/(TP + FP), 4) * 100)
-                self.recalls.append(round(TP/(TP + FN), 4) * 100)   
-            except ZeroDivisionError:
-                pass
+
+        iterations = (len(validationset) // self.bufferSize) # We need iterations to group frames by 'bufferSize' amount
+        predictions = [] # the list of all the predictions
+        
+        for currentIteration in range(0, iterations): # one iteration holds 'bufferSize' frames
+            bufferData =  [validationset.data[j] for j in range(currentIteration*self.bufferSize, (currentIteration+1)*self.bufferSize)]
+            bufferPred = classifier.predict(bufferData)
+            vote = self._getMajorityVote(bufferPred)
+            for _ in range(0, self.bufferSize):
+                predictions.append(vote)
+
+        # last iteration, with less than 'bufferSize' frames
+        if len(validationset) % self.bufferSize != 0:
+            bufferData = [validationset.data[j] for j in range(iterations * self.bufferSize, len(validationset))]
+            bufferPred = classifier.predict(bufferData)
+            vote = self._getMajorityVote(bufferPred)
+            for _ in range(0, len(bufferData)):
+                predictions.append(vote)
+        print(set(validationset.target) - set(predictions))
+        self.report = classification_report(validationset.target, predictions, target_names=ACTIONS, digits=4, output_dict=True)
+
+
 
 
     def _getMajorityVote(self, predictions):
@@ -130,40 +97,34 @@ class SimpleBufferClassification(ClassificationStrategy):
         return maxKey
 
 class WeightedBufferClassification(ClassificationStrategy):
-    def __init__(self):
+    def __init__(self, buffersize):
         ClassificationStrategy.__init__(self)
-        self.bufferSize = 30
+        self.bufferSize = buffersize
 
     def __str__(self):
         return "WeightedBufferClassification"
 
 
     def perform(self, validationset, classifier):
-        iterations = (len(validationset) // self.bufferSize)
-        for i in range(0, len(ACTIONS)):
-            self.confusionMatrix = [0] * 4
-            for currentIteration in range(0, iterations):
-                bufferTarget = [validationset.target[j] for j in range(currentIteration*self.bufferSize, (currentIteration+1)*self.bufferSize)]
-                bufferData =  [validationset.data[j] for j in range(currentIteration*self.bufferSize, (currentIteration+1)*self.bufferSize)]
-                predictions = classifier.predict(bufferData)  # let classifier classify the individual frames first
-                vote = self._getWeightedVote(predictions)
-                for j in range(0, len(bufferTarget)):
-                    if(bufferTarget[j] == vote):
-                        if(predictions[j] == vote):
-                            self.confusionMatrix[0] += 1
-                        else:
-                            self.confusionMatrix[2] += 1
-                    elif(bufferTarget[j] != vote):
-                        if(predictions[j] == vote):
-                            self.confusionMatrix[1] += 1
-                        else:
-                            self.confusionMatrix[3] += 1
-            try:
-                (TP, FP, FN) = (self.confusionMatrix[0], self.confusionMatrix[1], self.confusionMatrix[3])
-                self.precisions.append(round(TP/(TP + FP), 4) * 100)
-                self.recalls.append(round(TP/(TP + FN), 4) * 100)   
-            except ZeroDivisionError:
-                pass
+        iterations = (len(validationset) // self.bufferSize) # We need iterations to group frames by 'bufferSize' amount
+        predictions = [] # the list of all the predictions
+        
+        for currentIteration in range(0, iterations): # one iteration holds 'bufferSize' frames
+            bufferData =  [validationset.data[j] for j in range(currentIteration*self.bufferSize, (currentIteration+1)*self.bufferSize)]
+            bufferPred = classifier.predict(bufferData)
+            vote = self._getWeightedVote(bufferPred)
+            for _ in range(0, self.bufferSize):
+                predictions.append(vote)
+
+        # last iteration, with less than 'bufferSize' frames
+        if len(validationset) % self.bufferSize != 0:
+            bufferData = [validationset.data[j] for j in range(iterations * self.bufferSize, len(validationset))]
+            bufferPred = classifier.predict(bufferData)
+            vote = self._getWeightedVote(bufferPred)
+            for _ in range(0, len(bufferData)):
+                predictions.append(vote)
+        print(set(validationset.target) - set(predictions))
+        self.report = classification_report(validationset.target, predictions, target_names=ACTIONS, digits=4, output_dict=True)
 
 
     def _getWeightedVote(self, predictions):

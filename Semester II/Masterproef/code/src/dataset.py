@@ -1,5 +1,5 @@
 
-
+import sys
 import csv
 import pandas
 from sklearn.feature_selection import VarianceThreshold
@@ -20,7 +20,7 @@ class Dataset(object):
         data, target = ([], []) # create 2 empty lists
         for person in persons:
             for action in ACTIONS:
-                folder = f"..\\data\\{person}\\{action}"
+                folder = f"..\\data_old\\{person}\\{action}"
                 try:
                     labels = pandas.read_csv(f"{folder}\\labels.txt", header = None)
                     target.extend(labels.to_numpy().ravel())
@@ -38,7 +38,6 @@ class Dataset(object):
             raise ValueError(f"The length of data and target are not the same (data = {len(data)}, target = {len(target)})")
         
         # remove features which have the same value for each sample. This is equivalent as removing the quaternions which do not actaully exist (see constants.py)
-        print(data)
         sel = VarianceThreshold(threshold=0.) 
         sel.fit_transform(data)
         

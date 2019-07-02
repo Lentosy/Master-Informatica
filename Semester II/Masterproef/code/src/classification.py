@@ -1,7 +1,7 @@
 import sys, os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1' # surpress pygame output
 import csv
-import matplotlib.pyplot as plot
+import matplotlib.pyplot as plt
 import numpy as np
 import time 
 
@@ -28,75 +28,88 @@ class Classifier(object):
 
 
 
-class ClassifierTester(object):
-    def __init__(self):
-        pass
-    
-    def test(self, classifier, trainingSet, validationSet, classificationStrategy):
-        results = Classifier(classifier).classify(trainingSet, validationSet, classificationStrategy)
-        return results
-    
-    def optimalize(self, classifier, parameters, trainingSet):
-        optimalizedClassifier = GridSearchCV(estimator = classifier, param_grid = parameters, cv = 5, iid = True, scoring = 'recall_macro')
-        optimalizedClassifier.fit(trainingSet.data, trainingSet.target)
-        print(f"# Tuning hyper-parameters for recall")
-        print()
-        print("Best parameters set found on development set:")
-        print()
-        print(optimalizedClassifier.best_params_)
-        print()
-        print("Grid scores on development set:")
-        print()
-        means = optimalizedClassifier.cv_results_['mean_test_score']
-        stds = optimalizedClassifier.cv_results_['std_test_score']
-        for mean, std, params in zip(means, stds, optimalizedClassifier.cv_results_['params']):
-            print("%0.3f (+/-%0.03f) for %r"
-                % (mean, std * 2, params))
-        return optimalizedClassifier
 
-
-
-strategies = [WeightedBufferClassification()]
-
-def plotStrategy(strategy : ClassificationStrategy, recalls: list, precisions: list, f1scores: list):
-    plot.title(f"Average precision/recall for each classifier ({str(strategy)})")
-    plot.plot(precisions, label = 'precision', linestyle = (0, (1, 10)), marker='o')
-    plot.plot(recalls, label = 'recall', linestyle = (0, (1, 10)), marker='o')
-    plot.plot(f1scores, label = 'F1 score', linestyle = (0, (1, 10)), marker='o')
-    plot.legend()
-    plot.xticks(np.arange(1), 'Random Forest Classifier')
-    plot.xlabel('classifier')
-    plot.ylabel('percentage')
-    axes = plot.gca()
-    axes.set_ylim([0, 100])
-    plot.show()
-
+strategies = [SimpleBufferClassification(buffersize=30)]
 
 # CROSS VALIDATION dient enkel om na te gaan hoe goed onze classifier zou zijn als hij een persoon ziet waarop niet getraind is.
 # Het uiteindelijk model zal wel trainen op alle personen in de dataset
 
-classifierTester = ClassifierTester()
 classifier = RandomForestClassifier(max_depth = None, min_samples_split = 2, n_estimators = 27, max_features = 10)
 for classificationStrategy in strategies:
     print(f"Using strategy {str(classificationStrategy)}")
-    statistics = [0 for i in range(3)]
-    for i in range(1, len(PERSONS) + 1): # Leave-One-Out cross validation
+    classStatistics = [[None] * len(ACTIONS)] * len(PERSONS)
+    avgStatistics = [{} for i in range(0, len(PERSONS))]
+
+    for i in range(1, len(PERSONS) + 1): # Leave-One-Subject-Out cross validation
         trainingPersons = PERSONS[:i - 1] + PERSONS[i:]
         testingPerson = [PERSONS[i - 1]]
         print(f"\t{trainingPersons} {testingPerson}")
         trainingset = Dataset(trainingPersons)
         testingset = Dataset(testingPerson)
+
         results = Classifier(classifier).classify(trainingset, testingset, classificationStrategy)
-        print(f"\t\t{results}")
-        for j in range(0, len(results)):
-            statistics[j] += results[j]
+        for j in range(0, len(ACTIONS)):
+            classStatistics[i - 1][j] = results[ACTIONS[j]]
+        avgStatistics[i-1] = results['weighted avg']
+
+        
+
 
     
-    for i in range(0, 3):
-        statistics[i] /= len(PERSONS) # divide by the amount of times we cross validate
+    weights = []
+    for i in range(0, len(avgStatistics)):
+        weights.append(avgStatistics[i]['support'])
+    weights = [w/sum(weights) for w in weights] # normalize weights
 
-    print(statistics)
+    globalPerformance = {
+        'recall': 0,
+        'precision': 0,
+        'f1-score': 0
+    }
+    for i in range(0, len(avgStatistics)):
+        for key in globalPerformance.keys():
+            globalPerformance[key] += weights[i] * avgStatistics[i][key]
+
+    #print(classStatistics)
+    #print(globalPerformance)
+    precision = []
+    recall = []
+    f1score = []
+    for i in range(0, len(ACTIONS)):
+        p = 0
+        r = 0
+        f = 0
+        for j in range(0, len(PERSONS)):
+            p += classStatistics[j][i]['precision']
+            r += classStatistics[j][i]['recall']
+            f += classStatistics[j][i]['f1-score']
+        p /= len(PERSONS)
+        r /= len(PERSONS)
+        f /= len(PERSONS)
+        precision.append(p)
+        recall.append(r)
+        f1score.append(f)
     
+
+    n_groups = len(ACTIONS)
+    fig, ax = plt.subplots()
+    index = np.arange(n_groups)
+    bar_width=0.35
+    opacity=0.8
+
+    ax.bar(index + 1/2 * bar_width, precision, bar_width, alpha=0.5, label='precision', color='b')
+    ax.bar(index + 3/2 * bar_width, recall, bar_width, alpha=0.5, label='recall', color='g')
+    ax.plot(index +  bar_width, f1score, '-o', label='f1-score', color='red')
+    plt.xticks(index + bar_width, range(0, len(ACTIONS)))
+    plt.yticks(ticks=[0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.0])
+
+    plt.title(f"Precision, recall and f1-scores per human gesture - {classificationStrategy}")
+    plt.xlabel('Gesture label')
+    plt.ylabel('Score')
+    plt.legend(loc='upper left')
+    plt.tight_layout()
+    plt.show()
+        
 
 
 #for classificationStrategy in strategies:

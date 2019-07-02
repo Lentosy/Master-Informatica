@@ -1,10 +1,12 @@
 from pykinect2 import PyKinectV2
+import os
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1' # surpress pygame output
 import pygame
 
 PERSONS = ['BERT',                          #0
            'DEMING',                        #1
            'NIELS',                         #2
-           'XANDRO'                         #3
+          # 'XANDRO'                         #3
            ]                         
 ACTIONS = ['DEFAULT',                       #0
            'EMERGENCY_STOP',                #1
@@ -18,7 +20,8 @@ ACTIONS = ['DEFAULT',                       #0
            'LH_MOVE_LEFT',                  #9
            'RH_ROTATE_ABOUT_AXIS',          #10
            'LH_ROTATE_ABOUT_AXIS',          #11
-           'DEBUG']                         #12
+           #'DEBUG'                          #12
+           ]                        
 
 DEBUG_FPS = 2
 DEFAULT_FPS = 15

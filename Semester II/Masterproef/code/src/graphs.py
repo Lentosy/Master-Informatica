@@ -11,11 +11,12 @@ from transform_features import FeatureTransformer
 from pykinect2 import PyKinectV2
 from constants import JOINTS
 
-print(proj.get_projection_names() )
-# 3d, aitoff, hammer, lambert, mollweide, polar, rectilinear
+
 try:
     projection = sys.argv[1]
 except IndexError:
+
+    print(proj.get_projection_names())
     print('oops')
     exit(1)
 
@@ -27,15 +28,16 @@ with open(f"..\\data\\DEBUG\\joints.txt") as dataFile:
         rawData.append(row)
 
 
+
 graphData = [[[],[]], [[],[]], [[],[]], [[],[]]]
 ranges = [[-1, 1], [-1, 1], [-1, 1], [-1, 1]]
 for i in range(0, frames):
     for j in range(0, 25):
         graphData[0][i].append(float(rawData[i][3*j]))
-        graphData[0][i].append(float(rawData[i][3*j + 1]))
-        graphData[0][i].append(float(rawData[i][3*j + 2]))
+        graphData[0][i].append(float(rawData[i][(3*j) + 1]))
+        graphData[0][i].append(float(rawData[i][(3*j) + 2]))
 
-
+print(graphData[0][0])
 ft = FeatureTransformer(rawData)
 
 for featureVector in ft.featureVectors:
@@ -73,7 +75,6 @@ fig = plot.figure()
 plot_num = 1
 for i in range(0, 4):
     for j in range(0, frames):
-       
         ax = fig.add_subplot(4, 2, plot_num, projection=projection)
         plot_num += 1
         xdata, ydata, zdata = ([], [], [])
@@ -84,6 +85,7 @@ for i in range(0, 4):
                 zdata.append(graphData[i][j][k+2])
             else:
                 zdata.append(30) # when projecting onto 2d, zdata must be a constant value for each entry
+        
         ax.scatter(xdata, ydata, zdata,
                 label="skelet joints")
 
@@ -101,8 +103,7 @@ for i in range(0, 4):
         ax.set_ylabel("Y", rotation=0, labelpad=20)
         #ax.set_zlabel("Z", rotation=0, labelpad=20)
         ax.set_xlim(ranges[i])
-        ax.view_init(90, 270)
-        plot.show()
+
 
 
 
@@ -118,5 +119,4 @@ fig.set_figwidth(10)
 #mng.resize(1366, 768)
 #mng.full_screen_toggle()
 plot.subplots_adjust(left=0.2, bottom=0.08, wspace=0.22, hspace=0.36)
-plot.draw()
 plot.show()

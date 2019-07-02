@@ -18,7 +18,7 @@ class FeatureTransformer(object):
         for i in range(0, len(self.featureVectors)):
             self._translate(self.featureVectors[i])
             self._rotate(self.featureVectors[i])
-            self._scale(self.featureVectors[i])
+           # self._scale(self.featureVectors[i])
         if __debug__:
             end = time.time()
             print(f"Preprocessing: {end - start} seconds")
@@ -67,21 +67,21 @@ class FeatureTransformer(object):
             featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + (3 * 25) + 2]
         )
         conqref = qref.conjugate # the conjugate of the spine base joint quaternion
-        print(f"Reference Quaternion: {qref}")
-        print(f"Conjugate:{conqref}")
+        #print(f"Reference Quaternion: {qref}")
+        #print(f"Conjugate:{conqref}")
         
         for i in range(0, 25):
 
             coordinates = Quaternion(w=0, x=featureVector[3*i], y=featureVector[(3*i) + 1], z = 0)
             quaternion = Quaternion(w=featureVector[75 + (4*i) + 3], x = featureVector[75 + (4*i)], y=featureVector[75 + (4*i) + 1], z=featureVector[75 + (4*i) + 2])
-            print(f"-- Joint: {JOINTS_NAMES[i]}")
-            print(f"-- Coordinates: {coordinates}")
-            print(f"-- Quaternion: {quaternion}")
+            #print(f"-- Joint: {JOINTS_NAMES[i]}")
+            #print(f"-- Coordinates: {coordinates}")
+            #print(f"-- Quaternion: {quaternion}")
             
             coordinates = qref * coordinates * conqref
             quaternion *= conqref
-            print(f"-- New Coordinates: {coordinates}")
-            print(f"-- New Quaternion: {quaternion}")
+            #print(f"-- New Coordinates: {coordinates}")
+            #print(f"-- New Quaternion: {quaternion}")
             featureVector[3*i]      = coordinates[1]
             featureVector[(3*i) + 1]  = coordinates[2]
             featureVector[(3*i) + 2]  = coordinates[3]
@@ -91,5 +91,4 @@ class FeatureTransformer(object):
             featureVector[75 + (4*i) + 1] = quaternion[2]
             featureVector[75 + (4*i) + 2] = quaternion[3]
             
-            print()
             
