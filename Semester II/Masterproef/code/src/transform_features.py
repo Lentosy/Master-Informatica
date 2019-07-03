@@ -70,15 +70,15 @@ class FeatureTransformer(object):
         #print(f"Reference Quaternion: {qref}")
         #print(f"Conjugate:{conqref}")
         
-        for i in range(0, 25):
+        for i in range(0, len(JOINTS)):
 
-            coordinates = Quaternion(w=0, x=featureVector[3*i], y=featureVector[(3*i) + 1], z = 0)
+            coordinates = Quaternion(w=0, x=featureVector[3*i], y=featureVector[(3*i) + 1], z = featureVector[(3*i) + 2])
             quaternion = Quaternion(w=featureVector[75 + (4*i) + 3], x = featureVector[75 + (4*i)], y=featureVector[75 + (4*i) + 1], z=featureVector[75 + (4*i) + 2])
             #print(f"-- Joint: {JOINTS_NAMES[i]}")
             #print(f"-- Coordinates: {coordinates}")
             #print(f"-- Quaternion: {quaternion}")
             
-            coordinates = qref * coordinates * conqref
+            coordinates = qref * coordinates * conqref    
             quaternion *= conqref
             #print(f"-- New Coordinates: {coordinates}")
             #print(f"-- New Quaternion: {quaternion}")
