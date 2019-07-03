@@ -20,7 +20,6 @@ ACTIONS = ['DEFAULT',                       #0
            'LH_MOVE_LEFT',                  #9
            'RH_ROTATE_ABOUT_AXIS',          #10
            'LH_ROTATE_ABOUT_AXIS',          #11
-           #'DEBUG'                          #12
            ]                        
 
 DEBUG_FPS = 2

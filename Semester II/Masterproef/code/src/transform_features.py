@@ -1,18 +1,26 @@
-from constants import JOINTS, JOINTS_NAMES, JOINT_TREE, LENGTHS
-from pykinect2 import PyKinectV2
-from math import sqrt, acos, pi, cos, sin
 import numpy
 import time
+import copy
+
+from domain.constants import JOINTS, JOINTS_NAMES, JOINT_TREE, LENGTHS
+from pykinect2 import PyKinectV2
+from math import sqrt, acos, pi, cos, sin
 from pyquaternion import Quaternion
+from sklearn.feature_selection import VarianceThreshold
 
 class FeatureTransformer(object):
     @classmethod
-    def __init__(self, rawData):
+    def __init__(self, rawData = None):
         self.featureVectors = rawData
         
+    @classmethod
+    def setFeatureVectors(self, rawData):
+        self.featureVectors = rawData
 
     @classmethod
     def preProcessing(self):
+        # remove features which have the same value for each sample. This is equivalent as removing the quaternions which do not actaully exist (see constants.py)
+        #self._varianceThreshold(threshold=0)
         if __debug__:
             start = time.time()
         for i in range(0, len(self.featureVectors)):
@@ -24,32 +32,33 @@ class FeatureTransformer(object):
             print(f"Preprocessing: {end - start} seconds")
         return self.featureVectors
 
+
+    @classmethod
+    def _varianceThreshold(self, threshold):
+        sel = VarianceThreshold(threshold=threshold) 
+        sel.fit_transform(self.featureVectors)
+        
+
     @classmethod
     def _translate(self, featureVector):
         """
         This processing step translates the whole skeleton so that the spine base becomes the origin in the camera coördinate system.
         """
         # The lower spine is used as the origin
-        spine_x = featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + 0]
-        spine_y = featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + 1]
-        spine_z = featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + 2]
+        spine = copy.deepcopy(featureVector[JOINTS[PyKinectV2.JointType_SpineBase]])
         for i in range(0, 25):
-            featureVector[3*i+0] = featureVector[3*i+0] - spine_x
-            featureVector[3*i+1] = featureVector[3*i+1] - spine_y
-            featureVector[3*i+2] = featureVector[3*i+2] - spine_z
+            featureVector[i].point = featureVector[i].point - spine.point
 
     @classmethod
     def _scale(self, featureVector):        
         for parent_joint in JOINT_TREE.keys():
-            parent_point = featureVector[(parent_joint*3):(parent_joint*3)+3]
-            #print(f"{JOINTS_NAMES[parent_joint]} : {parent_point}")
+            parent = featureVector[parent_joint]
             for child_joint in JOINT_TREE[parent_joint]:
-                child_point = featureVector[(child_joint*3):(child_joint*3)+3]
-                diff = [child - parent for (child, parent) in zip(child_point, parent_point)]
-                norm = sqrt(diff[0] * diff[0] + diff[1] * diff[1] + diff[2] * diff[2])
-                featureVector[(child_joint * 3) + 0] = (LENGTHS[child_joint] * diff[0]/norm) + parent_point[0]
-                featureVector[(child_joint * 3) + 1] = (LENGTHS[child_joint] * diff[1]/norm) + parent_point[1]
-                featureVector[(child_joint * 3) + 2] = (LENGTHS[child_joint] * diff[2]/norm) + parent_point[2]
+                child = featureVector[child_joint]
+                diff = child.point - parent.point
+                norm = diff.norm()
+
+                child.point = (LENGTHS[child_joint] * diff / norm) + parent.point
         
 
 
@@ -60,35 +69,11 @@ class FeatureTransformer(object):
     #   -> nieuwe opnames maken (MAANDAG 1 juli)
     #   -> VOORLOPIG: diepte negeren (krijgt waarde 0)
     def _rotate(self, featureVector):
-        qref = Quaternion( # the spine base joint quaternion
-            featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + (3 * 25) + 3],  #the constant is always the last one 
-            featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + (3 * 25) + 0],  
-            featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + (3 * 25) + 1], 
-            featureVector[JOINTS[PyKinectV2.JointType_SpineBase] + (3 * 25) + 2]
-        )
-        conqref = qref.conjugate # the conjugate of the spine base joint quaternion
-        #print(f"Reference Quaternion: {qref}")
-        #print(f"Conjugate:{conqref}")
-        
+
+        ref = copy.deepcopy(featureVector[PyKinectV2.JointType_SpineBase])
+        conjugate = ref.quaternion.conjugate
+
         for i in range(0, len(JOINTS)):
-
-            coordinates = Quaternion(w=0, x=featureVector[3*i], y=featureVector[(3*i) + 1], z = featureVector[(3*i) + 2])
-            quaternion = Quaternion(w=featureVector[75 + (4*i) + 3], x = featureVector[75 + (4*i)], y=featureVector[75 + (4*i) + 1], z=featureVector[75 + (4*i) + 2])
-            #print(f"-- Joint: {JOINTS_NAMES[i]}")
-            #print(f"-- Coordinates: {coordinates}")
-            #print(f"-- Quaternion: {quaternion}")
-            
-            coordinates = qref * coordinates * conqref    
-            quaternion *= conqref
-            #print(f"-- New Coordinates: {coordinates}")
-            #print(f"-- New Quaternion: {quaternion}")
-            featureVector[3*i]      = coordinates[1]
-            featureVector[(3*i) + 1]  = coordinates[2]
-            featureVector[(3*i) + 2]  = coordinates[3]
-
-            featureVector[75 + (4*i) + 3] = quaternion[0]
-            featureVector[75 + (4*i) + 0] = quaternion[1]
-            featureVector[75 + (4*i) + 1] = quaternion[2]
-            featureVector[75 + (4*i) + 2] = quaternion[3]
-            
-            
+            joint = featureVector[i]
+            joint.point = (ref.quaternion * joint.point.to_quaternion() * conjugate).to_point()
+            joint.quaternion *= conjugate

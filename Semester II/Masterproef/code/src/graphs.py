@@ -7,9 +7,11 @@ import matplotlib.projections as proj
 import matplotlib.pyplot as plot
 import sys
 import mpl_toolkits.mplot3d
+from copy import deepcopy
 from transform_features import FeatureTransformer
 from pykinect2 import PyKinectV2
-from constants import JOINTS, JOINT_CONNECTIONS
+from domain.constants import JOINTS, JOINT_CONNECTIONS
+import dataset
 
 
 def main():
@@ -22,7 +24,7 @@ def main():
     rawData = getData()
     graphData = getGraphData(rawData)
     plotData(graphData, projection)
-    exit(1)
+    return 0
 
 def connectpoints_xy(p1, p2):
     x1, x2 = p1[0], p2[0]
@@ -68,15 +70,15 @@ def plotData(graphData, projection):
     domain = [-1, 1]
     ticks = [-1, -0.5, 0, 0.5, 1]
 
-    rows = 2
+    rows = 2 # change this when scaling works
 
     if projection == 'rectilinear':
         for i in range(0, rows):
             xdata, ydata, zdata = ([], [], [])
             for k in range(0, 25):
-                    xdata.append(graphData[i][3*k])
-                    ydata.append(graphData[i][3*k + 1])
-                    zdata.append(graphData[i][3*k + 2])
+                    xdata.append(graphData[i][k].point.x)
+                    ydata.append(graphData[i][k].point.y)
+                    zdata.append(graphData[i][k].point.z)
 
             ax = fig.add_subplot(rows, 2, (2*i) + 1, projection=projection)
             ax.scatter(xdata, ydata, [size for x in xdata],
@@ -129,9 +131,9 @@ def plotData(graphData, projection):
         for i in range(0, rows):
             xdata, ydata, zdata = ([], [], [])
             for k in range(0, 25):
-                    xdata.append(graphData[i][3*k])
-                    ydata.append(graphData[i][3*k + 1])
-                    zdata.append(graphData[i][3*k + 2])
+                    xdata.append(graphData[i][k].point.x)
+                    ydata.append(graphData[i][k].point.y)
+                    zdata.append(graphData[i][k].point.z)
 
             ax = fig.add_subplot(rows, 1, i + 1, projection=projection)
             ax.scatter(xdata, ydata, zdata,
@@ -173,43 +175,31 @@ def plotData(graphData, projection):
 
 
 def getData():
-    rawData = []
-    with open(f"..\\data\\DEBUG\\joints.txt") as dataFile:
-        csvReader = csv.reader(dataFile, delimiter=';', quoting=csv.QUOTE_NONNUMERIC)
-        for row in csvReader:
-            rawData.append(row)
-
-    return rawData
+    return dataset.Dataset(['DEBUG']).data
 
 def getGraphData(rawData):
     graphData = [[],[],[]]
     ft = FeatureTransformer(rawData)
-    # translate
+    # translat
     for featureVector in ft.featureVectors:
         ft._translate(featureVector)
-    processed = ft.featureVectors
+    processed = deepcopy(ft.featureVectors)
     for j in range(0, 25):
-        graphData[0].append(processed[0][3*j])
-        graphData[0].append(processed[0][3*j + 1])
-        graphData[0].append(processed[0][3*j + 2])
+        graphData[0].append(processed[0][j])
 
     # rotate
     for featureVector in ft.featureVectors:
         ft._rotate(featureVector)
-    processed = ft.featureVectors
+    processed = deepcopy(ft.featureVectors)
     for j in range(0, 25):
-        graphData[1].append(processed[0][3*j])
-        graphData[1].append(processed[0][3*j + 1])
-        graphData[1].append(processed[0][3*j + 2])
+        graphData[1].append(processed[0][j])
 
     # scale
     for featureVector in ft.featureVectors:
         ft._scale(featureVector)
-    processed = ft.featureVectors
+    processed = deepcopy(ft.featureVectors)
     for j in range(0, 25):
-        graphData[2].append(processed[0][3*j])
-        graphData[2].append(processed[0][3*j + 1])
-        graphData[2].append(processed[0][3*j + 2])
+        graphData[2].append(processed[0][j])
 
     return graphData
 

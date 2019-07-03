@@ -1,4 +1,4 @@
-from constants import ACTIONS
+from domain.constants import ACTIONS
 from sklearn.metrics import recall_score, precision_score, f1_score, classification_report
 
 
@@ -102,7 +102,7 @@ class WeightedBufferClassification(ClassificationStrategy):
         self.bufferSize = buffersize
 
     def __str__(self):
-        return "WeightedBufferClassification"
+        return f"WeightedBufferClassification (buffer={self.bufferSize})"
 
 
     def perform(self, validationset, classifier):

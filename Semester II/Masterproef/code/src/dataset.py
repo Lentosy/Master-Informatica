@@ -2,9 +2,10 @@
 import sys
 import csv
 import pandas
-from sklearn.feature_selection import VarianceThreshold
-from transform_features import FeatureTransformer
-from constants import ACTIONS
+
+
+from domain.constants import ACTIONS, JOINTS_NAMES
+from domain.Joint import Joint, Point3D, Quaternion4D
 
 class Dataset(object):
     """
@@ -12,7 +13,6 @@ class Dataset(object):
     The data list contains a feature vector for each sample.
     The target list contains the ground truth for each sample
     """
-
     def __init__(self, persons: list):
         """
         This returns a sklearn compatible dataset for the given persons. It can be used as either a training set or testing set.
@@ -24,23 +24,28 @@ class Dataset(object):
                 try:
                     labels = pandas.read_csv(f"{folder}\\labels.txt", header = None)
                     target.extend(labels.to_numpy().ravel())
-                    rawData = []
+                    frames = []
+
                     with open(f"{folder}\\joints.txt") as joints:
                         csvReader = csv.reader(joints, delimiter=';', quoting=csv.QUOTE_NONNUMERIC)
                         for row in csvReader:
-                            rawData.append(row)
-                    ft = FeatureTransformer(rawData)
-                    data.extend(ft.preProcessing())
+                            joints = []
+                            for i in range(0, 25):
+                                joints.append(Joint(
+                                    JOINTS_NAMES[i],
+                                    Point3D(row[3*i], row[3*i + 1], row[3*i + 2]),
+                                    Quaternion4D(row[75 + (4*i) + 3], row[75 + (4*i) + 0], row[75 + (4*i) + 1] ,row[75 + (4*i) + 2])
+                                    ))
+                            frames.append(joints)
+                    #ft = FeatureTransformer(rawData)
+                    data.extend(frames)
                 except FileNotFoundError as fnfe:
                     pass
-                    #sys.stdout.write(str(fnfe) + "\n")
+                   # sys.stdout.write(str(fnfe) + "\n")
         if(len(data) != len(target)):
+
             raise ValueError(f"The length of data and target are not the same (data = {len(data)}, target = {len(target)})")
-        
-        # remove features which have the same value for each sample. This is equivalent as removing the quaternions which do not actaully exist (see constants.py)
-        sel = VarianceThreshold(threshold=0.) 
-        sel.fit_transform(data)
-        
+            
         self.data = data
         self.target = target
         
@@ -49,3 +54,11 @@ class Dataset(object):
         Provides an easy way to get the number of samples.
         """
         return len(self.data) # data and target attribute always have same length
+
+
+    def flatten(self):
+        for i in range(0, len(self)):
+            flattened = []
+            for j in range(0, len(self.data[i])):
+                flattened.extend(self.data[i][j].flatten())
+            self.data[i] = flattened
