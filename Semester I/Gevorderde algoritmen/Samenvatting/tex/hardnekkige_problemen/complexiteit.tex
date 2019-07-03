@@ -104,4 +104,98 @@
     \begin{itemize}
         \item Hoe kan de kleinste groep knopen bepaald worden die minsten één eindknoop van elke verbinding bevat.
     \end{itemize}
+
+    \item Voorbeeld:
+    \begin{itemize}
+        \item 3SAT kan gereduceerd worden tot vertex cover.
+        \begin{itemize}
+            \item Voor elke logische variabele $x_i$ worden er twee knopen gemaakt: voor $x_i$ en $\overline{x}_i$. Deze knopen zijn verbonden.
+            \item Voor elke uitspraak worden er drie knopen gemaakt, één voor elk atoom. Deze drie knopen worden verbonden. Elk atoom wordt ook verbonden met de knopen voor de individuele logische variabelen.
+        \end{itemize}
+        \item Voor elke logische variabele moet zeker één van de twee knopen opgenomen worden.
+        \item Voor elke uitspraak moeten zeker twee van de drie knopen opgenomen worden.
+        \item Minstens $|\mathcal{X}| + 2|\mathcal{F}|$ knopen.
+        \item Stel volgende uitspraken 
+
+        \begin{align*}
+            U_1 = \overline{x}_1 \vee x_2 \vee x_3 \\
+            U_2 = x_2 \vee \overline{x}_3 \vee x_4
+        \end{align*}
+
+        Bijhorende graaf:
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.5\textwidth]{vertex_cover}
+            \caption{Een graaf voor het 3SAT-probleem.}
+            \label{fig:vertex_cover}
+        \end{figure}
+
+        Voorbeeld van een minimale vertex cover:
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.5\textwidth]{vertex_cover_solved}
+            \caption{Een minimale vertex cover van de graaf op figuur \ref{fig:vertex_cover}}
+            \label{fig:vertex_cover_solved}
+        \end{figure}
+    \end{itemize}
+    \item Andere voorbeelden van minimale vertex covers:
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.5\textwidth]{minimum_vertex_cover}
+        \caption{De minimale vertex cover van twee verschillende grafen.}
+        \label{fig:minimum_vertex_cover}
+    \end{figure}
 \end{itemize}
+
+\subsection{Dominating set}
+\begin{itemize}
+    \item Gegeven:
+    \begin{itemize}
+        \item Een ongerichte graaf.
+    \end{itemize}
+    \item Gevraagd:
+    \begin{itemize}
+        \item Een kleinste groep knopen zodat elke andere knoop met minstens een van de knopen uit de groep verbonden is.
+    \end{itemize}
+    \item Voorbeelden:
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.5\textwidth]{dominating_set}
+        \caption{Voorbeelden van dominating sets.}
+        \label{fig:dominating_set}
+    \end{figure}
+\end{itemize}
+
+\subsection{Graph Coloring}
+
+
+\subsection{Clique}
+
+\subsection{Independent set}
+
+\subsection{Hamilton path}
+
+\subsection{Minimum cover}
+
+\subsection{Subset sum}
+\begin{itemize}
+    \item Gegeven:
+    \begin{itemize}
+        \item Een verzameling elementen met elk een positieve gehele grootte.
+        \item Een positief geheel getal $k$.
+    \end{itemize}
+    \item Gevraagd:
+    \begin{itemize}
+        \item Een deelverzameling van die elementen, zodat de som van hun grootten gelijk is aan $k$.
+    \end{itemize}
+\end{itemize}
+
+\subsection{Partition}
+
+\subsection{TSP}
+
+\subsection{Longest path}
+
+\subsection{Bin packing}
+
+\subsection{Knapsack}
