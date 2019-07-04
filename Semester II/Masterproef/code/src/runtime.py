@@ -1,7 +1,7 @@
 
 import sys
 import os
-import constants
+import domain.constants as constants
 import ctypes
 
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1' # surpress pygame output
@@ -50,18 +50,20 @@ class Runtime():
         
         depth_points = self.kinect.body_joints_to_depth_space(joints)
         depth_list = self.kinect.get_last_depth_frame()
-        features = []
+        features = [None] * 175
         
-        for j in range(0, len(constants.JOINTS)):
-            position = joints[j].Position
-            features.insert(3*j, position.x)
-            features.insert(3*j + 1, position.y)
-            features.insert(3*j + 2, position.z)
-            
-            features.insert(75 + (4*j), orientations[j].Orientation.x)
-            features.insert(75 + (4*j)+1, orientations[j].Orientation.y)
-            features.insert(75 + (4*j)+2, orientations[j].Orientation.z)
-            features.insert(75 + (4*j)+3, orientations[j].Orientation.w)
+
+        for i in range(0, len(constants.JOINTS)):
+            position = joints[i].Position
+            features[7*i + 0] = position.x
+            features[7*i + 1] = position.y
+            features[7*i + 2] = position.z
+
+            features[7*i + 3] = orientations[i].Orientation.x
+            features[7*i + 4] = orientations[i].Orientation.y
+            features[7*i + 5] = orientations[i].Orientation.z
+            features[7*i + 6] = orientations[i].Orientation.w
+
         return features
     
     def is_joint_tracked(self, joint):
@@ -189,10 +191,58 @@ class DebugRuntime(Runtime):
                     self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])                    
                     features = self.extract_body_information(body)         
                     #self.stdout.write(str(features[3*(PyKinectV2.JointType_Head)]) + '  -  ' + str(features[3*(PyKinectV2.JointType_Head) + 1]) +   "\n")
-                    self.stdout.write(';'.join(str(x) for x in features[0:3]) + "\n")
+                    self.stdout.write(';'.join(str(x) for x in features[0:7]) + "\n")
 
                     break; # break out of for loop - we are only interested in one skeleton
     
+
+class SnapshotRuntime(Runtime):
+    def __init__(self, shuttertime):
+        print("Starting Snapshot runtime")
+        Runtime.__init__(self, constants.DEFAULT_FPS)
+        self.shuttertime = shuttertime
+        self.directory = f'data\DEBUG\DEFAULT'
+        if not os.path.exists(self.directory):
+            os.makedirs(self.directory)
+        self.stdout = open(f'{self.directory}\\joints.txt' , 'a')
+        self.START_SNAPSHOT_COUNTDOWN = pygame.USEREVENT + 1
+
+        pygame.time.set_timer(self.START_SNAPSHOT_COUNTDOWN, 1000)
+        
+    def handle_custom_event(self, event):
+        if event.type == self.START_SNAPSHOT_COUNTDOWN:
+            print(self.shuttertime)
+            if(self.shuttertime == 0):
+                pygame.time.set_timer(self.START_SNAPSHOT_COUNTDOWN, 0)
+            else:    
+                self.shuttertime -= 1
+
+    def handle_logic(self):              
+
+        if self.kinect.has_new_color_frame():
+            frame = self.kinect.get_last_color_frame()
+            self.draw_color_frame(frame, self.frame_surface)
+            frame = None
+            
+        # get skeletondata if body frames exist
+        if self.kinect.has_new_body_frame(): 
+            self.skeletons = self.kinect.get_last_body_frame()
+        if self.skeletons is not None: 
+            for i in range(0, self.kinect.max_body_count):
+                body = self.skeletons.bodies[i]
+                if(body.is_tracked): 
+                    if(self.shuttertime is 0):
+                        features = self.extract_body_information(body)
+                        self.stdout.write(';'.join(str(x) for x in features) + f"\n")
+                        exit()
+                        # 
+                    
+                    joint_points = self.kinect.body_joints_to_color_space(body.joints)
+                    self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])
+                    
+
+        
+
 class RecordRuntime(Runtime):
     def __init__(self, action_number, person_number):
         print("Starting Record Runtime")

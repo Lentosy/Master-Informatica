@@ -1,6 +1,6 @@
 from sklearn.metrics import classification_report
 from sklearn.metrics import accuracy_score
-from constants import ACTIONS
+from domain.constants import ACTIONS
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.lines as lines 

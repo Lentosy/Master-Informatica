@@ -20,7 +20,7 @@ class Dataset(object):
         data, target = ([], []) # create 2 empty lists
         for person in persons:
             for action in ACTIONS:
-                folder = f"..\\data_old\\{person}\\{action}"
+                folder = f"data\\{person}\\{action}"
                 try:
                     labels = pandas.read_csv(f"{folder}\\labels.txt", header = None)
                     target.extend(labels.to_numpy().ravel())
@@ -33,11 +33,11 @@ class Dataset(object):
                             for i in range(0, 25):
                                 joints.append(Joint(
                                     JOINTS_NAMES[i],
-                                    Point3D(row[3*i], row[3*i + 1], row[3*i + 2]),
-                                    Quaternion4D(row[75 + (4*i) + 3], row[75 + (4*i) + 0], row[75 + (4*i) + 1] ,row[75 + (4*i) + 2])
+                                    Point3D(row[7*i], row[7*i + 1], row[7*i + 2]),
+                                    Quaternion4D(row[7*i + 6], row[7*i + 3], row[7*i + 4] ,row[7*i + 5])
                                     ))
                             frames.append(joints)
-                    #ft = FeatureTransformer(rawData)
+                            print(row)
                     data.extend(frames)
                 except FileNotFoundError as fnfe:
                     pass

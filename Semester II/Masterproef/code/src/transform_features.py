@@ -12,6 +12,7 @@ class FeatureTransformer(object):
     @classmethod
     def __init__(self, rawData = None):
         self.featureVectors = rawData
+
         
     @classmethod
     def setFeatureVectors(self, rawData):
@@ -24,6 +25,7 @@ class FeatureTransformer(object):
         if __debug__:
             start = time.time()
         for i in range(0, len(self.featureVectors)):
+            referenceJoint = copy.deepcopy(featureVector[JOINTS[PyKinectV2.JointType_SpineBase]])
             self._translate(self.featureVectors[i])
             self._rotate(self.featureVectors[i])
            # self._scale(self.featureVectors[i])

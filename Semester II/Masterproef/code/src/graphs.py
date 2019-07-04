@@ -83,16 +83,7 @@ def plotData(graphData, projection):
             ax = fig.add_subplot(rows, 2, (2*i) + 1, projection=projection)
             ax.scatter(xdata, ydata, [size for x in xdata],
                     label="skelet joints")
-            ax.scatter(
-                [xdata[(JOINTS[PyKinectV2.JointType_SpineBase])]],
-                [ydata[(JOINTS[PyKinectV2.JointType_SpineBase])]], 
-                size,
-                label="heup joint")
-            ax.scatter(
-                [xdata[(JOINTS[PyKinectV2.JointType_Head])]],
-                [ydata[(JOINTS[PyKinectV2.JointType_Head])]],
-                size,
-                label="head joint")
+
 
             connectjoints(xdata, ydata, zdata ,'xy')
             
@@ -109,16 +100,7 @@ def plotData(graphData, projection):
             ax = fig.add_subplot(rows, 2, 2*i + 2, projection=projection)
             ax.scatter(ydata, zdata, [size for x in xdata],
                     label="skelet joints")
-            ax.scatter(
-                [ydata[(JOINTS[PyKinectV2.JointType_SpineBase])]],
-                [zdata[(JOINTS[PyKinectV2.JointType_SpineBase])]],
-                size, 
-                label="heup joint")
-            ax.scatter(
-                [ydata[(JOINTS[PyKinectV2.JointType_Head])]],
-                [zdata[(JOINTS[PyKinectV2.JointType_Head])]],
-                size,
-                label="head joint")
+
 
             connectjoints(xdata, ydata, zdata ,'yz')
             ax.set_xlabel("Y")
@@ -138,16 +120,6 @@ def plotData(graphData, projection):
             ax = fig.add_subplot(rows, 1, i + 1, projection=projection)
             ax.scatter(xdata, ydata, zdata,
                     label="skelet joints")
-            ax.scatter(
-                [xdata[(JOINTS[PyKinectV2.JointType_SpineBase])]],
-                [ydata[(JOINTS[PyKinectV2.JointType_SpineBase])]], 
-                [zdata[(JOINTS[PyKinectV2.JointType_SpineBase])]],
-                label="heup joint")
-            ax.scatter(
-                [xdata[(JOINTS[PyKinectV2.JointType_Head])]],
-                [ydata[(JOINTS[PyKinectV2.JointType_Head])]],
-                [zdata[(JOINTS[PyKinectV2.JointType_Head])]],
-                label="head joint")
 
             connectjoints(xdata, ydata, zdata ,'xyz')
             ax.set_xticks(ticks)
@@ -184,6 +156,7 @@ def getGraphData(rawData):
     for featureVector in ft.featureVectors:
         ft._translate(featureVector)
     processed = deepcopy(ft.featureVectors)
+
     for j in range(0, 25):
         graphData[0].append(processed[0][j])
 

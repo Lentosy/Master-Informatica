@@ -1,5 +1,5 @@
 import argparse
-import constants  # constants can be found in constants.py
+import domain.constants as constants # constants can be found in constants.py
 from runtime import * # import all runtime environments
 
 def main(args=None):
@@ -25,6 +25,10 @@ def main(args=None):
                         dest = 'debug', 
                         action = 'store_true', 
                         help = 'Enables debug mode. This has a slower FPS and writes out the feature vector for the head joint for every frame')
+
+    parser.add_argument('-s', '--snapshot',
+                        dest = 'snapshot',
+                        type = int)
     
     args = parser.parse_args()
     
@@ -32,6 +36,8 @@ def main(args=None):
     try:
         if(args.debug):
             runtime = DebugRuntime()
+        elif(args.snapshot):
+            runtime = SnapshotRuntime(args.snapshot)
         elif(args.action_number is not None and args.person_number is not None):
             runtime = RecordRuntime(args.action_number, args.person_number)
     except AttributeError as e:

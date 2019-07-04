@@ -21,14 +21,14 @@ class Classifier(object):
 
     def classify(self, trainingset, testingset, strategy):
         self.classifier.fit(trainingset.data, trainingset.target)
-        strategy.perform(testingset, self.classifier)
+        strategy.perform(validationset=testingset, classifier=self.classifier)
         return strategy.getStatistics()
 
 
 
 
 
-strategies = [WeightedBufferClassification(buffersize=30)]
+strategies = [PerFrameClassification()]
 
 # CROSS VALIDATION dient enkel om na te gaan hoe goed onze classifier zou zijn als hij een persoon ziet waarop niet getraind is.
 # Het uiteindelijk model zal wel trainen op alle personen in de dataset
