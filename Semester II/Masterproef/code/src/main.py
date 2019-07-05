@@ -11,11 +11,6 @@ def main(args=None):
                                           formatter_class = argparse.RawTextHelpFormatter, 
                                           help = "Makes the application record movements and saves the information to disk.") 
     
-    parser_record.add_argument(dest = "action_number",
-                               type = int,
-                               help = "One of the following integers:\n"
-                                       + "\n".join(f"{i} {constants.ACTIONS[i]}" for i in range(0, len(constants.ACTIONS))))
-    
     parser_record.add_argument(dest = "person_number",
                                type = int, 
                                help = "One of the following integers:\n"
@@ -38,8 +33,8 @@ def main(args=None):
             runtime = DebugRuntime()
         elif(args.snapshot):
             runtime = SnapshotRuntime(args.snapshot)
-        elif(args.action_number is not None and args.person_number is not None):
-            runtime = RecordRuntime(args.action_number, args.person_number)
+        elif( args.person_number is not None):
+            runtime = RecordRuntime( args.person_number)
     except AttributeError as e:
         runtime = DefaultRuntime()
     

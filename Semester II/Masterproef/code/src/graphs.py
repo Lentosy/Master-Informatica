@@ -75,7 +75,7 @@ def plotData(graphData, projection):
     if projection == 'rectilinear':
         for i in range(0, rows):
             xdata, ydata, zdata = ([], [], [])
-            for k in range(0, 25):
+            for k in range(0, len(graphData[i])):
                     xdata.append(graphData[i][k].point.x)
                     ydata.append(graphData[i][k].point.y)
                     zdata.append(graphData[i][k].point.z)
@@ -86,9 +86,6 @@ def plotData(graphData, projection):
 
 
             connectjoints(xdata, ydata, zdata ,'xy')
-            
-
-
 
             ax.set_xlabel("X")
             ax.set_ylabel("Y", rotation=0, labelpad=20)
@@ -112,7 +109,7 @@ def plotData(graphData, projection):
     if projection == '3d':
         for i in range(0, rows):
             xdata, ydata, zdata = ([], [], [])
-            for k in range(0, 25):
+            for k in range(0, len(graphData[i])):
                     xdata.append(graphData[i][k].point.x)
                     ydata.append(graphData[i][k].point.y)
                     zdata.append(graphData[i][k].point.z)
@@ -152,26 +149,31 @@ def getData():
 def getGraphData(rawData):
     graphData = [[],[],[]]
     ft = FeatureTransformer(rawData)
-    # translat
+    
+    #for featureVector in ft.featureVectors:
+    #    ft._removeLowerBody(featureVector)
+    #processed = deepcopy(ft.featureVectors)
+
+    # translate
     for featureVector in ft.featureVectors:
         ft._translate(featureVector)
     processed = deepcopy(ft.featureVectors)
 
-    for j in range(0, 25):
+    for j in range(0, len(processed[0])):
         graphData[0].append(processed[0][j])
 
     # rotate
     for featureVector in ft.featureVectors:
         ft._rotate(featureVector)
     processed = deepcopy(ft.featureVectors)
-    for j in range(0, 25):
+    for j in range(0, len(processed[0])):
         graphData[1].append(processed[0][j])
 
     # scale
     for featureVector in ft.featureVectors:
         ft._scale(featureVector)
     processed = deepcopy(ft.featureVectors)
-    for j in range(0, 25):
+    for j in range(0, len(processed[0])):
         graphData[2].append(processed[0][j])
 
     return graphData

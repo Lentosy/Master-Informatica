@@ -244,13 +244,12 @@ class SnapshotRuntime(Runtime):
         
 
 class RecordRuntime(Runtime):
-    def __init__(self, action_number, person_number):
+    def __init__(self, person_number):
         print("Starting Record Runtime")
         Runtime.__init__(self, constants.DEFAULT_FPS)
-        self.action_number = action_number
         self.person_number = person_number
         self.frame_count = 1 # index of frames
-        self.directory = f'data\{constants.PERSONS[person_number]}\{constants.ACTIONS[action_number]}'
+        self.directory = f'data\{constants.PERSONS[person_number]}'
         if not os.path.exists(self.directory):
             os.makedirs(self.directory)
         self.stdout = open(f'{self.directory}\\joints.txt' , 'a')

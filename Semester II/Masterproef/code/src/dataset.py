@@ -19,29 +19,25 @@ class Dataset(object):
         """
         data, target = ([], []) # create 2 empty lists
         for person in persons:
-            for action in ACTIONS:
-                folder = f"data\\{person}\\{action}"
-                try:
-                    labels = pandas.read_csv(f"{folder}\\labels.txt", header = None)
-                    target.extend(labels.to_numpy().ravel())
-                    frames = []
-
-                    with open(f"{folder}\\joints.txt") as joints:
-                        csvReader = csv.reader(joints, delimiter=';', quoting=csv.QUOTE_NONNUMERIC)
-                        for row in csvReader:
-                            joints = []
-                            for i in range(0, 25):
-                                joints.append(Joint(
-                                    JOINTS_NAMES[i],
-                                    Point3D(row[7*i], row[7*i + 1], row[7*i + 2]),
-                                    Quaternion4D(row[7*i + 6], row[7*i + 3], row[7*i + 4] ,row[7*i + 5])
-                                    ))
-                            frames.append(joints)
-                            print(row)
-                    data.extend(frames)
-                except FileNotFoundError as fnfe:
-                    pass
-                   # sys.stdout.write(str(fnfe) + "\n")
+            folder = f"data\\{person}"
+            try:
+                labels = pandas.read_csv(f"{folder}\\labels.txt", header = None)
+                target.extend(labels.to_numpy().ravel())
+                frames = []
+                with open(f"{folder}\\joints.txt") as joints:
+                    csvReader = csv.reader(joints, delimiter=';', quoting=csv.QUOTE_NONNUMERIC)
+                    for row in csvReader:
+                        joints = []
+                        for i in range(0, 25):
+                            joints.append(Joint(
+                                JOINTS_NAMES[i],
+                                Point3D(row[7*i], row[7*i + 1], row[7*i + 2]),
+                                Quaternion4D(row[7*i + 6], row[7*i + 3], row[7*i + 4] ,row[7*i + 5])
+                                ))
+                        frames.append(joints)
+                data.extend(frames)
+            except FileNotFoundError as fnfe:
+                sys.stdout.write(str(fnfe) + "\n")
         if(len(data) != len(target)):
 
             raise ValueError(f"The length of data and target are not the same (data = {len(data)}, target = {len(target)})")

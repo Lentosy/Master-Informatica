@@ -25,7 +25,6 @@ class FeatureTransformer(object):
         if __debug__:
             start = time.time()
         for i in range(0, len(self.featureVectors)):
-            referenceJoint = copy.deepcopy(featureVector[JOINTS[PyKinectV2.JointType_SpineBase]])
             self._translate(self.featureVectors[i])
             self._rotate(self.featureVectors[i])
            # self._scale(self.featureVectors[i])
@@ -40,6 +39,14 @@ class FeatureTransformer(object):
         sel = VarianceThreshold(threshold=threshold) 
         sel.fit_transform(self.featureVectors)
         
+    @classmethod
+    def _removeLowerBody(self, featureVector):
+        jointsToRemove = [19, 18, 15, 14]
+        
+        for index in jointsToRemove:
+            del featureVector[index]
+                
+        
 
     @classmethod
     def _translate(self, featureVector):
@@ -48,19 +55,20 @@ class FeatureTransformer(object):
         """
         # The lower spine is used as the origin
         spine = copy.deepcopy(featureVector[JOINTS[PyKinectV2.JointType_SpineBase]])
-        for i in range(0, 25):
+        for i in range(0, len(featureVector)):
             featureVector[i].point = featureVector[i].point - spine.point
 
     @classmethod
     def _scale(self, featureVector):        
-        for parent_joint in JOINT_TREE.keys():
-            parent = featureVector[parent_joint]
-            for child_joint in JOINT_TREE[parent_joint]:
-                child = featureVector[child_joint]
-                diff = child.point - parent.point
-                norm = diff.norm()
-
-                child.point = (LENGTHS[child_joint] * diff / norm) + parent.point
+        #for parent_joint in JOINT_TREE.keys():
+        #    parent = featureVector[parent_joint]
+        #    for child_joint in JOINT_TREE[parent_joint]:
+        #        child = featureVector[child_joint]
+        #        diff = child.point - parent.point
+        #        norm = diff.norm()
+#
+        #        child.point = (LENGTHS[child_joint] * diff / norm) + parent.point
+        pass
         
 
 
@@ -75,7 +83,7 @@ class FeatureTransformer(object):
         ref = copy.deepcopy(featureVector[PyKinectV2.JointType_SpineBase])
         conjugate = ref.quaternion.conjugate
 
-        for i in range(0, len(JOINTS)):
+        for i in range(0, len(featureVector)):
             joint = featureVector[i]
             joint.point = (ref.quaternion * joint.point.to_quaternion() * conjugate).to_point()
             joint.quaternion *= conjugate

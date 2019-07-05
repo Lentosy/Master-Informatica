@@ -5,21 +5,15 @@ import pygame
 
 PERSONS = ['BERT',                          #0
            'DEMING',                        #1
-           'NIELS',                         #2
-          # 'XANDRO'                         #3
+        #   'NIELS',                         #2
            ]                         
 ACTIONS = ['DEFAULT',                       #0
            'EMERGENCY_STOP',                #1
            'RH_NORMAL_STOP',                #2
-           'LH_NORMAL_STOP',                #3
-           'RH_MOVE_FORWARD',               #4
-           'RH_MOVE_BACKWARD',              #5
-           'RH_MOVE_RIGHT',                 #6
-           'LH_MOVE_FORWARD',               #7
-           'LH_MOVE_BACKWARD',              #8
-           'LH_MOVE_LEFT',                  #9
-           'RH_ROTATE_ABOUT_AXIS',          #10
-           'LH_ROTATE_ABOUT_AXIS',          #11
+           'RH_MOVE_RIGHT',                 #3
+           'RH_MOVE_LEFT',                  #4
+           'RH_MOVE_FORWARD',               #5
+           'RH_ROTATE_ABOUT_AXIS',          #6
            ]                        
 
 DEBUG_FPS = 2

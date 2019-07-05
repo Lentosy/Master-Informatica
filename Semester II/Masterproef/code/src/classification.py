@@ -28,7 +28,7 @@ class Classifier(object):
 
 
 
-strategies = [PerFrameClassification()]
+strategies = [WeightedBufferClassification(30)]
 
 # CROSS VALIDATION dient enkel om na te gaan hoe goed onze classifier zou zijn als hij een persoon ziet waarop niet getraind is.
 # Het uiteindelijk model zal wel trainen op alle personen in de dataset
@@ -74,7 +74,7 @@ for classificationStrategy in strategies:
             globalPerformance[key] += weights[i] * avgStatistics[i][key]
 
     #print(classStatistics)
-    #print(globalPerformance)
+    print(globalPerformance)
     precision = []
     recall = []
     f1score = []
