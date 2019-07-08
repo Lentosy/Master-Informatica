@@ -5,7 +5,7 @@ import time
 import matplotlib.pyplot as plt
 from dataset import Dataset
 from domain.constants import PERSONS, ACTIONS
-from classification_strategies import ClassificationStrategy, PerFrameClassification, SlidingWindowClassification
+from classification_strategies import ClassificationStrategy, SlidingWindowClassification, VelocityBasedSegmentationClassification
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV, cross_validate
 from transform_features import FeatureTransformer
@@ -21,7 +21,7 @@ class Classifier(object):
 
     def classify(self, trainingset, testingset, strategy):
         self.classifier.fit(trainingset.data, trainingset.target)
-        strategy.perform(validationset=testingset, classifier=self.classifier)
+        strategy.perform(testingset=testingset, classifier=self.classifier)
         return (strategy.getStatistics(), strategy.getConfusionMatrix())
 
 
@@ -31,7 +31,7 @@ class Classifier(object):
 
 def plotConfusionMatrix(confusion_matrix,
                           title=None,
-                          cmap=plt.cm.Blues):
+                          cmap=plt.cm.get_cmap('Blues')):
     """
     This function prints and plots the confusion matrix.
     """
@@ -135,7 +135,7 @@ def plotGlobalScore(avgStatistics):
 featureTransformer = FeatureTransformer()
 
 classifier = RandomForestClassifier(max_depth = None, min_samples_split = 2, n_estimators = 27, max_features = 10)
-classificationStrategy = PerFrameClassification()
+classificationStrategy = VelocityBasedSegmentationClassification()
 
 
 print(f"Using strategy {str(classificationStrategy)}")
@@ -170,7 +170,7 @@ for i in range(1, len(PERSONS) + 1): # Leave-One-Subject-Out cross validation
     avgStatistics[i-1] = results['weighted avg']
 
 avgConfusionMatrix = avgConfusionMatrix / len(PERSONS)
-plotConfusionMatrix(avgConfusionMatrix)
+plotConfusionMatrix(avgConfusionMatrix,title=str(classificationStrategy))
 plotGlobalScore(avgStatistics)
 plotClassScores(classStatistics)
 

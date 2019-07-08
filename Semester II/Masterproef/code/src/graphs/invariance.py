@@ -1,16 +1,16 @@
-import os
-os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = '1' # surpress pygame output
-import csv
 import numpy as np
 import matplotlib
 import matplotlib.projections as proj
-import matplotlib.pyplot as plot
-import sys
+import matplotlib.pyplot as plt
+
 import mpl_toolkits.mplot3d
 from copy import deepcopy
-from transform_features import FeatureTransformer
 from pykinect2 import PyKinectV2
+
+import os, sys
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from domain.constants import JOINTS, JOINT_CONNECTIONS
+from transform_features import FeatureTransformer
 import dataset
 
 
@@ -29,18 +29,18 @@ def main():
 def connectpoints_xy(p1, p2):
     x1, x2 = p1[0], p2[0]
     y1, y2 = p1[1], p2[1]
-    plot.plot([x1, x2], [y1, y2], 'k-')
+    plt.plot([x1, x2], [y1, y2], 'k-')
 
 def connectpoints_yz(p1, p2):
     y1, y2 = p1[1], p2[1]
     z1, z2 = p1[2], p2[2]
-    plot.plot([y1, y2], [z1, z2], 'k-')
+    plt.plot([y1, y2], [z1, z2], 'k-')
 
 def connectpoints_xyz(p1, p2):
     x1, x2 = p1[0], p2[0]
     y1, y2 = p1[1], p2[1]
     z1, z2 = p1[2], p2[2]
-    plot.plot([x1, x2], [y1, y2], [z1, z2], 'k-')
+    plt.plot([x1, x2], [y1, y2], [z1, z2], 'k-')
 
 def connectjoints(xdata, ydata, zdata, plane):
     fun = None
@@ -65,7 +65,7 @@ def connectjoints(xdata, ydata, zdata, plane):
 
 
 def plotData(graphData, projection):
-    fig = plot.figure()
+    fig = plt.figure()
     size = 20
     domain = [-1, 1]
     ticks = [-1, -0.5, 0, 0.5, 1]
@@ -137,7 +137,7 @@ def plotData(graphData, projection):
 
 
 
-    plot.show()
+    plt.show()
 
 
 

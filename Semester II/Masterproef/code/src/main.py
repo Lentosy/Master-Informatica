@@ -1,6 +1,6 @@
 import argparse
-import domain.constants as constants # constants can be found in constants.py
-from runtime import * # import all runtime environments
+from domain import constants
+from runtime import DebugRuntime, SnapshotRuntime, RecordRuntime, DefaultRuntime
 
 def main(args=None):
 
@@ -35,7 +35,7 @@ def main(args=None):
             runtime = SnapshotRuntime(args.snapshot)
         elif( args.person_number is not None):
             runtime = RecordRuntime( args.person_number)
-    except AttributeError as e:
+    except AttributeError:
         runtime = DefaultRuntime()
     
     runtime.run()

@@ -1,4 +1,5 @@
-from domain.constants import ACTIONS
+from math import sqrt
+from domain.constants import ACTIONS, JOINTS
 from sklearn.metrics import recall_score, precision_score, f1_score, classification_report, confusion_matrix
 
 
@@ -24,8 +25,9 @@ class ClassificationStrategy(object):
     def getConfusionMatrix(self):
         return self.confusion_matrix
 
-    def perform(self, validationset, classifier):
+    def perform(self, testingset, classifier):
         raise NotImplementedError("This is an abstract method, implement this in a subclass.")
+
 
 
 
@@ -42,11 +44,11 @@ class PerFrameClassification(ClassificationStrategy):
         return "PerFrameClassification"
 
 
-    def perform(self, validationset, classifier):
-        predictions = classifier.predict(validationset.data)
-        print(set(validationset.target) - set(predictions))
-        self.report = classification_report(validationset.target, predictions, target_names=ACTIONS, digits=4, output_dict=True)
-        self.confusion_matrix = confusion_matrix(validationset.target, predictions)
+    def perform(self, testingset, classifier):
+        predictions = classifier.predict(testingset.data)
+        print(set(testingset.target) - set(predictions))
+        self.report = classification_report(testingset.target, predictions, target_names=ACTIONS, digits=4, output_dict=True)
+        self.confusion_matrix = confusion_matrix(testingset.target, predictions)
     
 
 
@@ -61,16 +63,16 @@ class SlidingWindowClassification(ClassificationStrategy):
     def __str__(self):
         return f"SimpleBufferClassification (buffer={self.buffersize})"
 
-    def perform(self, validationset, classifier):
+    def perform(self, testingset, classifier):
         predictions = [] # the list of all the predictions
 
-        for i in range(0, len(validationset) - self.buffersize):
-            buffer_data = [validationset.data[j] for j in range(i, i + self.buffersize)]
+        for i in range(0, len(testingset) - self.buffersize):
+            buffer_data = [testingset.data[j] for j in range(i, i + self.buffersize)]
             buffer_pred = classifier.predict(buffer_data)
             vote = self._getMajorityVote(buffer_pred)
             predictions.append(vote)
-        self.report = classification_report(validationset.target[:len(validationset) - self.buffersize], predictions, target_names=ACTIONS, digits=4, output_dict=True)
-        self.confusion_matrix = confusion_matrix(validationset.target[:len(validationset) - self.buffersize], predictions)
+        self.report = classification_report(testingset.target[:len(testingset) - self.buffersize], predictions, target_names=ACTIONS, digits=4, output_dict=True)
+        self.confusion_matrix = confusion_matrix(testingset.target[:len(testingset) - self.buffersize], predictions)
 
     def _getMajorityVote(self, buffer):
         frequency = dict(zip([i for i in range(len(ACTIONS))], [0 for i in range(len(ACTIONS))]))
@@ -82,3 +84,37 @@ class SlidingWindowClassification(ClassificationStrategy):
                 maxVal = val
                 maxKey = key
         return maxKey
+
+
+class VelocityBasedSegmentationClassification(ClassificationStrategy):
+    """
+    This classification strategy segmentates action based on relative velocity on consecutive frames. A high change in velocity likely indicates a new action being performed.
+    """
+    def __init__(self):
+        ClassificationStrategy.__init__(self)
+
+    def __str__(self):
+        return f"VelocityBasedSegmentationClassification"
+
+    def perform(self, testingset, classifier):
+        predictions = []
+        segment = []
+
+        for i in range(0, len(testingset) - 1):
+            total_velocity_change = 0
+            for j in range(0, len(JOINTS)):
+                diff_x = testingset.data[i][3*j] - testingset.data[i + 1][3*j]
+                diff_y = testingset.data[i][3*j + 1] - testingset.data[i + 1][3*j + 1]
+                diff_z = testingset.data[i][3*j + 2] - testingset.data[i + 1][3*j + 2]
+                d = sqrt(diff_x * diff_x + diff_y * diff_y + diff_z * diff_z)
+                total_velocity_change += d
+            segment.append(testingset.data[i])
+            if(total_velocity_change > 2):
+                predictions.extend(classifier.predict(segment))
+                segment = []
+        predictions.extend(classifier.predict(segment))  
+        predictions.append(0)     
+        print(set(predictions) - set(testingset.target)) 
+
+        self.report = classification_report(testingset.target, predictions, target_names=ACTIONS, digits=4, output_dict=True)
+        self.confusion_matrix = confusion_matrix(testingset.target, predictions)

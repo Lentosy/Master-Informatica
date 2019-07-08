@@ -3,7 +3,6 @@ import sys
 import csv
 import pandas
 
-
 from domain.constants import ACTIONS, JOINTS_NAMES
 from domain.Joint import Joint, Point3D, Quaternion4D
 
@@ -13,16 +12,21 @@ class Dataset(object):
     The data list contains a feature vector for each sample.
     The target list contains the ground truth for each sample
     """
+
     def __init__(self, persons: list):
         """
         This returns a sklearn compatible dataset for the given persons. It can be used as either a training set or testing set.
         """
-        data, target = ([], []) # create 2 empty lists
+        self.data = []
+        self.target = []
+        if persons is None:
+            return
+
         for person in persons:
             folder = f"data\\{person}"
             try:
                 labels = pandas.read_csv(f"{folder}\\labels.txt", header = None)
-                target.extend(labels.to_numpy().ravel())
+                self.target.extend(labels.to_numpy().ravel())
                 frames = []
                 with open(f"{folder}\\joints.txt") as joints:
                     csvReader = csv.reader(joints, delimiter=';', quoting=csv.QUOTE_NONNUMERIC)
@@ -35,15 +39,14 @@ class Dataset(object):
                                 Quaternion4D(row[7*i + 6], row[7*i + 3], row[7*i + 4] ,row[7*i + 5])
                                 ))
                         frames.append(joints)
-                data.extend(frames)
+                self.data.extend(frames)
             except FileNotFoundError as fnfe:
                 sys.stdout.write(str(fnfe) + "\n")
-        if(len(data) != len(target)):
-
+                    
+        if(len(self.data) != len(self.target)):
             raise ValueError(f"The length of data and target are not the same (data = {len(data)}, target = {len(target)})")
-            
-        self.data = data
-        self.target = target
+
+
         
     def __len__(self):
         """
@@ -58,3 +61,27 @@ class Dataset(object):
             for j in range(0, len(self.data[i])):
                 flattened.extend(self.data[i][j].flatten())
             self.data[i] = flattened
+
+    @staticmethod
+    def getDebugDataset():
+
+        folder = f"data\\DEBUG"
+
+        dataset = Dataset(None)
+        frames = []
+        with open(f"{folder}\\joints.txt") as joints:
+            csvReader = csv.reader(joints, delimiter=';', quoting=csv.QUOTE_NONNUMERIC)
+            for row in csvReader:
+                joints = []
+                for i in range(0, 25):
+                    joints.append(Joint(
+                        JOINTS_NAMES[i],
+                        Point3D(row[7*i], row[7*i + 1], row[7*i + 2]),
+                        Quaternion4D(row[7*i + 6], row[7*i + 3], row[7*i + 4] ,row[7*i + 5])
+                        ))
+                frames.append(joints)
+        dataset.data.extend(frames)
+        return dataset
+        
+        
+        

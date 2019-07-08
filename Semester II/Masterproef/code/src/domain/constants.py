@@ -5,7 +5,7 @@ import pygame
 
 PERSONS = ['BERT',                          #0
            'DEMING',                        #1
-        #   'NIELS',                         #2
+           'NIELS',                         #2
            ]                         
 ACTIONS = ['DEFAULT',                       #0
            'EMERGENCY_STOP',                #1

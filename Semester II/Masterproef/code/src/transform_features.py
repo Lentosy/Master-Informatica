@@ -20,8 +20,6 @@ class FeatureTransformer(object):
 
     @classmethod
     def preProcessing(self):
-        # remove features which have the same value for each sample. This is equivalent as removing the quaternions which do not actaully exist (see constants.py)
-        #self._varianceThreshold(threshold=0)
         if __debug__:
             start = time.time()
         for i in range(0, len(self.featureVectors)):
@@ -32,6 +30,8 @@ class FeatureTransformer(object):
             end = time.time()
             print(f"Preprocessing: {end - start} seconds")
         return self.featureVectors
+
+
 
 
     @classmethod
