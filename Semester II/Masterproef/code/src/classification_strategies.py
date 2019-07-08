@@ -101,17 +101,19 @@ class VelocityBasedSegmentationClassification(ClassificationStrategy):
         segment = []
 
         for i in range(0, len(testingset) - 1):
-            total_velocity_change = 0
+            segment.append(testingset.data[i])
+            total_energy_change = 0
             for j in range(0, len(JOINTS)):
                 diff_x = testingset.data[i][3*j] - testingset.data[i + 1][3*j]
                 diff_y = testingset.data[i][3*j + 1] - testingset.data[i + 1][3*j + 1]
                 diff_z = testingset.data[i][3*j + 2] - testingset.data[i + 1][3*j + 2]
                 d = sqrt(diff_x * diff_x + diff_y * diff_y + diff_z * diff_z)
-                total_velocity_change += d
-            segment.append(testingset.data[i])
-            if(total_velocity_change > 2):
+                total_energy_change += (0.5 * d * d)
+
+            if(total_energy_change > 2):
                 predictions.extend(classifier.predict(segment))
                 segment = []
+
         predictions.extend(classifier.predict(segment))  
         predictions.append(0)     
         print(set(predictions) - set(testingset.target)) 

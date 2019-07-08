@@ -36,16 +36,16 @@ def plotTrajectoryForJoint(joint_index, fig, joints):
     ax.set_title(JOINTS_NAMES[joint_index])
     xdata = [joint.point.x for joint in joints]
     ydata = [joint.point.y for joint in joints]
-    velocities = [0]
+    energies = [0] # first frame has no energy
     for i in range(1, len(joints)):
         diff_x = joints[i].point.x - joints[i - 1].point.x
         diff_y = joints[i].point.y - joints[i - 1].point.y
         diff_z = joints[i].point.z - joints[i - 1].point.z
         d = sqrt(diff_x * diff_x + diff_y * diff_y + diff_z * diff_z)
-        velocities.append(d)
+        energies.append(0.5 * d * d)
     
 
-    plt.scatter(xdata, ydata, vmin=0, vmax=0.5, c=velocities)
+    plt.scatter(xdata, ydata, vmax=0.05, c=energies)
     plt.colorbar()
 
 
