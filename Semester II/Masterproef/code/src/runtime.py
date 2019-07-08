@@ -15,7 +15,7 @@ from pykinect2 import PyKinectRuntime
 class Runtime():
     def __init__(self, fps):
         pygame.init()     
-        pygame.display.set_caption("KinectV2 for Windows")
+        pygame.display.set_caption("Master Thesis")
         
         # get info about the current graphical environment (mostly the whole screen)
         displayInfo = pygame.display.Info()
@@ -45,14 +45,11 @@ class Runtime():
     def extract_body_information(self, body):
        
         joints = body.joints  
-    
         orientations = body.joint_orientations
-        
         depth_points = self.kinect.body_joints_to_depth_space(joints)
         depth_list = self.kinect.get_last_depth_frame()
         features = [None] * 175
         
-
         for i in range(0, len(constants.JOINTS)):
             position = joints[i].Position
             features[7*i + 0] = position.x

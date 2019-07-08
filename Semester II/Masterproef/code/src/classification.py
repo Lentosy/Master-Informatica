@@ -5,7 +5,7 @@ import time
 import matplotlib.pyplot as plt
 from dataset import Dataset
 from domain.constants import PERSONS, ACTIONS
-from classification_strategies import ClassificationStrategy, PerFrameClassification, SimpleBufferClassification, WeightedBufferClassification
+from classification_strategies import ClassificationStrategy, PerFrameClassification, SlidingWindowClassification
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV, cross_validate
 from transform_features import FeatureTransformer
@@ -22,59 +22,53 @@ class Classifier(object):
     def classify(self, trainingset, testingset, strategy):
         self.classifier.fit(trainingset.data, trainingset.target)
         strategy.perform(validationset=testingset, classifier=self.classifier)
-        return strategy.getStatistics()
+        return (strategy.getStatistics(), strategy.getConfusionMatrix())
 
 
 
 
 
-strategies = [WeightedBufferClassification(30)]
 
-# CROSS VALIDATION dient enkel om na te gaan hoe goed onze classifier zou zijn als hij een persoon ziet waarop niet getraind is.
-# Het uiteindelijk model zal wel trainen op alle personen in de dataset
+def plotConfusionMatrix(confusion_matrix,
+                          title=None,
+                          cmap=plt.cm.Blues):
+    """
+    This function prints and plots the confusion matrix.
+    """
 
-featureTransformer = FeatureTransformer()
-classifier = RandomForestClassifier(max_depth = None, min_samples_split = 2, n_estimators = 27, max_features = 10)
-for classificationStrategy in strategies:
-    print(f"Using strategy {str(classificationStrategy)}")
-    classStatistics = [[None] * len(ACTIONS)] * len(PERSONS)
-    avgStatistics = [{} for i in range(0, len(PERSONS))]
-   
-    for i in range(1, len(PERSONS) + 1): # Leave-One-Subject-Out cross validation
-        trainingPersons = PERSONS[:i - 1] + PERSONS[i:]
-        testingPerson = [PERSONS[i - 1]]
-        print(f"\t{trainingPersons} {testingPerson}")
-        trainingset = Dataset(trainingPersons)
-        testingset = Dataset(testingPerson)
-
-        featureTransformer.setFeatureVectors(trainingset.data)
-        featureTransformer.preProcessing()
-        featureTransformer.setFeatureVectors(testingset.data)
-        featureTransformer.preProcessing()
-
-        trainingset.flatten()
-        testingset.flatten()
-        results = Classifier(classifier).classify(trainingset, testingset, classificationStrategy)
-        for j in range(0, len(ACTIONS)):
-            classStatistics[i - 1][j] = results[ACTIONS[j]]
-        avgStatistics[i-1] = results['weighted avg']
     
-    weights = []
-    for i in range(0, len(avgStatistics)):
-        weights.append(avgStatistics[i]['support'])
-    weights = [w/sum(weights) for w in weights] # normalize weights
+    confusion_matrix = confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:, np.newaxis]
 
-    globalPerformance = {
-        'recall': 0,
-        'precision': 0,
-        'f1-score': 0
-    }
-    for i in range(0, len(avgStatistics)):
-        for key in globalPerformance.keys():
-            globalPerformance[key] += weights[i] * avgStatistics[i][key]
+    fig, ax = plt.subplots()
+    im = ax.imshow(confusion_matrix, interpolation='nearest', cmap=cmap)
+    ax.figure.colorbar(im, ax=ax)
+    # We want to show all ticks...
+    ax.set(xticks=np.arange(confusion_matrix.shape[1]),
+           yticks=np.arange(confusion_matrix.shape[0]),
+           # ... and label them with the respective list entries
+           xticklabels=ACTIONS, yticklabels=ACTIONS,
+           title=title,
+           ylabel='True label',
+           xlabel='Predicted label')
 
-    #print(classStatistics)
-    print(globalPerformance)
+    # Rotate the tick labels and set their alignment.
+    plt.setp(ax.get_xticklabels(), rotation=45, ha="right",
+             rotation_mode="anchor")
+
+    # Loop over data dimensions and create text annotations.
+
+    fmt = '.2f'
+    thresh = confusion_matrix.max() / 2.
+    for i in range(confusion_matrix.shape[0]):
+        for j in range(confusion_matrix.shape[1]):
+            ax.text(j, i, format(confusion_matrix[i, j], fmt),
+                    ha="center", va="center",
+                    color="white" if confusion_matrix[i, j] > thresh else "black")
+    fig.tight_layout()
+    return ax
+
+
+def plotClassScores(classStatistics):
     precision = []
     recall = []
     f1score = []
@@ -112,3 +106,71 @@ for classificationStrategy in strategies:
     plt.legend(loc='upper left')
     plt.tight_layout()
     plt.show()
+    
+def plotGlobalScore(avgStatistics):
+    weights = []
+    for i in range(0, len(avgStatistics)):
+        weights.append(avgStatistics[i]['support'])
+    weights = [w/sum(weights) for w in weights] # normalize weights
+
+    globalPerformance = {
+        'recall': 0,
+        'precision': 0,
+        'f1-score': 0
+    }
+    for i in range(0, len(avgStatistics)):
+        for key in globalPerformance.keys():
+            globalPerformance[key] += weights[i] * avgStatistics[i][key]
+
+    print(globalPerformance)
+
+
+
+
+
+
+# CROSS VALIDATION dient enkel om na te gaan hoe goed onze classifier zou zijn als hij een persoon ziet waarop niet getraind is.
+# Het uiteindelijk model zal wel trainen op alle personen in de dataset
+
+featureTransformer = FeatureTransformer()
+
+classifier = RandomForestClassifier(max_depth = None, min_samples_split = 2, n_estimators = 27, max_features = 10)
+classificationStrategy = PerFrameClassification()
+
+
+print(f"Using strategy {str(classificationStrategy)}")
+classStatistics = [[None] * len(ACTIONS)] * len(PERSONS) # recall, precision and f1-score for EACH class for EACH person
+avgStatistics = [{} for i in range(0, len(PERSONS))]     # contains average recall, precision and f1-score for EACH person
+avgConfusionMatrix = None                                # represents the average confusion matrix
+
+for i in range(1, len(PERSONS) + 1): # Leave-One-Subject-Out cross validation
+    trainingPersons = PERSONS[:i - 1] + PERSONS[i:]
+    testingPerson = [PERSONS[i - 1]]
+    print(f"\t{trainingPersons} {testingPerson}")
+
+    trainingset = Dataset(trainingPersons)
+    testingset = Dataset(testingPerson)
+
+    featureTransformer.setFeatureVectors(trainingset.data)
+    featureTransformer.preProcessing()
+    featureTransformer.setFeatureVectors(testingset.data)
+    featureTransformer.preProcessing()
+
+    trainingset.flatten()
+    testingset.flatten()
+
+    (results, cm) = Classifier(classifier).classify(trainingset, testingset, classificationStrategy)
+    if(avgConfusionMatrix is None):
+        avgConfusionMatrix = cm
+    else:
+        avgConfusionMatrix += cm
+    
+    for j in range(0, len(ACTIONS)):
+        classStatistics[i - 1][j] = results[ACTIONS[j]]
+    avgStatistics[i-1] = results['weighted avg']
+
+avgConfusionMatrix = avgConfusionMatrix / len(PERSONS)
+plotConfusionMatrix(avgConfusionMatrix)
+plotGlobalScore(avgStatistics)
+plotClassScores(classStatistics)
+
