@@ -14,7 +14,7 @@ from transform_features import FeatureTransformer
 def main():
     featureTransformer = FeatureTransformer()   
     classifier = RandomForestClassifier(max_depth = None, min_samples_split = 2, n_estimators = 10, max_features = 10)
-    classificationStrategy = EnergyBasedSegmentationClassification(0.05)
+    classificationStrategy = EnergyBasedSegmentationClassification(threshold = 0.05)
 
 
     print(f"Using strategy {str(classificationStrategy)}")
@@ -41,7 +41,7 @@ def main():
         classifier.fit(trainingset.data, trainingset.target)
         classificationStrategy.perform(testingset, classifier)
         
-        (results, cm) = (classificationStrategy.getStatistics(), classificationStrategy.getConfusionMatrix())
+        (results, cm) = (classificationStrategy.report, classificationStrategy.confusionMatrix)
         if(avgConfusionMatrix is None):
             avgConfusionMatrix = cm
         else:
@@ -60,7 +60,7 @@ def main():
 
 
 
-def plotConfusionMatrix(confusion_matrix,
+def plotConfusionMatrix(confusionMatrix,
                           title=None,
                           cmap=plt.cm.get_cmap('Blues')):
     """
@@ -68,14 +68,14 @@ def plotConfusionMatrix(confusion_matrix,
     """
 
     
-    confusion_matrix = confusion_matrix.astype('float') / confusion_matrix.sum(axis=1)[:, np.newaxis]
+    confusionMatrix = confusionMatrix.astype('float') / confusionMatrix.sum(axis=1)[:, np.newaxis]
 
     fig, ax = plt.subplots()
-    im = ax.imshow(confusion_matrix, interpolation='nearest', cmap=cmap)
+    im = ax.imshow(confusionMatrix, interpolation='nearest', cmap=cmap)
     ax.figure.colorbar(im, ax=ax)
     # We want to show all ticks...
-    ax.set(xticks=np.arange(confusion_matrix.shape[1]),
-           yticks=np.arange(confusion_matrix.shape[0]),
+    ax.set(xticks=np.arange(confusionMatrix.shape[1]),
+           yticks=np.arange(confusionMatrix.shape[0]),
            # ... and label them with the respective list entries
            xticklabels=ACTIONS, yticklabels=ACTIONS,
            title=title,
@@ -89,12 +89,12 @@ def plotConfusionMatrix(confusion_matrix,
     # Loop over data dimensions and create text annotations.
 
     fmt = '.2f'
-    thresh = confusion_matrix.max() / 2.
-    for i in range(confusion_matrix.shape[0]):
-        for j in range(confusion_matrix.shape[1]):
-            ax.text(j, i, format(confusion_matrix[i, j], fmt),
+    thresh = confusionMatrix.max() / 2.
+    for i in range(confusionMatrix.shape[0]):
+        for j in range(confusionMatrix.shape[1]):
+            ax.text(j, i, format(confusionMatrix[i, j], fmt),
                     ha="center", va="center",
-                    color="white" if confusion_matrix[i, j] > thresh else "black")
+                    color="white" if confusionMatrix[i, j] > thresh else "black")
     fig.tight_layout()
     return ax
 

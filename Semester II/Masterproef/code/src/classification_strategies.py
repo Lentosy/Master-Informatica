@@ -30,18 +30,10 @@ class ClassificationStrategy(object):
     """
     def __init__(self):
         self.report = None
+        self.confusionMatrix = None
     
     def __str__(self):
         raise NotImplementedError("This is an abstract method. Implement this in a subclass")
-
-    def getStatistics(self):
-        """
-        Returns the classifier report
-        """
-        return self.report
-
-    def getConfusionMatrix(self):
-        return self.confusion_matrix
 
     def perform(self, testingset, classifier):
         raise NotImplementedError("This is an abstract method, implement this in a subclass.")
@@ -63,10 +55,11 @@ class PerFrameClassification(ClassificationStrategy):
 
 
     def perform(self, testingset, classifier):
-        predictions = classifier.predict(testingset.data)
-        print(set(testingset.target) - set(predictions))
+        predictions = []
+        for i in range(0, len(testingset)): #simulate video recording by iterating each frame
+            predictions.extend(classifier.predict([testingset.data[i]]))
         self.report = classification_report(testingset.target, predictions, target_names=ACTIONS, digits=4, output_dict=True)
-        self.confusion_matrix = confusion_matrix(testingset.target, predictions)
+        self.confusionMatrix = confusion_matrix(testingset.target, predictions)
     
 
 
@@ -86,12 +79,12 @@ class SlidingWindowClassification(ClassificationStrategy):
         predictions = [] # the list of all the predictions
 
         for i in range(0, len(testingset) - self.buffersize):
-            buffer_data = [testingset.data[j] for j in range(i, i + self.buffersize)]
-            buffer_pred = classifier.predict(buffer_data)
-            vote = self.votingStrategy.getVote(buffer_pred)
+            bufferData = [testingset.data[j] for j in range(i, i + self.buffersize)]
+            bufferPred = classifier.predict(bufferData)
+            vote = self.votingStrategy.getVote(bufferPred)
             predictions.append(vote)
         self.report = classification_report(testingset.target[:len(testingset) - self.buffersize], predictions, target_names=ACTIONS, digits=4, output_dict=True)
-        self.confusion_matrix = confusion_matrix(testingset.target[:len(testingset) - self.buffersize], predictions)
+        self.confusionMatrix = confusion_matrix(testingset.target[:len(testingset) - self.buffersize], predictions)
 
 
 
@@ -125,21 +118,22 @@ class EnergyBasedSegmentationClassification(ClassificationStrategy):
                 #magnitude of velocity
                 velocity = sqrt(velX * velX + velY * velY + velZ * velZ)
                 totalKineticEnergy += JOINTS[joint_index]['weight'] * velocity * velocity # E = mv^2
+            
             # The 1/2 can be factored out of the sum
             totalKineticEnergy *= 0.5
             print(i, totalKineticEnergy, end ='    ')
             if actionStarted == False:
                 if totalKineticEnergy < self.threshold:
                     print("default action")
-                    predictions.append(0)
+                    predictions.extend(classifier.predict([testingset.data[i]]))
                 elif totalKineticEnergy >= self.threshold:
                     print("start action")
                     actionStarted = True
-                    segment = []
+                    segment = [testingset.data[i]]
             elif actionStarted == True:
+                segment.append(testingset.data[i]) 
                 if totalKineticEnergy >= self.threshold:
                     print("add frame to segment")
-                    segment.append(testingset.data[i]) 
                 elif totalKineticEnergy < self.threshold:
                     print("stop action")
                     actionStarted = False
@@ -147,10 +141,13 @@ class EnergyBasedSegmentationClassification(ClassificationStrategy):
                         classificationbuffer = classifier.predict(segment)
                         vote = self.votingStrategy.getVote(classificationbuffer)
                         predictions.extend([vote] * len(segment))
+                    segment = []
 
         if len(segment):
+
             classificationbuffer = classifier.predict(segment)
             vote = self.votingStrategy.getVote(classificationbuffer)
             predictions.extend([vote] * len(segment))
+
         self.report = classification_report(testingset.target, predictions, target_names=ACTIONS, digits=4, output_dict=True)
-        self.confusion_matrix = confusion_matrix(testingset.target, predictions)
+        self.confusionMatrix = confusion_matrix(testingset.target, predictions)

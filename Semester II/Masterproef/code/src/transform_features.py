@@ -8,45 +8,35 @@ from math import sqrt, acos, pi, cos, sin
 from pyquaternion import Quaternion
 from sklearn.feature_selection import VarianceThreshold
 
+
 class FeatureTransformer(object):
     @classmethod
-    def __init__(self, rawData = None):
+    def __init__(self, rawData=None):
         self.featureVectors = rawData
 
-        
     @classmethod
     def setFeatureVectors(self, rawData):
         self.featureVectors = rawData
 
     @classmethod
     def preProcessing(self):
-        if __debug__:
-            start = time.time()
         for i in range(0, len(self.featureVectors)):
             self._translate(self.featureVectors[i])
             self._rotate(self.featureVectors[i])
-           # self._scale(self.featureVectors[i])
-        if __debug__:
-            end = time.time()
-            print(f"Preprocessing: {end - start} seconds")
+            # self._scale(self.featureVectors[i])
         return self.featureVectors
-
-
-
 
     @classmethod
     def _varianceThreshold(self, threshold):
         sel = VarianceThreshold(threshold=threshold) 
         sel.fit_transform(self.featureVectors)
-        
+
     @classmethod
     def _removeLowerBody(self, featureVector):
         jointsToRemove = [19, 18, 15, 14]
-        
+
         for index in jointsToRemove:
             del featureVector[index]
-                
-        
 
     @classmethod
     def _translate(self, featureVector):
@@ -59,18 +49,15 @@ class FeatureTransformer(object):
             featureVector[i].point = featureVector[i].point - spine.point
 
     @classmethod
-    def _scale(self, featureVector):        
-        #for parent_joint in JOINT_TREE.keys():
+    def _scale(self, featureVector):
+        # for parent_joint in JOINT_TREE.keys():
         #    parent = featureVector[parent_joint]
         #    for child_joint in JOINT_TREE[parent_joint]:
         #        child = featureVector[child_joint]
         #        diff = child.point - parent.point
         #        norm = diff.norm()
-#
         #        child.point = (LENGTHS[child_joint] * diff / norm) + parent.point
         pass
-        
-
 
     @classmethod
     def _rotate(self, featureVector):
@@ -80,5 +67,7 @@ class FeatureTransformer(object):
 
         for i in range(0, len(featureVector)):
             joint = featureVector[i]
-            joint.point = (ref.quaternion * joint.point.to_quaternion() * conjugate).to_point()
+            joint.point = (
+                ref.quaternion * joint.point.to_quaternion() * conjugate
+                ).to_point()
             joint.quaternion *= conjugate
