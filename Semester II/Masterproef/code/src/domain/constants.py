@@ -11,81 +11,45 @@ ACTIONS = ['DEFAULT',                       #0
            'EMERGENCY_STOP',                #1
            'RH_NORMAL_STOP',                #2
            'RH_MOVE_RIGHT',                 #3
-           'RH_MOVE_LEFT',                  #4
+           'LH_MOVE_LEFT',                  #4
            'RH_MOVE_FORWARD',               #5
            'RH_ROTATE_ABOUT_AXIS',          #6
            ]                        
+
 
 DEBUG_FPS = 2
 DEFAULT_FPS = 15
 
 SKELETON_LINE_THICKNESS = 18
 SKELETON_CIRCLE_RADIUS = 15
+SKELETON_COLOR = (255, 0, 0) # red
 
-SKELETON_COLORS = [
-    (255, 0, 0), # red
-    (0, 255, 0), # green
-    (0, 0, 255), # blue
-    (255, 100, 10), # orange
-    (240, 0, 255), # purple
-    (255, 255, 0) # yellow
-]
-
-# List of all the available joints (same order as the PyKinectv2.JointType enumeration)
 JOINTS = [
-    PyKinectV2.JointType_SpineBase,           # 0 quaternion exists - parent is neck
-    PyKinectV2.JointType_SpineMid,            # 1 quaternion exists - parent is neck
-    PyKinectV2.JointType_Neck,                # 2 quaternion exists - parent is head
-    PyKinectV2.JointType_Head,                # 3
-    PyKinectV2.JointType_ShoulderLeft,        # 4 quaternion exists - parent is neck
-    PyKinectV2.JointType_ElbowLeft,           # 5 quaternion exists
-    PyKinectV2.JointType_WristLeft,           # 6 quaternion exists
-    PyKinectV2.JointType_HandLeft,            # 7 quaternion exists
-    PyKinectV2.JointType_ShoulderRight,       # 8 quaternion exists
-    PyKinectV2.JointType_ElbowRight,          # 9 quaternion exists
-    PyKinectV2.JointType_WristRight,          # 10 quaternion exists
-    PyKinectV2.JointType_HandRight,           # 11 quaternion exists
-    PyKinectV2.JointType_HipLeft,             # 12 quaternion exists
-    PyKinectV2.JointType_KneeLeft,            # 13 quaternion exists
-    PyKinectV2.JointType_AnkleLeft,           # 14 quaternion exists
-    PyKinectV2.JointType_FootLeft,            # 15
-    PyKinectV2.JointType_HipRight,            # 16 quaternion exists
-    PyKinectV2.JointType_KneeRight,           # 17 quaternion exists
-    PyKinectV2.JointType_AnkleRight,          # 18 quaternion exists
-    PyKinectV2.JointType_FootRight,           # 19
-    PyKinectV2.JointType_SpineShoulder,       # 20 quaternion exists
-    PyKinectV2.JointType_HandTipLeft,         # 21
-    PyKinectV2.JointType_ThumbLeft,           # 22
-    PyKinectV2.JointType_HandTipRight,        # 23
-    PyKinectV2.JointType_ThumbRight,          # 24
-]
-JOINTS_NAMES = [
-    "SpineBase",           # 0 quaternion exists - parent is neck
-    "SpineMid",            # 1 quaternion exists - parent is neck
-    "Neck",                # 2 quaternion exists - parent is head
-    "Head",                # 3
-    "ShoulderLeft",        # 4 quaternion exists - parent is neck
-    "ElbowLeft",           # 5 quaternion exists
-    "WristLeft",           # 6 quaternion exists
-    "HandLeft",            # 7 quaternion exists
-    "ShoulderRight",       # 8 quaternion exists
-    "ElbowRight",          # 9 quaternion exists
-    "WristRight",          # 10 quaternion exists
-    "HandRight",           # 11 quaternion exists
-    "HipLeft",             # 12 quaternion exists
-    "KneeLeft",            # 13 quaternion exists
-    "AnkleLeft",           # 14 quaternion exists
-    "FootLeft",            # 15
-    "HipRight",            # 16 quaternion exists
-    "KneeRight",           # 17 quaternion exists
-    "AnkleRight",          # 18 quaternion exists
-    "FootRight",           # 19
-    "SpineShoulder",       # 20 quaternion exists
-    "HandTipLeft",         # 21
-    "ThumbLeft",           # 22
-    "HandTipRight",        # 23
-    "ThumbRight",          # 24
-
+    { 'name': 'SpineBase'       , 'weight': 0 } ,           
+    { 'name': 'SpineMid'        , 'weight': 0 } ,            
+    { 'name': 'Neck'            , 'weight': 0 } ,                
+    { 'name': 'Head'            , 'weight': 0 } ,                
+    { 'name': 'ShoulderLeft'    , 'weight': 1 } ,        
+    { 'name': 'ElbowLeft'       , 'weight': 1 } ,           
+    { 'name': 'WristLeft'       , 'weight': 1 } ,           
+    { 'name': 'HandLeft'        , 'weight': 1 } ,            
+    { 'name': 'ShoulderRight'   , 'weight': 1 } ,       
+    { 'name': 'ElbowRight'      , 'weight': 1 } ,          
+    { 'name': 'WristRight'      , 'weight': 1 } ,          
+    { 'name': 'HandRight'       , 'weight': 1 } ,           
+    { 'name': 'HipLeft'         , 'weight': 0 } ,             
+    { 'name': 'KneeLeft'        , 'weight': 0 } ,            
+    { 'name': 'AnkleLeft'       , 'weight': 0 } ,           
+    { 'name': 'FootLeft'        , 'weight': 0 } ,            
+    { 'name': 'HipRight'        , 'weight': 0 } ,            
+    { 'name': 'KneeRight'       , 'weight': 0 } ,           
+    { 'name': 'AnkleRight'      , 'weight': 0 } ,          
+    { 'name': 'FootRight'       , 'weight': 0 } ,           
+    { 'name': 'SpineShoulder'   , 'weight': 0 } ,       
+    { 'name': 'HandTipLeft'     , 'weight': 1 } ,         
+    { 'name': 'ThumbLeft'       , 'weight': 1 } ,           
+    { 'name': 'HandTipRight'    , 'weight': 1 } ,        
+    { 'name': 'ThumbRight'      , 'weight': 1 } ,          
 ]
 
 # List of all the connections between two joints
@@ -121,37 +85,8 @@ JOINT_CONNECTIONS = [
     [PyKinectV2.JointType_AnkleLeft,        PyKinectV2.JointType_FootLeft]
 ]
 
-LENGTHS = [
-    0.0,#"SpineBase",           
-    0.179,#"SpineMid",            
-    0.084, #"Neck",                
-    0.084, #"Head",               
-    0.110, #"ShoulderLeft",        
-    0.332, #"ElbowLeft",           
-    0.271, #"WristLeft",           
-    0.07, #"HandLeft",            
-    0.110, #"ShoulderRight",       
-    0.332, #"ElbowRight",          
-    0.271, #"WristRight",          
-    0.070, #"HandRight",           
-    0.142, #"HipLeft",             
-    0.550, #"KneeLeft",            
-    0.220, #"AnkleLeft",           
-    0.130, #"FootLeft",           
-    0.142, #"HipRight",            
-    0.550, #"KneeRight",           
-    0.220, #"AnkleRight",          
-    0.130, #"FootRight",          
-    0.337, #"SpineShoulder",       
-    0.139, #"HandTipLeft",         
-    0.070, #"ThumbLeft",          
-    0.139, #"HandTipRight",       
-    0.070, #"ThumbRight",        
-
-]
-
 JOINT_TREE = {
-
+    # hierarchical representation of the skeleton
     PyKinectV2.JointType_SpineBase: [
         PyKinectV2.JointType_SpineMid,   # 17.9  cm
         PyKinectV2.JointType_HipLeft,    # 14.15 cm
@@ -196,5 +131,37 @@ JOINT_TREE = {
 
     PyKinectV2.JointType_HandRight : [PyKinectV2.JointType_HandTipRight], # 13.2 cm
 }
+
+
+
+
+LENGTHS = [
+    0.0,#"SpineBase",           
+    0.179,#"SpineMid",            
+    0.084, #"Neck",                
+    0.084, #"Head",               
+    0.110, #"ShoulderLeft",        
+    0.332, #"ElbowLeft",           
+    0.271, #"WristLeft",           
+    0.07, #"HandLeft",            
+    0.110, #"ShoulderRight",       
+    0.332, #"ElbowRight",          
+    0.271, #"WristRight",          
+    0.070, #"HandRight",           
+    0.142, #"HipLeft",             
+    0.550, #"KneeLeft",            
+    0.220, #"AnkleLeft",           
+    0.130, #"FootLeft",           
+    0.142, #"HipRight",            
+    0.550, #"KneeRight",           
+    0.220, #"AnkleRight",          
+    0.130, #"FootRight",          
+    0.337, #"SpineShoulder",       
+    0.139, #"HandTipLeft",         
+    0.070, #"ThumbLeft",          
+    0.139, #"HandTipRight",       
+    0.070, #"ThumbRight",        
+
+]
 
 

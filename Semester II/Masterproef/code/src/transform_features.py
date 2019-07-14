@@ -2,7 +2,7 @@ import numpy
 import time
 import copy
 
-from domain.constants import JOINTS, JOINTS_NAMES, JOINT_TREE, LENGTHS
+from domain.constants import JOINTS, JOINT_TREE, LENGTHS
 from pykinect2 import PyKinectV2
 from math import sqrt, acos, pi, cos, sin
 from pyquaternion import Quaternion
@@ -54,7 +54,7 @@ class FeatureTransformer(object):
         This processing step translates the whole skeleton so that the spine base becomes the origin in the camera coördinate system.
         """
         # The lower spine is used as the origin
-        spine = copy.deepcopy(featureVector[JOINTS[PyKinectV2.JointType_SpineBase]])
+        spine = copy.deepcopy(featureVector[PyKinectV2.JointType_SpineBase])
         for i in range(0, len(featureVector)):
             featureVector[i].point = featureVector[i].point - spine.point
 
@@ -73,11 +73,6 @@ class FeatureTransformer(object):
 
 
     @classmethod
-    #TODO: voor sommige joints is er een compleet foute z-waarde (diepte) geassocieerd.
-    # Aangezien elk component met elk ander component vermenigvuldigd wordt (Hamilton product),
-    #   zal dit een enorme invloed hebben op de geroteerde joints met een foute z-waarde.
-    #   -> nieuwe opnames maken (MAANDAG 1 juli)
-    #   -> VOORLOPIG: diepte negeren (krijgt waarde 0)
     def _rotate(self, featureVector):
 
         ref = copy.deepcopy(featureVector[PyKinectV2.JointType_SpineBase])

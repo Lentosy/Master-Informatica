@@ -53,10 +53,11 @@ class Point3D(object):
         return Quaternion(w=0, x=self.x, y=self.y, z=self.z)
 
 class Joint(object):
-    def __init__(self, name, point, quaternion):
+    def __init__(self, name, weight, point, quaternion):
         self.name = name
         self.point = point
         self.quaternion = quaternion
+        self.weight = weight
 
 
     def __str__(self):

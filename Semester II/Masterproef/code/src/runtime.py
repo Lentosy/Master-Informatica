@@ -159,7 +159,7 @@ class DefaultRuntime(Runtime):
             for body in self.skeletons.bodies:
                 if body.is_tracked: 
                     joint_points = self.kinect.body_joints_to_color_space(body.joints)
-                    self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])                    
+                    self.draw_body(body.joints, joint_points, constants.SKELETON_COLOR)                    
             
 class DebugRuntime(Runtime):
     def __init__(self):
@@ -185,7 +185,7 @@ class DebugRuntime(Runtime):
             for body in self.skeletons.bodies:
                 if body.is_tracked:  
                     joint_points = self.kinect.body_joints_to_color_space(body.joints)
-                    self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])                    
+                    self.draw_body(body.joints, joint_points, constants.SKELETON_COLOR)                    
                     features = self.extract_body_information(body)         
                     #self.stdout.write(str(features[3*(PyKinectV2.JointType_Head)]) + '  -  ' + str(features[3*(PyKinectV2.JointType_Head) + 1]) +   "\n")
                     self.stdout.write(';'.join(str(x) for x in features[0:7]) + "\n")
@@ -235,7 +235,7 @@ class SnapshotRuntime(Runtime):
                         # 
                     
                     joint_points = self.kinect.body_joints_to_color_space(body.joints)
-                    self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])
+                    self.draw_body(body.joints, joint_points, constants.SKELETON_COLOR)
                     
 
         
@@ -294,4 +294,4 @@ class RecordRuntime(Runtime):
                         # 
                     
                     joint_points = self.kinect.body_joints_to_color_space(body.joints)
-                    self.draw_body(body.joints, joint_points, constants.SKELETON_COLORS[0])
+                    self.draw_body(body.joints, joint_points, constants.SKELETON_COLOR)

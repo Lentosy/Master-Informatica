@@ -8,7 +8,7 @@ import matplotlib.projections as proj
 from math import sqrt
 
 from dataset import Dataset
-from domain.constants import JOINTS, JOINTS_NAMES
+from domain.constants import JOINTS
 from transform_features import FeatureTransformer
 
 
@@ -33,7 +33,7 @@ def plotTrajectories(dataset):
 
 def plotTrajectoryForJoint(joint_index, fig, joints):
     ax = fig.add_subplot(5, 5, joint_index + 1)
-    ax.set_title(JOINTS_NAMES[joint_index])
+    ax.set_title(JOINTS[joint_index]['name'])
     xdata = [joint.point.x for joint in joints]
     ydata = [joint.point.y for joint in joints]
     energies = [0] # first frame has no energy
@@ -42,10 +42,10 @@ def plotTrajectoryForJoint(joint_index, fig, joints):
         diff_y = joints[i].point.y - joints[i - 1].point.y
         diff_z = joints[i].point.z - joints[i - 1].point.z
         d = sqrt(diff_x * diff_x + diff_y * diff_y + diff_z * diff_z)
-        energies.append(0.5 * d * d)
+        energies.append(0.5 * JOINTS[joint_index]['weight'] * d * d)
     
 
-    plt.scatter(xdata, ydata, vmax=0.05, c=energies)
+    plt.scatter(xdata, ydata, c=energies)
     plt.colorbar()
 
 

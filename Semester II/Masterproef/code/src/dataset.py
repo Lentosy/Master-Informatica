@@ -3,7 +3,7 @@ import sys
 import csv
 import pandas
 
-from domain.constants import ACTIONS, JOINTS_NAMES
+from domain.constants import ACTIONS, JOINTS
 from domain.Joint import Joint, Point3D, Quaternion4D
 
 class Dataset(object):
@@ -34,10 +34,12 @@ class Dataset(object):
                         joints = []
                         for i in range(0, 25):
                             joints.append(Joint(
-                                JOINTS_NAMES[i],
+                                JOINTS[i]['name'],
+                                JOINTS[i]['weight'],
                                 Point3D(row[7*i], row[7*i + 1], row[7*i + 2]),
                                 Quaternion4D(row[7*i + 6], row[7*i + 3], row[7*i + 4] ,row[7*i + 5])
-                                ))
+                                )
+                            )
                         frames.append(joints)
                 self.data.extend(frames)
             except FileNotFoundError as fnfe:
@@ -75,10 +77,12 @@ class Dataset(object):
                 joints = []
                 for i in range(0, 25):
                     joints.append(Joint(
-                        JOINTS_NAMES[i],
+                        JOINTS[i]['name'],
+                        JOINTS[i]['weight'],
                         Point3D(row[7*i], row[7*i + 1], row[7*i + 2]),
                         Quaternion4D(row[7*i + 6], row[7*i + 3], row[7*i + 4] ,row[7*i + 5])
-                        ))
+                        )
+                    )
                 frames.append(joints)
         dataset.data.extend(frames)
         return dataset
