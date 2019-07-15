@@ -16,7 +16,6 @@ def main():
     classifier = RandomForestClassifier(max_depth = None, min_samples_split = 2, n_estimators = 10, max_features = 10)
     classificationStrategy = EnergyBasedSegmentationClassification(threshold = 0.05)
 
-
     print(f"Using strategy {str(classificationStrategy)}")
     classStatistics = [[None] * len(ACTIONS)] * len(PERSONS) # recall, precision and f1-score for EACH class for EACH person
     avgStatistics = [{} for i in range(0, len(PERSONS))]     # contains average recall, precision and f1-score for EACH person
@@ -55,23 +54,18 @@ def main():
     plotConfusionMatrix(avgConfusionMatrix,title=str(classificationStrategy))
     plotClassScores(classStatistics, title=str(classificationStrategy))
     plotGlobalScore(avgStatistics)
-    
+    mng = plt.get_current_fig_manager()
 
-
-
+    mng.window.state('zoomed') 
+    plt.show() 
 
 def plotConfusionMatrix(confusionMatrix,
                           title=None,
                           cmap=plt.cm.get_cmap('Blues')):
-    """
-    This function prints and plots the confusion matrix.
-    """
 
-    
     confusionMatrix = confusionMatrix.astype('float') / confusionMatrix.sum(axis=1)[:, np.newaxis]
-
-    fig, ax = plt.subplots()
-    im = ax.imshow(confusionMatrix, interpolation='nearest', cmap=cmap)
+    ax = plt.subplot(2, 2, 1)
+    im = plt.matshow(confusionMatrix, 0, interpolation='nearest', cmap=cmap)
     ax.figure.colorbar(im, ax=ax)
     # We want to show all ticks...
     ax.set(xticks=np.arange(confusionMatrix.shape[1]),
@@ -95,8 +89,8 @@ def plotConfusionMatrix(confusionMatrix,
             ax.text(j, i, format(confusionMatrix[i, j], fmt),
                     ha="center", va="center",
                     color="white" if confusionMatrix[i, j] > thresh else "black")
-    fig.tight_layout()
-    return ax
+
+    
 
 
 def plotClassScores(classStatistics, title):
@@ -120,10 +114,9 @@ def plotClassScores(classStatistics, title):
     
 
     n_groups = len(ACTIONS)
-    fig, ax = plt.subplots()
+    ax = plt.subplot(2, 2, 2)
     index = np.arange(n_groups)
     bar_width=0.35
-    opacity=0.8
 
     ax.bar(index + 1/2 * bar_width, precision, bar_width, alpha=0.5, label='precision', color='b')
     ax.bar(index + 3/2 * bar_width, recall, bar_width, alpha=0.5, label='recall', color='g')
@@ -134,9 +127,7 @@ def plotClassScores(classStatistics, title):
     plt.title(f"Precision, recall and f1-scores per human gesture - {title}")
     plt.xlabel('Gesture label')
     plt.ylabel('Score')
-    plt.legend(loc='upper left')
-    plt.tight_layout()
-    plt.show()
+    plt.legend()
     
 def plotGlobalScore(avgStatistics):
     weights = []
@@ -153,7 +144,17 @@ def plotGlobalScore(avgStatistics):
         for key in globalPerformance.keys():
             globalPerformance[key] += weights[i] * avgStatistics[i][key]
 
-    print(globalPerformance)
+    ax = plt.subplot(2, 2, 3)
+    ax.axis('off')
+    ax.axis('tight')
+
+
+    for key in globalPerformance.keys():
+        globalPerformance[key] = f"{round(globalPerformance[key] * 100,2)}%"
+
+    table = ax.table(cellText=[list(globalPerformance.values())], colLabels=list(globalPerformance.keys()), loc='center')
+    table.auto_set_font_size(False)
+    table.set_fontsize(11)
 
 
 

@@ -46,8 +46,6 @@ class Runtime():
        
         joints = body.joints  
         orientations = body.joint_orientations
-        depth_points = self.kinect.body_joints_to_depth_space(joints)
-        depth_list = self.kinect.get_last_depth_frame()
         features = [None] * 175
         
         for i in range(0, len(constants.JOINTS)):

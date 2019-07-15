@@ -91,7 +91,7 @@ class SlidingWindowClassification(ClassificationStrategy):
 
 class EnergyBasedSegmentationClassification(ClassificationStrategy):
     """
-    This classification strategy segmentates action based on relative velocity on consecutive frames. A high change in velocity likely indicates a new action being performed.
+    This classification strategy segmentates action based on kinetic energy on consecutive frames. A high change in velocity likely indicates a new action being performed.
     """
     def __init__(self, threshold):
         ClassificationStrategy.__init__(self)
@@ -117,25 +117,19 @@ class EnergyBasedSegmentationClassification(ClassificationStrategy):
                 velZ = testingset.data[i - 1][3*joint_index+2] - testingset.data[i][3*joint_index+2]
                 #magnitude of velocity
                 velocity = sqrt(velX * velX + velY * velY + velZ * velZ)
-                totalKineticEnergy += JOINTS[joint_index]['weight'] * velocity * velocity # E = mv^2
-            
+                totalKineticEnergy += JOINTS[joint_index]['weight'] * velocity * velocity # E = mv^2   
             # The 1/2 can be factored out of the sum
-            totalKineticEnergy *= 0.5
-            print(i, totalKineticEnergy, end ='    ')
+            totalKineticEnergy /= 2
+
             if actionStarted == False:
                 if totalKineticEnergy < self.threshold:
-                    print("default action")
                     predictions.extend(classifier.predict([testingset.data[i]]))
                 elif totalKineticEnergy >= self.threshold:
-                    print("start action")
                     actionStarted = True
                     segment = [testingset.data[i]]
             elif actionStarted == True:
                 segment.append(testingset.data[i]) 
-                if totalKineticEnergy >= self.threshold:
-                    print("add frame to segment")
-                elif totalKineticEnergy < self.threshold:
-                    print("stop action")
+                if totalKineticEnergy < self.threshold:
                     actionStarted = False
                     if len(segment):
                         classificationbuffer = classifier.predict(segment)
@@ -143,8 +137,8 @@ class EnergyBasedSegmentationClassification(ClassificationStrategy):
                         predictions.extend([vote] * len(segment))
                     segment = []
 
+        # predict remaining segment
         if len(segment):
-
             classificationbuffer = classifier.predict(segment)
             vote = self.votingStrategy.getVote(classificationbuffer)
             predictions.extend([vote] * len(segment))

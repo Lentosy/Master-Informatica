@@ -11,15 +11,12 @@ from dataset import Dataset
 from domain.constants import JOINTS
 from transform_features import FeatureTransformer
 
-
 def main():
-    
     dataset = Dataset(['BERT'])
     ft = FeatureTransformer(dataset.data)
     ft.preProcessing()
     plotEnergy(dataset)
     
-
 
 def plotEnergy(dataset):
     data = []
@@ -45,7 +42,6 @@ def plotEnergy(dataset):
     ax.set( xlabel='frame',
             ylabel='kinetische energie')
 
-
     actionStarted = False
     maxE = max(data)
     threshold = 0.05
@@ -57,14 +53,8 @@ def plotEnergy(dataset):
             plt.plot((i, i), (0, maxE), linestyle='dashed', color="green")
         if actionStarted == True and energy < threshold:
             actionStarted = False
-            plt.plot((i, i), (0, maxE), linestyle='dashed', color="red")
-            
-            
-
+            plt.plot((i, i), (0, maxE), linestyle='dashed', color="red")          
     plt.show()
-
-
-
 
 if __name__ == '__main__':
     main()
