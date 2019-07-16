@@ -5,6 +5,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.projections as proj
 
+from scipy import interpolate
+
 from math import sqrt
 
 from dataset import Dataset
@@ -42,18 +44,33 @@ def plotEnergy(dataset):
     ax.set( xlabel='frame',
             ylabel='kinetische energie')
 
+
     actionStarted = False
+    gtActionStarted = False
+
     maxE = max(data)
     threshold = 0.05
+
+    buffersize = 10
+
     for i in range(0, len(data)):
         energy = data[i]
+        target = dataset.target[i]
 
-        if actionStarted == False and energy > threshold:
+        if gtActionStarted == False and target != 0:
+            gtActionStarted = True
+            plt.plot((i, i), (0, maxE), linestyle='-', color="green")
+        if gtActionStarted == True and target == 0:
+            gtActionStarted = False
+            plt.plot((i, i), (0, maxE), linestyle='-', color="red")
+
+        if actionStarted == False and energy >= threshold:
             actionStarted = True
-            plt.plot((i, i), (0, maxE), linestyle='dashed', color="green")
+            plt.plot((i, i), (0, maxE), linestyle=':', color="green")
         if actionStarted == True and energy < threshold:
             actionStarted = False
-            plt.plot((i, i), (0, maxE), linestyle='dashed', color="red")          
+            plt.plot((i, i), (0, maxE), linestyle=':', color="red")          
+
     plt.show()
 
 if __name__ == '__main__':
