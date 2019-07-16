@@ -5,10 +5,10 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.projections as proj
 
-from scipy import interpolate
-
+from GraphManager import GraphManager
+import numpy as np
+from scipy.fftpack import fft
 from math import sqrt
-
 from dataset import Dataset
 from domain.constants import JOINTS
 from transform_features import FeatureTransformer
@@ -17,12 +17,19 @@ def main():
     dataset = Dataset(['BERT'])
     ft = FeatureTransformer(dataset.data)
     ft.preProcessing()
-    plotEnergy(dataset)
-    
 
-def plotEnergy(dataset):
-    data = []
+
+    energies = getEnergies(dataset)
+    gm = GraphManager(1, 2)
     
+    plotEnergy(energies, gm.getNextAx())
+    plotFFT(energies, gm.getNextAx())
+
+    gm.show(fullscreen=True)
+
+
+def getEnergies(dataset):
+    y = []
     for i in range(1, len(dataset.data)):
         totalKineticEnergy = 0
         for joint_index in range(0, len(JOINTS)):
@@ -34,44 +41,53 @@ def plotEnergy(dataset):
             velocity = sqrt(velX * velX + velY * velY + velZ * velZ)
             totalKineticEnergy += JOINTS[joint_index]['weight'] * velocity * velocity # E = mv^2
 
-        data.append(totalKineticEnergy)
+        y.append(totalKineticEnergy)
+    return y
 
-    fig = plt.figure()
-    fig.legend(labels=('epic'), loc='upper left')
-    ax = fig.gca()
-    ax.plot(data)
+def plotFFT(energies, ax):
+    samplingRate = 30
+    startTime = 0
+    endTime = len(energies)/samplingRate
+    time = np.linspace(startTime, endTime, len(energies))
 
-    ax.set( xlabel='frame',
-            ylabel='kinetische energie')
+    T = 1/samplingRate
+    x = np.linspace(0, 1/2*T, len(energies))
+    yr = fft(energies)
+    y = 2/len(energies) * np.abs(yr)
+    ax.plot(x, y)
+    
+
+def plotEnergy(energies, ax, visualizeSegmentation = False, targets=None):
+    ax.plot(energies)
+    ax.set( xlabel='Frame (ΔT = 1/30)',
+            ylabel='Potentiaal')
+
+    if visualizeSegmentation:
+        if targets == None:
+            raise ValueError("When visualizing the segmentation, the ground truth must also be provided in the 'targets' parameter")
+        actionStarted = False
+        gtActionStarted = False
+        maxE = max(energies)
+        threshold = 0.05
+        for i in range(0, len(energies)):
+            energy = energies[i]
+            target = targets[i]
+
+            if gtActionStarted == False and target != 0:
+                gtActionStarted = True
+                ax.plot((i, i), (0, maxE), linestyle='-', color="green")
+            if gtActionStarted == True and target == 0:
+                gtActionStarted = False
+                ax.plot((i, i), (0, maxE), linestyle='-', color="red")
+
+            if actionStarted == False and energy >= threshold:
+                actionStarted = True
+                ax.plot((i, i), (0, maxE), linestyle=':', color="green")
+            if actionStarted == True and energy < threshold:
+                actionStarted = False
+                ax.plot((i, i), (0, maxE), linestyle=':', color="red")          
 
 
-    actionStarted = False
-    gtActionStarted = False
-
-    maxE = max(data)
-    threshold = 0.05
-
-    buffersize = 10
-
-    for i in range(0, len(data)):
-        energy = data[i]
-        target = dataset.target[i]
-
-        if gtActionStarted == False and target != 0:
-            gtActionStarted = True
-            plt.plot((i, i), (0, maxE), linestyle='-', color="green")
-        if gtActionStarted == True and target == 0:
-            gtActionStarted = False
-            plt.plot((i, i), (0, maxE), linestyle='-', color="red")
-
-        if actionStarted == False and energy >= threshold:
-            actionStarted = True
-            plt.plot((i, i), (0, maxE), linestyle=':', color="green")
-        if actionStarted == True and energy < threshold:
-            actionStarted = False
-            plt.plot((i, i), (0, maxE), linestyle=':', color="red")          
-
-    plt.show()
 
 if __name__ == '__main__':
     main()
