@@ -5,25 +5,29 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.projections as proj
 
-from GraphManager import GraphManager
 import numpy as np
-from scipy.fftpack import fft
+from numpy import linspace
+from numpy.fft import fft
+
+from GraphManager import GraphManager
 from math import sqrt
 from dataset import Dataset
 from domain.constants import JOINTS
 from transform_features import FeatureTransformer
 
 def main():
-    dataset = Dataset(['BERT'])
+    dataset = Dataset(['BERT']) 
     ft = FeatureTransformer(dataset.data)
     ft.preProcessing()
-
-
-    energies = getEnergies(dataset)
-    gm = GraphManager(1, 2)
     
-    plotEnergy(energies, gm.getNextAx())
-    plotFFT(energies, gm.getNextAx())
+#    dataset.data = dataset.data[510:565]
+#    dataset.target = dataset.target[510:565]
+
+    gm = GraphManager(1, 1)
+    energies = getEnergies(dataset)
+    
+    plotEnergy(energies, gm.getNextAx(), True)
+#    plotFFT(energies, gm.getNextAx())
 
     gm.show(fullscreen=True)
 
@@ -45,40 +49,42 @@ def getEnergies(dataset):
     return y
 
 def plotFFT(energies, ax):
-    samplingRate = 30
-    startTime = 0
-    endTime = len(energies)/samplingRate
-    time = np.linspace(startTime, endTime, len(energies))
-
-    T = 1/samplingRate
-    x = np.linspace(0, 1/2*T, len(energies))
-    yr = fft(energies)
-    y = 2/len(energies) * np.abs(yr)
-    ax.plot(x, y)
+    # Number of samplepoints
+    N = len(energies)
+    # sample spacing
+    T = 1.0 / 30.0
     
+    mean = sum(energies)/len(energies)
+    # remove DC bias by subtracting the mean of the values from every other value
+    y = [e - mean for e in energies]
+    yf = fft(y)
+    xf = linspace(0.0, 1.0/(2.0*T), N/2)  
 
-def plotEnergy(energies, ax, visualizeSegmentation = False, targets=None):
+    ax.plot(xf, 2.0/N * np.abs(yf[:N//2]))
+    ax.set( xlabel='Frequency (Hz)',
+            ylabel='Potential')
+
+
+def plotEnergy(energies, ax, visualizeSegmentation = False, targets = None):
     ax.plot(energies)
     ax.set( xlabel='Frame (ΔT = 1/30)',
-            ylabel='Potentiaal')
+            ylabel='Potential')
 
     if visualizeSegmentation:
-        if targets == None:
-            raise ValueError("When visualizing the segmentation, the ground truth must also be provided in the 'targets' parameter")
         actionStarted = False
         gtActionStarted = False
         maxE = max(energies)
         threshold = 0.05
         for i in range(0, len(energies)):
             energy = energies[i]
-            target = targets[i]
-
-            if gtActionStarted == False and target != 0:
-                gtActionStarted = True
-                ax.plot((i, i), (0, maxE), linestyle='-', color="green")
-            if gtActionStarted == True and target == 0:
-                gtActionStarted = False
-                ax.plot((i, i), (0, maxE), linestyle='-', color="red")
+            if targets is not None:
+                target = targets[i]
+                if gtActionStarted == False and target != 0:
+                    gtActionStarted = True
+                    ax.plot((i, i), (0, maxE), linestyle='-', color="green")
+                if gtActionStarted == True and target == 0:
+                    gtActionStarted = False
+                    ax.plot((i, i), (0, maxE), linestyle='-', color="red")
 
             if actionStarted == False and energy >= threshold:
                 actionStarted = True

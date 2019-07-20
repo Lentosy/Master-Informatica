@@ -19,8 +19,8 @@ class Runtime():
         
         # get info about the current graphical environment (mostly the whole screen)
         displayInfo = pygame.display.Info()
-        width = displayInfo.current_w  #bit shift to the right so we dont take the full screen
-        height = displayInfo.current_h 
+        width = displayInfo.current_w  >> 1 #bit shift to the right so we dont take the full screen
+        height = displayInfo.current_h  >> 1
     
         self.screen = pygame.display.set_mode((width, height), # resolution
                                               pygame.HWSURFACE | pygame.DOUBLEBUF | pygame.NOFRAME)

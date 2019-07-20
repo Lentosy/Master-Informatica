@@ -13,6 +13,7 @@ class Dataset(object):
     The target list contains the ground truth for each sample
     """
 
+    @classmethod
     def __init__(self, persons: list):
         """
         This returns a sklearn compatible dataset for the given persons. It can be used as either a training set or testing set.
@@ -47,7 +48,14 @@ class Dataset(object):
                     
         if(len(self.data) != len(self.target)):
             raise ValueError(f"The length of data and target are not the same (data = {len(data)}, target = {len(target)})")
+    
 
+    @classmethod
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            raise ValueError("Slice not supported")
+        else:
+            return (self.data[key], self.target[key])
 
         
     def __len__(self):
@@ -63,6 +71,7 @@ class Dataset(object):
             for j in range(0, len(self.data[i])):
                 flattened.extend(self.data[i][j].flatten())
             self.data[i] = flattened
+
 
     @staticmethod
     def getDebugDataset():

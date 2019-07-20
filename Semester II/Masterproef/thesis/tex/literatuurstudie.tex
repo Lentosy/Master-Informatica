@@ -400,3 +400,46 @@ In plaats van elke frame te classificeren, zou een actie kunnen voorgesteld word
 
 
 
+\chapter{Signaalanalyse}
+Een actie bestaat uit opeenvolgende discrete frames waarbij elke frame een tijdsstip $t_i$ voorstelt. De kinect sensor laat 30 frames per seconde toe, zodat de tijd tussen opeenvolgende frames $T = \frac{1}{30}s$ bedraagt. Om een signaal te bekomen die een actie voorstelt, moet voor elke frame een enkele scalaire waarde berekend worden. Zo gebruikt de methode van \cite{Shan2014} een maat die een soort van energie voorstelt:
+$$E(P_i) = \sum_{j = 1}^{d}E(P_i^j)$$
+Hierbij stellen ze dat de energie van een pose $P_i$ gelijk is aan de som van de energieën over al zijn dimensies. Merk op dat ze geen massa gebruiken, maar dat ze wel van kinetische energie spreken. 
+
+
+
+
+Eens een signaal bekomen is, kan daar analyse op uitgevoerd worden. Een bekende methode is de \textit{fouriertransformatie}.
+
+\section{Fouriertransformie}
+De Fourier transformatie heeft als input een signaal in het tijdsdomein en vormt dit om naar een signaal in het freqentiedomein. Deze output wordt ook het \textit{spectrum} genoemd van het inputsignaal. De oorspronkelijke definitie beschouwd de Fourier transformatie $F(\omega)$ van een continue integreerbare functie $f(x)$:
+
+$$F(\omega) = \int_{-\inf}^{\inf}f(x)e^{-i\omega x}\dx$$
+
+Deze definitie is echter enkel geldig voor continue functies. Aangezien de Kinect slechts 30 frames aanlevert per seconde, en er dus sprake is van een discreet systeem, is de definitie van de \textit{discrete fouriertransformatie} van toepassing:
+$$A_k = \sum_{n=0}^{N-1}e^{-i\frac{2\pi}{N}kn}a_n$$
+Hierbij is $a_n$ de waarde van het signaal voor $n = 0, 1, \dots, N - 1$.
+
+\todo{zeker grafieken gebruiken}
+
+
+De snelle fouriertransformatie \cite{Cooley1965} is de naam van het algoritme dat discrete fouriertransformaties implementeert. Het algoritme vereist slechts $O(n\log_2 n)$ operaties, met $n$ het aantal discrete punten die beschouwd worden. 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

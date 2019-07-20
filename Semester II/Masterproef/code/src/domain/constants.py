@@ -46,10 +46,10 @@ JOINTS = [
     { 'name': 'AnkleRight'      , 'weight': 0 } ,          
     { 'name': 'FootRight'       , 'weight': 0 } ,           
     { 'name': 'SpineShoulder'   , 'weight': 0 } ,       
-    { 'name': 'HandTipLeft'     , 'weight': 1 } ,         
-    { 'name': 'ThumbLeft'       , 'weight': 1 } ,           
-    { 'name': 'HandTipRight'    , 'weight': 1 } ,        
-    { 'name': 'ThumbRight'      , 'weight': 1 } ,          
+    { 'name': 'HandTipLeft'     , 'weight': 0 } ,         
+    { 'name': 'ThumbLeft'       , 'weight': 0 } ,           
+    { 'name': 'HandTipRight'    , 'weight': 0 } ,        
+    { 'name': 'ThumbRight'      , 'weight': 0 } ,          
 ]
 
 # List of all the connections between two joints

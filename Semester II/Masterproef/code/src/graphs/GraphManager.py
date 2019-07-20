@@ -6,8 +6,13 @@ class GraphManager(object):
         self.figure, self.axes = plt.subplots(nrows = rows, ncols = cols)
         self._currentAx = 0 # note: we access a list so we use zero based indexing
         self._axCount = cols * rows
-        if cols == 1: # make axes always a 2D list
+        self._cols = cols
+        self._rows = rows
+
+        if rows == 1: # make axes always a 2D list
             self.axes = [self.axes]
+            if cols == 1:
+                self.axes = [self.axes]
         
     def __del__(self):
         plt.close()
@@ -16,14 +21,17 @@ class GraphManager(object):
         if self._currentAx + 1 > self._axCount:
             raise RuntimeError(f"No more axes available.")
         
-        row = int((self._currentAx) % len(self.axes))
-        col = int((self._currentAx) - (row * len(self.axes[0])))
+        
+        row = self._currentAx // self._cols
+        col = self._currentAx % self._cols
 
         self._currentAx += 1
         return self.axes[row][col]
  
+    def adjustSubplots(self, left=None, bottom=None, right=None, top=None, wspace=None, hspace=None):
+        plt.subplots_adjust(left, bottom, right, top, wspace, hspace)
 
-    def show(self, fullscreen = False):
+    def show(self, tightLayout = False, fullscreen = False):
         if(fullscreen):
             mng = plt.get_current_fig_manager()
             mng.window.state('zoomed') 

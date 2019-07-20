@@ -1,24 +1,17 @@
 import numpy as np
-from numpy.random import random_sample
-from numpy import sin, cos, pi
-from numpy.fft import fft, fftshift
-
 import matplotlib.pyplot as plt
+import scipy.fftpack
 
-samplingFrequency = 100
-samplingInterval = 1 / samplingFrequency
+# Number of samplepoints
+N = 600
+# sample spacing
+T = 1.0 / 800.0
+x = np.linspace(0.0, N*T, N)
+y = np.sin(50.0 * 2.0*np.pi*x) + 0.5*np.sin(80.0 * 2.0*np.pi*x)
+yf = scipy.fftpack.fft(y)
+xf = np.linspace(0.0, 1.0/(2.0*T), N/2)
 
-beginTime = 0
-endTime = 10
-
-frequency = 7
-
-time = np.arange(beginTime, endTime, samplingInterval)
-
-wave = sin(2*pi*samplingFrequency*time)
-
-fourierTransform = fft(wave)/len(wave)
-fourierTransform = fourierTransform[range(int(len(wave)/2))]
-
-plt.plot(time[0:500], fourierTransform)
+fig, ax = plt.subplots()
+ax.plot(y)
+ax.plot(xf, 2.0/N * np.abs(yf[:N//2]))
 plt.show()
