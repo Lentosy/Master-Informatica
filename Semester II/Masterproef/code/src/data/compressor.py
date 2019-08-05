@@ -1,8 +1,6 @@
 import cv2
 import os
 
-DIR = "data"
-
 def compress(path):
     image = cv2.imread(path)
     newPath = path.split('.')[0] + ".jpg"
@@ -11,7 +9,7 @@ def compress(path):
 
 
 
-for root, subdirs, files in os.walk(DIR):
+for root, subdirs, files in os.walk("."):
     for file in files:
         if(file.endswith(".bmp")):
             print(f"Compressing {file}")

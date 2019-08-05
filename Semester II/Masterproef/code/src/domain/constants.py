@@ -5,7 +5,7 @@ import pygame
 
 PERSONS = ['BERT',                          #0
            'DEMING',                        #1
-           'NIELS',                         #2
+           #'NIELS',                         #2
            ]                         
 ACTIONS = ['DEFAULT',                       #0
            'EMERGENCY_STOP',                #1
@@ -32,11 +32,11 @@ JOINTS = [
     { 'name': 'ShoulderLeft'    , 'weight': 1 } ,        
     { 'name': 'ElbowLeft'       , 'weight': 1 } ,           
     { 'name': 'WristLeft'       , 'weight': 1 } ,           
-    { 'name': 'HandLeft'        , 'weight': 2 } ,            
+    { 'name': 'HandLeft'        , 'weight': 1 } ,            
     { 'name': 'ShoulderRight'   , 'weight': 1 } ,       
     { 'name': 'ElbowRight'      , 'weight': 1 } ,          
     { 'name': 'WristRight'      , 'weight': 1 } ,          
-    { 'name': 'HandRight'       , 'weight': 2 } ,           
+    { 'name': 'HandRight'       , 'weight': 1 } ,           
     { 'name': 'HipLeft'         , 'weight': 0 } ,             
     { 'name': 'KneeLeft'        , 'weight': 0 } ,            
     { 'name': 'AnkleLeft'       , 'weight': 0 } ,           

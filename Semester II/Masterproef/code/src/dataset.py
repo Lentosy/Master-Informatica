@@ -25,6 +25,7 @@ class Dataset(object):
 
         for person in persons:
             folder = f"data\\{person}"
+    
             try:
                 labels = pandas.read_csv(f"{folder}\\labels.txt", header = None)
                 self.target.extend(labels.to_numpy().ravel())

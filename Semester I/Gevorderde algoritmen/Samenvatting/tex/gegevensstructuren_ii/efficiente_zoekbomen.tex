@@ -2,7 +2,7 @@
 
 \section{Inleiding}
 \begin{itemize}
-    \item Uitvoeringstijd van operaties op een binaire zoekboom met hoogte $h$ is $O(h)$.
+    \item Uitvoeringstijd van operaties (zoeken, toevoegen, verwijderen) op een binaire zoekboom met hoogte $h$ is $O(h)$.
     \item De hoogte $h$ is afhankelijk van de toevoegvolgorde:
     \begin{itemize}
         \item In het slechtste geval bekomt men een gelinkte lijst, zodat $h = O(n)$.
@@ -11,7 +11,7 @@
             \alert Geen realistische veronderstelling.
         \end{itemize}
     \end{itemize}
-    \item Drie manieren om de efficiëntie van zoekbomen te verbeteren:
+    \item \underline{Drie manieren} om de efficiëntie van zoekbomen te verbeteren:
     \begin{enumerate}
         \item \textbf{Elke operatie steeds efficiënt maken.}
         \begin{enumerate}
@@ -99,7 +99,7 @@
 \subsection{Zoeken}
 \begin{itemize}
     \item De kleur speelt geen rol, zodat de rood-zwarte boom een gewone binaire zoekboom wordt.
-    \item De hoogte is wel gegerandeerd $O(\lg n)$.
+    \item De hoogte van een rood-zwarte boom is wel gegerandeerd $O(\lg n)$.
     \item Zoeken naar een willekeurige sleutel is dus $O(\lg n)$.
 \end{itemize}
 
@@ -147,11 +147,132 @@
 \end{itemize}
 
 \subsection{Bottom-up rood-zwarte bomen}
-\todo{vanaf hier}
+\subsubsection{Toevoegen}
+
+
+
+\subsubsection{Verwijderen}
 
 \subsection{Top-down rood-zwarte bomen}
+\subsubsection{Toevoegen}
+\begin{itemize}
+    \item De knoop wordt eerst op de gewone manier toegevoegd.
+    \item Welke kleur geven we die knoop?
+    \begin{itemize}
+        \item \textbf{Zwart:} dit kan de zwarte hoogte van veel knopen ontregelen.
+        \item \textbf{Rood:} dit mag enkel als de ouder zwart is.
+        \item Kies voor rood omdat zwarte hoogte moeilijker te herstellen valt.
+    \end{itemize}
+    \item Als de ouder zwart is, dan is toevoegen gelukt.
+    \item Als de ouder rood is wordt deze storing verwijderd door rotaties en kleurwijzigingen door te voeren.
+    \item Vaststellingen:
+    \begin{itemize}
+        \item De ouder $p$ van de nieuwe knoop $c$ is rood.
+        \item De ouder $g$ van $p$, is zwart.
+    \end{itemize}
+    \item Er zijn zes mogelijke gevallen, die twee groepen van drie vormen, naar gelang dat $p$ een linker- of rechterkind is van $g$. 
+    \item We onderstellen dat $p$ een linkerkind is van $g$. 
+    \begin{enumerate}
+        \item \textbf{De broer $b$ van $p$ is rood.}
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.5\textwidth]{rbt_bottomup_case1}
+            \caption{Rode broer.}
+            \label{fig:rbt_bottomup_case1}
+        \end{figure}
+        \begin{itemize}
+            \item Maak $p$ en $b$ zwart.
+            \item Maak $g$ rood.
+            \item Als $g$ een zwarte ouder heeft, is het probleem opgelost.
+            \item Als $g$ een rode ouder heeft, zijn er opnieuw twee opeenvolgende rode knopen.
+            \item Het probleem wordt opgeschoven in de richting van de wortel.
+        \end{itemize}
+        \item \textbf{De broer $p$ van $p$ is zwart.}
+        \begin{enumerate}
+            \item \textbf{Knoop $c$ is een linkerkind van $p$.}
+            \begin{figure}[ht]
+                \centering
+                \includegraphics[width=0.5\textwidth]{rbt_bottomup_case2}
+                \caption{Rode broer.}
+                \label{fig:rbt_bottomup_case1}
+            \end{figure}
+            \begin{itemize}
+                \item Roteer $p$ en $g$ naar rechts. 
+                \item Maak $p$ zwart.
+                \item Maak $g$ rood.
+            \end{itemize}
+            \item \textbf{Knoop $c$ is een rechterkind van $p$.}
+            \begin{figure}[ht]
+                \centering
+                \includegraphics[width=0.5\textwidth]{rbt_bottomup_case3}
+                \caption{Rode broer.}
+                \label{fig:rbt_bottomup_case1}
+            \end{figure}
+            \begin{itemize}
+                \item Roteer $p$ en $c$ naar links.
+                \item We krijgen nu het vorige geval.
+            \end{itemize}
+        \end{enumerate}
+    \end{enumerate}
+    \item Hoogstens 2 rotaties om de boom te herstellen, voorafgegaan door eventueel $O(\lg n)$ opschuivingen.
+    \item Roteren en opschuiven is $O(1)$, en afdalen is $O(\lg n)$ zodat toevoegen $O(\lg n)$ is.
+\end{itemize}
+
+
+
+\subsubsection{Verwijderen}
+\begin{itemize}
+    \item Verwijder eerst de knoop zoals bij een gewone zoekboom.
+    \item Als de te verwijderen knoop rood is, is er geen gevolg voor de zwarte hoogte en is de operatie klaar.
+    \item Als de te verwijderen knoop zwart is, heeft hij ofwel geen kinderen ofwel minstens één rood kind.
+\end{itemize}
+
+
+
 \section{Splaybomen}
 \label{sec:splaybomen}
+\begin{itemize}
+    \item Garanderen dat elke reeks opeenvolgende operaties efficiënt is.
+    \item Als we $m$ operaties verrichten op de splay tree, waarbij $n$ keer toevoegen, dan is de performantie van deze reeks $O(m \lg n)$. 
+    \item Uitgemiddeld is dit $O(\lg n)$.
+    \item Individuelde operaties mogen inefficiënt zijn, maar de boom moet zo aangepast worden zodat een reeks van die operaties efficiënt zijn.
+    \item \textbf{Basisidee:} Elke knoop die gezocht wordt, toegevoegd of verwijdert wordt, zal de wortel worden van de boom, zodat opeenvolgende operaties op die knoop efficiënt zijn.
+    \item Een willekeurige knoop tot wortel maken gebeurd via de \textbf{\textit{splay-operatie}}.
+    \item De weg naar een diepe knoop bevat knopen die ook diep liggen. Terwijl we een knoop wortel maken, moeten de knopen op het zoekpad ook aangepast worden, zodat ook de toegangstijd van deze knopen verbetert, anders blijft de kans bestaan dat een reeks van operaties inefficiënt is.
+    \item Er moet geen extra informatie bijgehouden worden voor knopen, wat geheugen uitspaart. 
+    \item De splay-operatie wordt gedefinieerd voor zowel bottom-up als top-down splaybomen.
+\end{itemize}
+
+\subsection{Bottom-up splayboom}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{splay_bottomup}
+    \caption{Bottom-up splay.}
+    \label{fig:splay_bottomup}
+\end{figure}
+\begin{itemize}
+    \item De knoop wordt eerst gezocht zoals bij een gewone zoekboom.
+    \item De splay-operatie gebeurt van onder naar boven.
+    \item Een knoop kan naar boven gebracht worden door hem telkens te roteren met zijn ouder.
+    \item Om de toegangstijd van knopen op de zoekweg ook te verbeteren, zijn er drie verschillende rotaties:
+    \begin{enumerate}
+        \item \textbf{De ouder $p$ van $c$ is wortel}. 
+        \begin{itemize}
+            \item Roteer beide knopen.
+        \end{itemize}
+        \item \textbf{Knoop $c$ heeft nog een grootouder}.
+        \begin{itemize}
+            \item Er zijn vier gevallen, die uitvallen in groepen van twee, naar gelang dat $p$ een linker- of rechterkind is van grootouder $g$.
+            \item We veronderstellen dat $p$ linkerkind is van $g$.
+        \end{itemize}
+        
+        \begin{enumerate}
+            \item \textbf{Knoop $c$ is een rechterkind van $p$}.
+            \item \textbf{Knoop $c$ is een linkerkind van $p$}.
+        \end{enumerate}
+    \end{enumerate}
+\end{itemize}
+\subsection{Top-down splayboom}
 
 
 \section{Gerandomiseerde zoekbomen}

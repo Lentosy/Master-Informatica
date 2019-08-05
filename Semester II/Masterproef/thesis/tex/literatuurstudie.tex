@@ -330,10 +330,11 @@ Bron \cite{Vemulapalli2014}
 
 \chapter{Classificatie}
 \label{ch:classificatie}
-Op het moment dat een feature vector opgebouwd is voor een individuele frame of een verzameling van frames is het actieherkenningprobleem gereduceerd tot een classificatieprobleem. De bekomen feature vector wordt als input aan een classifier gegeven die dan tracht de juiste klasse toe te kennen op basis van de leerverzameling. Een eenvoudige classifier zou een gelijkaardigheidsfunctie $g(\textbf{u}, \textbf{v})$ die nagaat hoe dicht twee \textit{feature vectoren} $\textbf{u}$ en $\textbf{v}$ op elkaar lijken. Dit is echter niet voldoende: 
+ De bekomen \textit{feature vector} wordt als input aan een \textit{classifier} gegeven die dan tracht de juiste klasse toe te kennen op basis van de leerverzameling. Een eenvoudige classifier zou een gelijkaardigheidsfunctie $g(\textbf{u}, \textbf{v})$ die nagaat hoe dicht twee \textit{feature vectoren} $\textbf{u}$ en $\textbf{v}$ op elkaar lijken. Deze maat van gelijkheid is slechts een vereenvoudiging van complexere classificatiealgoritmen. Bij actieherkenning speelt de temporale dimensie een belangrijke rol. Gebruikte classificatiealgoritmen moeten dan ook rekening houden met deze eis. 
+
 
 \section{Leren}
-Ongeacht welke classifier gebruikt wordt, moet het eerst leren wat het moet herkennen. Daarom wordt er een leerverzameling $\mathcal{L}$ opgebouwd. Deze verzameling bevat voorbeelden, en in het geval van \textit{supervised learning} ook de klasse (of label) die bij het voorbeeld hoort. Bij actieherkenning bestaat de leerverzameling uit frames en de bijhorende klasse voor elke frame die de corresponderende actie voorstelt. Niet elk voorbeeld uit de leerverzameling wordt gebruikt om te leren: de leerverzameling wordt opgesplitst in een \textit{training set} en een \textit{testing set}. De \textit{training set} wordt gebruikt tijdens de leerfase. In deze fase tracht de classifier optimale parameters te vinden om nieuwe voorbeelden te classificeren. De \textit{testing set} wordt gebruikt na de leerfase om na te gaan hoe goed de classifier scoort en indien nodig wordt de leerfase opnieuw uitgevoerd met andere parameters of \textit{feature} vectoren. Na de leer- en validatiefase komt de gebruiksfase, zodat de classifier kan gebruikt worden. De leerverzameling kan op verschillende manieren opgesplitst worden:
+Ongeacht welke \textit{classifier} gebruikt wordt, moet het eerst leren wat het moet herkennen. Daarom wordt er een leerverzameling $\mathcal{L}$ opgebouwd. Deze verzameling bevat voorbeelden, en in het geval van \textit{supervised learning} ook de klasse (of label) die bij het voorbeeld hoort. Een typische leerverzameling die gebruikt wordt bij actieherkenning bestaat uit een aantal acties waarbij elke actie uitgevoerd wordt door verschillende personen. Elke frame in de leerverzameling krijgt een label toegekend die de corresponderende actieklasse voorstelt. Niet elke frame uit de leerverzameling wordt gebruikt om te leren: de leerverzameling wordt opgesplitst in een \textit{training set} en een \textit{testing set}. De \textit{training set} wordt gebruikt tijdens de leerfase. In deze fase tracht de classifier optimale parameters te vinden om nadien nieuwe voorbeelden juist te classificeren. De \textit{testing set} wordt gebruikt nadien gebruikt in de validatiefase om na te gaan hoe goed de classifier scoort. Na de leer- en validatiefase komt de gebruiksfase, waarbij de classifier, die dan uit de hele leerverzameling geleerd heeft, gebruikt kan worden. De leerverzameling kan op verschillende manieren opgesplitst worden:
 \begin{enumerate}
 	\item Er kan door de auteurs van de leerverzameling een voorgedefinieerde splitsing vastgelegd worden. Dit is de minst flexibele methode en wordt ook sterk afgeraden aangezien er een hoge \textit{bias} kan zijn. 
 	\item \textit{Leave-$p$-out cross-validation} beschouwt $p$ voorbeelden als de testing set en de overige voorbeelden als training set. Hierbij worden alle mogelijke combinaties uitgevoerd, zodat er $\binom{n}{p}$ keer het model getraind en gevalideert moet worden, met $n$ de lengte van de hele leerverzameling. Het eenvoudigste geval komt voor bij $p = 1$, waardoor er $\binom{n}{1} = n$ validaties zijn, en wordt \textit{leave-one-out cross-validation} genoemd. Deze methode is slechts aangewezen voor $p = 1$ aangezien deze methode  exponentieël gedrag vertoont, waarbij $n^p$ iteraties nodig zijn.
@@ -341,66 +342,43 @@ Ongeacht welke classifier gebruikt wordt, moet het eerst leren wat het moet herk
 	\item \textit{$k-$fold cross-validation} verdeeld de hele leerverzameling in $k$ gelijke groepen. De training set bevat dan $k - 1$ van deze groepen en de testing set bevat de overige groepen. Dit proces wordt $k$ keer herhaald, zodat elk groep zeker eens in de testing set zit. De uitvoeringstijd is hier lineair want in het slechtste geval, voor $k = n$, is de methode exact gelijk aan  \textit{leave-one-out cross-validation}.
 \end{enumerate} 
 
-Het grote verschil tussen \textit{$k-$fold cross-validation} en \textit{Leave-$p$-out cross-validation}  is dat de eerste slechts een benadering is van de tweede (voor $k \neq 1$). Bij actieherkenning speelt de uitvoeringstijd een minder grote rol. Een typische leerverzameling die gebruikt wordt bij actieherkenning bestaat uit een aantal acties, die uitgevoerd wordt door verschillende personen. Elke persoon heeft zijn eigen manier om een bepaalde actie, binnen de beperkingen, uit te voeren. Daarom is het nuttig om de leerverzameling op te splitsen door een variant van \textit{Leave-$p$-out cross-validation}, \textit{Leave-one-subject-out cross-validation}. Deze manier verloopt gelijkaardig aan \textit{leave-one-out cross-validation}, maar hier worden de acties van één persoon als testing set beschouwd, terwijl de acties van alle andere personen de training set opmaken.
+Het grote verschil tussen \textit{$k-$fold cross-validation} en \textit{Leave-$p$-out cross-validation}  is dat de eerste slechts een benadering is van de tweede (voor $k \neq 1$).  Elke persoon heeft zijn eigen manier om een bepaalde actie, binnen de opgelegde beperkingen, uit te voeren. Daarom is het nuttig om de leerverzameling op te splitsen door een variant van \textit{Leave-$p$-out cross-validation}: \textit{Leave-one-subject-out cross-validation}. Deze manier verloopt gelijkaardig aan \textit{leave-one-out cross-validation}, maar hier worden de acties van één persoon als testing set beschouwd, terwijl de acties van alle andere personen de training set vormen.
+
+
+\section{Classifiers}
+Er zijn verschillende soorten \textit{classifiers}, elk met hun eigen specialiteiten en doel.
+\subsection{Random Forest}
+Een \textit{random forest classifier} is een verzameling van beslissingsbomen. Een beslissingsboom is een speciale soort boom waarbij elke knoop die geen blad is een vraag voorstelt met een aantal mogelijke antwoorden. Elk mogelijk antwoord verwijst naar een kind van de knoop. Een \textit{feature vector} klasseren start vanuit de wortel en loopt de boom af door steeds het antwoord te volgen bij elke knoop tot een blad bereikt is. In het blad staat de klasse die dan toegekend wordt aan de \textit{feature vector}. Zo een beslissingsboom kan dynamisch aangemaakt worden op basis van de leerverzameling. Het ID3-algoritme kiest telkens een dimensie van de \textit{feature vector} dat het meeste informatie zal opleveren. Als de dimensie $d$ de leerverzameling $\mathcal{L}$ opdeelt in de deelverzamelingen $\mathcal{L}_{d, 1}, \mathcal{L}_{d, 2}, ..., \mathcal{L}_{d, n_d}$, dan is de informatie van dit attribuut gelijk aan
+$$I(d) = E(\mathcal{L}) - \sum_{m=1}^{n_d} E(\mathcal{L}_{a,m})$$
+Hierbij is $E(S) = -\sum_{i}P_i\log P_i$, de entropie voor de verzameling $S$.
+De dimensie $d$ waarvoor $I(d)$ maximaal wordt, zal de wortel worden in de boom. Deelbomen worden op dezelfde manier geconstrueerd, door voor elke deelverzameling $\mathcal{L}_{d, m}$ de gekozen dimensie $d$ weg te laten en terug het attribuut te zoeken die de maximale informatiewinst oplevert.
+
+Beslissingsbomen zijn gevoelig aan \textit{overfitting}. Dit fenomeen wordt veroorzaakt door een te specifieke scheiding van de verschillende klassen zodat het moeilijk wordt om nieuwe informatie juist te klasseren. Een \textit{random forest classifier} is nu verzameling van dergelijke beslissingsbomen en gaat trachtten overfitting te reduceren. Meerdere beslissingsbomen worden uitgemiddeld om zo de variantie te verminderen. Het ID3-algoritme is echter deterministisch, dus wordt het selectieproces voor elke knoop gerandomiseerd.
 
 
 
-Voor actieherkenning kunnen drie algemene methoden beschreven worden:
-\begin{enumerate}
-	\item Classificeren zonder de temporale dimensie expliciet te modelleren, \textit{directe classificatie};
-	\item Classificeren waarbij de temporale dimensie wel gemodelleerd wordt, \textit{temporale modellen};
-	\item Algemene classificatie zonder de actie te modelleren, \textit{actiedetectie}.
-\end{enumerate}
+% Dit onderdeel bespreekt enkele \textit{classifiers} %die kunnen gebruikt worden bij actieherkenning. Hierbij wordt een leerverzameling $\mathcal{L}$ beschouwd die bestaat uit exemplaren die ofwel in %klasse $+$ of in klasse $-$ behoren, $\mathcal{L} = \mathcal{L}^+ \cup \mathcal{L}^-$. Op deze manier wordt de classificatie beschouwd als een %binaire classificatie. 
+%\subsection{Steunvectormachine}
+%Oorspronkelijk tracht een steunvectormachine de leerverzameling lineair te scheiden zodat exemplaren uit klasse $+$ zich aan de ene helft van de %scheiding bevinden en de andere exemplaren aan de andere kant. De bijkomende voorwaarde is dat het gekozen hypervlak zo ver mogelijk verwijderd is %van de leerverzameling (figuur \ref{fig:svm}). De  
+%
+%\begin{figure}[ht]
+%	\centering
+%	\includegraphics[width=0.5\textwidth]{svm}
+%	\caption{Een lineaire steunvectormachine.}
+%	\label{fig:svm}
+%\end{figure}
 
 
-\section{Directe classificatie}
-Wanneer het temporale aspect verworpen wordt zijn er maar twee mogelijkheden: alle geobserveerde frames vervatten in één enkele representatie of actieherkenning uitvoeren op elke individuele frame. 
-
-\subsection{$k$-nearest neighbours}
-
-Een voorbeeld van zo een algoritme is $k$-nearest neighbours. Deze methode maakt gebruik van de afstand van de geobserveerde feature vector tot elke andere feature vector uit de leerverzameling. Uit de $k$ dichtste buren wordt dan de klasse genomen die het meest voorkomt. Deze operatie vraagt voor een grote leerverzameling veel rekenkost omdat elke feature vector vergeleken moet worden. De classificatie zal meer tijd vragen naarmate de leerverzameling groter is. 
-
-\subsection{Lineaire classifiers}
 
 
-\section{Temporale modellen}
-\label{subsec:temporale_modellen}
-Bij temporale modellen zijn er twee grote klassen te onderscheiden: \textit{generatieve} en \textit{discriminerende} modellen. Een generatief algoritme modelleert hoe een input $x$ wordt gegenereerd om zo een actieklasse $y$ toe te kennen en maakt gebruik van de gezamenlijke kansverdeling $P(x, y) = P(x|y)P(y)$. Een generatief model zal dus de kansverdeling van de leerverzameling modelleren en zal bij een nieuwe observatie \todo{wat zal het doen?}. Een discriminerend model zal de kans $P(y|x)$ direct modelleren zodat een directe mapping van $x$ op $y$ beschikbaar is. De onderliggende kansverdelingen worden dan ook niet berekent.
- Er bestaat een grote discussie over welk van deze twee modellen nu de voorkeur krijgen. Er is aangetoond \cite{Andrew2002} dat discriminerende modellen de voorkeur genieten.
-
-\subsection{Generatieve modellen}
-Een markovketen is een speciaal soort automaat die gebruikt kan worden bij het modelleren van temporale processen. Elke markovketen kent een aantal staten $S = \{s_1, ..., s_n\}$ en een $n \times n$ transitiematrix $T$. Deze matrix bevat de waarschijnlijkheid om van één staat naar een andere staat te gaan. Een markovketen gaat uit van twee aassumpties:
-\begin{enumerate}
-	\item Een verandering van toestand hangt enkel af van de vorige toestand. Dit wordt ook de \textit{Markov eigenschap} genoemd.
-	\item De observatie behorend bij een toestand is onafhankelijk van elke andere observatie.
-\end{enumerate}
-Een markovketen kent ook een uitvoeralfabet $A = \{a_1, ..., a_k\}$ en een $n \times k$ uitvoermatrix $U$. Deze matrix bevat de waarschijnlijkheden dat een bepaalde staat $s_i$ een uitvoer $a_j$ genereerd. 
-
-Een \gls{ac:hmm} is een uitbreiding van een Markov model waarbij de staat van elke toestand nu verborgen is. De toestanden zijn hier de verschillende fasen van een bepaalde actie. Voor een verzameling met $n$ klassen $\Lambda = \lambda^1 ... \lambda^n$ en een verzameling met $k$ observaties $O = \{o_1 ... o_k\}$, moet de juiste klasse $\lambda$ geselecteerd worden die de kans op $P(\lambda | O)$ maximaliseert.
-
-$$\lambda = \arg\max_{\substack{1 \leq i \leq n}} P(O|\lambda^i) $$
-
-
-\subsection{Discriminerende modellen}
-\subsubsection{Conditional Random Fields}
-Een \gls{ac:hmm} gaat ervan uit de observaties onafhankelijk zijn van elkaar, wat niet altijd het geval is. Een \gls{ac:crf} is een voorbeeld van een discriminerend model. Een discriminerende classifier houdt rekening met meerdere observaties in de tijd en is geschikt voor de classificatie van een reeks van observaties. Een \gls{ac:crf} gaat ervan uit dat de volgorde van observaties wel degelijk een impact heeft op de betekenis van deze observaties.
-
-\subsubsection{Dynamic Time Warping}
-\gls{ac:dtw} is een algoritme dat de gelijkenis tussen twee sequenties bestudeerd, die verschillend kunnen zijn in snelheid. In actieherkenning lost dit het probleem van verschillen in actiesnelheid op. Een persoon die trager of sneller zwaait dan een persoon in de leerverzameling, kan via \gls{ac:dtw} toch herkent worden. Veronderstel twee verzamelingen van feature vectoren $X = \{x_1, x_2, ... x_N\}$ en $Y = \{y_1, y_2, ..., y_M\}$, een kostfunctie $c(x, y)$ die de kost bepaald tussen twee feature vectoren en $p = \{p_1, ..., p_L\}$ met $p_l = (n_l, m_l)$  
-
-Een \gls{ac:dtw} heeft bepaalde restricties:
-\begin{itemize}
-	\item $p_1 = (1, 1)$ en $p_L = (N, M)$.
-	\item $n_1 \leq n_2 \leq ... \leq n_L$ en $m_1 \leq m_2 \leq ... \leq m_L$.
-\end{itemize}
-
-
-\section{Key frames}
-In plaats van elke frame te classificeren, zou een actie kunnen voorgesteld worden door \textit{key frames}. Dit is een selectie van frames die een actie voldoende kunnen voorstellen zodanig dat verschillende acties nog steeds onderscheidbaar zijn en variaties van dezelfde actie hetzelfde gelabeld worden. In de literatuur bestaan er diverse manieren om zulke key frames te bepalen. De methode van \cite{Suolan2017} berekent een verschil op basis van de joints die de Kinect beschikbaar stelt. De methode van \cite{Carlsson2001} maakt gebruik van randdetectie om silhouette te bekommen en zoekt een match tussen voorgedefinieerde silhouetten die een key frame van een actie voorstelt. Andere methoden maken ook gebruik van voorgedefinieerde exemplaren \cite{Weinland2008a}, \cite{Fathi2007},
 
 
 
 \chapter{Signaalanalyse}
+Het is mogelijk 
+
+
+
 Een actie bestaat uit opeenvolgende discrete frames waarbij elke frame een tijdsstip $t_i$ voorstelt. De kinect sensor laat 30 frames per seconde toe, zodat de tijd tussen opeenvolgende frames $T = \frac{1}{30}s$ bedraagt. Om een signaal te bekomen die een actie voorstelt, moet voor elke frame een enkele scalaire waarde berekend worden. Zo gebruikt de methode van \cite{Shan2014} een maat die een soort van energie voorstelt:
 $$E(P_i) = \sum_{j = 1}^{d}E(P_i^j)$$
 Hierbij stellen ze dat de energie van een pose $P_i$ gelijk is aan de som van de energieën over al zijn dimensies. Merk op dat ze geen massa gebruiken, maar dat ze wel van kinetische energie spreken. 
@@ -413,7 +391,7 @@ Eens een signaal bekomen is, kan daar analyse op uitgevoerd worden. Een bekende 
 \section{Fouriertransformie}
 De Fourier transformatie heeft als input een signaal in het tijdsdomein en vormt dit om naar een signaal in het freqentiedomein. Deze output wordt ook het \textit{spectrum} genoemd van het inputsignaal. De oorspronkelijke definitie beschouwd de Fourier transformatie $F(\omega)$ van een continue integreerbare functie $f(x)$:
 
-$$F(\omega) = \int_{-\inf}^{\inf}f(x)e^{-i\omega x}\dx$$
+$$F(\omega) = \int_{-\inf}^{\inf}f(x)e^{-i\omega x} dx$$
 
 Deze definitie is echter enkel geldig voor continue functies. Aangezien de Kinect slechts 30 frames aanlevert per seconde, en er dus sprake is van een discreet systeem, is de definitie van de \textit{discrete fouriertransformatie} van toepassing:
 $$A_k = \sum_{n=0}^{N-1}e^{-i\frac{2\pi}{N}kn}a_n$$

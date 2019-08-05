@@ -24,6 +24,7 @@ def main():
     for i in range(1, len(PERSONS) + 1): # Leave-One-Subject-Out cross validation
         trainingPersons = PERSONS[:i - 1] + PERSONS[i:]
         testingPerson = [PERSONS[i - 1]]
+        
         print(f"\t{trainingPersons} {testingPerson}")
 
         trainingset = Dataset(trainingPersons)

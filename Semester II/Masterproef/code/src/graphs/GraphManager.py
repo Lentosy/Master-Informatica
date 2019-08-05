@@ -9,19 +9,26 @@ class GraphManager(object):
         self._cols = cols
         self._rows = rows
 
-        if rows == 1: # make axes always a 2D list
-            self.axes = [self.axes]
-            if cols == 1:
-                self.axes = [self.axes]
+
+        # make axes always a 2D list
+        if cols == 1 and rows == 1:
+            self.axes = [[self.axes]]
         
+        if cols == 1 and rows > 1:
+            for i in range(0, rows):
+                self.axes[i] = [self.axes[i]]
+
+        if cols > 1 and rows == 1:
+            self.axes = [self.axes]
+
+
     def __del__(self):
         plt.close()
 
     def getNextAx(self):
         if self._currentAx + 1 > self._axCount:
             raise RuntimeError(f"No more axes available.")
-        
-        
+          
         row = self._currentAx // self._cols
         col = self._currentAx % self._cols
 
@@ -31,8 +38,10 @@ class GraphManager(object):
     def adjustSubplots(self, left=None, bottom=None, right=None, top=None, wspace=None, hspace=None):
         plt.subplots_adjust(left, bottom, right, top, wspace, hspace)
 
-    def show(self, tightLayout = False, fullscreen = False):
+    def addEvent(self, eventName, event):
+        self.figure.canvas.mpl_connect(eventName, event)
+    def show(self, fullscreen = False):
+        figManager = plt.get_current_fig_manager()
         if(fullscreen):
-            mng = plt.get_current_fig_manager()
-            mng.window.state('zoomed') 
+            figManager.window.state('zoomed') 
         plt.show()
