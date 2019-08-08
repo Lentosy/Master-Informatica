@@ -1,0 +1,128 @@
+\chapter{Meerdimensionale gegevensstructuren}
+\begin{itemize}
+    \item Gegevens met meer dan één sleutel zijn meerdimensionaal.
+    \item Gegevensstructuren moeten toelaten om op al die sleutels, of in een bereik van meerdere sleutels te zoeken.
+    \item De meeste gegevensstructuren zijn efficiënt voor een klein aantal dimensies.
+    \item De gegevens worden zo gemodelleert zodat ze een geometrische structuur vormen.
+    \item Elk gegeven is een punt in een meerdimensionale Euclidische ruimte.
+    \item Een meerdimensionaal punt zoeken is een speciaal geval van zoeken van alle punten in een meerdimensionale hyperrechthoek.
+    \item Notatie:
+    \begin{itemize}
+        \item Het aantal punten is $n$.
+        \item Het aantal dimensies is $k$.
+    \end{itemize}
+\end{itemize}
+
+\section{Projectie}
+\begin{itemize}
+    \item Per dimensie wordt er een gegevensstructuur (bv gelinkte lijst) bijgehouden die de gesorteerde punten volgens die dimensie bijhoudt.
+    \item Elk punt wordt dus geprojecteerd op elke dimensie.
+    \item Zoeken in een hyperrechthoek gebeurt door een dimensie te kiezen en alle punten te zoeken die voor die dimensie binnen de hyperrechthoek liggen.
+    \item Deze methode werkt als de zoekrechthoek een zijde heeft die de meeste punten uitsluit.
+    \item De \textbf{gemiddelde performantie} is $O(n^{1-\frac{1}{k}})$.
+\end{itemize}
+\section{Rasterstructuur}
+\begin{itemize}
+    \item De zoekruimte wordt verdeelt met behulp van een raster.
+    \item Voor elk rastergebied (een hyperrechthoek) wordt een gelinkte lijst bijgehouden met de punten die erin liggen.
+    \item De punten vinden die in een hyperrechthoek liggen komt neer op het vinden van de rastergebieden die overlappen, en welke van de punten in hun gelinkte lijsten binnen die rechthoek vallen.
+    \item Het aantal rastergebieden is best een constante fractie van $n$, zodat het gemiddeld aantal punten in elk rastergebied een kleine constante wordt.
+\end{itemize}
+\section{Quadtrees}
+\begin{itemize}
+    \item Een quadtree verdeelt de zoekruimte in $2^k$ hyperrechthoeken, waarvan de zijden evenwijdig zijn met het assenstelsel.
+    \item Deze verdeling wordt opgeslaan in een $2^k$-wegsboom: elke knoop staat voor een gebied.
+    \item Een quadtree is niet geschikt voor hogere dimensies: er zouden te veel knopen zijn.
+    \item Deze cursus behandelt enkel twee dimensies en er worden enkel \textbf{twee-dimensionale punten} opgeslaan.
+\end{itemize}
+
+\subsection{Point quadtree}
+\begin{itemize}
+    \item Elke inwendige knoop bevat een punt, waarvan de coördinaten de zoekruimte opdelen in vier rechthoeken.
+    \begin{itemize}
+        \item Elk (deel)zoekruimte is de wortel van een deelboom die alle punten in de overeenkomstige rechthoek bevat.
+    \end{itemize}
+    \item Woordenboekoperaties:
+    \begin{itemize}
+        \item \textbf{Zoeken en toevoegen.}
+        \begin{itemize}
+            \item Het zoekpunt wordt telkens vergeleken met de punten van de opeenvolgende knopen.
+            \item Als het zoekpunt niet aanwezig is, eindigt de zoekoperatie in een ledig deelgebied, maar kan het punt wel toegevoegd worden als inwendige knoop.
+            \item De structuur van een point quadtree is afhankelijk van de toevoegvolgorde, maar is in het gemiddelde geval $O(\lg n)$. In het slechtste geval is het $O(n)$.
+        \end{itemize}
+        \item \textbf{Toevoegen als de gegevens op voorhand gekend zijn.}
+        \begin{itemize}
+            \item Er kan voor gezorgd worden dat geen enkel deelgebied meer dan de helft van de punten van die van zijn ouder bevat.
+            \item De punten worden lexicografisch geranschikt en de wortel is de mediaan.
+            \item Alle punten voor de mediaan vallen dan in twee van zijn deelbomen, deze erachter in de andere twee. 
+            \item Bij elk kind gebeurt hetzelfde.
+            \item Deze constructie is $O(n\lg n)$. 
+        \end{itemize}
+        \item \textbf{Verwijderen.}
+        \begin{itemize}
+            \item Een punt verwijderen zorgt ervoor dat een deelboom geen ouder meer heeft.
+            \item Om dit op te lossen worden alle punten in die deelboom opnieuw toegevoegd aan de boom.
+        \end{itemize}
+
+    \end{itemize}
+\end{itemize}
+
+
+\subsection{PR quadtree}
+\begin{itemize}
+    \item Point-region quadtree.
+    \item De zoekruimte \textbf{moet een rechthoek zijn}.
+    \begin{itemize}
+        \item De zoekruimte kan gegeven worden.
+        \item De zoekruimte kan ook bepaald worden als de kleinste rechthoek die alle punten omvat.
+    \end{itemize}
+    \item Elke knoop verdeelt de zoekruimte in vier \textbf{gelijke rechthoeken}.
+    \item De opdeling loopt door tot dat elk deelgebied nog één punt bevat.
+    \item Inwendige knopen bevatten geen punten.
+    \item Woordenboekoperaties:
+    \begin{itemize}
+        \item \textbf{Zoeken.}
+        \begin{itemize}
+            \item De opeenvolgende punten vanuit de wortel worden gebruikt om de rechthoek te vinden waarn het punt zou moeten liggen.
+        \end{itemize}
+        \item \textbf{Toevoegen.}
+        \begin{itemize}
+            \item Als de gevonden rechthoek geen punt bevat kan het punt toegevoegd worden.
+            \item Als de gevonden rechthoek wel een punt bevat, moet deze rechthoek opnieuw opgesplitst worden tot elk van de punten in een eigen gebied ligt.
+        \end{itemize}
+        \item \textbf{Verwijderen.}
+        \begin{itemize}
+            \item Een punt verwijderen kan ervoor zorgen dat een deelgebied ledig wordt.
+            \item Als er nog slechts 1 punt zit in één van de vier deelgebieden, kunnen deze deelgebieden samengevoegd worden.
+        \end{itemize}
+    \end{itemize}
+    \item De vorm van een PR quadtree is wel onafhankelijk van de toevoegvolgorde.
+    \item Er is geen verband tussen de hoogte $h$ en het aantal opgeslagen punten $n$ omdat een PR quadtree nog steeds onevenwichtig kan uitvallen.
+    \item Er is wel een verband tussen de hoogte $h$ en de kleinste afstand $a$ tussen twee zoekpunten.
+    \begin{itemize}
+        \item Stel $z$ de grootste zijde van de zoekruimte.
+        \item De grootste zijde van een gebied op diepte $d$ is dan $\frac{z}{2^d}$. 
+        \item De maximale afstand tussen twee punten in dat gebied is $\frac{z\sqrt{k}}{2^d}$ (de lengte van de diagonaal in dat gebied).
+        \item Op elke diepte $d$ is 
+        \begin{align*}
+            \frac{z\sqrt{k}}{2^d} \geq& a \\
+            d \leq& \lg\bigg(\frac{z}{a}\bigg) + \frac{\lg k}{2}
+        \end{align*}
+        \item De hoogte $h$ is de maximale diepte van een inwendige knoop plus één:
+        $$h \leq \lg\bigg(\frac{z}{a}\bigg) + \frac{3}{2}$$
+    \end{itemize}
+    \item Performantie:
+    \begin{itemize}
+        \item \todo{???}
+    \end{itemize}
+\end{itemize}
+
+\section{K-d trees}
+\begin{itemize}
+    \item Vermijdt de grote vertakkingsgraad van een point quadtree door een binaire boom te gebruiken.
+    \item Elke inwendige knoop bevat een punt, dat de deelzoekruimte slechts opsplitst in één dimensie.
+    \item Opeenvolgende knopen gebruiken opeenvolgende dimensies om te splitsen.
+    \item De opdeling kan doorgang tot slechts één punt in elk gebied is, of men kan vroeger stoppen en gelinkte lijsten bijhouden per gebied.
+    \item Door de (eventueel random) afwisselende dimensies zijn er geen rotaties mogelijk om een dergelijke boom evenwichtig te maken. Daarom wordt verwijderen ook nooit echt gedaan, maar eerder met \textbf{lazy deletion}.
+    \item Men kan wel af en toe een deelboom reconstrueren, en dan ook de te verwijderen knopen effectief verwijderen.
+\end{itemize}

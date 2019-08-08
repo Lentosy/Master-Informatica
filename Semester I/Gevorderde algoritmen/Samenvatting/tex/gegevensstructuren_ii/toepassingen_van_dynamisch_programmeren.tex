@@ -35,7 +35,7 @@
     $$\sum_{i = 1}^n p_i + \sum_{i = 0}^n q_i = 1$$
     \item Als de zoektijd gelijk is aan het aantal knopen op de zoekweg (de diepte plus één), dan is de verwachtingswaarde van de zoektijd
     $$\sum_{i = 1}^n p_i (\hbox{diepte}(s_i) + 1) + \sum_{i = 0}^n q_i (\hbox{diepte}(b_i) + 1)$$
-    \item Deze verwachtingswaarde moet geminimaliseert worden.
+    \item Deze verwachtingswaarde moet geminimaliseerd worden.
     \begin{itemize}
         \item Boom met minimale hoogte is niet voldoende.
         \item Alle mogelijke zoekbomen onderzoeken is ook geen optie, hun aantal is 
@@ -44,7 +44,6 @@
                                          & \sim \frac{1}{n + 1} \cdot \frac{4^{n}}{\sqrt{\pi n}} \\
                                          & \sim \Omega\bigg(\frac{4^n}{n\sqrt{n}}\bigg)
         \end{align*}
-      
         \good Dynamisch programmeren biedt een uitkomst.
     \end{itemize}
     \item Een optimalisatieprobleem komt in aanmerkingen voor een efficiënte oplossing via dynamisch programmeren als het:
@@ -106,7 +105,7 @@
         \item De index $w$ doorloopt alle waarden tussen $i$ en $j$.
         \begin{align*}
             z(i, j) & = \min_{i \leq w \leq j} \{ z_w(i, j)\} \\
-                    & = \min_{i \leq w \leq j} \{ z(i , w - 1) + z(w + 1, j) + g(i, j)\}
+                    & = \min_{i \leq w \leq j} \{ z(i , w - 1) + z(w + 1, j)\}  + g(i, j)
         \end{align*}
     \end{itemize}
     \item Hoe wordt de optimale boom bijgehouden?
@@ -190,7 +189,7 @@
             \item Om de LGD van $X$ en $Y$ te vinden is het nodig om de LGD van $X$ en $Y_{m - 1}$ als van $X_{n - 1}$ en $Y$ te vinden.
         \end{itemize}
     \end{itemize}
-    \item LGD kan bepaald worden door recursieve vergelijking:
+    \item De lengte $c[i, j]$ van de LGD van $X_i$ en $Y_j$ wordt door een recursieve vergelijking bepaald:
     $$c[i, j] = \begin{cases}
         0 & \hbox{als}\; i = 0\;\hbox{of}\; j = 0 \\
         c[i - 1, j - 1] + 1 & \hbox{als}\; i >0\;\hbox{en}\; j > 0\;\hbox{en}\; x_i = y_j\\

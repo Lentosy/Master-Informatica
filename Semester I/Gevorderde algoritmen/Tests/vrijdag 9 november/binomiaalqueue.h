@@ -59,7 +59,6 @@ public:
         ander->broer = move((*this)->linkerkind);
         (*this)->linkerkind = move(andere);
         return *this;
-
     } 
 
 }

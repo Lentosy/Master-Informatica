@@ -1,12 +1,21 @@
 \chapter{Samenvoegbare heaps}
 \begin{itemize}
-    \item Een samenvoegbare heap is een heap die geoptiamliseerd zijn o mde 'join' operatie uit te voeren.
+    \item Een samenvoegbare heap is een heap die geoptimaliseerd zijn om de 'join' operatie uit te voeren.
     \item De join operatie voegt twee heaps samen, zodat de \textbf{heapvoorwaarde} nog steeds geldig is. 
-    \item Een lijst van voorbeelden die \underline{niet} gekend moeten zijn (\accentuate{In de cursus is er geen uitleg over \emph{hoe} dat je de samenvoegoperatie zou implementeren voor deze heaps}):
+    \item Een lijst van bekende heaps.
     \begin{itemize}
-        \item Leftist tree.
-        \item Skew heaps.
-        \item Fibonacci heaps.
+		\item Leftist heaps.
+		\begin{itemize}
+			\item Deze heaps proberen zo onevenwichtig mogelijk te zijn.
+			\item De linkerkant is diep en de rechterkant ondiep.
+			\item De operaties zijn efficiënt omdat al het werk in de rechterkant gebeurt.
+		\end{itemize}
+		\item Skew heaps.
+		\begin{itemize}
+			\item Gelijkaardig aan een leftist heap, maar er is een vormbeperking.
+			\item In het slechtste geval kunnen individuele operaties $O(n)$ zijn.
+		\end{itemize}
+		\item Fibonacci heaps.
         \item Relaxed heaps
     \end{itemize}
     
@@ -39,8 +48,14 @@ De belangrijke samenvoegbare heaps zijn: \textbf{Binomial queues} en \textbf{Pai
 		\begin{itemize}
 			\item \textbf{Minimum vinden}: Overloop de wortel van elke binomiaalboom. Het minimum kan ook gewoon bijgehouden worden.
 			\item \textbf{Samenvoegen}: Tel de bomen met dezelfde hoogte bij elkaar op, $B_h + B_h = B_{h + 1}$. Maak de wortel met de grootste sleutel het kind van deze met de kleinste. 
+			\begin{figure}[ht]
+				\centering
+				\includegraphics[width=0.3\textwidth]{binomialtree_merge}
+				\caption{Hier worden twee binomiaalbomen van orde 3 samengevoegd. De boom met de waarde 7 voor de wortel wordt het linkerkind van de boom met waarde 3 voor de wortel. Het wordt een boom van orde 4.}
+				\label{fig:binomialtree_fig}
+			\end{figure}
 			\item \textbf{Toevoegen}: Maak een triviale binomiaalqueue met één knoop en voeg deze samen met de andere binomiaalqueue.
-			\item \textbf{Minimum verwijderen}: Zoek binomiaalboom $B_k$ met het kleinste wortelelement. Verwijder deze uit de binomiaalqueue. Verwijder wortel van  $B_k$. Voeg beide binomiaalqueues terug samen.
+			\item \textbf{Minimum verwijderen}: Zoek binomiaalboom $B_k$ met het kleinste wortelelement. Verwijder deze uit de binomiaalqueue. De deelbomen van deze binomiaalboom vormen een nieuw binomiaalbos die samengevoegd kan worden met de originele heap.
 		\end{itemize}
 
 \section{Pairing heaps}

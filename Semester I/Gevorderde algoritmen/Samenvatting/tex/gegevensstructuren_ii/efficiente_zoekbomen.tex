@@ -1,5 +1,4 @@
 \chapter{Efficiënte zoekbomen}
-
 \section{Inleiding}
 \begin{itemize}
     \item Uitvoeringstijd van operaties (zoeken, toevoegen, verwijderen) op een binaire zoekboom met hoogte $h$ is $O(h)$.
@@ -148,13 +147,6 @@
 
 \subsection{Bottom-up rood-zwarte bomen}
 \subsubsection{Toevoegen}
-
-
-
-\subsubsection{Verwijderen}
-
-\subsection{Top-down rood-zwarte bomen}
-\subsubsection{Toevoegen}
 \begin{itemize}
     \item De knoop wordt eerst op de gewone manier toegevoegd.
     \item Welke kleur geven we die knoop?
@@ -194,7 +186,7 @@
                 \centering
                 \includegraphics[width=0.5\textwidth]{rbt_bottomup_case2}
                 \caption{Rode broer.}
-                \label{fig:rbt_bottomup_case1}
+                \label{fig:rbt_bottomup_case2}
             \end{figure}
             \begin{itemize}
                 \item Roteer $p$ en $g$ naar rechts. 
@@ -206,7 +198,7 @@
                 \centering
                 \includegraphics[width=0.5\textwidth]{rbt_bottomup_case3}
                 \caption{Rode broer.}
-                \label{fig:rbt_bottomup_case1}
+                \label{fig:rbt_bottomup_case3}
             \end{figure}
             \begin{itemize}
                 \item Roteer $p$ en $c$ naar links.
@@ -219,13 +211,92 @@
 \end{itemize}
 
 
-
 \subsubsection{Verwijderen}
 \begin{itemize}
     \item Verwijder eerst de knoop zoals bij een gewone zoekboom.
     \item Als de te verwijderen knoop rood is, is er geen gevolg voor de zwarte hoogte en is de operatie klaar.
-    \item Als de te verwijderen knoop zwart is, heeft hij ofwel geen kinderen ofwel minstens één rood kind.
+    \item Als de te verwijderen knoop zwart is, zijn er twee mogelijkheden:
+    \begin{enumerate}
+        \item \textbf{De knoop heeft minstens één rood kind.} Dit rood kind kan de zwarte kleur overnemen, zodat de zwarte hoogten intact blijven.
+        \item \textbf{De knoop heeft twee zwarte kinderen (virtueel of echt)}. De zwarte kleur wordt aan één van de kinderen gegeven, zodat die \textbf{dubbelzwart} wordt.
+    \end{enumerate}
+    \item In het eerste geval is de operatie klaar. In het tweede geval moet de boom, die nu een dubbelzwarte knoop bevat, herstelt worden.
+    \item Als de dubbelzwarte knoop $c$ de wortel is, kan deze extra zwarte kleur verdwijnen. 
+    \item Als $c$ geen wortel is, en ouder $p$ heeft, dan zijn er acht mogelijkheden die in groepen van twee uiteenvallen naargelang $c$ een linkder- of rechterkind van $p$ is.
+    \item We veronderstellen dat $c$ een linkerkind is van $p$.
+    \begin{enumerate}
+        \item \textbf{De broer $b$ van $c$ is zwart.} De kleur van $p$ is willekeurig. Hier zijn er drie gevallen mogelijk, afhankelijk van de kleur van de kinderen van $b$.
+        \begin{enumerate}
+            \item \textbf{Broer $b$ heeft twee zwarte kinderen}.
+            %\begin{figure}[ht]
+            %    \centering
+            %    \includegraphics[width=0.5\textwidth]{rbt_bottomup_case4}
+            %    \caption{}
+            %    \label{fig:rbt_bottomup_case4}
+            %\end{figure}
+            \begin{itemize}
+                \item Knoop $b$ kan rood worden.
+                \item De extra zwarte kleur van $c$ kan aan $p$ gegeven worden.
+                \begin{itemize}
+                    \item Als $p$ rood was, dan is de operatie gelukt.
+                    \item Als $p$ reeds zwart was, dan verschuift het probleem zich naar boven.
+                \end{itemize}
+            \end{itemize}
+            \item \textbf{Broer $b$ heeft een rood rechterkind}. De kleur van het linkerkind $l$ van $b$ is willekeurig.
+            %\begin{figure}[ht]
+            %    \centering
+            %    \includegraphics[width=0.5\textwidth]{rbt_bottomup_case5}
+            %    \caption{}
+            %    \label{fig:rbt_bottomup_case5}
+            %\end{figure}
+            \begin{itemize}
+                \item Roteer $p$ en $b$ naar links.
+                \item Knoop $p$ krijgt de extra zwarte kleur van $c$.
+                \item Het rechterkind $r$ van $b$ wordt zwart.
+                \item Knoop $b$ krijgt de oorspronkelijke kleur van $p$.
+            \end{itemize}
+            \item \textbf{Broer $b$ heeft een zwarte rechterkind en een rood linkerkind}.
+            %\begin{figure}[ht]
+            %    \centering
+            %    \includegraphics[width=0.5\textwidth]{rbt_bottomup_case6}
+            %    \caption{}
+            %    \label{fig:rbt_bottomup_case6}
+            %\end{figure}
+            \begin{itemize}
+                \item Roteer $b$ en $l$ naar rechts.
+                \item Maak $b$ rood en $l$ zwart.
+                \item Dit is nu het vorige geval.
+            \end{itemize}
+        \end{enumerate}
+        \item \textbf{De broer $b$ van $c$ is rood}.
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.5\textwidth]{rbt_bottomup_case7}
+            \caption{}
+            \label{fig:rbt_bottomup_case7}
+        \end{figure}
+        \begin{itemize}
+            \item Roteer $p$ en $b$ naar links.
+            \item Maak $b$ zwart en $p$ rood.
+            \item Dit is nu het eerste geval.
+        \end{itemize}
+    \end{enumerate}
+    \item Hoogstens 3 rotaties nodig om de boom te herstellen, voorafgegaan door eventueel $O(\lg n)$ opschuivingen.
+    \item Roteren en opschuiven is $O(1)$, en afdalen is $O(\lg n)$ zodat verwijderen $O(\lg n)$ is.
 \end{itemize}
+
+
+\subsection{Top-down rood-zwarte bomen}
+\subsubsection{Toevoegen}
+\begin{itemize}
+    \item Ook hier worden nieuwe knopen rood gemaakt.
+    \item Op de weg naar beneden mogen geen rode broers zijn.
+    \item Als we een \textbf{zwarte knoop met twee rode kinderen} tegenkomen, dan maken we die knoop rood en zijn kinderen zwart.
+    \item Als zijn ouder rood is, kan dit met rotaties en kleurwijzigingen opgelost worden.
+    \item Toevoegen daalt enkel in de boom en is $O(\lg n)$.
+\end{itemize}
+
+\subsubsection{Verwijderen}
 
 
 
@@ -268,12 +339,89 @@
         
         \begin{enumerate}
             \item \textbf{Knoop $c$ is een rechterkind van $p$}.
+            \begin{itemize}
+                \item Roteer $p$ en $c$ naar links.
+                \item Roteer $g$ en $c$ naar rechts.
+            \end{itemize}
             \item \textbf{Knoop $c$ is een linkerkind van $p$}.
+            \begin{itemize}
+                \item Roteer $g$ en $p$ naar rechts.
+                \item Roteer $p$ en $c$ naar rechts.
+            \end{itemize}
         \end{enumerate}
     \end{enumerate}
+    \item De \textbf{woordenboekoperaties verlopen nu als volgt:}
+    \begin{itemize}
+        \item \textbf{Zoeken.} De knoop wordt eerst gezocht zoals een gewone zoekboom. Daarna wordt deze tot wortel gemaakt via de splay-operatie. 
+        \item \textbf{Toevoegen.} Toevoegen gebeurt ook zoals een gewone zoekboom. De nieuwe knoop wordt dan tot wortel gemaakt met de splay-operatie.
+        \item \textbf{Verwijderen.} Verwijderen gebeurt ook zoals een gewone zoekboom. Daarna wordt de ouder van die knoop tot wortel gemaakt met de splay-operatie.
+    \end{itemize}
 \end{itemize}
 \subsection{Top-down splayboom}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{splay_topdown}
+    \caption{Top-down splay.}
+    \label{fig:splay_topdown}
+\end{figure}
 
+\subsection{Performantie van splay trees}
+\begin{itemize}
+    \item Niet eenvoudig aangezien vorm van de boom vaak verandert.
+    \item We willen aantonen dat een reeks van $m$ operaties op een splay tree met maximaal $n$ knopen een performantie van $O(m\lg n)$ heeft.
+    \item Er wordt een \textbf{potentiaalfunctie} $\Phi$ gebruikt.
+    \item Elke mogelijke vorm van een splayboom krijgt een reeël getal toegewezen aan de hand van deze potentiaalfunctie.
+    \item Efficiënte operaties die minder tijd gebruiken dan de geamortiseerde tijd per operatie doen het potentiaal stijgen.
+    \item Niet efficiënte operaties die meer tijd gebruiken dan de geamortiseerde tijd per operatie doen het potentiaal dalen.
+    \item De geamortiseerde tijd van een operatie wordt gedefinieerd als de som van haar werkelijke tijd en de toename van het potentiaal.
+    \begin{itemize}
+        \item Stel $t_i$ de werkelijke tijd van de $i-$de operatie.
+        \item Stel $a_i$ de geamortiseerde tijd van die operatie.
+        \item Stel $\Phi_i$ het potentiaal na deze operatie.
+        $$\rightarrow a_i = t_i + \Phi_{i} - \Phi_{i - 1}$$
+    \end{itemize}
+    \item De geamortiseerde tijd van een reeks $m$ operaties is de som van de individuelde geamortiseerde tijden:
+    \begin{equation*}
+        \begin{split}
+            \sum_{i=1}^m a_i &= \sum_{i=1}^m (t_i + \Phi_{i} - \Phi_{i - 1}) \\
+                             &= t_1 + \Phi_1 - \Phi_0 + t_2 + \Phi_2 - \Phi_1 + t_3 + \Phi_3 - \Phi_2 + \dots + t_m + \Phi_m - \Phi_{m - 1} \\
+                             &= \Phi_{m} - \Phi_{0} + \sum_{i=1}^m t_i
+        \end{split}
+    \end{equation*}
+    \item Als de potentiaalfunctie zo gekozen wordt zodat het eindpotentiaal $\Phi_m$ zeker niet kleiner is dan de beginpotentiaal $\Phi_0$, dan vormt de totale geamortiseerde tijd een \textbf{bovengrens} van de werkelijke tijd.
+    \item De eenvoudigste potentiaalfunctie geeft voor elke knoop $i$ een gewicht $s_i$ die gelijk is aan het aantal knopen in de deelboom waarvan hij wortel is. De potentiaal van de boom is dan de som van de logaritmen van deze gewichten:
+    $$\Phi = \sum_{i=1}^\Phi \lg s_i$$
+    \item We noemen $\lg s_i$ de rang $r_i$ van knoop $i$.
+    \item Performantie-analyse van bottom-up splayboom:
+    \begin{itemize}
+        \item Performantie is evenredig met de diepte van de knoop, en dus met het aantal uitgevoerde rotaties.
+        \item We willen aantonen dat de geamortiseerde tijd voor het zoeken naar een knoop $c$ gevolgd door een splay-operatie op die knoop gelijk is aan $$O(1 + 3(r_w - r_c))$$
+        waarbij $r_w$ de rang van de wortel is en $r_c$ de rang van de gezochte knoop.
+        \begin{itemize}
+            \item Als $c$ reeds de wortel is, dan is $r_w = r_c$.
+            $$O(1 + 3(r_w - r_c)) = O(1)$$
+            Het potentiaal blijft dezelfde.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
 
 \section{Gerandomiseerde zoekbomen}
 \label{sec:gerandomiseerde-zoekbomen}
+\begin{itemize}
+    \item De performantie van de woordenboekoperaties op een gewone zoekboom is $O(\lg n)$ als elke toevoegvolgorde even waarschijnlijk is.
+    \item Gerandomiseerde zoekbomen maken gebruik van een random generator om de operatievolgorde te neutraliseren.
+    \item Deze bomen blijven steeds random.
+    \item Een \textbf{treap} is een gerandomiseerde zoekboom.
+    \begin{itemize}
+        \item Elke knoop krijgt naast een sleutel ook een prioriteit, die door de random generator wordt toegekend als de knoop toegevoegd wordt.
+        \item De prioriteiten van de knopen voldoen aan de heapvoorwaarde: de prioriteit van een kind is maximaal even hoog als die van zijn ouder.
+    \end{itemize}
+    \item De woordenboekoperaties:
+    \begin{itemize}
+        \item \textbf{Zoeken.}  Zoeken moet geen rekening houden met de prioriteiten en verloopt zoals een normale binaire zoekboom.
+        \item \textbf{Toevoegen.} Eerst wordt er normaal toegevoegd. De knoop wordt nadien naar boven geroteerd om de aan de heapvoorwaarde te voldoen.
+        \item \textbf{Verwijderen.} De te verwijderen knoop krijgt de laagste prioriteit, zodat die naar beneden geroteerd wordt. Dit blad kan dan verwijdert worden.
+    \end{itemize}
+\end{itemize}
+
+\section{Skip lists}
