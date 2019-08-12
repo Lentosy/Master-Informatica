@@ -21,7 +21,7 @@
     \item Zoveel mogelijk materiaal van producent naar verbruiker laten stromen, zonder de capaciteiten van de verbindingen te overschrijden.
     \item Wordt opgelost via de methode van \textbf{Ford-Fulkerson}. 
     \begin{itemize}
-        \item Iteratief algoritme.
+        \item Een iteratieve methode. Het wordt een \textbf{methode} genoemd en geen algoritme omdat de implementatie van de vergrotende paden ontbreekt. 
         \item Bij elke iteratie neemt de nettostroom vanuit de producent toe, tot het maximum bereikt wordt.
     \end{itemize}
     \item Elke verbinding $(i, j)$ heeft:
@@ -33,7 +33,7 @@
         \item de stroom $s(i, j)$ die er door loopt, waarbij $0 \leq s(i, j) \leq c(i, j)$.
         
     \end{itemize}
-    \item De totale nettostroom $f$ van alle knopen $K$ in de graaf is dan 
+    \item De totale nettostroom $f$ van alle knopen $K$ uit producent $p$ in de graaf is dan 
     $$f = \sum_{j \in K} (s(p, j) - s(j, p))$$ 
     \begin{itemize}
         \item $s(p, j)$ is de uitgaande stroom vanuit de producent $p$ naar knoop $j$.
@@ -42,9 +42,184 @@
     \item De verzameling van stromen voor alle mogelijke knopenparen in beide richtingen wordt een \textbf{stroomverdeling} genoemd.
     \item De verzameling mogelijke stroomtoename tussen elk paar knopen wordt het \textbf{restnetwerk} genoemd.
     \begin{itemize}
-        \item Het restnetwerk bevat dezelfde knopen, maar niet noodzakelijk dezelfde verbindingen en capaciteiten.
-        \item In het restnetwerk wordt de \textbf{vergrotende weg} gezocht.
-        \item Als er geen vergrotende weg is dan zal de networkstroom maximaal zijn. 
-        \item Voor elk mogelijke stroomverdeling bestaat er een overeenkomstig restnetwerk.
+        \item Het restnetwerk bevat dezelfde knopen, maar behoudt enkel de verbindingen die meer stroom kunnen doorlaten.
+        \item Een verbinding van knoop $i$ naar knoop $j$ wordt opgenomen als:
+        \begin{itemize}
+            \item  $s(i, j) < c(i, j)$, en/of
+            \item  er loopt stroom over de verbinding $(j, i)$ die kleiner kan gemaakt worden.
+        \end{itemize}
+        \item Een verbinding in het restnetwerk krijgt de capaciteit $c_r(i, j) = c(i, j) - s(i, j) + s(j, i)$.
+        \item De verindingen van het restnetwerk vormen niet noodzakelijk een deelverzameling van de originele verbindingen:
+        \begin{itemize}
+            \item Stel dat er geen verbinding $(i, j) (c(i, j) = 0)$ is, maar wel een verbinding $(j, i)$ waarover een positieve stroom loopt.
+            \item Het restnetwerk krijgt toch een verbinding $(i, j)$ omdat de stroom over $(j, i)$ eventueel nog kleiner kan gemaakt worden.
+        \end{itemize}
+        
+    \end{itemize}
+    \item In het restnetwerk wordt de \textbf{vergrotende weg} van producent naar verbruiker gezocht.
+    \begin{itemize}
+        \item Dit is een enkelvoudige weg zonder lus van producent naar verbruiker.
+        \item Elke verbinding op die weg heeft een positieve restcapaciteit, en kan nog meer stroom doorlaten.
+        \item Er is dan extra stroom mogelijk gelijk aan de kleinste restcapaciteit op die weg.
+        \item De stroom in de overeenkomstige verbindingen in het eigenlijke stroomnetwerk wordt hiermee aangepast.
+    \end{itemize}
+
+    \item Is de methode van Ford-Fulkerson correct?
+    \begin{itemize}
+        \item Een \textbf{snede} $(P, V)$ van een samenhangende graaf is een verzameling verbindingen die de knopenverzameling in twee niet-ledige stukken $P$ en $V$ verdeelt.
+        \begin{itemize}
+            \item \item Een verbinding $(i, j)$ zit in $(P, V)$ als $i \in P$ en $j \in V$ of $i \in V$ en $j \in P$. 
+            \item Bij stroomnetwerken zijn nuttige sneden waarbij de producent $p$ tot $P$ behoort en de verbuiker $v$ tot $V$.
+            \item De capaciteit $c(P, V)$ van de snede wordt gedefinieerd als de som van alle capaciteiten $c(i, j)$, met $i$ in $P$ en $j$ in $V$.
+            \item De nettostroom $f(P, V)$ van de snede is de som van alle voorwaartse stromen $s(i, j)$, min de som van alle achterwaartse stromen $s(j, i)$, met $i$ in $P$ en $j$ in $V$.
+        \end{itemize}
+
+        \item De conservatieve eigenschap van een stroomnetwerk heeft als gevolg dat de netwerkstroom $f$ gelijk is aan de nettostroom $f(P, V)$ van elke mogelijke snede.
+        \begin{itemize}
+            \item De stroom van het netwerk vanuit de producent $p$ werd reeds gedefinieerd
+            $$f = \sum_{j \in K} (s(p, j) - s(j, p))$$ 
+            \item In alle andere knopen $i$ van $P$ is de stroom conservatief:
+            $$\sum_{j \in K} (s(i, j) - s(j, i)) = 0$$
+            \item Gecombineerd, voor alle knopen in $P$, is dit dan
+            $$f = \sum_{i \in P}\sum_{j \in K} (s(i, j) - s(j, i))$$
+            \item Voor alle knopen $j$ uit $P$ komt elke stroom $s(i, j)$ tweemaal voor in deze dubbele som, met tegengesteld teken.
+            \item Er blijven enkel nog knopen $j$ uit $V = K \backslash P$ over, en dat is de nettostroom van de snede $(P ,V)$
+            $$f = \sum_{i \in P}\sum_{j \in V} (s(i, j) - s(j, i)) = f(P, V)$$
+        \end{itemize}
+        
+        \item De \textbf{max-flow min-cut} stelling zegt dat $f$ maximaal wordt als het overeenkomstige restnetwerk geen vergrotende weg meer heeft. 
+        \begin{itemize}
+            \item De volgende eigenschappen zijn equivalent:
+            \begin{enumerate}
+                \item De netwerkstroom $f$ is maximaal.
+                \item Er is geen vergrotende weg meer te vinden in het restnetwerk.
+                \item De netwerkstroom $f$ is gelijk aan de capaciteit van \textit{een snede} in de oorspronkelijke graaf.
+            \end{enumerate}
+            \item ??
+        \end{itemize}
+    \end{itemize}
+
+    \item \textbf{Hoe} moet nu de \textbf{vergrotende weg bepaald} worden?
+    \begin{itemize}
+        \item \textbf{Performantie afhankelijk van de capaciteiten}
+
+        De performantie van volgende implementaties zijn afhankelijk van de graaf ($n$ en $m$) en door de grootte van de capaciteiten.
+        \begin{enumerate}
+            \item \begin{itemize}
+                \item Stel dat alle capaciteiten geheel zijn, en $C$ is de grootste capaciteit.                           
+                \item De maximale netwerkstroom is dan $O(nC)$.
+                \item Bij elke iteratie van Ford-Fulkerson zal de stroomtoename langs een vergrotende weg ook geheel zijn.
+                \item Het aantal iteraties is $O(nC)$.
+                \item Het restnetwerk bepalen is $O(m)$ en daarin een vergrotende weg vinden met diepte-eerst of breedte-eerst zoeken is ook $O(m)$.
+                \item De totale performantie is $\textbf{O(mnC)}$.
+            \end{itemize}
+            \item \begin{itemize}
+                \item Neem steeds de vergrotende weg die de grootste stroomtoename mogelijk maakt.
+                \item Dit kan door een kleine wijziging aan het algoritme van Dijkstra (kortste afstanden vervangen door grootste capaciteiten).
+                \item Het aantal iteraties is $O(m \lg C)$ (zonder bewijs).
+                \item Elke iteratiestap is $O(m\lg n)$ (van Dijkstra).
+                \item De totale performantie is $\textbf{O(m^2 \lg n \lg C)}$
+            \end{itemize}
+            \item \begin{itemize}
+                \item Stel een cutoff $c = 2^{\lfloor \lg C \rfloor}$ in.
+                \item Een vergrotende weg vinden die een stroomtoename van minstens $c$ eenheden toelaat, of vaststellen dat die er niet is, kan in $O(m)$.
+                \item Als er geen vergrotende weg gevonden is, dan is de minimale snedecapaciteit van het restnetwerklager dan $mc$.
+                \item $c$ wordt in elke fase gehalveerd, tot dat uiteindelijk $c=1$. Hiervoor zijn er $O(m \lg C)$ iteraties nodig.
+                \item De totale performantie is $\textbf{O(m^2 \lg C)}$
+            \end{itemize}
+        \end{enumerate}
+
+        \item \textbf{Performantie onafhankelijk van de capaciteiten}
+        \begin{itemize}
+            \item Als de vergrotende weg het minimum aantal verbindingen heeft, dan stijgt de lengte van de vergrotende weg na hoogstens $m$ iteraties.
+            \item De maximale lengte is $n-1$, zodat er $O(nm)$ iteraties nodig zijn.
+            \item In elke iteratie wordt nu breedte-eerst zoeken gebruikt en is $O(m)$.
+            \item De totale performantie is $\textbf{O(nm^2)}$
+        \end{itemize}
+    \end{itemize}
+    \item Alle algoritmen die een maximale stroom zoeken via vergrotende wegen hebben als nadeel dat die stroomtoename langs de hele weg van $p$ naar $v$ moet gebeuren, wat in het slechtste geval $O(n)$ vereist.
+    \item Een meer recentere techniek is de \textbf{preflow-push} methode, die de stroomtoename van een weg opsplitst in de stroomtoename langs zijn verbindingen.
+    \begin{itemize}
+        \item De preflow duidt op het feit dat er meer stroom kan binnenkomen in een knoop dat er buiten gaat.
+        \item Knopen met een positief overschot heten 'actief'.
+        \item Zolang er actieve knopen zijn, voldoet de oplossing niet.
+        \item Er wordt willekeurig een actieve knoop geselecteerd, en trachten om zijn overschot weg te werken via zijn buren.
+        \item Als er geen actieve knopen zijn, voldoet de stroom aan de conservatieve eigenschap, en is bovendien maximaal (zonder bewijs).
+        \item Enkele performanties van deze methode, in vergelijking met Ford-Fulkerson:
+        \begin{itemize}
+            \item De eenvoudigste implementatie haalt een performantie van $O(n^2m)$.
+            \item Het FIFO preflow-push algoritme selecteert de actieve knopen met een wachtrij, en is $O(n^3)$.
+            \item Het highest-label preflow-push algoritme neemt de actieve knoop die het verst van $v$ ligt, en is $O(n^2\sqrt{m})$.
+            \item Het excess-scaling algoritme duwt stroom van een actieve knoop met voldoend groot overschot naar een knoop met een voldoend klein overschot, en is $O(nm + n^2 \lg C)$.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\section{Verwante problemen}
+Het maximalestroomprobleem kan uitgbreid worden om verwante problemen op te lossen:
+\begin{enumerate}
+    \item \textbf{Meerdere producenten en verbruikers}
+    \begin{itemize}
+        \item Men wil de gezamenlijke nettostroom van alle producten maximaliseren.
+        \item Dit kan eenvoudig door een nieuw stroomnetwerk aan te maken met twee nieuwe knopen: een totaalproducent en totaalverbruiker.
+        \item Vanuit de totaalproducent zijn er verbindingen naar alle producenten met oneindige capaciteit.
+        \item Naar de totaalverbuiker komen er verbindingen toe van alle verbuikers, ook met oneindige capaciteit.
+        \item De totaalproducent produceert het geheel van alle producenten, en de totaalverbruiker verbruikt alles wat bij de verbuikers samenkomt
+    \end{itemize}
+    \item \textbf{Capaciteiten toekennen aan knopen}
+    \begin{itemize}
+        \item Men wil capaciteiten toekennen aan knopen.
+        \item Dit kan ook omgevormd worden tot een normaal stroomnetwerk door elke knoop te dupliceren, en een verbinding te maken tussen elke knoop en zijn duplicant.
+        \item De capaciteit van de verbinding is dan de knoopcapaciteit.
+        \item Elke inkomende verbinding van de originele knoop blijft bij de knoop.
+        \item Elke uitgaande verbinding komt terecht bij de duplicant.
+    \end{itemize}
+    \item \textbf{Een ongericht stroomnetwerk}
+    \begin{itemize}
+        \item Een normaal stroomnetwerk verwacht een gerichte graaf.
+        \item Elke ongerichte verbinding kan vervangen worden door een paar gerichte verbindinge, één in elke richting, en beide verbindinge krijgen de originele capaciteit.
+    \end{itemize}
+    \item \textbf{Ondergrenzen toekennen aan verbindingen}
+    \begin{itemize}
+        \item Eerst gaat men na of dat een netwerkstroom mogelijk is.
+        \item Indien ja, wordt die getransformeerd tot een maximale stroom.
+        \item Dit heeft als praktisch nut dat er voorkomen wordt dat de 'flow' stilstaat.
+    \end{itemize}
+    \item \textbf{Meerdere soorten materiaal door de verbindingen}
+    \begin{itemize}
+        \item Voor elk soort materiaal is er één producent en ook één verbruiker.
+        \item In elke knoop is de stroom van elk materiaal apart conservatief.
+        \item De gezamenlijke stroom van alle materialen door een verbinding mag haar capaciteit niet overschrijden.
+    \end{itemize}
+    \item \textbf{Een kost per stroomeenheid}
+    \begin{itemize}
+        \item Het \textbf{minimalekostprobleem} zoekt niet alleen de maximale stroom, maar bovendien die met de minimale kost.
+        \item Het maximalestroomprobleem is een specifiek geval van het minimalekostprobleem.
+    \end{itemize}
+\end{enumerate}
+
+\subsection{Meervoudige samenhang in grafen}
+\begin{itemize}
+    \item Definities:
+    \begin{itemize}
+        \item Een graaf is \textbf{k-voudig knoopsamenhangend} als er tussen elk paar knopen van een graaf $k$ onafhankelijke wegen bestaan \textbf{zonder gemeenschappelijke knopen}.
+        \item Een graaf is \textbf{k-voudig lijnsamenhangend} als er tussen elk paar knopen van een graaf $k$ onafhankelijk wegen bestaan \textbf{zonder gemeenschappelijke verbindingen}.
+    \end{itemize}
+    \item Voor $k < 4$ kunnen knoopsamenhang en lijnsamenhang efficiënt via diepte-eerst zoeken onderzocht worden.
+    \item Voor grotere $k$ moeten stroomnetwerken gebruikt worden.
+    \item Als een maximale netwerkstroom gevonden is, dan is ook de minimale snede gevonden (max-flow min-cut stelling).
+    %\item Als alle capaciteiten 1 zijn, dan is de capaciteit $C(P, V)$ van een snede $(P, V)$ gelijk aan het aantal verbindingen van knopen in $P$ naar knopen in $V$.
+    \item De fundamentele eigenschap van samenhang in een graaf wordt gegeven door de \textbf{stelling van Menger}.
+    \begin{itemize}
+        \item Vier versies: zowel voor gerichte als ongerichte grafen en zowel voor meervoudige knoopsamenhang als meervoudige lijnsamenhang.
+        \item Voorbeeld voor een meervoudig lijnsamenhangende gerichte graaf:
+        
+        \begin{quote}
+            Het minimum aantal verbindingen dat moet verwijderd worden om een knoop $v$ van een gerichte graaf onbereikbaar te maken vanuit een andere knoop $p$ is gelijk aan het maximaal aantal lijnonafhankelijke wegen van $p$ naar $v$. Hierbij is $v$ geen buur van $p$.
+        \end{quote}
+        \begin{itemize}
+            \item Deze stelling volgt uit de eigenschappen van een stroomnetwerk met eenheidscapaciteiten.
+        \end{itemize}
+        \item 
     \end{itemize}
 \end{itemize}

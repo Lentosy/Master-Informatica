@@ -1,12 +1,21 @@
 \chapter{Kortste afstanden II}
+\begin{itemize}
+	\item Tradionteel kortste afstanden tussen twee knopen: algoritme van Dijkstra.
+	\item Probleem:
+	\begin{itemize}
+		\item Dijkstra gebruikt het feit dat indien een pad naar A $\rightarrow$ C bestaat, er geen korter pad A $\rightarrow$ B $\rightarrow$ C kan zijn, daarom is het algoritme performant, maar er mogen dus geen negatieve verbindingen zijn. Indien B negatief zou zijn dan klopt Dijkstra niet.
+	\end{itemize}
+	\item Volgende algoritmen hebben enkel betrekking tot \textbf{gerichte grafen}.
+
+\end{itemize}
 \section{Kortste afstanden vanuit één knoop}
 \subsection{Algoritme van Bellman-Ford}
-Dit algoritme werkt voor verbindingen met negatieve gewichten, iets wat het algoritme van Dijkstra niet kon. Het algoritme is dan natuurlijk ook trager. \accentuate{(Dijkstra gebruikt het feit dat indien een pad naar A $\rightarrow$ C bestaat, er geen korter pad A $\rightarrow$ B $\rightarrow$ C kan zijn, daarom is het algoritme performant, maar er mogen dus geen negatieve verbindingen zijn. Indien B negatief zou zijn dan klopt Dijkstra niet.)}.
+Dit algoritme werkt voor verbindingen met negatieve gewichten, iets wat het algoritme van Dijkstra niet kon. Het algoritme is dan natuurlijk ook trager.
 
 \begin{itemize}
 	\item  Werkt voor negatieve verbindingen.
 	\item  Geen globale kennis nodig van heel het netwerk, zoals bij Dijkstra, maar slechts enkel de buren van een bepaalde knoop. Daarom gebruiken routers Bellman-Ford (distance vector protocol).
-	\item  Zal niet stoppen indien er een negatieve lus in de graaf zit, aangezien het pad dan zal blijven dalen tot $-\infty$. 
+	\alert  Zal niet stoppen indien er een negatieve lus in de graaf zit, aangezien het pad dan zal blijven dalen tot $-\infty$. 
 \end{itemize}
 
 Het algoritme berust op een belangrijke eigenschap: Indien een graaf geen negatieve lussen heeft, zullen de kortste wegen evenmin lussen hebben en hoogstens $n - 1$ verbindingen bevatten. Hieruit kan een recursief verband opgesteld worden tussen de kortste wegen met maximaal $k$ verbindingen en de kortste wegen met maximaal $k - 1$ verbindingen.
@@ -87,13 +96,13 @@ Er bestaan \underline{twee goede implementaties}:
 				\end{itemize}
 		\item \textbf{Met de componentengraaf}:
 				\begin{itemize}
-					\item Interessant wanneer men verwacht dat de transitieve sluiting een dichte graaf zal zijn, want dan zijn veel knopen onderling bereikbaar, zodat er veel sterk samenhangende componenten zijn. Die kunnen in $\Theta(n + m)$ bepaald worden.
+					\item Interessant wanneer men verwacht dat de transitieve sluiting een dichte graaf zal zijn, want dan zijn veel knopen onderling bereikbaar, zodat er een beperkt aantal sterk samenhangende componenten zijn. Die kunnen in $\Theta(n + m)$ bepaald worden.
 					\item Maak dan de componentengraaf (kan in $O(n + m))$.
 					\item Als nu blijkt dat component $j$ beschikbaar is vanuit component $i$, dan zijn alle knopen van $j$ beruikbaar vanuit knopen van $i$.
 				\end{itemize}
 		\item \textbf{Het algoritme van Warshall}:
 				\begin{itemize}
-					\item Maak een reeks opeenvolgende $n \times n$ matrices $T^{(0)},T^{(1)},...,T^{(n)}$ die logische waarden bevat.
+					\item Maak een reeks opeenvolgende $n \times n$ matrices $T^{(0)},T^{(1)},...,T^{(n)}$ die logische waarden bevatten.
 					\item Element $t_{ij}^{(k)}$ duidt aan of er een weg tussen $i$ en $j$ met mogelijke intermediaire knopen $1, 2, ..., k$ bestaat.
 					\item Bepalen opeenvolgende matrices:
 					$$t_{ij}^{(0)} = 
@@ -105,7 +114,8 @@ Er bestaan \underline{twee goede implementaties}:
 					$$
 						t_{ij}^{(k)} = t_{ij}^{(k - 1)} \hbox{ OF } \big(t_{ik}^{(k - 1)} \hbox{ EN } t_{kj}^{(k - 1)}\big) \qquad \hbox{voor } 1 \leq k \leq n
 					$$
+					\item $T^{(n)}$ is de gezochte burenmatrix.
 				\end{itemize}
-				$T^{(n)}$ is de gezochte burenmatrix.
+				
 	\end{enumerate}
 \end{itemize}
