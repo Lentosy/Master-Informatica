@@ -279,8 +279,94 @@
 \end{itemize}
 
 \subsection{Patriciatries}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{patriciatrie}
+    \caption{Een patriciatrie. Elk blad bevat een verwijzing naar een woord in een lijst en knopen met maar één kind worden samengevoegd.}
+    \label{fig:patriciatrie}
+\end{figure}
 \begin{itemize}
     \alert Veel trieknopen hebben maar één kind zodat er veel ongebruikt geheugen is.
     \alert Er zijn ook twee soorten knoopen: inwendige knoop zonder sleutel maar met wijzers naar kinderen, en bladeren met sleutel maar zonder wijzers naar kinderen.
-    \item Een \textbf{Patriciatrie} (Practical Algorithm to Retrive Information Coded In Alphanumeric) verwijdert deze problemen door enkel \textbf{knoop met meer dan één kind te behouden}.
+    \item Een \textbf{Patriciatrie} (Practical Algorithm to Retrive Information Coded In Alphanumeric) verwijdert deze problemen door enkel \textbf{knopen met meer dan één kind te behouden}.
+    \item Bij een gewone meerwegstrie kunnen knopen voorkomen met maar één kind.
+    \item Zo een knoop kan weggelaten worden en zijn kind kan in de plaats gezet worden.
+    \item Twee gevolgende:
+    \begin{enumerate}
+        \item Als we in een kind komen, moeten we weten hoeveel voorouders er ontbreken. Dit lossen we op door een \textbf{testindex} in de knoop bijhouden, de index van het te testen karakter.
+        \item De karakters die niet getest worden kunnen tot conflict leiden bij een zoekstring waarbij die karakters niet overeenkomen.
+    \end{enumerate}
+    \item Een knoop is \textbf{expliciet} als hij nog voorkomt in de boom.
+    \item Een knoop is \textbf{impliciet} als hij enkel wordt aangeduid door een indexsprong aangegeven in de nakomeling.
+    \item We gaan ervan uit dat de trie \textbf{niet ledig} is.
+    \item \textbf{Zoeken.}
+    \begin{itemize}
+        \item Test altijd op het karakter aangegeven door de testindex.
+        \item Als dit leidt naar een nulpointer zit de string niet in de boom.
+        \item Als we in een blad komen, weten we niet zeker of dat dit de gezochte string is: karakters die niet getest zijn kunnen verschillen.
+        \item Dus in een blad wordt de zoekstring compleet vergeleken met de string die in het blad zit.
+    \end{itemize}
+    \item \textbf{Toevoegen.}
+    \begin{itemize}
+        \item Het kan zijn dat we een blad moeten toevoegen aan een implicite knoop.
+        \item We houden een \textbf{verschilindex} bij die de eerste plaats aanduidt waar de nieuwe string verschilt van de meest gelijkende string in de trie (deze met de langst gemeenschappelijke prefix).
+        \item De zoekoperatie eindigt altijd in een explicite knoop. Er zijn dan drie mogelijkheden als de nieuwe string nog niet in de trie zit:
+        \begin{enumerate}
+            \item \textbf{De expliciete knoop is geen blad}
+            \begin{enumerate}
+                \item \textbf{testindex $=$ verschilindex}
+                                                                           
+                De knoop heeft geen kind voor het karakter in de string aangeduid door de verschilindex. Er kan een blad toegevoegd worden voor de nieuwe string.
+                \item \textbf{testindex $>$ verschilindex}
+    
+                Er moet een expliciete knoop toegevoegd worden met als testindex de verschilindex. De knoop krijgt twee kinderen: de oude explicite knoop en het nieuwe blad. 
+            \end{enumerate}
+
+            \item  \textbf{De expliciete knoop is een blad}
+            
+            Beschouw een blad als een expliciete knoop met een oneindig grote testindex, dan heb je het vorige geval.
+        \end{enumerate}
+    \end{itemize}
+
+\end{itemize}
+
+
+
+\section{Ternaire zoekbomen}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{ternary_search_tree}
+    \caption{Een ternaire zoekboom voor de volgende woorden: \texttt{Hello, World, Kthulu, Wololo, No, We}. In deze versie hebben de woorden geen afsluitelement.}
+    \label{fig:ternary_search_tree}
+\end{figure}
+\begin{itemize}
+    \item Een alternatieve voorstelling van een meerwegstrie.
+    \alert De snelste implementatie van een meerwegstrie gebruikt een tabel van $m$ kindwijzers in elke knoop, wat onnodig veel geheugen vereist.
+    \item Men gebruikt dan een ternaire zoekboom waarvan elke knoop een \textbf{sleutelelement} bevat.
+    \item \textbf{Zoeken} vergelijkt telkens het sleutelelement met het element in de huidige knoop. Er zijn dan drie mogelijkheden:
+    \begin{itemize}
+        \item Is het zoeksleutelelement kleiner, dan zoeken we verder in de linkse deelboom, met \textbf{hetzelfde zoeksleutelelement}.
+        \item Is het zoeksleutelelement groter, dan zoeken we verder in de rechtse deelboom, met \textbf{hetzelfde zoeksleutelelement}.
+        \item Is het zoeksleutelelement gelijk, dan zoeken we verder in de middelste deelboom, met het \textbf{volgende zoeksleutelelement}.
+    \end{itemize}
+    \item Om te voorkomen dat een sleutel geen prefix is van elke andere sleutel, wordt er terug een afsluitkarakter gekozen.
+    \item Een zoeksleutel wordt gevonden wanneer we met zijn afsluitelement bij een knoop met datzelfde element uitkomen.
+    \item Een ternaire zoekboom behoudt de volgorde van de opgeslagen sleutels.
+    \item De \textbf{voordelen} van een ternaire zoekboom:
+    \begin{itemize}
+        \item Het past zich goed aan bij onregelmatig verdeelde zoeksleutels.
+        \begin{itemize}
+            \item De Unicode standaard bevat meer dan 1000 karakters, waarvan enkelen heel vaak gebruikt worden. In dit geval zouden meerwegstries ook te veel geheugen nodig hebben voor de tabellen met wijzers.
+        \end{itemize}
+        \item Zoeken naar afwezige sleutels is efficiënt. Er wordt maar vergelijken met slechts enkele sleutelelementen. Een normale binaire boom vereist $\Omega(\lg n)$ sleutelvergelijkingen.
+        \item Complexe zoekoperaties zijn mogelijk zoals sleutels opsporen die in niet meer dan één element verschillen van de zoeksleutel of zoeken naar sleutels waarvan bepaalde elementen niet gespecifieerd zijn.
+    \end{itemize}
+
+    \item Mogelijke \textbf{verbeteringen}:
+    \begin{itemize}
+        \item Het aantal knopen kan beperkt worden door een combinatie te maken van een trie en een patriciatrie: enkel sleutels opslaan in bladeren en knopen met maar één kind samenvoegen. 
+        \item De wortel kan vervangen worden door een meerwegstrieknoop, wat resulteert in een tabel van ternaire zoekbomen. 
+
+        Als het aantal mogelijke sleutelelementen $m$ niet te groot is, volstaat een tabel van $m^2$ ternaire zoekbomen, zodat er een zoekboom overeenkomt met elk eerste paar sleutelelementen.
+    \end{itemize}
 \end{itemize}
