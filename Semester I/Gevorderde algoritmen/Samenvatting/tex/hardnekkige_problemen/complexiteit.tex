@@ -9,7 +9,7 @@
 \end{figure}
 
 \begin{itemize}
-    \item Alle besproken algoritmen hadden een efficiënte oplossing. 
+    \item Alle besproken algoritmen hebben een efficiënte oplossing. 
     \item Hun uitvoeringstijd wordt begrensd door een \textbf{veelterm} zoals $O(n^2)$ of $O(n^2m)$.
     \item Sommige problemen hebben hebben geen efficiënte oplossing.
     \item Problemen worden onderverdeeld in \textbf{complexiteitsklassen}.
@@ -42,7 +42,7 @@
     \end{itemize}
     \item De klasse \textbf{NP} (\textbf{N}iet-deterministisch \textbf{P}olynomiaal) bevat alle problemen die door een niet-deterministische computer in polynomiale tijd kunnen opgelost worden en waarvan de oplossing kan gecontroleerd worden in polynomiale tijd.
     \begin{itemize}
-        \item Een niet-deterministische computer bevat hypothetisch een oneindig aantal processoren, waarvan er op tijdstap $t$, er $k$ kunnen aangesproken van worden. De processoren werken niet samen, maar kunnen wel hun deel van het probleem oplossen.
+        \item Een niet-deterministische computer bevat hypothetisch een oneindig aantal processoren, waarvan er op tijdstap $t$ er $k$ kunnen aangesproken van worden. De processoren werken niet samen, maar kunnen wel hun deel van het probleem oplossen.
         \item Elk probleem uit \textbf{P} behoort tot \textbf{NP}. 
         \item Niet geweten of er probleem in \textbf{NP} zit die niet tot \textbf{P} behoort $\rightarrow \textbf{P}$ vs $\textbf{NP}$ probleem (Figuur \ref{fig:P_vs_NP}). 
         \item Wel geweten dat er problemen zijn die niet in \textbf{NP} zitten, en dus ook niet in \textbf{P}.
@@ -167,15 +167,147 @@
 \end{itemize}
 
 \subsection{Graph Coloring}
+\begin{itemize}
+    \item \textbf{Vertex coloring}:
+    \begin{itemize}
+        \item Gegeven:
+        \begin{itemize}
+            \item Een ongerichte graaf.
+        \end{itemize}
+        \item Gevraagd:
+        \begin{itemize}
+            \item Kleur de knopen met een minimum aantal kleuren, zodat de eindknopen van elke verbinding een verschillende kleur hebben.
+        \end{itemize}
+        \item Voorbeeld:
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.25\textwidth]{vertex_coloring}
+            \caption{De knopen van een graaf kunnen op meerdere manieren gekleurd worden.}
+            \label{fig:vertex_coloring}
+        \end{figure}
+    \end{itemize}
+
+    \item \textbf{Edge coloring}:
+    \begin{itemize}
+        \item Gegeven:
+        \begin{itemize}
+            \item Een ongerichte graaf.
+        \end{itemize}
+        \item Gevraagd:
+        \begin{itemize}
+            \item Kleur de verbindingen met een minimum aantal kleuren, zodat verbindingen met dezelfde eindknoop een verschillende kleur hebben.
+        \end{itemize}
+        \item Voorbeeld:
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.25\textwidth]{edge_coloring}
+            \caption{Elke knoop heeft graad 3 dus zijn er hoogstens 4 kleuren nodig om de verbindingen te kleuren.}
+            \label{fig:edge_coloring}
+        \end{figure}
+    \end{itemize}
+    
+\end{itemize}
 
 
 \subsection{Clique}
+\begin{itemize}
+    \item Gegeven:
+    \begin{itemize}
+        \item Een ongerichte graaf.
+    \end{itemize}
+    \item Gevraagd:
+    \begin{itemize}
+        \item De grootste groep knopen die allemaal met elkaar verbonden zijn.
+    \end{itemize}
+    \item Voorbeeld:
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.5\textwidth]{clique}
+        \caption{Deze graaf bevat 23 1-knoop cliques (de knopen), 49 2-knoop cliques (door de verbindingen), 19 3-knoop cliques (lichtblauwe driehoeken) en 2 4-knoop cliques (donkerblauwe oppervlakken). In deze graaf zijn de twee 4-knoop de grootste groep van knopen.}
+        \label{clique}
+    \end{figure}
+    \begin{itemize}
+        \item Het SAT probleem kan herleidt worden tot clique.
+        \begin{itemize}
+            \item Voor elk voorkomen van een atoom in een uitspraak wordt twee knopen $(F_i, x_j)$ en $(F_i, \overline{x_j})$ aangemaakt.
+            \item Er is een verbinding tussen knopen die horen bij verschillende uitspraken als de atomen elkaar niet uitsluiten:
+            \begin{itemize}
+                \item $(F_i, x_k)$ met $(F_j, x_l)$ voor alle $k$ en $l$.
+                \item $(F_i, \overline{x_k})$ met $(F_i, \overline{x_l})$ voor alle $k$ en $l$.
+                \item $(F_i, x_k)$ met $(F_i, \overline{x_l})$ als $k \neq l$.
+            \end{itemize}
+        \end{itemize}
+        \item Een clique kan hoogstens $|\mathcal{F}|$ elementen bevatten.
+    \end{itemize}
+\end{itemize}
 
 \subsection{Independent set}
+\begin{itemize}
+    \item Gegeven:
+    \begin{itemize}
+        \item Een ongerichte graaf.
+    \end{itemize}
+    \item Gevraagd:
+    \begin{itemize}
+        \item De grootste groep knopen zonder gemeenschappelijke verbindingen.
+    \end{itemize}
+    \item Voorbeeld:
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.5\textwidth]{independent_set}
+        \caption{De blauwe knopen vormen de independent set.}
+        \label{fig:independent_set}
+    \end{figure}
+
+\end{itemize}
 
 \subsection{Hamilton path}
+\begin{itemize}
+    \item Gegeven:
+    \begin{itemize}
+        \item Een al dan niet gerichte graaf.
+    \end{itemize}
+    \item Gevraagd:
+    \begin{itemize}
+        \item Bestaat er een circuit dat elke knoop eenmaal bevat?
+    \end{itemize}
+    \item Voorbeeld:
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.5\textwidth]{hamilton_path}
+        \caption{Een tweedimensionale weergave van een Hamiltonpad door een dodecaëder. De zwarte stippelijnen zijn ook verbindingen.}
+        \label{fig:hamilton_path}
+    \end{figure}
+
+\end{itemize}
 
 \subsection{Minimum cover}
+\begin{itemize}
+    \item Gegeven:
+    \begin{itemize}
+        \item Een verzameling $\mathcal{S}$.
+        \item Een collectie deelverzamelingen $\mathcal{C}$ van $\mathcal{S}$.
+    \end{itemize}
+    \item Gevraagd:
+    \begin{itemize}
+        \item De kleinste deelverzameling $\mathcal{C}'$ van $\mathcal{C}$ zodat elk element van $\mathcal{S}$ tot minstens één van de deelverzamelingen uit $\mathcal{C}'$ behoort.
+    \end{itemize}
+    \item Voorbeeld:
+    \begin{itemize}
+        \item Dit kan efficiënt opgelost worden als de deelverzamelingen in $\mathcal{C}$ niet meer dan twee elementen bevatten.                      
+        \item Als elke $C \in \mathcal{C}$ exact twee elementen heeft is het equivalent met edge cover.
+        \item Als er $C \in \mathcal{C}$ zijn met slechts één element kunnen deze geschrapt worden en dan edge cover oplossen.
+        \item SAT kan ook herleidt worden tot minimum cover.
+        \begin{itemize}
+            \item Neem $\mathcal{S} = \mathcal{F} \cup \mathcal{X}$
+            \item Voor elke logische variabele $x_i$ zijn er twee elementen van $C$
+            \begin{align*}
+                C_{x_i} &= \{x_i \} \cup \{F \in \mathcal{F} : x_i \in F \}\\
+                C_{\overline{x_i}} &= \{x_i \} \cup \{F \in \mathcal{F} : \overline{x_i} \in F \}
+            \end{align*}
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
 
 \subsection{Subset sum}
 \begin{itemize}
@@ -191,11 +323,64 @@
 \end{itemize}
 
 \subsection{Partition}
+\begin{itemize}
+    \item Gegeven:
+    \begin{itemize}
+        \item Een zak van positieve gehele getallen.
+    \end{itemize}
+    \item Gevraagd:
+    \begin{itemize}
+        \item Kan die opgesplitst worden in twee deelverzamelingen, zodat de som van de grootten van de ene gelijk is aan de som van de grootten van de andere.
+    \end{itemize}
+\end{itemize}
 
-\subsection{TSP}
+\subsection{Travelling salesman problem}
+\begin{itemize}
+    \item Gegeven:
+    \begin{itemize}
+        \item Een aantal steden, en de afstand tussen elk paar steden.
+    \end{itemize}
+    \item Gevraagd:
+    \begin{itemize}
+        \item Het kortste circuit dat elke stad eenmaal bevat.
+    \end{itemize}
+\end{itemize}
 
 \subsection{Longest path}
+\begin{itemize}
+    \item Gegeven:
+    \begin{itemize}
+        \item Een gerichte of ongerichte gewogen graaf.
+        \item Twee knopen $s$ en $t$.
+    \end{itemize}
+    \item Gevraagd:
+    \begin{itemize}
+        \item De langste weg zonder lussen van $s$ naar $t$.
+    \end{itemize}
+\end{itemize}
 
 \subsection{Bin packing}
+\begin{itemize}
+    \item Gegeven:
+    \begin{itemize}
+        \item Een verzameling van $n$ objecten met afmetingen $s_1, \cdots, s_n$.
+        \item Een verzameling van $m$ bakken met capaciteiten $c_1, \cdots, c_m$.
+    \end{itemize}
+    \item Gevraagd:
+    \begin{itemize}
+        \item Sla alle objecten op in zo weinig mogelijk bakken 
+    \end{itemize}
+\end{itemize}
 
 \subsection{Knapsack}
+\begin{itemize}
+    \item Gegeven:
+    \begin{itemize}
+        \item Een verzameling van $n$ objecten met elk een afmeting.
+        \item Een knapzak met een zekere capaciteit.
+    \end{itemize}
+    \item Gevraagd:
+    \begin{itemize}
+        \item Steek objecten in de zak zonder zijn capaciteit te overschrijden, zodat hun totale waarde zo groot mogelijk is.
+    \end{itemize}
+\end{itemize}
