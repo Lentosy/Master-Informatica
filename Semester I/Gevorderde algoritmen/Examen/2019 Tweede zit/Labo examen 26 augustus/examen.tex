@@ -1,0 +1,42 @@
+\documentclass{article}
+\usepackage{amsmath}
+
+\title{Labo examen 26 augustus 2019}
+\author{}
+
+\begin{document}
+    \maketitle 
+
+
+    \section{Vraag 1}
+    Het bestand \texttt{sat3vertexcover.h} beschrijft klassen voor een SAT3 probleem. Een SAT3 uitspraak heeft een naam en bestaat uit drie atomen. Elk atoom is een string dat bestaat uit een naam uit exact drie letters/cijfers, gevolgd door + (waar) of - (onwaar). De uitspraken
+    \begin{align*}
+        \mathcal{F}_1 &= xx2 \vee \overline{xx5} \vee xxn \\
+        \mathcal{F}_2 &= \overline{xxn} \vee xx7 \vee xx9
+    \end{align*}
+    kunnen dan in vectorvorm genoteerd worden als:
+    \begin{align*}
+        \{& \\
+         & "F1" : \{"xx2+", "xx5-", "xxn+"\} \\
+         & "F2" : \{"xxn-", "xx7+", "xx9+"\} \\
+        \}
+    \end{align*}
+
+
+
+    Elk SAT3 probleem kan omgevormd tot een vertex cover probleem. Implementeer de methode $$\texttt{GraafmetKnoopData<string> geefVertexCoverProbleem() const}$$
+    die deze graaf opstelt. De nodige graafmethoden die gebruikt mogen worden bevinden zich in \texttt{graaf.h}.
+
+    \section{Vraag 2}
+    Het bestand \texttt{splayboomt.h} beschrijft een top-down splayboom. Implementeer de methode zigzag: 
+    \begin{align*}
+        \texttt{void zigzag(}&\texttt{Zoekboom<Sleutel>\& L,} \\
+                            &\texttt{Zoekboom<Sleutel>\&* Leind,} \\
+                            &\texttt{Zoekboom<Sleutel>\& R,} \\
+                            &\texttt{Zoekboom<Sleutel>\&* Reind,} \\
+                            &\texttt{bool kindnaarlinks})
+    \end{align*}
+
+
+
+\end{document}

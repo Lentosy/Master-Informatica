@@ -1,4 +1,136 @@
 \chapter{Koppelen}
+\begin{itemize}
+    \item Een \textbf{koppeling} in een \textbf{ongerichte graaf} is een deelverzameling van de verbindingen waarin elke knoop hoogstens éénmaal voorkomt
+\end{itemize}
 
 
 \section{Koppelen in tweeledige grafen}
+\begin{itemize}
+    \item Een \textbf{tweeledige graaf} heeft volgende eigenschappen:
+    \begin{itemize}
+        \item Een ongerichte graaf.
+        \item De knopen kunnen in twee deelverzameling $L$ en $R$ verdeeld worden.
+        \item Alle verbindingen bevatten als eindknopen steeds één uit $L$ en één uit $R$.
+    \end{itemize}
+    \item Kan bijvoorbeeld gebruikt worden om uit te voeren taken toe te wijzen aan uitvoerders. De verbindingen duiden aan welke taken een uitvoerder aankan.
+\end{itemize}
+
+\subsection{Ongewogen koppeling}
+\begin{itemize}
+    \item Een \textbf{maximale ongewogen koppeling} is een koppeling met het grootst aantal verbindingen waarbij de verbindingen geen gewichten hebben.
+    \item Er is een nauw verband met een maximale ongewogen koppelinge en de maximale stroom in stroomnetwerken.
+    \item De graaf wordt eerst omgevormd naar een stroomnetwerk:
+    \begin{itemize}
+        \item Maak van de ongerichte graaf eerst een gerichte graaf, door de originele verbindingen te vervangen door verbindingen van $L$ naar $R$.
+        \item Voeg een producent $p$ in, die naar alle knopen van $L$ verbonden wordt. 
+        \item Voeg een verbruiker $v$ in, waarnaar alle knopen uit $R$ naar verbonden worden.
+        \item Stel alle capaciteiten in op 1.
+        \item De maximale stroom zoeken in dit stroomnetwerk komt overeen met het grootste aantal verbindingen vinden, en dus de maximale ongewogen koppeling.
+    \end{itemize}
+    \item Een koppeling met $k$ verbindingen komt overeen met een gehele stroomverdeling met als netwerkstroom $k$.
+    \item Het getal $k$ is niet groter dan het aantal knopen in de kleinste van de twee verzamelingen $L$ en $R$, en is $O(n)$.
+\end{itemize}
+
+\section{Stabiele koppeling}
+\begin{itemize}
+    \item Gegeven één of twee verzamelingen van elementen.
+    \item Elk element van die verzamelingen heeft een gerangschikte voorkeurslijst van andere elementen.
+    \item De elementen moeten gekoppeld worden, rekening houdend met hun voorkeuren en zodanig dat de koppeling stabiel is.
+    \item Een \textbf{koppeling is onstabiel} wanneer ze twee niet met elkaar gekoppelde elementen bevat, die liever met elkaar zouden gekoppeld zijn dan in de huidige toestand te blijven.
+    \item Drie problemen:
+    \begin{enumerate}
+        \item \textbf{Stable marriage}
+        \begin{itemize}
+            \item Twee verzamelingen met dezelfde grootte.
+            \item De elementen worden \textit{mannen} en \textit{vrouwen} genoemd.
+            \item Elke man heeft een voorkeurslijst die alle vrouwen bevat.
+            \item Elke vrouw heeft een voorkeurslijst die alle mannen bevat.
+            \item Elke man \textbf{moet} gekoppeld worden aan een vrouw, zodanig dat de koppeling stabiel is.
+        \end{itemize}
+
+        \item \textbf{Hospitals/Residents}
+
+        \item \textbf{Stable roommates}
+    \end{enumerate}
+\end{itemize}
+
+\subsection{Stable marriage}
+\subsubsection{Het Gale-Shapley-algoritme}
+\begin{itemize}
+    \item Er is tenminste één stabiele koppeling bij een stable marriage probleem.
+    \item Er is een \textbf{actieve groep}, die aanzoeken stuurt naar de \textbf{passieve groep}.
+    \item Het \textbf{Gale-Shapley-algoritme} garandeert dat de actieve groep de beste elementen zal krijgen die het kan hebben in een stabiele koppeling.
+    \begin{itemize}
+        \item In de man-georiënteerde versie zijn de mannen de actieve groep, die aanzoeken sturen naar vrouwen, die dan de passieve groep zijn.
+        \item In de vrouw-georiënteerde versie zijn de vrouwen de actieve groep, die aanzoeken sturen naar mannen, die dan de passieve groep zijn.
+    \end{itemize}
+    \item Op elk moment in het algoritme is een persoon ofwel verloofd, ofwel vrij.
+    \item De personen in de actieve groep kunnen afwisselend verloofd of vrij is, maar de personen in de passieve groep blijven verloofd eens ze een aanzoek gekregen hebben (maar kan wel van partner veranderen).
+    \item Een aanzoek gebeurt door een persoon in de actieve groep die nog vrij is.
+    \begin{itemize}
+        \item Een aanzoek doen aan een persoon in de passieve groep die ook vrij is, moet verloven.
+        \item Een aanzoek doen aan een persoon in de passieve groep die al verloofd is, vergelijkt eerst met de huidige partner, en verwerpt de laagst geklasseerde. Als de persoon die verwerpt wordt de partner was, wordt die terug vrij.
+    \end{itemize}
+    \item Een persoon uit de actieve groep zal aanzoeken versturen in volgorde van de voorkeurslijst.
+
+\end{itemize}
+
+\subsubsection{Eigenschappen van de oplossing}
+\begin{itemize}
+    \item We veronderstellen dat mannen nu de actieve groep zijn, en vrouwen de passieve groep. 
+    \item Het algoritme stopt altijd en de oplossing is steeds stabiel.
+    \begin{itemize}
+        \item Geen enkele man wordt afgewezen door alle vrouwen want hij kan niet afgewezen worden door de laatste vrouw op zijn lijst.
+        \item In elke iteratie is er een aanzoek, en geen enkele man doet dat twee maal aan dezelfde vrouw. Er zijn maximaal $n^2$ aanzoeken.
+        \item De oplossing is stabiel: \begin{itemize}
+            \item Stel een man $m_1$ en een vrouw $v_1$.
+            \item $m_1$ verkiest $v_1$ boven zijn huidige vrouw $v_2$.
+            \item $v_1$ moet $m_1$ in het verleden dus hebben afgewezen (omdat $m_1$ zeker eerst aan $v_1$ een aanzoek zou sturen in plaats van $v_2$) omdat $v_1$ een andere man $m_2$ verkoos.
+            \item Er is geen ongekoppeld paar dat de stabiliteit van die koppeling in gevaar kan brengen, want $v_1$ zal enkel nog mannen aanvaarden die nog hoger gerangschikt staan dan $m_2$ (en dus ook $m_1$).
+        \end{itemize} 
+    \end{itemize}
+    \item \textbf{Elke mogelijke aanzoekvolgorde geeft dezelfde oplossing}.
+\end{itemize}
+
+\subsubsection{Implementatie}
+\begin{itemize}
+    \item Er zijn voorkeurslijsten voor de passieve groep, die de volgorde aanduiden van elk element van de actieve groep. Deze lijsten moeten opgesteld  worden en dat is $\Theta(n^2)$.
+    \item Er is ook een lijst van deelnemers in de actieve groep om snel te achterhalen wie nog aanzoeken kan doen.
+    \item Het algoritme stopt als het laatst overgebleven element uit de passieve groep een aanzoek heeft gekregen.
+    \item Elk van de $n-1$ elementen in de passieve groep kunnen $n$ aanzoeken krijgen, zodat in het slechtste geval het algoritme $\Theta(n^2)$ is.
+\end{itemize}
+
+\subsubsection{Uitbreidingen}
+\begin{itemize}
+    \item \textbf{Verzamelingen van ongelijke grootte} \begin{itemize}
+        \item Het aantal mannen $n_m$ is verschillend van het aantal vrouwen $n_v$.
+        \item Een koppeling wordt als onstabiel beschouwd als er een man $m$ en vrouw $v$ bestaan zodat:
+        \begin{enumerate}
+            \item $m$ en $v$ geen partners zijn.
+            \item $m$ ofwel ongekoppeld blijft, ofwel $v$ verkiest boven zijn partner.
+            \item $v$ ofwel ongekoppeld blijft, ofwel $m$ verkiest boven haar partner.
+        \end{enumerate}
+        \item Er wordt verondersteld dat iemand liever gekoppeld wordt dan alleen te moeten blijven.
+    \end{itemize}
+    \item \textbf{Onaanvaardbare partners} \begin{itemize}
+        \item De voorkeurslijsten moeten niet meer alle andere personen bevatten van de andere groep.
+        \item Stabiele koppeling kan nu gedeeltelijk zijn, zodat niet noodzakelijk iedereen een partner krijgt.
+        \item Een koppeling wordt als onstabiel beschouwd als er een man $m$ en vrouw $v$ bestaan zodat:
+        \begin{enumerate}
+            \item $m$ en $v$ geen partners zijn, maar wel aanvaardbaar zijn voor elkaar.
+            \item $m$ ofwel ongekoppeld blijft, ofwel $v$ verkiest boven zijn partner.
+            \item $v$ ofwel ongekoppeld blijft, ofwel $m$ verkiest boven haar partner.
+        \end{enumerate}
+    \end{itemize}
+    \item \textbf{Gelijke voorkeuren} \begin{itemize}
+        \item De voorkeurslijsten mogen meerdere personen bevatten met dezelfde rangschikking.
+        \item Er zijn dan drie gevallen om stabiliteit te definiëren:
+        \begin{enumerate}
+            \item \textbf{Superstabiliteit.} Een koppeling is onstabiel als er een man en een vrouw bestaan die geen partners zijn, en elkaar minstens evenzeer verkiezen als hun partners.
+
+            \item \textbf{Sterke stabiliteit.} Een koppeling is onstabiel als er een man een vrouw bestaan die geen partners zijn, waarvan de ene de andere strik verkiest boven de partner, en de andere de eerste minstens even graag heeft als de partner.
+
+            \item \textbf{Zwakke stabiliteit.} Een koppeling is onstabiel als er een man en een vrouw bestaan die geen partners zijn, en die elkaar strikt verkiezen boven hun partners.
+        \end{enumerate}
+    \end{itemize}
+\end{itemize}

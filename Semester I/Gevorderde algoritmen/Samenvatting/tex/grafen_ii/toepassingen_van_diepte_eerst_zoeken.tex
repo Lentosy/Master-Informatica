@@ -21,33 +21,32 @@
 
 \subsection{Sterk samenhangende componenten van een gerichte graaf}
 \begin{itemize}
-	\item Een \textbf{sterk samenhangende gerichte graaf} is een graaf waarbij er een weg tussen elk paar knopen in beide richtingen (niet perse dezelfde verbindingen) bestaat (cfr. figuur \ref{fig:sterk_samenhangende_graaf}).
+	\item Een \textbf{sterk samenhangende gerichte graaf} is een graaf waarbij er een weg tussen elk paar knopen in beide richtingen (niet perse dezelfde verbindingen) bestaat (cfr. figuur \ref{fig:sterk_samenhangende_graaf}). Een graaf die niet sterk samenhangend is, bestaat uit zo groot mogelijke sterk samenhangende componenten. 
 	\begin{figure}[ht]
 		\centering
 		\includegraphics[width=0.5\textwidth]{img/sterk_samenhangende_graaf}
-		\caption{Een sterk samenhangende graaf.}
+		\caption{De componenten van een sterk samenhangende graaf. Merk op dat in 'in beide richtingen' enkel betrekken heeft tot de richtingen die er zijn. De knopen van het component $A - B - E$ bevat maar één richting maar is wel sterk samenhangend, omdat er een weg bestaat tussen elk paar knopen in beide richtingen, maar hier is er maar één richting en is ook geldig. De knopen van het component $C - D - H$ is wel een geval van beide richtingen.}
 		\label{fig:sterk_samenhangende_graaf}
 	\end{figure}
 				
-	\item Een \textbf{zwak samenhangende gerichte graaf} is een graaf die niet sterk, maar toch samenhangend is indien de richtingen buiten beschouwing gelaten worden. Een graaf die niet sterk samenhangend is, bestaat uit zo groot mogelijke sterk samenhangende componenten. 
+	\item Een \textbf{zwak samenhangende gerichte graaf} is een graaf die niet sterk, maar toch samenhangend is indien de richtingen buiten beschouwing gelaten worden. 
 	\item Sommige algoritmen gaan ervan uit de een graaf sterk samenhangend is. Men moet dus eerst deze componenten bepalen, meestal via een \textbf{componentengraaf} die:
 	\begin{itemize}
 		\item een knoop heeft voor elk sterk samenhangend component,
 		\item en een verbinding van knoop $a$ naar knoop $b$ indien er in de originele graaf een verbinding van één van de knopen van $a$ naar één van de knopen van $b$ is. 
 	\end{itemize}
-	\item De componentgraaf bevat geen lussen, anders wil dit zeggen dat die knoop zelf nog opgesplitst zou kunnen worden in twee sterk samenhangende componenten.
+	\item De componentgraaf bevat geen lussen. Mocht dit wel zo zijn, zouden de knopen die de lus veroorzaken zich in hetzelfde sterk samenhangende component bevinden.
 	\item De sterk samenhangende componenten \textbf{in een gerichte graaf} kunnen bekomen worden met behulp van diepte-eerst zoeken (Kosaraju's Algorithm):
 	\begin{enumerate}
 		\item Stel de omgekeerde graaf op, door de richting van elke verbinding om te keren.
 		\item Pas diepte-eerst zoeken toe op deze omgekeerde graaf, waarbij de knopen in postorder genummered worden.
-		\item Pas diepte-eerst zoeken toe op de originele graaf, met als startknoop steeds de resterende knoop met het hoogste postordernummer. Het resultaat is een diepte-eerst bos, waarvan de bomen sterk samenhangende componenten zijn.
+		\item Pas diepte-eerst zoeken toe op de originele graaf, met als startknoop steeds de resterende knoop met het hoogste postordernummer. Het resultaat is een diepte-eerst bos, waarvan de bomen de knopen bevatten die elk sterk samenhangende componenten zijn.
 	\end{enumerate}
 	\item We willen aantonen dat de wortel van elke boom in beide richtingen verbonden is met elk van zijn knopen.  Op die manier is elke andere knoop in beide richtingen verbonden door de wortel en klopt het algoritme.
 	\begin{itemize}
 		\item Via de boomtakken is er een weg van de wortel $w$ naar elk van de knopen $u$ in de boom. 
 		\item Er is dan ook een weg van $u$ naar $w$ in de omgekeerde graaf.
 		\item De wortel $w$ is altijd een voorouder van $u$ in een diepte-eerst boom van de omgekeerde graaf.
-		item 
 		\item Hieruit volgt dat er een weg van $w$ naar $u$ bestaat in de omgekeerde graaf.
 		\item Er is dan ook een weg van $u$ naar $w$ in de originele graaf.
 	\end{itemize}
@@ -61,8 +60,8 @@
 \section{Dubbele samenhang van ongerichte grafen}
 Twee definities:
 \begin{itemize}
-	\item \textbf{Brug.} Een brug is een verbinding dat, indien deze wordt weggenomen, de graaf in twee deelgrafen opsplitst. Een graaf zonder bruggen noemt men \textbf{dubbel lijnsamenhangend}; als er tussen elk paar knopen minstens twee onafhankelijke wegen bestaan, dan is een graaf zeker dubbel lijnsamenhangend.
-	\item \textbf{Scharnierpunt.} Een scharnierpunt is een knoop dat, indien deze wordt weggenomen, de graaf in ten minste twee deelgrafen opsplitst. Een graaf zonder scharnierpunten noemt men \textbf{dubbel knoopsamenhangend} (of dubbel samenhangend). Een graaf met scharnierpunten kan onderverdeeld worden in dubbel knoopsamenhangende componenten. Als er tussen elk paar knopen twee onafhankelijke wegen bestaan, dan is de graaf dubbel knoopsamenhangend.
+	\item Een \textbf{brug} is een verbinding dat, indien deze wordt weggenomen, de graaf in twee deelgrafen opsplitst. Een graaf zonder bruggen noemt men \textbf{dubbel lijnsamenhangend}; als er tussen elk paar knopen minstens twee onafhankelijke wegen bestaan, dan is een graaf zeker dubbel lijnsamenhangend.
+	\item Een \textbf{scharnierpunt}  is een knoop dat, indien deze wordt weggenomen, de graaf in ten minste twee deelgrafen opsplitst. Een graaf zonder scharnierpunten noemt men \textbf{dubbel knoopsamenhangend} (of dubbel samenhangend). Een graaf met scharnierpunten kan onderverdeeld worden in dubbel knoopsamenhangende componenten. Als er tussen elk paar knopen twee onafhankelijke wegen bestaan, dan is de graaf dubbel knoopsamenhangend.
 \end{itemize}
 
 Scharnierpunten, dubbel knoopsamenhangende componenten, bruggen en dubbel lijnsamenhangende componenten kunnen opnieuw via diepte-eerst zoeken gevonden worden:
@@ -73,7 +72,7 @@ Scharnierpunten, dubbel knoopsamenhangende componenten, bruggen en dubbel lijnsa
 \end{enumerate}
 Diepte-eerst zoeken is $\Theta(n + m)$ voor ijle en $\Theta(n^2)$ voor dichte grafen.
 \section{Eulercircuit}
-Een eulercircuit is een \textbf{gesloten pad} in een graaf die alle \textbf{verbindingen} éénmaal bevat. 
+Een eulercircuit is een \textbf{gesloten pad} (begin- en eindknoop is dezelfde) in een graaf die \textbf{alle verbindingen} éénmaal bevat. 
 \subsection{Ongerichte grafen}
 
 \begin{figure}[ht]
@@ -94,6 +93,9 @@ Een eulercircuit is een \textbf{gesloten pad} in een graaf die alle \textbf{verb
 
 \begin{itemize}
 	\item Een Eulergraaf is een graaf met een eulercircuit. 
+	\begin{itemize}
+		\item Heeft als vereiste dat er geen knopen zijn met oneven graad (eigenschap 2).
+	\end{itemize}
 	\item Volgende eigenschappen zijn equivalent.
 	\begin{enumerate}
 		\item Een samenhangende graaf $G$ is een Eulergraaf.
@@ -111,6 +113,7 @@ Een eulercircuit is een \textbf{gesloten pad} in een graaf die alle \textbf{verb
 			\item Als een knoop $k$ voorkomt op een Eulercircuit, draagt dat twee bij tot zijn graad.
 			\begin{itemize}
 				\item Er is een verbinding nodig om de knoop te bereiken, en ook een verbinding om de knoop te verlaten.
+				\item Elke verbinding komt precies éénmaal voor op een Eulercircuit.
 			\end{itemize}
 		\end{itemize}
 		\item De verbindingen van $G$ kunnen onderverdeeld worden in lussen, waarbij elke verbinding slechts behoort tot één enkel lus.

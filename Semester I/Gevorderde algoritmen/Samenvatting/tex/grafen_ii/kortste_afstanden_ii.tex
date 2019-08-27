@@ -1,9 +1,13 @@
 \chapter{Kortste afstanden II}
 \begin{itemize}
-	\item Tradionteel kortste afstanden tussen twee knopen: algoritme van Dijkstra.
+	\item Traditioneel kortste afstanden tussen twee knopen: algoritme van Dijkstra.
 	\item Probleem:
 	\begin{itemize}
-		\item Dijkstra gebruikt het feit dat indien een pad naar A $\rightarrow$ C bestaat, er geen korter pad A $\rightarrow$ B $\rightarrow$ C kan zijn, daarom is het algoritme performant, maar er mogen dus geen negatieve verbindingen zijn. Indien B negatief zou zijn dan klopt Dijkstra niet.
+		\item Dijkstra gebruikt het feit dat indien een pad naar A $\rightarrow$ C bestaat met kost $K_{A, C}$, er geen korter pad A $\rightarrow$ B $\rightarrow$ C kan zijn met kost $K_{A, B} + K_{A, C}$, daarom is het algoritme performant, maar er mogen dus geen negatieve verbindingen zijn. Indien $K_{A, B}$ negatief zou zijn dan klopt Dijkstra niet want dan 
+
+		\begin{align*}
+			K_{A, B} + K{A, C} > K_{A, C}
+		\end{align*}
 	\end{itemize}
 	\item Volgende algoritmen hebben enkel betrekking tot \textbf{gerichte grafen}.
 
@@ -19,12 +23,12 @@ Dit algoritme werkt voor verbindingen met negatieve gewichten, iets wat het algo
 \end{itemize}
 
 Het algoritme berust op een belangrijke eigenschap: Indien een graaf geen negatieve lussen heeft, zullen de kortste wegen evenmin lussen hebben en hoogstens $n - 1$ verbindingen bevatten. Hieruit kan een recursief verband opgesteld worden tussen de kortste wegen met maximaal $k$ verbindingen en de kortste wegen met maximaal $k - 1$ verbindingen.
-$$d_i(k) = \min(d_i(k - 1), \min\limits_{j \in V} (d_j(k - 1) + g_{ij}))$$
+$$d_i(k) = \min(d_i(k - 1), \min\limits_{j \in V} (d_j(k - 1) + g_{ji}))$$
 met
 \begin{itemize}
 	\item $d_i(k)$ het gewicht van de kortste weg met maximaal $k$ verbindingen vanuit de startknoop naar knoop $i$,
-	\item $g_{ij}$ het gewicht van de verbinding $(j, i)$,
-	\item $j \in V$ elke buur $j$ van $i$.
+	\item $g_{ji}$ het gewicht van de verbinding $(j, i)$,
+	\item $j \in V$ is elke knoop $j$.
 \end{itemize}
 
 
@@ -115,6 +119,60 @@ Er bestaan \underline{twee goede implementaties}:
 						t_{ij}^{(k)} = t_{ij}^{(k - 1)} \hbox{ OF } \big(t_{ik}^{(k - 1)} \hbox{ EN } t_{kj}^{(k - 1)}\big) \qquad \hbox{voor } 1 \leq k \leq n
 					$$
 					\item $T^{(n)}$ is de gezochte burenmatrix.
+					\item Alle berekeningen kunnen in dezelfde tabel $T$ gebeuren. Er moet geen plaats voorzien zijn voor andere tabellen.
+
+					\item \textbf{Voorbeeld}
+					\begin{figure}[ht]
+						\centering
+						\includegraphics[width=0.5\textwidth]{warshall}
+						\caption{Een gerichte graaf met 6 knopen.}
+						\label{fig:warshall}
+					\end{figure}
+					\begin{itemize}
+						\item De initieële tabel $T^{(0)}$ is gewoon een kopie van de burenlijst van de graaf.
+						$$T^{(0)} = \begin{pmatrix}
+							1&1&1&0&0&0\\
+							0&1&0&1&0&1\\
+							0&0&1&0&1&0\\
+							0&0&0&1&0&0\\
+							0&0&0&0&1&1\\
+							0&0&1&1&0&1
+						\end{pmatrix}$$
+						\item De tabel $T^{(1)}$ geeft een uitbreiding van $T^{(0)}$, waarbij knoop $1$ een intermediaire knoop mag zijn in een weg naar knopen knopen. Het is logisch dat enkel knopen die $1$ als buur hebben een nieuwe weg kunnen vinden.
+						$$T^{(1)} = \begin{pmatrix}
+							1&1&1&1&0&1\\
+							0&1&0&1&0&1\\
+							0&0&1&0&1&0\\
+							0&0&0&1&0&0\\
+							0&0&0&0&1&1\\
+							0&0&1&1&0&1
+						\end{pmatrix}$$
+						\item De tabel $T^{(2)}$ geeft een uitbreiding van $T^{(1)}$, waarbij knoop $2$ een intermediaire knoop mag zijn in een weg naar twee knopen. Het is logisch dat enkel knopen die $2$ als buur hebben (in de nieuwe matrix $T^{(1)}$) een nieuwe weg kunnen vinden.
+						$$T^{(2)} = \begin{pmatrix}
+							1&1&1&1&1&1\\
+							0&1&0&1&0&1\\
+							0&0&1&0&1&0\\
+							0&0&0&1&0&0\\
+							0&0&0&0&1&1\\
+							0&0&1&1&1&1
+						\end{pmatrix}$$
+						\item Via diezelfde redenering wordt uiteindelijk $T^{(5)}$ bekomen, die de burenmatrix voorstelt van de transitieve sluiting.
+						$$T^{(5)} = \begin{pmatrix}
+							1&1&1&1&1&1\\
+							0&1&1&1&0&1\\
+							0&0&1&1&1&1\\
+							0&0&0&1&0&0\\
+							0&0&1&1&1&1\\
+							0&0&1&1&1&1
+						\end{pmatrix}$$
+						\item Figuur \ref{fig:warshall_solved} toont de transitieve sluiting.
+						\begin{figure}[ht]
+							\centering
+							\includegraphics[width=0.75\textwidth]{warshall_solved}
+							\caption{De transitieve sluiting van de graaf op figuur \ref{fig:warshall}. De transitieve sluiting bevat dezelfde verbindingen als de graaf (zwarte verbindingen) en ook de nieuwe verbindingen die de transitieve eigenschap vastleggen (rode verbindingen). }
+							\label{fig:warshall_solved}
+						\end{figure}
+					\end{itemize}
 				\end{itemize}
 				
 	\end{enumerate}

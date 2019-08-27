@@ -5,16 +5,24 @@
     \item Dit heet \textbf{radix search}.
     \item Meerdere soorten boomstructuren die radix search toepassen.
     \begin{itemize}
-        \item \textbf{Digitale zoekbomen}: deze bomen hebben als nadeel dat de zoeksleutels nie noodzakelijk in de volgorde voorkomen dat ze toegevoegd zijn.
-        \item \textbf{Tries}: tries houden wel rekening met de toevoegvolgorde.
+        \item \textbf{Digitale zoekbomen}: deze bomen hebben als nadeel dat de structuur van de boom afhankelijk is van de toevoegvolgorde.
+        \item \textbf{Tries}: de structuur van een trie is niet afhankelijk van de toevoegvolgorde.
         \item \textbf{Ternaire zoekbomen}: een alternatieve voorstelling van een meerwegstrie, die minder geheugen gebruikt en toch efficiënt blijft.
     \end{itemize}
     \alert Veronderstel dat geen enkele sleutel een prefix is van een ander.
 
     De sleutels \texttt{test} en \texttt{testen} zullen dus nooit samen voorkomen in de boom aangezien \texttt{test} een prefix is van \texttt{testen}. Dit is noodzakelijk: stel dat een langere sleutel reeds in de boom zit. Als de kortere sleutel gezocht wordt, of willen toevoegen, zullen er uiteindelijk geen sleutelelementen overblijven om ze te onderscheiden.
+
+    Dit kan opgelost worden door een speciaal karakter toe te voegen die in geen enkele sleutel zal voorkomen. Zo kunnen de sleutels \texttt{test\$} en \texttt{testen\$} wel samen voorkomen.
 \end{itemize}
 
 \section{Digitale zoekbomen}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{digital_search_tree}
+    \caption{Een digitale zoekboom voor zes sleutels: $A = 00001, S = 10011, E = 00101, R = 10010, C = 00011, H = 10100$, die ook in deze volgorde toegevoegd worden.}
+    \label{fig:digital_search_tree}
+\end{figure}
 \begin{itemize}
     \item Sleutels worden opgeslagen in de knopen.
     \item Zoeken en toevoegen verloopt analoog als een normale binaire zoekboom.
@@ -29,7 +37,7 @@
     \alert De zoekboom overlopen in inorder levert de zoeksleutels niet noodzakelijk in volgorde op.
     \begin{itemize}
         \item Sleutels in de linkerdeelboom van een knoop op diepte $i$ zijn zeker kleiner dan deze in de rechterdeelboom.
-        \item Maar, de sleutel van de knoop kan toch in beide deelbomen terechtkomen.
+        \item Maar, de sleutel van de knoop op diepte $i$ kan toch in beide deelbomen terechtkomen als hij later werd toegevoegd.
     \end{itemize}
     \item De hoogte van een digitale zoekboom wordt bepaald door het aantal bits van de langste sleutel.
     \item Performantie is vergelijkbaar met rood-zwarte bomen:
@@ -51,13 +59,13 @@
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{binary_trie}
-    \caption{Een voorbeeld van een binaire trie met opgeslagen sleutels $A$, $B$, $C$, $D$, $E$, $F$, $G$ en $H$. Elk van deze sleutels heeft een (willekeurige) bitrepresentatie die de individuele elementen van de sleutels voorstelt. De zoekweg van de sleutel $E$ wordt aangegeven door rode verbindingen.}
+    \caption{Een voorbeeld van een binaire trie met opgeslagen sleutels $A$, $B$, $C$, $D$, $E$, $F$, $G$ en $H$. Elk van deze sleutels heeft een (willekeurig gekozen) bitrepresentatie die de individuele elementen van de sleutels voorstelt. De zoekweg van de sleutel $E$ wordt aangegeven door rode verbindingen.}
     \label{fig:binary_trie}
 \end{figure}
 
 \begin{itemize}
     \item Zoekweg wordt bepaald door de opeenvolgende bits van de zoeksleutel.
-    \item Sleutels worden enkel opgeslaan in de bladeren.
+    \item Sleutels worden enkel opgeslaan in de bladeren, met als gevolg dat de structuur is onafhankelijk van de toevoegvolgorde van de sleutels.
     \begin{itemize}
         \item  De boom \textit{inorder} overlopen geeft de sleutels gerangschikt terug.
         \item  De zoeksleutel moet niet meer vergeleken worden met elke knoop op de zoekweg. 
@@ -72,7 +80,7 @@
             \item Indien de sleutels niet hetzelfde zijn, kunnen twee mogelijkheden voorkomen:
             \begin{enumerate}
                 \item \textbf{Het volgende bit verschilt.} Het blad wordt vervangen door een knoop met twee kinderen die de twee sleutels bevat.
-                \item \textbf{Een reeks van opeenvolgende bits is gelijk.} Het blad wordt vervangen door een reeks van inwendige knopen, zoveel als er gemeenschappelijke bits zijn. Bij het eerste verschillende krijgen we terug het eerste geval.
+                \item \textbf{Een reeks van opeenvolgende bits is gelijk.} Het blad wordt vervangen door een reeks van inwendige knopen, zoveel als er gemeenschappelijke bits zijn. Bij het eerste verschillende bit krijgen we terug het eerste geval.
             \end{enumerate}
         \end{itemize}
     \end{enumerate}
@@ -81,8 +89,7 @@
         \item Het aantal knopen is dan ook hoger dan het aantal sleutels.
         \item Een trie met $n$ gelijkmatige verdeelde sleutels heeft gemiddeld $n/\ln 2 \approx 1.44n$ inwendige knopen.
     \end{itemize}
-    \item De structuur is onafhankelijk van de toevoegvolgorde van de sleutels.
-    \item De sleutels in de zoekweg worden enkel getest op de bit die op dat niveau van toepassing is.
+
 \end{itemize}
 
 
@@ -103,10 +110,6 @@
         \item De boomhoogte wordt ook beperkt door de lengte van de langste opgeslagen sleutel.
         \item Er zijn gemiddeld $n/\ln m$ inwendige knopen.
         \item Het aantal wijzers per knoop is wel $mn \ln m$.
-    \end{itemize}
-    \item Wat als we toch willen toelaten dat een sleutel een prefix van een andere sleutel mag zijn?
-    \begin{itemize}
-        \item In een meerwegstrie kan dit opgelost worden door elke sleutel af te sluiten met een speciaal sleutelelement, dat in geen enkele andere sleutel voorkomt.
     \end{itemize}
     \alert Het grootste nadeel is dat meerwegstries veel geheugen gebruiken. Mogelijke verbeteringen zijn:
     \begin{itemize}
@@ -134,12 +137,12 @@
     \item Bij het \textbf{decoderen} is er een \textbf{prefixcode}. 
     \begin{itemize}
         \item Dit is een codering waarbij een \textbf{codewoord}, nooit het prefix van een ander codewoord kan zijn.
-        \item Een code is een mapping die elke letter van het alfabet afbeeldt op een codewoord. Bijvoorbeeld, de letters $A$, $B$, $C$ en $D$ kunnen volgende codewoorden krijgen:
+        \item Een codering is een mapping die elke letter van het alfabet afbeeldt op een codewoord. Bijvoorbeeld, de letters $A$, $B$, $C$ en $D$ kunnen volgende codewoorden krijgen:
         \begin{align*}
-            A &\rightarrow 0 \\
-            B &\rightarrow 1 \\
-            C &\rightarrow 01 \\
-            D &\rightarrow 11 \\
+            A &\rightarrow 10 \\
+            B &\rightarrow 1111 \\
+            C &\rightarrow 1110 \\
+            D &\rightarrow 01 \\
         \end{align*}
         \item Op die manier weten we dat het einde van een codewoord is bereikt zonder het begin van het volgende codewoord te moeten analyseren.
         \item Een typische prefixcode voor natuurlijke getallen schrijft het getal op in een 128-delig stelsel en elk cijfer wordt apart opgeslaan in een aparte byte. Bij het laatste cijfer wordt er 128 opgeteld, zodat de laatste byte een 1-bit heeft op de meest significante plaats.
@@ -211,7 +214,7 @@
     \item Dit heeft als eigenschap dat een getal $i$ geschreven kan worden als de som van verschillende Fibonaccigetallen zodanig dat er nooit twee getallen in de reeks worden gebruikt die onmiddellijke buren zijn van elkaar.
     \item Gegeven een getal $n$:
     \begin{itemize}
-        \item Overloop de Fibonaccireeks van klein naar groot en gebruik een éénbit voor elk getal dat in de berekende som voorkomt, en een nulbit voor alle andere getallen. Op het einde komt er altijd een éénbit. 
+        \item Overloop de Fibonaccireeks van klein naar groot en gebruik een éénbit voor elk getal dat in de berekende som voorkomt, en een nulbit voor alle andere getallen. Voeg daarna op het einde nog een éénbit toe.
         \item Een getal $n$ wordt voorgesteld door $k + 1$ bittekens.
     \end{itemize}
 \end{itemize}
@@ -226,8 +229,8 @@
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{huffman_coding}
-    \caption{Een visualisatie van huffmancodering, maar met een gewone binaire boom en \textbf{niet met een trie}. De te coderen tekst wordt weergegeven bij stap 1. 
-    In stap 2 wordt eerst elke letter wordt gesorteerd in een lijst bijgehouden (eigenlijk een bos van bomen) volgens zijn niet-stijgende frequenties $f_i$. Stap 2 tot 6 neemt dan altijd de twee minst frequente bomen en combineert ze om een nieuwe boom te bekomen. Die boom wordt terug in het bos gestoken. Stap 7 toont de werkelijke codering. Stap 8 toont de gecodeerde versie van de tekst in stap 1.}
+    \caption{Een visualisatie van huffmancodering. De te coderen tekst wordt weergegeven bij stap 1. 
+    In stap 2 wordt eerst elke letter gesorteerd in een lijst bijgehouden (eigenlijk een bos van bomen) volgens zijn niet-stijgende frequenties $f_i$. Stap 2 tot 6 neemt dan altijd de twee minst frequente bomen en combineert ze om een nieuwe boom te bekomen. Die boom wordt terug in het bos gestoken. Stap 7 toont de werkelijke codering. Stap 8 toont de gecodeerde versie van de tekst in stap 1.}
     \label{fig:huffman_coding}
 \end{figure}
 \begin{itemize}
@@ -291,7 +294,7 @@
     \item Een \textbf{Patriciatrie} (Practical Algorithm to Retrive Information Coded In Alphanumeric) verwijdert deze problemen door enkel \textbf{knopen met meer dan één kind te behouden}.
     \item Bij een gewone meerwegstrie kunnen knopen voorkomen met maar één kind.
     \item Zo een knoop kan weggelaten worden en zijn kind kan in de plaats gezet worden.
-    \item Twee gevolgende:
+    \item Twee gevolgen:
     \begin{enumerate}
         \item Als we in een kind komen, moeten we weten hoeveel voorouders er ontbreken. Dit lossen we op door een \textbf{testindex} in de knoop bijhouden, de index van het te testen karakter.
         \item De karakters die niet getest worden kunnen tot conflict leiden bij een zoekstring waarbij die karakters niet overeenkomen.
@@ -336,7 +339,7 @@
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\textwidth]{ternary_search_tree}
-    \caption{Een ternaire zoekboom voor de volgende woorden: \texttt{Hello, World, Kthulu, Wololo, No, We}. In deze versie hebben de woorden geen afsluitelement.}
+    \caption{Een ternaire zoekboom voor de volgende woorden: \texttt{Hello, World, Kthulu, Wololo, No, We, He, Worst}. In deze versie hebben de woorden geen afsluitelement. De blauwe knopen stellen het laatste karakter van elk woord voor, dus daar is een sleutel gevonden en daar zit de bijhorende data (getallen in dit geval).}
     \label{fig:ternary_search_tree}
 \end{figure}
 \begin{itemize}

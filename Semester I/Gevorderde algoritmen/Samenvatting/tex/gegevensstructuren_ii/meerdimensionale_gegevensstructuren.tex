@@ -4,7 +4,7 @@
     \item Gegevensstructuren moeten toelaten om op al die sleutels, of in een bereik van meerdere sleutels te zoeken.
     \item De meeste gegevensstructuren zijn efficiënt voor een klein aantal dimensies.
     \item De gegevens worden zo gemodelleert zodat ze een geometrische structuur vormen.
-    \item Elk gegeven is een punt in een meerdimensionale Euclidische ruimte.
+    \item Elke sleutel is een punt in een meerdimensionale Euclidische ruimte.
     \item Een meerdimensionaal punt zoeken is een speciaal geval van zoeken van alle punten in een meerdimensionale hyperrechthoek.
     \item Notatie:
     \begin{itemize}
@@ -83,7 +83,7 @@
     \begin{itemize}
         \item \textbf{Zoeken.}
         \begin{itemize}
-            \item De opeenvolgende punten vanuit de wortel worden gebruikt om de rechthoek te vinden waarn het punt zou moeten liggen.
+            \item De opeenvolgende punten vanuit de wortel worden gebruikt om de rechthoek te vinden waarin het punt zou moeten liggen.
         \end{itemize}
         \item \textbf{Toevoegen.}
         \begin{itemize}
@@ -102,18 +102,30 @@
     \begin{itemize}
         \item Stel $z$ de grootste zijde van de zoekruimte.
         \item De grootste zijde van een gebied op diepte $d$ is dan $\frac{z}{2^d}$. 
-        \item De maximale afstand tussen twee punten in dat gebied is $\frac{z\sqrt{k}}{2^d}$ (de lengte van de diagonaal in dat gebied).
+        \item De maximale afstand tussen twee punten in dat gebied is de lengte van de diagonaal in dat gebied
+        \begin{align*}
+            \sqrt{\bigg(\frac{z}{2^d}\bigg)^2 + \underset{k - 2}{\cdots} + \bigg(\frac{z}{2^d}\bigg)^2}  &= \sqrt{k\bigg(\frac{z}{2^d}\bigg)^2} \\
+                &= \frac{z\sqrt{k}}{2^d}
+        \end{align*} 
         \item Op elke diepte $d$ is 
         \begin{align*}
-            \frac{z\sqrt{k}}{2^d} \geq& a \\
-            d \leq& \lg\bigg(\frac{z}{a}\bigg) + \frac{\lg k}{2}
+            a   &\leq \frac{z\sqrt{k}}{2^d} \\
+            2^d &\leq \frac{z\sqrt{k}}{a} \\
+            d &\leq \lg\bigg(\frac{z\sqrt{k}}{a}\bigg) \\
+            d &\leq \lg\bigg(\frac{z}{a}\bigg) + \lg(\sqrt{k})\\
+            d &\leq \lg\bigg(\frac{z}{a}\bigg) + \frac{\lg k}{2}
         \end{align*}
         \item De hoogte $h$ is de maximale diepte van een inwendige knoop plus één:
-        $$h \leq \lg\bigg(\frac{z}{a}\bigg) + \frac{3}{2}$$
+        $$h \leq d + 1\leq  \lg\bigg(\frac{z}{a}\bigg) + \frac{\lg k}{2} + 1$$
     \end{itemize}
     \item Performantie:
     \begin{itemize}
-        \item \todo{???}
+        \item Op elk niveau bedekken de gebieden van de inwendige knopen de verzameling punten, en al deze gebieden bevatten punten.
+        \item Per niveau is het aantal inwendige knopen $O(n)$.
+        \item Het totaal aantal inwendige knopen $i$ in een boom met hoogte $h$ is $O(hn)$.
+        \item Elke inwendige knoop heeft 4 kinderen, zodat het aantal bladeren $3i + 1$ is.
+        \item Het aantal knopen is ook $O(hn)$.
+        \item De constructietijd van de boom is $O(hn)$.
     \end{itemize}
 \end{itemize}
 

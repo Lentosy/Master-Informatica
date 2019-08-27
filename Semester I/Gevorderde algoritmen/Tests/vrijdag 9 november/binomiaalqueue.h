@@ -9,6 +9,7 @@ template <class Sleutel, class Data>
 class BinomiaalKnoop {
     friend class BinomiaalBoom<Sleutel, Data>;
     friend class BinomiaalKnoop<Sleutel, Data>;
+public:
     BinomiaalKnoop(const Sleutel& s, const Data& d) : sleutel{s}, data{d} {}
     BinomiaalKnoop(const Sleutel&& s, const Data&& d) : sleutel{std::move(s)}, data{std::move(d)} {}
     Sleutel sleutel;
@@ -33,7 +34,7 @@ public:
 
         //methode 2
         for(int i = 0; i < ander.size(); i++){
-            if(andere[i]){ // moet ook nog operator[] implementeren dan? volgens mij geeft dit de i-de binomiaalboom terug
+            if(andere[i]){ // operator [i] geeft i-de binomiaalboom terug
                 Boom& carry = andere[i];
             }
             int j = i;

@@ -61,24 +61,22 @@ De belangrijke samenvoegbare heaps zijn: \textbf{Binomial queues} en \textbf{Pai
 \section{Pairing heaps}
 		\begin{itemize}
 			\item Een algemene boom waarvan de sleutels voldoen aan de heapvoorwaarde.
-			\item Elke knoop heeft een wijzer naar zijn linkerkind en rechterbroer (figuur \ref{fig:pairingheap_treeform} en \ref{fig:pairingheap}). Als verminderen van prioriteit moet ondersteund worden, heeft elke knoop als linkerkind een wijzer naar zijn ouder en als rechterkind een wijzer naar zijn linkerkind.
+			\item Elke knoop heeft een wijzer naar zijn linkerkind en rechterbroer (figuur \ref{fig:pairingheap} en \ref{fig:pairingheap_treeform}). Als verminderen van prioriteit moet ondersteund worden, heeft elke knoop als linkerkind een wijzer naar zijn ouder en als rechterkind een wijzer naar zijn linkerkind.
 		\end{itemize}
 		\begin{figure}[ht]
 			\centering
-			\begin{minipage}{.5\textwidth}
-				\centering
-				\includegraphics[width=\linewidth]{pairingheap_treeform}
-				\caption{Een pairing heap in boomvorm.}
-				\label{fig:pairingheap_treeform}
-			\end{minipage}%
-			\begin{minipage}{.5\textwidth}
+			\begin{minipage}{.49\textwidth}
 				\centering
 				\includegraphics[width=\linewidth]{pairingheap}
 				\caption{Een pairing heap.}
 				\label{fig:pairingheap}
 			\end{minipage}
-
-	
+			\begin{minipage}{.49\textwidth}
+				\centering
+				\includegraphics[width=\linewidth]{pairingheap_treeform}
+				\caption{Dezelfde pairing heap, maar in boomvorm.}
+				\label{fig:pairingheap_treeform}
+			\end{minipage}%
 		\end{figure}
 
 		De \underline{operaties} op een pairing heap.

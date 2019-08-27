@@ -33,7 +33,7 @@
         \item Een tabel voor maximaal $m$ pointers naar de kinderen van de knoop.
         \item Een tabel voor maximaal $m - 1$ sleutels, die stijgend gerangschikt zijn.
         \begin{itemize}
-            \item Er is ook een tabel die bijhorende informatie per sleutel bijhoudt.
+            \item Er is ook een tabel die bijbehorende informatie per sleutel bijhoudt.
             \item De $k$ geordende sleutels van de inwendige knoop verdelen het sleutelbereik in $k + 1$ deelgebieden.
             \item De sleutels uit de deelboom van het $i$-de kind $c_i$ liggen tussen de sleutels $s_{i - 1}$ en $s_i$.
         \end{itemize} 
@@ -128,7 +128,7 @@
             \item Daarna eventueel tot de wortel splitsen.
             \good Maar het aantal schijfoperaties per niveau is constant.
         \end{itemize}
-        \item Het totaal aantal schijfoperaties is dan $\Theta(h)$.
+        \item Het totaal aantal schijfoperaties is $\Theta(h)$.
         \item De totale performantie is dan $O(mh) = O(m \log_g n)$.
     \end{itemize}
    
@@ -152,8 +152,8 @@
             \item De sleutel wordt vervangen door zijn voorloper of opvolger.
             \item Als een knoop nu te weinig sleutels overhoudt, gebeurt er een \textbf{rotatie}.
             \begin{itemize}
-                \item De sleutel van zijn broer gaat naar zijn ouder.
-                \item De sleutel van de ouder gaat naar de knoop, die ook een kindwijzer van de broer overneemt.
+                \item Een sleutel van zijn broer gaat naar zijn ouder.
+                \item Een sleutel van de ouder gaat naar de knoop, die ook een kindwijzer van de broer overneemt.
                 \item Dit kan enkel als er een broer is die sleutels kan missen.
                 \item Als geen enkele broer een sleutel kan missen, wordt de knoop samengevoegd met een broer.
             \end{itemize}
@@ -214,12 +214,50 @@
 \begin{itemize}
     \item Het zoeken in de trie wordt geëlimineerd door de langst mogelijke prefix uit de trie als index te gebruiken in een hashtabel.
     \item Kortere prefixen komen overeen met meerdere tabelelementen die allemaal een verwijzing naar dezelfde pagina moet bevatten.
-    \item 
+    \item Implementatie:
+    \begin{itemize}
+        \item Er is een hashtabel die wijzers naar schijfpagina's bevat, waarbij elke schijfpagina maximaal $m$ sleutels met bijbehorende gegevens bevat.
+        \item De hashwaarden zijn gehele getallen, waarvan het bereik bepaald wordt door de breedte $w$ van een processorwoord.
+        \item De laatste $d$ bits van die getallen dienen als indices in de hashtabel, zodat de tabel $2^d$ elementen bevat.
+        \item De \textbf{globale diepte} is $d$ en is de lengte van het langste prefix in de trie.
+        \item Alle sleutels waarvan de hashwaarde met dezelfde $d$ bits eindigt komen bij hetzelfde tabelelement terecht.
+        \item Een pagina kan sleutels met hashwaarden bevatten waarvan de laatste $d$ bits verschillend zijn.
+        \item Het aantal bits $k$ is de \textbf{lokale diepte} en is het aantal waarmee al haar hashwaarden eindigen.
+    \end{itemize}
+    \item De \textbf{woordenboekoperaties:}
+    \begin{itemize}
+        \item \textbf{Zoeken.}
+        \begin{itemize}
+            \item Bereken de hashwaarde van de sleutel.
+            \item Zoek de overeenkomstige pagina via de hashtabel.
+            \item Zoek sequentieel in deze pagina.
+        \end{itemize}
+        \item \textbf{Toevoegen.}
+        \begin{itemize}
+            \item Als de pagina niet vol is moet gemiddeld helft van de elementen opgeschoven worden, maar dat is verwaarloosbaar.
+            \item Als de pagina vol is moet deze gesplitst worden.
+            \item Alle hashwaarden in die pagina beginnen met dezelfde $k$ bits.
+            \item Er wordt daarom gesplitst op het volgende bit $k + 1$. Alle elementen in de pagina waarbij die bit één is wordt overgebracht naar de nieuwe pagina.
+            \item De waarde van $k$ wordt één groter zowel in de nieuwe pagina als in de oude pagina.
+            \item De hashtabel moet ook aangepast worden.
+            \begin{itemize}
+                \item \textbf{Als $k$ kleiner was dan $d$:} de helft van de wijzers van de oude pagina moeten naar de nieuwe pagina wijzen.
+                \item \textbf{Als $k$ gelijk was aan $d$:} er was maar één wijzer naar de oude pagina. De waarde van $d$ moet ook met één toenemen en de grootte van de hashtabel moet \textbf{verdubbelt} worden.
+            \end{itemize}           
+        \end{itemize}
+        \item \textbf{Verwijderen.}
+        \begin{itemize}
+            \item Zien we niet.
+        \end{itemize}
+    \end{itemize}
+    \item Als er $n$ uniform verdeelde sleutels opgeslagen zijn, dan is de verwachtingswaarde van het aantal pagina's $n/(m\ln 2) \equiv 1.44n/m$.
+    
 \end{itemize}
 
 \subsubsection{Voorbeeld}
 \begin{itemize}
     \item Veronderstel een hashfunctie $h(k)$.
+    \item Een pagina heeft slechts plaats om één hashwaarde op te slaan.
     \item De eerste $i$ bits van elke hashwaarde wordt gebruikt als index in de hashtabel. 
     \item De waarde van $i$ is het kleinste getal zodanig dat elk item in de hashtabel uniek is.
     \item De volgende hashwaarden worden gebruikt:
@@ -237,8 +275,58 @@
         \label{fig:extendible_hashing_ex1}
     \end{figure}
     \begin{itemize}
-        \item Deze hashwaarden kunnen onderscheiden worden door het eerste bit.
+        \item Deze hashwaarden kunnen onderscheiden worden door het eerste bit, dus $d = 1$.
+        \item De hashtabel bevat nu twee elementen (figuur \ref{fig:extendible_hashing_ex1}), met twee wijzers: één naar pagina $A$ en één naar pagina $B$. 
+        \item De lokale diepte $k$ van beide elementen is gelijk aan $d$, $k = d = 1$.
+    \end{itemize}
+    \item \textbf{$k_3$ wordt toegevoegd.}
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.5\textwidth]{extendible_hashing_ex2}
+        \caption{}
+        \label{fig:extendible_hashing_ex2}
+    \end{figure}
+    \begin{itemize}
+        \item Er zijn niet genoeg bits om $k_3$ te onderscheiden van $k_1$.
+        \item Er wordt vergeleken op bit $k + 1$.
+        \item Er wordt een nieuwe pagina $C$ aangemaakt waarin de sleutel $k_3$ opgeslagen wordt.
+        \item Aangezien $k$ gelijk was aan $d$, verdubbelt de grootte van de hashtabel.              
     \end{itemize}
 \end{itemize}
 
 \subsection{Linear hashing}
+\begin{itemize}
+    \item Er wordt geen hashtabel gebruikt door ervoor te zorgen dat pagina's opeenvolgende adressen hebben.
+    \item De $d$ eindbits van de hashwaarde worden niet gebruikt als index, maar rechtstreeks als adres van een pagina.
+    \item Het gaat hier over \textbf{logische adressen}, die eenvoudig manipuleerbaar zijn en niet de \textbf{fysische adressen} die het besturingssysteem beheert.
+    \item Er zijn $2^d$ adressen en evenveel pagina's.
+    \item Als een pagina vol is wordt deze gesplitst, maar niet noodzakelijk de hele pagina.
+    \item Pagina's worden in sequentiële volgorde gesplitst, of ze nu vol zijn of niet.
+    \item Elke pagina die niet vol is (alle pagina's behalve de volle die het splitsen veroorzaakt heeft) krijgt een overflow pagina.
+    \item Als de pagina aan de beurt is om te splitsen, worden zijn gegevens verdeeld over zijn overflow pagina en de pagina zelf.
+    \item De \textbf{woordenboekoperaties:} 
+    \begin{itemize}
+        \item \textbf{Zoeken.}
+        \begin{itemize}
+            \item Bereken de hashwaarde van de sleutel.
+            \item We moeten echter weten hoeveel eindbits er nodig zijn om de pagina te adresseren.
+            \item Er wordt een variabele $p$ bijgehouden, die het adres van de volgende te splitsen pagina bijhoudt.
+            \item Het adres gevormd door de $d$ eindbits wordt vergeleken met $p$. 
+            \item Als $d < p$ dan is de gezochte pagina reeds gesplitst en moeten $d + 1$ eindbits gebruikt worden. Anders volstaan $d$ bits.
+            \item De sleutel kan in de pagina binair of lineair gezocht worden.
+        \end{itemize}
+        \item \textbf{Toevoegen.}
+        \begin{itemize}
+            \item Eerst wordt de juiste pagina gelokaliseerd.
+            \item Als de pagina vol zit moet ze gesplitst worden.
+            \item Splitsen gebeurt sequentieël zodat $p = 0$ in het begin.
+            \item $p$ wordt met één verhoogd tot alle $2^d$ pagina's gesplitst zijn.
+            \item De waarde van $d$ wordt dan verhoogd met één, en $p$ wordt terug 0.
+            \item Als pagina $p$ gesplitst wordt, is het adres van de nieuwe pagina $p + 2^d$.
+        \end{itemize}
+        \item \textbf{Verwijderen.}
+        \begin{itemize}
+            \item 
+        \end{itemize}
+    \end{itemize}                                                                                                                                                           
+\end{itemize}

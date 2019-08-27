@@ -4,7 +4,10 @@ class Tknoop;
 
 class Tboom : public unique_ptr<Tknoop> {
     using unique_ptr<Tknoop>::unique_ptr;
-    voed voegtoe(const std::string&);
+    voed voegtoe(const std::string&) {
+        Tboom* huidig = this;
+        
+    }
     static char afsluitkarakter;
 }
 
