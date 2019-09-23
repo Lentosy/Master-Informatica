@@ -1,0 +1,28 @@
+\documentclass{report}
+\usepackage{ugentstyle}
+
+\begin{document}
+	\maketitle{Handleiding - Pointers}
+	\tableofcontents
+
+	\chapter{Pointers}
+	Een pointer wijst naar een gegeven van een welbepaald type. Een variabeledeclaratie zonder pointers gebeurt als volgt:
+	\begin{lstlisting}
+  int g = 5;
+	\end{lstlisting}
+	De waarde van deze variabele bevindt zich ergens in het geheugen, dus het adres van deze variabele is bekend. Het adres van een variabele opgraven gebeurd met de $\&$ operator. Om dit adres op te slaan in een variabele worden pointers gebruikt. Deze worden voorgesteld met de dereferentieoperator *:
+	\begin{lstlisting}
+  int* pg = &g;
+	\end{lstlisting}
+	De equivalentie kan aangetoond worden door de variabelen uit te schrijven, die volgende uitvoer genereerd (Het effectieve adres zal natuurlijk altijd anders zijn):
+	\begin{lstlisting}
+  std::cout << g << " - " << *pg << " - " << &g << " - " << pg <<  "\n";
+  (output) 5 - 5 - 00EFF940 - 00EFF940
+	\end{lstlisting}
+	
+	De pointer wijst nu naar een bepaalde variabele, maar de waarde die deze variabele heeft kan nog steeds aangepast worden:
+	\begin{lstlisting}
+  *pg = 9;
+	\end{lstlisting}
+\end{document}
+
