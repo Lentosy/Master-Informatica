@@ -12,7 +12,7 @@ int ZoekBoom<Sleutel, Data>::geefDiepte() const {
 
 
 /*
-spiegeloperatie wordt via 'rotatieLinks' in één keer gedaan.
+spiegeloperatie wordt via 'rotatieLinks' in ï¿½ï¿½n keer gedaan.
 als je roteert naar rechts: geefkind(rotatielinks)   geeft dan het rechterkind
 */
 template<class Sleutel, class Data>
@@ -52,6 +52,7 @@ void ZoekBoom<Sleutel, Data>::roteer(Richting richting) {
 */
 template<class Sleutel, class Data>
 void ZoekBoom<Sleutel, Data>::maakOnevenwichtig(Richting richting) { 
+
 
 	bool rotatieLinks = richting == Richting::LINKS ? true : false;
 	ZoekBoom<Sleutel, Data>* huidige = this;

@@ -132,7 +132,7 @@ void ZoekBoom<Sleutel, Data>::teken(const char* bestandsnaam) {
 	assert(uit);
 	int knoopteller = 0;//knopen moeten een eigen nummer krijgen.
 	uit << "digraph {\n";
-	this->tekenrec(uit, knoopteller);
+	this->tekenrec(uit, knoopteller); //C26444 error omdat de returnwaarde van de functie niet gebruikt wordt (enkel voor de wortel)
 	uit << "}";
 }
 
