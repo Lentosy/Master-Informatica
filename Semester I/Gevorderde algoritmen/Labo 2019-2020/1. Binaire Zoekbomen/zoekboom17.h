@@ -48,11 +48,13 @@ public:
 	int geefDiepte() const;
 	void roteer(Richting richting);
 
-	// Maakt ofwel een rechts-onevenwichtige of links-onevenwichtige boom.
+	// Maakt ofwel een rechts-onevenwichtige of links-onevenwichtige boom
 	void maakOnevenwichtig(Richting richting);
-
+	// maakt de boom zo evenwichtig mogelijk
 	void maakEvenwichtig();
-	// geefBoomBovenKnoop: gegeven een knooppointer, wele boom wijst naar de knoop
+
+
+	// geefBoomBovenKnoop: gegeven een knooppointer, welke boom wijst naar de knoop
 	// preconditie: knoop moet een naar een geldige knoop wijzen.
 	ZoekBoom<Sleutel, Data>* geefBoomBovenKnoop(ZoekKnoop<Sleutel, Data>& knoopptr);
 	void voegtoe(const Sleutel& sleutel, const Data& data, bool dubbelsToestaan = false);
@@ -87,9 +89,6 @@ public:
 	Implementatie
 
 *****************************************************************************/
-
-
-
 template <class Sleutel, class Data>
 void ZoekBoom<Sleutel, Data>::inorder(std::function<void(const ZoekKnoop<Sleutel, Data>&)> bezoek) const {
 	if (*this) {
