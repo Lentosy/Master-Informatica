@@ -2,7 +2,8 @@
 #include <iostream>
 #include <ctime>
 #include <exception>
-
+#include <cassert>
+#include <sys/stat.h>
 
 
 // Geeft de boom die op de figuur van de roteeroperatie staat
@@ -30,19 +31,84 @@ Boom<int, int> geefRandomBoom(int aantalKnopen = 10){
 // Enkel mogelijk als dot programma beschikbaar is
 
 template<class Sleutel, class Data>
-void tekenBoomEnToon(Boom<Sleutel, Data>& Boom){
-	Boom.teken("Boom.dot");
-	system("dot -Tpng Boom.dot -o Boom.jpg && Boom.jpg");
+void tekenBoomEnToon(Boom<Sleutel, Data>& boom){
+	boom.teken("boom.dot");
+	system("dot -Tpng boom.dot -o boom.jpg && boom.jpg");
 }
 
 
 
 void testRotaties(){
+	/* VOORBEELD VAN INTRANET */ 
 	Boom<int, char> boom1 = geefIntranetBoom(); 
-	Boom<int, char> boom2 = geefIntranetBoom(); 
-	if(boom1 == boom2){
-		std::cout << "equal";
-	}
+	Boom<int, char> boom2;
+	boom2.voegtoe(3, 'c');
+	boom2.voegtoe(2, 'a');
+	boom2.voegtoe(5, 'p');
+	boom2.voegtoe(4, 'b');
+	boom2.voegtoe(6, 'g');
+	boom1.roteer(Richting::RECHTS);
+	assert(boom1 == boom2);
+	boom1.roteer(Richting::LINKS);
+	assert(boom1 == geefIntranetBoom());
+
+	/* EIGEN VOORBEELD */
+	Boom<int, int> boom3;
+	boom3.voegtoe(8, 0);
+	boom3.voegtoe(5, 0);
+	boom3.voegtoe(9, 0);
+	boom3.voegtoe(3, 0);
+	boom3.voegtoe(7, 0);
+	boom3.voegtoe(4, 0); // We gaan deze laatste knoop tot de wortel roteren, zoals een splayboom en elk tussenresultaat wordt gecontroleerd of deze de juiste boom oplevert
+
+	Boom<int, int> boom3Stap1;
+	boom3Stap1.voegtoe(8, 0);
+	boom3Stap1.voegtoe(5, 0);
+	boom3Stap1.voegtoe(9, 0);
+	boom3Stap1.voegtoe(4, 0);
+	boom3Stap1.voegtoe(7, 0);
+	boom3Stap1.voegtoe(3, 0);
+
+	boom3->geefKind(true)->geefKind(true).roteer(Richting::LINKS);
+	assert(boom3 == boom3Stap1);
+
+	boom3.teken("dot/boom3-1-actual.dot");
+	boom3Stap1.teken("dot/boom3-1-expected.dot");
+	system("dot -Tpng dot/boom3-1-actual.dot -o dot/boom3-1-actual.jpg");
+	system("dot -Tpng dot/boom3-1-expected.dot -o dot/boom3-1-expected.jpg");
+	
+	Boom<int, int> boom3Stap2;
+	boom3Stap2.voegtoe(8, 0);
+	boom3Stap2.voegtoe(4, 0);
+	boom3Stap2.voegtoe(9, 0);
+	boom3Stap2.voegtoe(3, 0);
+	boom3Stap2.voegtoe(5, 0);
+	boom3Stap2.voegtoe(7, 0);
+	
+	boom3->geefKind(true).roteer(Richting::RECHTS);
+	assert(boom3 == boom3Stap2);
+
+	boom3.teken("dot/boom3-2-actual.dot");
+	boom3Stap2.teken("dot/boom3-2-expected.dot");
+	system("dot -Tpng dot/boom3-2-actual.dot -o dot/boom3-2-actual.jpg");
+	system("dot -Tpng dot/boom3-2-expected.dot -o dot/boom3-2-expected.jpg");
+
+	Boom<int, int> boom3Stap3;
+	boom3Stap3.voegtoe(4, 0);
+	boom3Stap3.voegtoe(3, 0);
+	boom3Stap3.voegtoe(8, 0);
+	boom3Stap3.voegtoe(5, 0);
+	boom3Stap3.voegtoe(9, 0);
+	boom3Stap3.voegtoe(7, 0);
+
+	boom3.roteer(Richting::RECHTS);
+	assert(boom3 == boom3Stap3);
+
+	boom3.teken("dot/boom3-3-actual.dot");
+	boom3Stap3.teken("dot/boom3-3-expected.dot");
+	system("dot -Tpng dot/boom3-3-actual.dot -o dot/boom3-3-actual.jpg");
+	system("dot -Tpng dot/boom3-3-expected.dot -o dot/boom3-3-expected.jpg");
+
 }
 
 int main(void) {

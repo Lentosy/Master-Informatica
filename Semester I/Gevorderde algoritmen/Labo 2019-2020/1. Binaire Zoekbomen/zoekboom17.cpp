@@ -42,35 +42,19 @@ Boom<Sleutel, Data>::Boom(const Boom<Sleutel, Data>& ander) {
 
 template <class Sleutel, class Data>
 bool operator==(const Boom<Sleutel, Data>& lhs, const Boom<Sleutel, Data>& rhs) {
-	if(lhs.geefDiepte() != rhs.geefDiepte()){
+	if(!lhs && !rhs){
+		return true;
+	}
+
+	if(!lhs || !rhs){
 		return false;
 	}
 
-	// inorder overlopen van beide bomen moet dezelfde gesorteerde sleutelverzameling opleveren
-	std::vector<std::pair<Sleutel, Data>> lhsKnopen;
-	std::vector<std::pair<Sleutel, Data>> rhsKnopen;
-
-	lhs.inorder([&lhsKnopen](const Knoop<Sleutel, Data>& knoop){
-		lhsKnopen.push_back(std::make_pair(knoop.sleutel, knoop.data));
-	});
-
-	rhs.inorder([&rhsKnopen](const Knoop<Sleutel, Data>& knoop){
-		rhsKnopen.push_back(std::make_pair(knoop.sleutel, knoop.data));
-	});
-
-	if(lhsKnopen.size() != rhsKnopen.size()){
-		return false;
-	}
-
-	int i = 0;
-	while(i < lhsKnopen.size() && lhsKnopen[i] == rhsKnopen[i]){
-		i++;
-	}
-
-	if(i != lhsKnopen.size()){
-		return false;
-	}
-	return true;
+	return (
+		lhs->sleutel == rhs->sleutel
+		&& lhs->links == rhs->links 
+		&& lhs->rechts == rhs->rechts
+		);
 }
 
 

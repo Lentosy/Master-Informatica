@@ -49,6 +49,12 @@
         "xutility": "cpp",
         "ctime": "cpp",
         "set": "cpp",
-        "xtree": "cpp"
+        "xtree": "cpp",
+        "iomanip": "cpp",
+        "iterator": "cpp",
+        "map": "cpp",
+        "stack": "cpp",
+        "xlocmon": "cpp",
+        "xloctime": "cpp"
     }
 }
