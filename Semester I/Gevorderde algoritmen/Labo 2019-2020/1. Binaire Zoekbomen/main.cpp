@@ -6,8 +6,8 @@
 
 
 // Geeft de boom die op de figuur van de roteeroperatie staat
-ZoekBoom<int, char> geefIntranetBoom() {
-	ZoekBoom<int, char> boom;
+Boom<int, char> geefIntranetBoom() {
+	Boom<int, char> boom;
 	boom.voegtoe(5, 'p');
 	boom.voegtoe(3, 'c');
 	boom.voegtoe(2, 'a');
@@ -17,9 +17,9 @@ ZoekBoom<int, char> geefIntranetBoom() {
 }
 
 // Genereert een willekeurige boom waarbij de sleutel een willekeurig getal is en de data de positie aanduidt wanneer deze knoop toegevoegd werd. Duplicatie sleutels zijn toegestaan
-ZoekBoom<int, int> geefRandomBoom(int aantalKnopen = 10){
+Boom<int, int> geefRandomBoom(int aantalKnopen = 10){
 	srand(time(nullptr));
-	ZoekBoom<int, int> boom;
+	Boom<int, int> boom;
 	for(int i = 0; i < aantalKnopen; i++){
 		boom.voegtoe(rand() % aantalKnopen, i, true);
 	}
@@ -30,24 +30,43 @@ ZoekBoom<int, int> geefRandomBoom(int aantalKnopen = 10){
 // Enkel mogelijk als dot programma beschikbaar is
 
 template<class Sleutel, class Data>
-void tekenBoomEnToon(ZoekBoom<Sleutel, Data>& boom){
-	boom.teken("boom.dot");
-	system("dot -Tpng boom.dot -o boom.jpg && boom.jpg");
+void tekenBoomEnToon(Boom<Sleutel, Data>& Boom){
+	Boom.teken("Boom.dot");
+	system("dot -Tpng Boom.dot -o Boom.jpg && Boom.jpg");
+}
+
+
+
+void testRotaties(){
+	Boom<int, char> boom1 = geefIntranetBoom(); 
+	Boom<int, char> boom2 = geefIntranetBoom(); 
+	if(boom1 == boom2){
+		std::cout << "equal";
+	}
 }
 
 int main(void) {
+	testRotaties();
+
+	/*
 	try{
-		ZoekBoom<int, char> boom = geefIntranetBoom();
-		boom.maakEvenwichtig();
-		tekenBoomEnToon(boom);
+		Boom<int, char> boom = geefIntranetBoom(); 
+		Boom<int, char> boomCopy = boom;
+		boomCopy.roteer(Richting::RECHTS);
+		std::cout << boomCopy.repOK() << "\n";
+		tekenBoomEnToon(boomCopy);
 	} catch(std::exception& e){
 		std::cout << e.what();
-	}
-	
-
-
-	
-	
-
+	}*/
 	return 0;
-}
+}		
+
+
+
+		// Welke constructoren/assignment operators worden nu opgeroepen?
+
+		//Boom<int, int> boom1 = geefRandomBoom(5); // MOVE CONSTRUCTOR (een return value van een functie is een r-value en wordt altijd gemoved. Het is de move constructor want object boom1 wordt voor de eerste keer aangemaakt)
+		//Boom<int, int> boom2 = boom1; 			// COPY CONSTRUCTOR
+		//boom1 = boom2 							// COPY ASSIGNMENT  
+		//Boom<int, int> boom3 = std::move(boom1); 	// MOVE CONSTRUCTOR (want object boom3 wordt voor de eerste keer aangemaakt)
+		//boom1 = std::move(boom3); 				// MOVE ASSIGNMENT  (want object boom1 bestaat al)

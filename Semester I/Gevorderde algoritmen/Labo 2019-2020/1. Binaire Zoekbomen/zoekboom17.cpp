@@ -1,11 +1,84 @@
 #include "zoekboom17.h"
 #include <stdexcept>
+#include <queue>
+#include <vector>
+
+
+template<class Sleutel, class Data>
+Boom<Sleutel, Data>::Boom(Boom<Sleutel, Data>&& ander) : std::unique_ptr<Knoop<Sleutel,Data>>(std::move(ander)) { }
+
+
+template<class Sleutel, class Data>
+Boom<Sleutel, Data>& Boom<Sleutel, Data>::operator=(Boom<Sleutel, Data>&& ander){
+	std::unique_ptr<Knoop<Sleutel, Data>>::operator=(std::move(ander));
+	return *this;
+}
+
+// De copy constructor
+template<class Sleutel, class Data>
+Boom<Sleutel, Data>::Boom(const Boom<Sleutel, Data>& ander) {
+	// De sleutels in level-order toevoegen zal dezelfde boom opleveren.
+	// -> breedte eerst toevoegen
+	
+	// waarom moet het type van de queue een pointer naar een const boom zijn ipv reference naar const boom?
+	//  -> de elementen van een container moeten ASSIGNABLE zijn, en een referentie is dit niet (kan opgelost worden met reference_wrapper klasse, maar onnodig imo)
+	std::queue<const Boom<Sleutel, Data>*> wachtrij; 
+	wachtrij.push(&ander);
+
+	while(!wachtrij.empty()){
+		const Boom<Sleutel, Data>* knoop = wachtrij.front();
+		wachtrij.pop();
+		this->voegtoe((*knoop)->sleutel, (*knoop)->data);
+		
+		if((*knoop)->links){
+			wachtrij.push(&((*knoop)->links));
+		}
+
+		if((*knoop)->rechts){
+			wachtrij.push(&((*knoop)->rechts));
+		}
+	}
+}
+
+template <class Sleutel, class Data>
+bool operator==(const Boom<Sleutel, Data>& lhs, const Boom<Sleutel, Data>& rhs) {
+	if(lhs.geefDiepte() != rhs.geefDiepte()){
+		return false;
+	}
+
+	// inorder overlopen van beide bomen moet dezelfde gesorteerde sleutelverzameling opleveren
+	std::vector<std::pair<Sleutel, Data>> lhsKnopen;
+	std::vector<std::pair<Sleutel, Data>> rhsKnopen;
+
+	lhs.inorder([&lhsKnopen](const Knoop<Sleutel, Data>& knoop){
+		lhsKnopen.push_back(std::make_pair(knoop.sleutel, knoop.data));
+	});
+
+	rhs.inorder([&rhsKnopen](const Knoop<Sleutel, Data>& knoop){
+		rhsKnopen.push_back(std::make_pair(knoop.sleutel, knoop.data));
+	});
+
+	if(lhsKnopen.size() != rhsKnopen.size()){
+		return false;
+	}
+
+	int i = 0;
+	while(i < lhsKnopen.size() && lhsKnopen[i] == rhsKnopen[i]){
+		i++;
+	}
+
+	if(i != lhsKnopen.size()){
+		return false;
+	}
+	return true;
+}
+
 
 /*
-* De diepte van een binaire zoekboom is gelijk aan het aantal knopen op het pad van de wortel naar de diepste knoop. Een lege boom krijgt als diepte -1.
+* De diepte van een binaire Boom is gelijk aan het aantal knopen op het pad van de wortel naar de diepste knoop. Een lege boom krijgt als diepte -1.
 */
 template<class Sleutel, class Data>
-int ZoekBoom<Sleutel, Data>::geefDiepte() const {
+int Boom<Sleutel, Data>::geefDiepte() const {
 	if (*this) {
 		return std::max((*this)->links.geefDiepte(), (*this)->rechts.geefDiepte()) + 1;
 	}
@@ -17,7 +90,7 @@ int ZoekBoom<Sleutel, Data>::geefDiepte() const {
 Een rotatie behoudt de inorder volgorde van de sleutels zodat de representatie van de boom nog steeds geldig is. De roteeroperatie wordt gebruikt om een boom evenwichtig te maken. Er is zowel een rotatie naar links als naar rechts gedefinieerd, maar dit is slechts het spiegelbeeld van elkaar zodat dit met een bool geïmplementeerd kan worden. De roteeroperatie is O(1).
 */
 template<class Sleutel, class Data>
-void ZoekBoom<Sleutel, Data>::roteer(Richting richting) {
+void Boom<Sleutel, Data>::roteer(Richting richting) {
 	bool rotatieLinks = (richting == Richting::LINKS);
 
 	// Preconditie: de wortel en nodig kind bestaan
@@ -29,9 +102,9 @@ void ZoekBoom<Sleutel, Data>::roteer(Richting richting) {
 	}
 	// In totaal moeten er zes pointers verplaatst worden. Omdat er enkel move operaties nodig zijn is de roteeroperatie O(1)
 	// Het te roteren kind wordt apart bijgehouden
-	ZoekBoom<Sleutel, Data> c = std::move((*this)->geefKind(!rotatieLinks));
+	Boom<Sleutel, Data> c = std::move((*this)->geefKind(!rotatieLinks));
 	// 1. Verhang beta zodat die het (linker|rechter)kind wordt van p, afhankelijk of de rotatie naar (rechts|links) uitgevoerd wordt
-	ZoekBoom<Sleutel, Data>& beta = std::move(c->geefKind(rotatieLinks)); // beta is het (linker|rechter) kind van c, afhankelijk of de rotatie naar (links|rechts) uitgevoerd wordt
+	Boom<Sleutel, Data>& beta = std::move(c->geefKind(rotatieLinks)); // beta is het (linker|rechter) kind van c, afhankelijk of de rotatie naar (links|rechts) uitgevoerd wordt
 	(*this)->geefKind(!rotatieLinks) = std::move(beta); // kan ook in 1 operatie
 
 	// 2. Verhang p zodat deze het (linker|rechter)kind wordt van c, afhankelijk of de rotatie naar (links|rechts) uitgevoerd wordt 
@@ -58,9 +131,7 @@ void ZoekBoom<Sleutel, Data>::roteer(Richting richting) {
 De meest onevenwichtige boom is een boom waarbij elke knoop enkel een linkerkind heeft, of enkel een rechterkind. Deze representatie is dan een gelinkte lijst, zodat de operaties op de boom O(n) worden in plaats van O(log n). Het algoritme zelf is O(n). 
 */
 template<class Sleutel, class Data>
-void ZoekBoom<Sleutel, Data>::maakOnevenwichtig(Richting richting) { 
-	// BUG: een boom onevenwichtig maken is geen probleem, maar een LINKS onevenwichtig boom RECHTS onevenwichtig maken werkt niet, de boom verandert helemaal niet
-
+void Boom<Sleutel, Data>::maakOnevenwichtig(Richting richting) { 
 	bool rotatieLinks = (richting == Richting::LINKS);
 	
 	// Deze implementatie laat toe om te kiezen of de boom links of rechts onevenwichtig is.
@@ -68,7 +139,7 @@ void ZoekBoom<Sleutel, Data>::maakOnevenwichtig(Richting richting) {
 	// Het algoritme blijft rotaties uitvoeren zolang er nog kinderen in de (linker|rechter)deelboom aanwezig zijn, afhankelijk of de boom (rechts|links) onevenwichtig moet zijn.
 	// Wanneer een knoop geen (linker|rechter)kinderen meer heeft, wordt er afgedaald naar de volgende knoop waar het proces zich herhaalt en stopt wanneer de diepste knoop bereikt is (na rotaties).
 
-	ZoekBoom<Sleutel, Data>* huidige = this;
+	Boom<Sleutel, Data>* huidige = this;
 	
 	if(!*huidige){
 		throw std::runtime_error(std::string(__FUNCTION__) + " [Er is geen wortel]");
@@ -90,7 +161,7 @@ void ZoekBoom<Sleutel, Data>::maakOnevenwichtig(Richting richting) {
 
 
 template<class Sleutel, class Data>
-void ZoekBoom<Sleutel, Data>::maakEvenwichtig() {
+void Boom<Sleutel, Data>::maakEvenwichtig() {
 	// TODO: hier heb ik in gedachten om dus eerst de boom zo onevenwichtig mogelijk te maken (met functie maakOnevenwichtig)
 	// Daarna roteren we vanaf de wortel tot aan de helft (cutoff) van die 'gelinkte lijst'
 	// Dan zou je zo een boom moeten krijgen:
@@ -106,7 +177,7 @@ void ZoekBoom<Sleutel, Data>::maakEvenwichtig() {
 
 	// Eerst controleren of de boom compleet onevenwichtig is, anders doen we het zelf nog
 	bool isOnevenwichtig = true;
-	this->inorder([&isOnevenwichtig](const ZoekKnoop<Sleutel, Data>& knoop){
+	this->inorder([&isOnevenwichtig](const Knoop<Sleutel, Data>& knoop){
 		// als een knoop 2 kinderen heeft is de boom NIET evenwichtig
 		if(knoop.links && knoop.rechts){
 			isOnevenwichtig = false;
@@ -133,13 +204,13 @@ void ZoekBoom<Sleutel, Data>::maakEvenwichtig() {
 
 
 /*
-* Deze functie test of de binaire zoekboom een geldige interne structuur heeft. Volgende controles worden uitgevoerd:
+* Deze functie test of de binaire Boom een geldige interne structuur heeft. Volgende controles worden uitgevoerd:
 *  1. De sleutels in inorder overlopen moet de sleutels gerangschikt opleveren. Dit impliceert dat de sleutels in de linkerdeelboom van een boom kleiner zijn dan de sleutel van de wortel van die boom en dat de sleutels in de rechterdeelboom groter zijn dan diezelfde sleutel van de wortel.
 *  2. De wortel 'w' van de hele boom mag geen ouderpointer hebben.
 *  3. Elke andere knoop 'k' in de boom moet een ouderpointer hebben naar een knoop 'o' die 'k' als rechter- of linkerkind heeft. 
 */
 template<class Sleutel, class Data>
-bool ZoekBoom<Sleutel, Data>::repOK() const
+bool Boom<Sleutel, Data>::repOK() const
 {
 	const Sleutel* vorige = 0;
 	bool ok = true;
@@ -150,7 +221,10 @@ bool ZoekBoom<Sleutel, Data>::repOK() const
 	}
 
 	// Overloop de boom in inorder
-	this->inorder([&vorige, &ok](const ZoekKnoop<Sleutel, Data>& knoop) {
+	this->inorder([&vorige, &ok](const Knoop<Sleutel, Data>& knoop) {
+		if(!ok){
+			return; // stop inorder traversal when a condition is broken
+		}
 		// 1. Controleer of dat de sleutels in de juiste volgorde in de boom zitten.
 		if (vorige && knoop.sleutel < *vorige) {
 			ok = false;
@@ -162,7 +236,12 @@ bool ZoekBoom<Sleutel, Data>::repOK() const
 		*/
 
 		// 3. Controleer dat de twee kinderen van de knoop de juiste ouderpointer hebben
-		// TODO
+		if(knoop.links && (*knoop.links).ouder != &knoop){
+			ok = false;
+		} 
+		if(knoop.rechts && (*knoop.rechts).ouder != &knoop){
+			ok = false;
+		} 
 
 	});
 
