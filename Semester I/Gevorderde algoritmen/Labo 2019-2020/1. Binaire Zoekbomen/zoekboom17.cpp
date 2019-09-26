@@ -116,21 +116,25 @@ De meest onevenwichtige boom is een boom waarbij elke knoop enkel een linkerkind
 */
 template<class Sleutel, class Data>
 void Boom<Sleutel, Data>::maakOnevenwichtig(Richting richting) { 
-	bool rotatieLinks = (richting == Richting::LINKS);
-	
-	// Deze implementatie laat toe om te kiezen of de boom links of rechts onevenwichtig is.
+// Deze implementatie laat toe om te kiezen of de boom links of rechts onevenwichtig is.
 	// In beide gevallen wordt er gestart vanuit de wortel. 
 	// Het algoritme blijft rotaties uitvoeren zolang er nog kinderen in de (linker|rechter)deelboom aanwezig zijn, afhankelijk of de boom (rechts|links) onevenwichtig moet zijn.
 	// Wanneer een knoop geen (linker|rechter)kinderen meer heeft, wordt er afgedaald naar de volgende knoop waar het proces zich herhaalt en stopt wanneer de diepste knoop bereikt is (na rotaties).
 
-	Boom<Sleutel, Data>* huidige = this;
-	
-	if(!*huidige){
+
+	if(!*this){
 		throw std::runtime_error(std::string(__FUNCTION__) + " [Er is geen wortel]");
 	}
 
+	bool rotatieLinks = (richting == Richting::LINKS);
+	Boom<Sleutel, Data>* huidige = this;
+
 	// Zolang dat er nog dieper in de boom kan gedaald worden OF als de huidige knoop de wortel is
-	while ((*huidige)->geefKind(rotatieLinks) || (*huidige)->ouder == nullptr ) {
+	while ( *huidige 
+			&& (
+				(*huidige)->geefKind(rotatieLinks) || (*huidige)->ouder == nullptr
+			   )
+		) {
 		// Roteer zolang er nog kinderen zijn in de verkeerde deelboom
 		while ((*huidige)->geefKind(!rotatieLinks)) 
 			huidige->roteer(richting);
@@ -139,7 +143,6 @@ void Boom<Sleutel, Data>::maakOnevenwichtig(Richting richting) {
 		if((*huidige)->geefKind(rotatieLinks))
 			huidige = &((*huidige)->geefKind(rotatieLinks));
 	} 
-	
 
 }
 
@@ -159,31 +162,29 @@ void Boom<Sleutel, Data>::maakEvenwichtig() {
 	//	Dan kan je hetzelfde doen op die twee deelbomen tot een evenwichtige boom bereikt is
 	
 
-	// Eerst controleren of de boom compleet onevenwichtig is, anders doen we het zelf nog
-	bool isOnevenwichtig = true;
-	this->inorder([&isOnevenwichtig](const Knoop<Sleutel, Data>& knoop){
-		// als een knoop 2 kinderen heeft is de boom NIET evenwichtig
-		if(knoop.links && knoop.rechts){
-			isOnevenwichtig = false;
-		}
-	});
-
-	if(!isOnevenwichtig){
-		this->maakOnevenwichtig(Richting::RECHTS);
+	if(!*this){
+		return; // Geen exception gooien -> want we dalen recursief naar kleinere deelbomen, en ooit zal de nulldeelboom bereikt worden
 	}
 
-	// De boom is nu zeker onevenwichtig, het algoritme kan uitgevoerd worden
-	int cutoff = round(this->geefDiepte() / 2);
-	bool rotatieNaarLinks = true;
-	std::cout << cutoff << "\n";
-	while(cutoff > 1){
-		for(int i = 0; i < cutoff; i++){
-			this->roteer(rotatieNaarLinks ? Richting::LINKS : Richting::RECHTS);
-		}
-		cutoff = round(this->geefDiepte() / 2);
-		rotatieNaarLinks = !rotatieNaarLinks;
-		
+	Richting richting;
+	if ((*this)->links){
+		richting = Richting::RECHTS;
+	} else if ((*this)->rechts){
+		richting = Richting::LINKS;
+	} else {
+		return; // knoop heeft geen kinderen en kan dus ook niet geroteerd worden
 	}
+
+	bool linkerKind = (richting == Richting::LINKS);
+	int cutoff = this->geefDiepte() / 2;
+
+	for(int i = 0; i < cutoff; i++)
+		if((*this)->geefKind(!linkerKind))
+			this->roteer(richting);
+	
+
+	((*this)->links).maakEvenwichtig();
+	((*this)->rechts).maakEvenwichtig();
 }
 
 
@@ -201,6 +202,7 @@ bool Boom<Sleutel, Data>::repOK() const
 
 	// 2. Controleer of de wortel een ouderpointer heeft
 	if((*this)->ouder != 0){
+		std::cout << "wortel heeft een ouderpointer\n";
 		ok = false;
 	}
 
@@ -210,7 +212,8 @@ bool Boom<Sleutel, Data>::repOK() const
 			return; // stop inorder traversal when a condition is broken
 		}
 		// 1. Controleer of dat de sleutels in de juiste volgorde in de boom zitten.
-		if (vorige && knoop.sleutel < *vorige) {
+		if (vorige && knoop.sleutel <= *vorige) {
+			std::cout << "knoop.sleutel !<= *vorige [" << knoop.sleutel << " - " << *vorige << "]\n";
 			ok = false;
 		}
 		vorige = &(knoop.sleutel);

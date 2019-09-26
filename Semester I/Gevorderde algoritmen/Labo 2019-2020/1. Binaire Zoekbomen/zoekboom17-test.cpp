@@ -27,17 +27,6 @@ Boom<int, int> geefRandomBoom(int aantalKnopen = 10){
 	return boom;
 }
 
-// Tekent de boom in dot-formaat en vormt dit .dot bestand om naar een jpg.
-// Enkel mogelijk als dot programma beschikbaar is
-
-template<class Sleutel, class Data>
-void tekenBoomEnToon(Boom<Sleutel, Data>& boom){
-	boom.teken("boom.dot");
-	system("dot -Tpng boom.dot -o boom.jpg && boom.jpg");
-}
-
-
-
 void testRotaties(){
 	/* VOORBEELD VAN INTRANET */ 
 	Boom<int, char> boom1 = geefIntranetBoom(); 
@@ -71,11 +60,7 @@ void testRotaties(){
 
 	boom3->geefKind(true)->geefKind(true).roteer(Richting::LINKS);
 	assert(boom3 == boom3Stap1);
-
-	boom3.teken("dot/boom3-1-actual.dot");
-	boom3Stap1.teken("dot/boom3-1-expected.dot");
-	system("dot -Tpng dot/boom3-1-actual.dot -o dot/boom3-1-actual.jpg");
-	system("dot -Tpng dot/boom3-1-expected.dot -o dot/boom3-1-expected.jpg");
+	assert(boom3.repOK());
 	
 	Boom<int, int> boom3Stap2;
 	boom3Stap2.voegtoe(8, 0);
@@ -87,11 +72,7 @@ void testRotaties(){
 	
 	boom3->geefKind(true).roteer(Richting::RECHTS);
 	assert(boom3 == boom3Stap2);
-
-	boom3.teken("dot/boom3-2-actual.dot");
-	boom3Stap2.teken("dot/boom3-2-expected.dot");
-	system("dot -Tpng dot/boom3-2-actual.dot -o dot/boom3-2-actual.jpg");
-	system("dot -Tpng dot/boom3-2-expected.dot -o dot/boom3-2-expected.jpg");
+	assert(boom3.repOK());
 
 	Boom<int, int> boom3Stap3;
 	boom3Stap3.voegtoe(4, 0);
@@ -103,36 +84,45 @@ void testRotaties(){
 
 	boom3.roteer(Richting::RECHTS);
 	assert(boom3 == boom3Stap3);
+	assert(boom3.repOK());
+}
 
-	boom3.teken("dot/boom3-3-actual.dot");
-	boom3Stap3.teken("dot/boom3-3-expected.dot");
-	system("dot -Tpng dot/boom3-3-actual.dot -o dot/boom3-3-actual.jpg");
-	system("dot -Tpng dot/boom3-3-expected.dot -o dot/boom3-3-expected.jpg");
+void testMaakOnevenwichtig(){
+    Boom<int, char> boom;
+    boom.maakOnevenwichtig(Richting::LINKS);
+    assert(boom == nullptr);
+
+    boom = geefIntranetBoom(); 
+    Boom<int, char> boomLinksOnevenwichtig;
+    boomLinksOnevenwichtig.voegtoe(6, 'g');
+    boomLinksOnevenwichtig.voegtoe(5, 'p');
+    boomLinksOnevenwichtig.voegtoe(4, 'b');
+	boomLinksOnevenwichtig.voegtoe(3, 'c');
+	boomLinksOnevenwichtig.voegtoe(2, 'a');
+	
+    boom.maakOnevenwichtig(Richting::LINKS);
+
+    assert(boom == boomLinksOnevenwichtig);
+    assert(boom.repOK());
+
+    boom = geefIntranetBoom(); 
+    Boom<int, char> boomRechtsOnevenwichtig;
+    boomRechtsOnevenwichtig.voegtoe(2, 'a');
+    boomRechtsOnevenwichtig.voegtoe(3, 'c');
+    boomRechtsOnevenwichtig.voegtoe(4, 'b');
+    boomRechtsOnevenwichtig.voegtoe(5, 'p');
+    boomRechtsOnevenwichtig.voegtoe(6, 'g');
+	
+    boom.maakOnevenwichtig(Richting::RECHTS);
+
+    assert(boom == boomRechtsOnevenwichtig);
+    assert(boom.repOK());
 
 }
 
 int main(void) {
-	testRotaties();
+	//testRotaties();
+    testMaakOnevenwichtig();
 
-	/*
-	try{
-		Boom<int, char> boom = geefIntranetBoom(); 
-		Boom<int, char> boomCopy = boom;
-		boomCopy.roteer(Richting::RECHTS);
-		std::cout << boomCopy.repOK() << "\n";
-		tekenBoomEnToon(boomCopy);
-	} catch(std::exception& e){
-		std::cout << e.what();
-	}*/
 	return 0;
 }		
-
-
-
-		// Welke constructoren/assignment operators worden nu opgeroepen?
-
-		//Boom<int, int> boom1 = geefRandomBoom(5); // MOVE CONSTRUCTOR (een return value van een functie is een r-value en wordt altijd gemoved. Het is de move constructor want object boom1 wordt voor de eerste keer aangemaakt)
-		//Boom<int, int> boom2 = boom1; 			// COPY CONSTRUCTOR
-		//boom1 = boom2 							// COPY ASSIGNMENT  
-		//Boom<int, int> boom3 = std::move(boom1); 	// MOVE CONSTRUCTOR (want object boom3 wordt voor de eerste keer aangemaakt)
-		//boom1 = std::move(boom3); 				// MOVE ASSIGNMENT  (want object boom1 bestaat al)

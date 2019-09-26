@@ -2,27 +2,28 @@
 \section{Inleiding}
 \begin{itemize}
     \item Uitvoeringstijd van operaties (zoeken, toevoegen, verwijderen) op een binaire zoekboom met hoogte $h$ is $O(h)$.
-    \item De hoogte $h$ is afhankelijk van de toevoegvolgorde:
+    \item De hoogte $h$ is afhankelijk van de toevoegvolgorde van de $n$ elementen:
     \begin{itemize}
         \item In het slechtste geval bekomt men een gelinkte lijst, zodat $h = O(n)$.
-        \item Als elke toevoegvolgorde even waarschijnlijk is, dan is de verwachtingswaarde voor de hoogte $h = O(\lg n)$ met $n$ het aantal gegevens.
+        \item Als elke toevoegvolgorde even waarschijnlijk is, dan is de verwachtingswaarde voor de hoogte $h = O(\lg n)$.
         \begin{itemize}
             \alert Geen realistische veronderstelling.
         \end{itemize}
     \end{itemize}
     \item \underline{Drie manieren} om de efficiëntie van zoekbomen te verbeteren:
     \begin{enumerate}
-        \item \textbf{Elke operatie steeds efficiënt maken.}
+        \item \textbf{Elke operatie steeds efficiënt maken.} (Hoogte klein houden)
         \begin{enumerate}
-            \item AVL-bomen (figuur \ref{fig:AVL-tree}).
-            \begin{figure}[ht]
-                \centering
-                \includegraphics[width=0.5\textwidth]{AVL-tree}
-                \caption{Een AVL-boom. De groene cijfers stellen de hoogteverschillen voor van de twee deelbomen voor elke knoop.}
-                \label{fig:AVL-tree}
-            \end{figure}
+            \item AVL-bomen. %(figuur \ref{fig:AVL-tree}).
+            %\begin{figure}[ht]
+            %    \centering
+            %    \includegraphics[width=0.5\textwidth]{AVL-tree}
+            %    \caption{Een AVL-boom. De groene cijfers stellen de hoogteverschillen voor van de twee deelbomen voor elke knoop.}
+            %    \label{fig:AVL-tree}
+            %\end{figure}
             \begin{itemize}
-                \item Hoogteverschil $\Delta h$ van de twee deelbomen van elke knoop is kleiner of gelijk aan 1.
+                \item Hoogteverschil van de tweede deelbomen van elke knoop wordt gedefinieerd als:
+                $$\Delta h <= 1$$
                 \item $\Delta h$ wordt opgeslagen in de knoop zelf.
 
             \end{itemize}
@@ -34,7 +35,7 @@
                 \label{fig:2-3-tree}
             \end{figure}
             \begin{itemize}
-                \item Elke knoop heeft 2 of 3 kinderen.
+                \item Elke knoop heeft 2 of 3 kinderen en dus 1 of 2 sleutels.
                 \item Elk blad heeft dezelfde diepte.
                 \item Bij toevoegen of verwijderen wordt het ideale evenwicht behouden door het aantal kinderen van de knopen te manipuleren.
             \end{itemize}
@@ -69,13 +70,24 @@
 \end{itemize}
 
 \section{Rood-zwarte bomen}
-\subsection{Definitie en eigenschappen}
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\textwidth]{red-black-tree}
-    \caption{Een rood-zwarte boom. De \texttt{NIL} knopen stellen virtuele knopen voor.}
+    \includegraphics[width=0.5\textwidth]{2-3-4-RB-tree}
+    \caption{Een 2-3-4-boom en equivalent rood-zwarte boom (wit stelt hier rood voor).}
     \label{fig:red-black-tree}
 \end{figure}
+\begin{itemize}
+    \item Simuleert een 2-3-4-boom (fig \ref{fig:red-black-tree}).
+    \begin{itemize}
+        \item Een knoop in een 2-3-4 boom worden 1, 2 of 3 knopen in een rood-zwarte boom.
+        \item Een 2-knoop wordt een zwarte knoop.
+        \item Een 3-knoop wordt een zwarte knoop met een rood kind.
+        \item Een 4-knoop wordt een zwarte knoop met twee rode kinderen.
+    \end{itemize}
+    \item Een rood-zwarte boom is gemakkelijker te definieren als er afgestapt wordt van het 2-3-4-boom concept.
+\end{itemize}
+\subsection{Definitie en eigenschappen}
+
 \label{sec:rood-zwarte bomen}
 \begin{itemize}
     \item \textbf{Definitie:}
@@ -89,8 +101,8 @@
     \end{itemize}
     \item \textbf{Eigenschappen:}
     \begin{itemize}
-        \item Een deelboom met wortel $w$ en zwarte hoogte $z$ heeft tenminste $2^z - 1$ inwendige knopen.
-        \item De hoogte van een rood-zwarte boom met $n$ knopen is steeds $O(\lg n)$.
+        \item Een deelboom met wortel $w$ en zwarte hoogte $z$ heeft tenminste $2^z - 1$ inwendige knopen. Dit is de deelboom waarvan elke knoop zwart is.
+        \item De hoogte $h$ van een rood-zwarte boom met $n$ knopen is steeds $O(\lg n)$, want:
         \begin{itemize}
             \item Er zijn nooit twee opeenvolgende rode knopen op elke weg vanuit een knoop naar een virtuele knoop $\rightarrow z \geq h/2$.
             \item Substitutie in de eerste eigenschap geeft:
@@ -119,11 +131,15 @@
         \begin{itemize}
             \item Voeg knoop toe zonder rekening te houden met de kleur.
             \item Herstel de rood-zwarte boom, te beginnen bij de nieuwe knoop, en desnoods tot bij de wortel.
+            \alert Er zijn ouderwijzers of een stapel nodig om naar boven in de boom te gaan.
+            \alert Multithreading is niet mogelijk. Alle threads die een bottom-up rood-zwarte boom gebruiken moeten gelocked worden bij een toevoeg-of verwijderoperatie.
         \end{itemize}
         \item \textbf{Top-down:} 
         \begin{itemize}
             \item Pas de boom aan langs de dalende zoekweg.
-            \good Efficiënter dan bottom-down aangezien er geen ouderwijzers of een stapel nodig is.
+            \alert Als de ouder van de toe te voegen knoop reeds zwart is, dan moet er niets aan de boom aangepast worden (want elke nieuwe knoop is altijd rood). Top-down houdt hier geen rekening mee en heeft toch reeds de boom aangepast tegen dat de knoop toegevoegd wordt.
+            \good Geen ouderwijzers of stapel nodig.
+            \good Multithreading wel mogelijk. Bij het afdalen naar elke knoop zijn enkel nog de deelbomen van die knoop nodig om de boom te herstellen.
         \end{itemize}
     \end{enumerate}
 \end{itemize}
@@ -136,8 +152,8 @@
     \label{fig:rotations}
 \end{figure}
 \begin{itemize}
-    \item Wijzigen de vorm van de boom, maar behouden de inorder volgorde van de sleutels.
-    \item Moet enkel pointers aanpassen, en is dus $O(1)$.
+    \item Een rotatie wijzigt de vorm van de boom, maar behouden de inorder volgorde van de sleutels.
+    \item Er moeten enkel pointers aangepast worden, en is dus $O(1)$.
     \item \textbf{Rechtste rotatie} van een ouder $p$ en zijn linkerkind $l$:
     \begin{itemize}
         \item Het rechterkind van $l$ wordt het linkerkind van $p$.
@@ -167,7 +183,7 @@
     \item Vaststellingen:
     \begin{itemize}
         \item De ouder $p$ van de nieuwe knoop $c$ is rood.
-        \item De ouder $g$ van $p$, is zwart.
+        \item De grootouder $g$ van $c$ is zwart want $p$ is rood.
     \end{itemize}
     \item Er zijn zes mogelijke gevallen, die twee groepen van drie vormen, naar gelang dat $p$ een linker- of rechterkind is van $g$. 
     \item We onderstellen dat $p$ een linkerkind is van $g$. 
@@ -349,7 +365,7 @@
     \item De implementatie is omslachtig door de talrijke speciale gevallen.
     \item Eenvoudigere varianten bestaan:
     \begin{itemize}
-        \item Een \textbf{AA-boom} geeft aan dat enkel een rechterkind root moet zijn.
+        \item Een \textbf{AA-boom} geeft aan dat enkel een rechterkind rood moet zijn.
         \item Een \textbf{Binary B-tree} beperkt het aantal gevallen maar behouden toch de asymptotische efficiëntie.
         \item Een \textbf{left-leaning red-black-tree} stelt de eis dat een zwarte knoop enkel een rood rechterkind mag hebben als het reeds een rood linkerkind heeft.
     \end{itemize}

@@ -93,6 +93,7 @@ protected:
 	//ontbreekt) en de pointer naar de ouder (als die bestaat, anders nulpointer).
 	//noot: alhoewel de functie niets verandert aan de boom is ze geen const functie.
 	void zoek(const Sleutel& sleutel, Knoop<Sleutel, Data>*& ouder, Boom<Sleutel, Data>*& plaats);
+	
 };
 
 template <class Sleutel, class Data>
