@@ -42,6 +42,7 @@
             \item 2-3-4-bomen.
             \begin{itemize}
                 \item Analoog aan een 2-3-boom, maar elke knoop heeft 2, 3 of 4 kinderen.
+                \alert Per knoop moet er plaats voorzien zijn voor 3 sleutels, wat onnodig veel geheugen vraagt.
             \end{itemize}
             \item Rood-zwarte bomen (sectie \ref{sec:rood-zwarte bomen}).
         \end{enumerate}
@@ -96,12 +97,12 @@
         \item Elke knoop is rood of zwart gekleurd.
         \item Elke virtuele knoop is zwart. Een virtuele knoop is een knoop die geen waarde heeft, maar wel een kleur. Deze vervangen de nullwijzers.
         \item Een rode knoop heeft steeds twee zwarte kinderen
-        \item Elke mogelijke weg vanuit een knoop naar een virtuele knoop bevat evenveel zwarte knopen. Dit aantal wordt de \textit{zwarte hoogte} genoemd
+        \item Elke mogelijke weg vanuit een knoop naar elke virtuele knoop bevat evenveel zwarte knopen. Dit aantal zwarte knoepn wordt de \textit{zwarte hoogte} genoemd
         \item De wortel is zwart.
     \end{itemize}
     \item \textbf{Eigenschappen:}
     \begin{itemize}
-        \item Een deelboom met wortel $w$ en zwarte hoogte $z$ heeft tenminste $2^z - 1$ inwendige knopen. Dit is de deelboom waarvan elke knoop zwart is.
+        \item Een deelboom met zwarte hoogte $z$ heeft tenminste $2^z - 1$ inwendige knopen. Dit is de deelboom waarvan elke knoop zwart is.
         \item De hoogte $h$ van een rood-zwarte boom met $n$ knopen is steeds $O(\lg n)$, want:
         \begin{itemize}
             \item Er zijn nooit twee opeenvolgende rode knopen op elke weg vanuit een knoop naar een virtuele knoop $\rightarrow z \geq h/2$.
@@ -238,9 +239,9 @@
 \begin{itemize}
     \item Verwijder eerst de knoop zoals bij een gewone zoekboom.
     \item Als de te verwijderen knoop rood is, is er geen gevolg voor de zwarte hoogte en is de operatie klaar.
-    \item Als de te verwijderen knoop zwart is, zijn er drie mogelijkheden:
+    \item Als de te verwijderen knoop zwart is, zijn er twee mogelijkheden:
     \begin{enumerate}
-        \item \textbf{De knoop heeft één rood kind.} Dit rood kind kan de zwarte kleur overnemen, zodat de zwarte hoogten intact blijven.
+        \item \textbf{De knoop heeft minstens één rood kind.} Dit rood kind kan de zwarte kleur overnemen, zodat de zwarte hoogten intact blijven.
         \item \textbf{De knoop heeft twee zwarte kinderen (virtueel of echt)}. De zwarte kleur wordt aan één van de kinderen gegeven, zodat die \textbf{dubbelzwart} wordt.
     \end{enumerate}
     \item In het eerste geval is de operatie klaar. In het tweede geval moet de boom, die nu een dubbelzwarte knoop bevat, herstelt worden.

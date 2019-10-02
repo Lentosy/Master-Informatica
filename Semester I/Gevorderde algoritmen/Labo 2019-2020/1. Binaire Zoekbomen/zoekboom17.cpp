@@ -131,9 +131,7 @@ void Boom<Sleutel, Data>::maakOnevenwichtig(Richting richting) {
 
 	// Zolang dat er nog dieper in de boom kan gedaald worden OF als de huidige knoop de wortel is
 	while ( *huidige 
-			&& (
-				(*huidige)->geefKind(rotatieLinks) || (*huidige)->ouder == nullptr
-			   )
+			&& ((*huidige)->geefKind(rotatieLinks) || (*huidige)->ouder == nullptr)
 		) {
 		// Roteer zolang er nog kinderen zijn in de verkeerde deelboom
 		while ((*huidige)->geefKind(!rotatieLinks)) 
