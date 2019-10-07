@@ -5,7 +5,7 @@
         "label": "msvc build",
         "type": "shell",
         "command": "cl.exe",
-        "args": ["/EHsc", "/Zi", "/Fe:", "main.exe", "main.cpp"],
+        "args": ["/EHsc", "/Zi", "/Fe:", "splayboom-test.exe", "splayboom-test.cpp"],
         "group": {
           "kind": "build",
           "isDefault": true

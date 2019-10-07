@@ -16,7 +16,10 @@ template <class Sleutel, class Data>
 class Splayboom: public Boom<Sleutel, Data> {
 	public:
 		void voegtoe(const Sleutel& sleutel,const Data& data,bool dubbelsToestaan=false);
-		Knoop<Sleutel, Data>* zoek(const Sleutel& sleutel); // return pointer naar knoop en niet naar boom omdat ik geen manipulaties op de boom toelaat
+		Knoop<Sleutel, Data>* zoek(const Sleutel& sleutel); // return pointer naar knoop en niet naar boom omdat ik geen manipulaties op de boom wil toelaten
+
+		//TODO: controleren hoe efficiënt de splayboom is in vergelijking met een gewone binaire boom
+		// -> het aantal rotaties tellen dat uitgevoerd worden
 	
 		
 	private:

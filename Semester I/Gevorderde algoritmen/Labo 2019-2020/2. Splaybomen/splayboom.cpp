@@ -4,11 +4,11 @@
 template <class Sleutel, class Data>
 void Splayboom<Sleutel, Data>::splay(Boom<Sleutel, Data>* huidigePlaats) {
 
-	// Controle bestaan van knoop en dat die minstens een ouder heeft
+	// Controle: knoop bestaat en heeft een ouder, anders moet er niet gesplayed worden
 	if(!huidigePlaats){
 		return;
 	}
-	// if statements niet samennemen, dit moet met een OF, maar als huidigePlaats een nullptr is, krijgen we een exceptie bij het opvragen van de ouder
+	// if statements niet samennemen, dit moet met een OF, maar als huidigePlaats een nullptr is krijgen we een exceptie bij het opvragen van de ouder
 	if(!(*huidigePlaats)->ouder) {
 		return;
 	}
@@ -24,7 +24,7 @@ void Splayboom<Sleutel, Data>::splay(Boom<Sleutel, Data>* huidigePlaats) {
 		if(!huidigePlaatsHeeftGrootouder){
 			// Er moet enkel een rotatie uitgevoerd in de andere richting
 			ouderBoom->roteer(!huidigePlaatsIsLinkerkind);
-
+			huidigePlaats = ouderBoom;
 		} else {
 			// 2. Er is wel een grootouder, er zijn nu twee gevallen.
 			Boom<Sleutel, Data>* grootOuderBoom = geefBoomBovenKnoop(*((*ouderBoom)->ouder));
@@ -48,6 +48,7 @@ void Splayboom<Sleutel, Data>::splay(Boom<Sleutel, Data>* huidigePlaats) {
 template <class Sleutel, class Data>
 void Splayboom<Sleutel, Data>::voegtoe(const Sleutel& sleutel,const Data& data,bool dubbelsToestaan) {
 	Boom<Sleutel, Data>::voegtoe(sleutel, data, dubbelsToestaan);
+	this->zoek(sleutel); // de zoekfunctie van de splayboom zal splayen -> slecht design
 };
 
 template <class Sleutel, class Data>
@@ -56,8 +57,10 @@ Knoop<Sleutel, Data>* Splayboom<Sleutel, Data>::zoek(const Sleutel& sleutel) {
 	Boom<Sleutel, Data>* plaats;
 	Boom<Sleutel, Data>::zoek(sleutel, ouder, plaats);
 	Knoop<Sleutel, Data>* gezochteKnoop = plaats->get();
-
-	splay(plaats);
+	if(gezochteKnoop){
+		splay(plaats);
+	}
+	
 	
 	return gezochteKnoop;
 }
