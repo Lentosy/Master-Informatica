@@ -120,15 +120,16 @@ void Boom<Sleutel, Data>::maakOnevenwichtig(Richting richting) {
 	// In beide gevallen wordt er gestart vanuit de wortel. 
 	// Het algoritme blijft rotaties uitvoeren zolang er nog kinderen in de (linker|rechter)deelboom aanwezig zijn, afhankelijk of de boom (rechts|links) onevenwichtig moet zijn.
 	// Wanneer een knoop geen (linker|rechter)kinderen meer heeft, wordt er afgedaald naar de volgende knoop waar het proces zich herhaalt en stopt wanneer de diepste knoop bereikt is (na rotaties).
-
+	
 
 	if(!*this){
-		throw std::runtime_error(std::string(__FUNCTION__) + " [Er is geen wortel]");
+		return;
 	}
 
 	bool rotatieLinks = (richting == Richting::LINKS);
 	Boom<Sleutel, Data>* huidige = this;
 
+	
 	// Zolang dat er nog dieper in de boom kan gedaald worden OF als de huidige knoop de wortel is
 	while ( *huidige 
 			&& ((*huidige)->geefKind(rotatieLinks) || (*huidige)->ouder == nullptr)

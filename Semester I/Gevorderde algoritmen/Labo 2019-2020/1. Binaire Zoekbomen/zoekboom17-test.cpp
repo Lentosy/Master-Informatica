@@ -85,11 +85,14 @@ void testRotaties(){
 	boom3.roteer(Richting::RECHTS);
 	assert(boom3 == boom3Stap3);
 	assert(boom3.repOK());
+
+	std::cout << "rotaties OK\n";
 }
 
 void testMaakOnevenwichtig(){
+	
     Boom<int, char> boom;
-    boom.maakOnevenwichtig(Richting::LINKS);
+    boom.maakOnevenwichtig(Richting::LINKS); // -> BUG
     assert(boom == nullptr);
 
     boom = geefIntranetBoom(); 
@@ -118,10 +121,12 @@ void testMaakOnevenwichtig(){
     assert(boom == boomRechtsOnevenwichtig);
     assert(boom.repOK());
 
+	std::cout << "maak onevenwichtig OK\n";
+
 }
 
 int main(void) {
-	//testRotaties();
+	testRotaties();
     testMaakOnevenwichtig();
 
 	return 0;
