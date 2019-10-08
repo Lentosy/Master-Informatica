@@ -146,7 +146,7 @@ void Boom<Sleutel, Data>::maakOnevenwichtig(bool linksOnevenwichtig) {
 		) {
 		// Roteer zolang er nog kinderen zijn in de verkeerde deelboom
 		while ((*huidige)->geefKind(!linksOnevenwichtig)) 
-			huidige->roteer(richting);
+			huidige->roteer(linksOnevenwichtig);
 		
 		// daal naar de volgende knoop
 		if((*huidige)->geefKind(linksOnevenwichtig))

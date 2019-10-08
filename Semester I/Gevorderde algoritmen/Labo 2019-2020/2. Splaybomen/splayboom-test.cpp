@@ -72,24 +72,47 @@ void testSplay50(){
 
 
 void testShakespeare() {
-    Splayboom<string, int> frequentieBoom;
+    Splayboom<string, int> frequentieSplayboom;
+    Boom<string, int> frequentieBinaireBoom;
     std::ifstream file("shakespeare.txt");
     std::string word;
     int wordCount = 0;
+    int totalWords = 100;
     
-    while(file >> word && wordCount < 100){
-        Knoop<string, int>* woordKnoop = frequentieBoom.zoek(word);
+    while(file >> word && wordCount < totalWords){
+        for(int i = 0; i < word.size(); i++){
+            word[i] = std::tolower(word[i]);
+        }
+        Knoop<string, int>* woordKnoop = frequentieSplayboom.zoek(word);
+        // bij binaire boom gaan we data niet bijhouden, is nutteloos omdat structuur enkel afhangt van de sleutels
         if(woordKnoop != nullptr){
             woordKnoop->data++;
         } else {
-            frequentieBoom.voegtoe(word, 1, false);
+      //      frequentieBinaireBoom.voegtoe(word, 1, false);
+            frequentieSplayboom.voegtoe(word, 1, false);
         }
         wordCount++;
     }
 
-    frequentieBoom.teken("dot/shakespeare.dot");
-    system("dot -Tpng dot/shakespeare.dot -o dot/shakespeare.jpg");
+    std::cout << "Diepte splayboom    = " << frequentieSplayboom.geefDiepte() << "\n";
+    //std::cout << "Diepte binaire boom = " << frequentieBinaireBoom.geefDiepte() << "\n";
 
+    std::vector<std::pair<string, double>> p;
+    frequentieSplayboom.inorder([&p, &totalWords](const Knoop<string, int>& knoop){
+        double kans = knoop.data / (double)totalWords;
+     //   std::cout << knoop.data << "\n";
+        p.push_back(std::make_pair(knoop.sleutel, kans ));
+
+    });
+
+    double sumChances = 0;
+    for(int i = 0; i < p.size(); i++){
+        sumChances += p[i].second;
+    }
+
+    std::cout << sumChances << "\n";
+    
+    frequentieSplayboom.teken("dot/splayboom-shakespeare.dot");
 }
 
 
