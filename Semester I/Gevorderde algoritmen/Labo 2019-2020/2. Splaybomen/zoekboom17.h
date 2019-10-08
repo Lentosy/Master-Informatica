@@ -85,6 +85,8 @@ public:
 	// preconditie: knoop moet een naar een geldige knoop wijzen.
 	Boom<Sleutel, Data>* geefBoomBovenKnoop(Knoop<Sleutel, Data>& knoopptr);
 	void voegtoe(const Sleutel& sleutel, const Data& data, bool dubbelsToestaan = false);
+	Knoop<Sleutel, Data>* zoek(const Sleutel& sleutel); // return pointer naar knoop en niet naar boom omdat ik geen manipulaties op de boom wil toelaten
+	Knoop<Sleutel, Data>* geefOpvolger(Knoop<Sleutel, Data>* knoop);
 
 	/*
 	* OUTPUT
@@ -92,6 +94,7 @@ public:
 	void schrijf(ostream& os) const;
 	void teken(const char* bestandsnaam);
 	string tekenrec(ostream& uit, int& knoopteller);
+	
 	
 protected:
 	//zoekfunctie zoekt sleutel en geeft de boom in waaronder de sleutel zit (eventueel een lege boom als de sleutel

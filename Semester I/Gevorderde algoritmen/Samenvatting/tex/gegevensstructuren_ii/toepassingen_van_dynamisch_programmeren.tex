@@ -33,7 +33,7 @@
     \item De waarschijnlijkheid om alle afwezige sleutels, voorgesteld door een blad $b_i$, te zoeken is $q_i$.
     \item De som van alle waarschijnlijkheden moet 1 zijn:
     $$\sum_{i = 1}^n p_i + \sum_{i = 0}^n q_i = 1$$
-    \item Als de zoektijd gelijk is aan het aantal knopen op de zoekweg (de diepte plus één), dan is de verwachtingswaarde van de zoektijd
+    \item Als de zoektijd gelijk is aan het aantal knopen op de zoekweg (de diepte plus één), dan is de verwachtingswaarde van de zoektijd van een binaire boom
     $$\sum_{i = 1}^n p_i (\hbox{diepte}(s_i) + 1) + \sum_{i = 0}^n q_i (\hbox{diepte}(b_i) + 1)$$
     \item Deze verwachtingswaarde moet geminimaliseerd worden.
     \begin{itemize}
@@ -77,12 +77,10 @@
             \end{enumerate} 
         \end{itemize}
     \end{itemize}
-    \item We willen dus de kleinste verwachte zoektijd $z(i, j)$.
-    \item Dit moet gebeuren voor alle $i$ en $j$ waarbij:
+    \item De kleinst verwachte zoektijd van een boom met sleutels $s_i, ..., s_j$ is $z(i, j)$ en moet voor elke deelboom bepaald worden, dus voor alle $i$ en $j$ waarbij:
     \begin{itemize}
         \item $1 \leq i \leq n + 1$
-        \item $0 \leq j \leq n$
-        \item $j \geq i - 1$
+        \item $i - 1 \leq j \leq n$
     \end{itemize}
     \item De optimale boom heeft dus de kleinste verwachte zoektijd $z(1, n)$.
     \item Hoe $z_w(i, j)$ bepalen voor een deelboom met wortel $s_w$?
@@ -169,7 +167,6 @@
     \begin{itemize}
         \item Is er een optimale deelstructuur?
         \begin{itemize}
-            \item Een optimale oplossing maakt gebruik van optimale oplossingen voor deelproblemen.
             \item De deelproblemen zijn paren prefixen van de twee strings. 
             \item Het prefix van $X$ met lengte $i$ is $X_i$.
             \item Het prefix van $Y$ met lengte $j$ is $Y_j$.

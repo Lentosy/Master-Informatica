@@ -244,3 +244,33 @@ bool Boom<Sleutel, Data>::repOK() const
 }
 
 
+/*
+* Een publieke versie van de zoekmethode, waarbij enkel de zoeksleutel belangrijk is
+*/
+template <class Sleutel, class Data>
+Knoop<Sleutel, Data>* Boom<Sleutel, Data>::zoek(const Sleutel& sleutel) {
+	Knoop<Sleutel, Data>* ouder;
+	Boom<Sleutel, Data>* plaats;
+	Boom<Sleutel, Data>::zoek(sleutel, ouder, plaats);
+	return plaats->get();
+}
+
+
+/*
+* Geeft de knoop terug die de opvolger is van de opgegeven knoop.
+*/
+template <class Sleutel, class Data>
+Knoop<Sleutel, Data>* Boom<Sleutel, Data>::geefOpvolger(Knoop<Sleutel, Data>* knoop) {
+	
+	while(!knoop->rechts){
+		knoop = knoop->ouder;
+	}
+
+	knoop = (&((*knoop).rechts))->get();
+	while(knoop->links){
+		knoop = (&((*knoop).links))->get();
+	}
+	
+	return knoop;
+
+}
