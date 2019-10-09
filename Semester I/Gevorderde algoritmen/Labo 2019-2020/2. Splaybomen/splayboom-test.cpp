@@ -194,9 +194,6 @@ void maakOptimaleBinaireZoekboom(const char * bestandsnaam){
     std::vector<std::vector<double>> g(n+1, std::vector<double>(n)); 
     std::vector<std::vector<double>> r(n, std::vector<double>(n)); 
 
-
-
-
 }
 
 
