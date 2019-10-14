@@ -3,7 +3,7 @@
 
 
 int main(void){
-    Eieren eieren(20, 36);
+    Eieren eieren(8, 15);
     std::cout << eieren.geefGoedkoopsteOplossing();
 
     return 0;

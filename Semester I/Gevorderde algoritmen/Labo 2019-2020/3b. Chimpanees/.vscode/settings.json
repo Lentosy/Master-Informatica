@@ -56,7 +56,11 @@
         "stack": "cpp",
         "xlocmon": "cpp",
         "xloctime": "cpp",
-        "optional": "cpp"
+        "optional": "cpp",
+        "locale": "cpp",
+        "regex": "cpp",
+        "xlocbuf": "cpp",
+        "xlocmes": "cpp"
     },
     "files.exclude": {
         "**/*.exe": true,
