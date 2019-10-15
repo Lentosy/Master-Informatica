@@ -43,7 +43,7 @@ class Eieren {
         std::vector<std::vector<int>> kostTabel;
         std::vector<std::vector<int>> wortelTabel;
         void berekenTabellen();
-        void maakDeelbomen(Boom<int, int>& wortel, int huidigAantalEieren, int aantalVerdiepingenLinks, int aantalVerdiepingenRechts) const;
+        void maakDeelbomen(Boom<int, int>& wortel, int huidigAantalEieren, std::pair<int, int>& bereikLinks, std::pair<int, int>& bereikRechts) const;
 };
 
 void Eieren::berekenTabellen() {
@@ -89,44 +89,65 @@ int Eieren::geefGoedkoopsteOplossing() const {
 }
 
 
+/*
+* Construeert de strategieboom die toegepast kan worden met het opgegeven aantal eieren en verdiepingen.
+*/
 Boom<int, int> Eieren::geefBoom() const {
     Boom<int, int> boom;
 
     int wortel = this->wortelTabel[this->vGezocht][this->eGezocht];
     boom.voegtoe(wortel, 0);
     
-    maakDeelbomen(boom, this->eGezocht, wortel - 1, this->vGezocht - wortel);
+    maakDeelbomen(boom, this->eGezocht, std::make_pair(1, wortel - 1), std::make_pair(wortel + 1, this->vGezocht));
 
-  //  assert(boom.geefDiepte() == this->geefGoedkoopsteOplossing());
+    // de geefDiepte methode rekent de wortel niet mee, daarom wordt er +1 gedaan
+    assert(boom.geefDiepte() + 1 == this->geefGoedkoopsteOplossing());
     return boom;
 }
 
 
-void Eieren::maakDeelbomen(Boom<int, int>& wortel, int huidigAantalEieren, int aantalVerdiepingenLinks, int aantalVerdiepingenRechts) const {
-    if(aantalVerdiepingenLinks <= 0){
-        // dus een blad
-        return;
-    }
+/*
+* Deze methode maakt de knopen van de twee deelbomen van een wortel aan. De std::pair instanties bereikLinks en bereikRechts geven het bereik van verdiepingen aan waarvoor
+* de wortel in de specifieke deelboom optimaal moet zijn.
+*/
+void Eieren::maakDeelbomen(Boom<int, int>& wortel, int huidigAantalEieren, std::pair<int, int>& bereikLinks, std::pair<int, int>& bereikRechts) const {
+    //std::cout << "Bereik Links : [" << bereikLinks.first << " - " << bereikLinks.second << "]\n";
+    //std::cout << "Bereik Rechts : [" << bereikRechts.first << " - " << bereikRechts.second << "]\n";
+    // Er moeten twee deelbomen aangemaakt worden: de linkerdeelboom en de rechterdeelboom
 
-    if(aantalVerdiepingenRechts <= 0){
-        // dus een blad
-        return;
-    }
-    std::cout << aantalVerdiepingenLinks << " - " << aantalVerdiepingenRechts << "\n";
-
-    // Stel dat het aantal verdiepingen links 3 is, dan zoeken we de beste wortel voor (1, 2, 3) met 1 ei minder
-    int wortelLinks = this->wortelTabel[aantalVerdiepingenLinks][huidigAantalEieren - 1];
-    (*wortel).links = std::make_unique<Knoop<int, int>>(wortelLinks, 0);
-    (*wortel).links->ouder = &(*wortel);
-    this->maakDeelbomen((*wortel).links, huidigAantalEieren - 1, wortelLinks - 1, (*wortel).sleutel - wortelLinks - 1);
     
-    // Stel dat het aantal verdiepingen rechts 3 is, dan zoeken we de beste wortel voor ('wortel' + 1, 'wortel' + 2, 'wortel' + 3) met hetzelfde aantal eieren.
-    // Gelukkig komt dit neer op het zoeken naar de beste wortel voor (1, 2, 3) en daarbij dan 'wortel' bij op te tellen
-    int wortelRechts = this->wortelTabel[aantalVerdiepingenRechts][huidigAantalEieren] + (*wortel).sleutel;
-    (*wortel).rechts = std::make_unique<Knoop<int, int>>(wortelRechts, 0);
-    (*wortel).rechts->ouder = &(*wortel);
-    this->maakDeelbomen((*wortel).rechts, huidigAantalEieren, wortelRechts - (*wortel).sleutel - 1, this->vGezocht - wortelRechts);
+    if(bereikLinks.first > bereikLinks.second || bereikRechts.first > bereikRechts.second){
+        return;
+    }
 
+    /* De wortel zoeke voor het bereik van verdiepingen [3 - 7] is equivalent met het opzoeken van de beste wortel voor het bereik [1 - 4], en daar dan 2 bij op te tellen (3 - 2 = 1)*/
+    /* Dus eerst controleren of het bereik begint vanaf 1 of niet en zonee, wordt de offset bijgehouden waarmee afgetrokken zou moeten worden om het toch vanaf 1 te laten beginnen */
+    int linksOffset = 0;
+    if(bereikLinks.first != 1){
+        linksOffset = bereikLinks.first - 1;
+    }
+
+    /* Zelfde redenering als bij de linksOffset */
+    int rechtsOffset = 0;
+    if(bereikRechts.first != 1){
+        rechtsOffset = bereikRechts.first - 1;
+    }
+
+    /* De wortels kunnen nu gewoon opgezocht worden, eventueel met de offset bij te tellen */
+    int linksWortel = this->wortelTabel[bereikLinks.second - linksOffset][huidigAantalEieren - 1] + linksOffset;
+    int rechtsWortel = this->wortelTabel[bereikRechts.second - rechtsOffset][huidigAantalEieren] + rechtsOffset;
+
+    /* De knopen worden handmatig aangemaakt en niet met de toevoegfunctie, omdat we specifiek willen controleren wat er in de linker en rechter knoop komt te staan */
+    (*wortel).links = std::make_unique<Knoop<int, int>>(linksWortel, 0);
+    (*wortel).rechts = std::make_unique<Knoop<int, int>>(rechtsWortel, 0);
+
+    /* Nu kan hetzelfde toegepast worden op de linker- en rechterwortel, met aangepaste bereiken, en in de linkerdeelboom een ei minder*/
+    /* Stel dat het oorspronkelijke bereik voor een linkerdeelboom 'a' [1 - 7] was, en de wortel is 4 
+    *  Voor deze 'a' zijn er nu twee nieuwe deelbomen, waarvan het linkerbereik [1 - 3] is  en het rechterbereik [5 - 7]
+    *  Dezelfde redenering kan toegepast worden op de rechterdeelboom
+    * */
+    this->maakDeelbomen((*wortel).links, huidigAantalEieren - 1, std::make_pair(bereikLinks.first, linksWortel - 1), std::make_pair(linksWortel + 1, bereikLinks.second));
+    this->maakDeelbomen((*wortel).rechts, huidigAantalEieren   , std::make_pair(bereikRechts.first, rechtsWortel - 1), std::make_pair(rechtsWortel + 1, bereikRechts.second));
 }
 
 #endif
