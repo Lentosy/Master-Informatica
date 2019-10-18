@@ -43,7 +43,6 @@ void Eieren::berekenTabellen() {
         this->wortelTabel[v][1] = v;
     }
 
-    
     for(int e = 2; e <= this->eGezocht; e++){
         for(int v = 2; v <= this->vGezocht; v++){
             kostTabel[v][e] = INT_MAX;
