@@ -1,49 +1,80 @@
 #include "prquadtree.h"
-#include <cstdlib>
+#include <iostream>
+#include <queue>
 
-void PRQuadtree::voegToe(int x, int y) {
+void PRQuadtree::schrijf(std::ostream& os) const {
     if(!*this){
-        (*this) = (std::unique_ptr<PRKnoop>) std::make_unique<PRBlad>(x, y);
-    } else {
-        Knoopptr* plaats = zoek(x, y);
-        
-
+        os << "De boom is ledig\n";
+        return;
     }
 
-    std::cout << static_cast<PRBlad*>(&*(*this))->x;
+    std::queue<PRKnoop*> BEstack;
+    BEstack.emplace(this->get());
+    
+    while(!BEstack.empty()){
+        // Een knoop is ofwel een blad, ofwel een nietblad
+        PRKnoop* huidig = BEstack.front();
+        if(huidig->isBlad()){
+
+            PRBlad* huidigBlad = static_cast<PRBlad*>(huidig);
+            std::cout << "Blad met punt (" << huidigBlad->x << ", " << huidigBlad->y << ")\n";  
+        } else {
+            PRNietblad* huidigNietblad = static_cast<PRNietblad*>(huidig);
+            
+            std::cout << "Inwendige knoop die het gebied opsplitst\n";  
+            for(int i = 0; i < 4; i++){
+                Knoopptr* kind = &huidigNietblad->kind[i];
+                if(*kind){
+                    BEstack.emplace(kind->get());
+                }
+            }
+
+        }
+        BEstack.pop();
+    }
 }
 
+int PRQuadtree::geefDiepte() const {
+    return 0;
+}
 
 Knoopptr* PRQuadtree::zoek(int x, int y) {
-    if(std::abs(x) > this->maxcoordinaat || std::abs(y) > this->maxcoordinaat){
-        return nullptr;
-    }
-
+    Knoopptr* huidig = this;
     int minX = -this->maxcoordinaat;
     int maxX = this->maxcoordinaat;
     int minY = -this->maxcoordinaat;
     int maxY = this->maxcoordinaat;
 
-    
-    Knoopptr* huidige = this;
-    while(!(*huidige)->isBlad()){
+    // zoek het blad waarin het punt moet zitten
+    while(*huidig && !(*huidig)->isBlad()) {
         int middenX = (minX + maxX) / 2;
         int middenY = (minY + maxY) / 2;
-        huidige = static_cast<PRNietblad*>(huidige->get())->geefKind(x, y, middenX, middenY);
 
-        if(x < middenX){
-            maxX = middenX;
-        } else {
-            minX = middenX;
-        }
+        huidig = (static_cast<PRNietblad*>(huidig->get())->geefKind(x, y, middenX, middenY));
 
-        if(y < middenY){
-            maxY = middenY;
-        } else {
-            minY = middenY;
-        }
-    }  
+        if(x < middenX) maxX = middenX;
+        else minX = middenX;
+        
+        if(y < middenY) maxY = middenY;
+        else minY = middenY;
+        
+    }
+    return huidig;
+}
 
-    return huidige;
+void PRQuadtree::voegToe(int x, int y) {
+
+    Knoopptr* plaats = this->zoek(x, y);
+    // als er geen blad bestaat, kan het blad gewoon aangemaakt worden
+    if(!*plaats){
+        *plaats = (std::unique_ptr<PRKnoop>) std::make_unique<PRBlad>(x, y);
+    } else {
+        int bladX = static_cast<PRBlad*>(plaats->get())->x;
+        int bladY = static_cast<PRBlad*>(plaats->get())->y;
+        plaats->reset();
+        *plaats = (std::unique_ptr<PRKnoop>) std::make_unique<PRNietblad>();
+        this->voegToe(bladX, bladY);
+        this->voegToe(x, y);
+    }
 
 }

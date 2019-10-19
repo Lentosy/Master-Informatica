@@ -28,11 +28,7 @@ class BinomiaalBos : public std::vector<BinomiaalBoom<Sleutel, Data>> {
 public:
     void voegsamen(BinomiaalBos<Sleutel, Data>&& andere){
 
-        // er zijn twee oplossingen mogelijk:
-        //      1) met de += operator
-        //      2) dunno
 
-        //methode 2
         for(int i = 0; i < ander.size(); i++){
             if(andere[i]){ // operator [i] geeft i-de binomiaalboom terug
                 Boom& carry = andere[i];
@@ -52,7 +48,6 @@ public:
 
     }
 
-    // methode 1
     Boom& operator+=(Boom&& andere){
         if((*this)->sleutel > andere->sleutel){
             swap(*this, andere);

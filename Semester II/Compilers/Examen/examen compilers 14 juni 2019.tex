@@ -46,12 +46,11 @@
     \item Data flow can be pro
 \end{enumerate}
 \section*{Question 2}
-Consider following code:
+The following code shows two facts about how symbol tables can be implemented. Which facts?
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.73\textwidth]{symboltable}
 \end{figure}
-It shows two facts about how symbol tables can be implemented. Which facts?
 
 \newpage
 \section*{Question 3}
@@ -207,6 +206,35 @@ Given the following grammar:
     \end{figure}
     \item Are there shift-reduce conflicts in state 3? Explain.
 \end{enumerate}
+
+\section*{Question 11}
+Consider the following LLVM IR code
+\begin{lstlisting}
+void function(i32* %0, i64 %1)
+    %2:
+        %3 = icmp eq %1, 0
+        br ... %3, label %4, label %6
+    %4:
+        %5 = phi[...
+        return i32 %11
+    %6:
+        %7 = phi [...]
+        %8 = phi [...]
+        %9 = getelementptr i32, i32* %0, i3 %7
+        %10 = load i32 %9
+        %11 = add %10, %8
+        %12 = add %7, 1
+        %13 = icmp eq %12, %1
+        br %4, %6
+\end{lstlisting}
+\begin{enumerate}
+    \item Explain in a few sentences what this code does.
+    \item Is this IR optimized? Explain.
+    \item What does the \texttt{getelementptr} instruction do?
+    \item In the labs, the first parameter of the \texttt{getelementptr} was zero, why is this not the case in this example?
+\end{enumerate}
+
+
 \part{Open Book}
 \section*{Question 1 (5pt)}
 The following table gives an interference graph. Cells marked $x$ mean an non-move reated interferences between vertices. Cells marked $m$ are move-related. Registers 1-4 are precolored, while registers A-E have to be assigned a color. Color this graph with coalescing and using 5 registers. Show only the phases used in the following format:
@@ -233,3 +261,4 @@ select A
 \section*{Question 2 (5pt)}
 
 \end{document}
+(Scheduling handmatig)

@@ -17,14 +17,19 @@
 
 \subsection{Definitie}
 \begin{itemize}
-    \item Een B-tree heeft een orde $m$ waarbij $m > 2$.
+    \item Een B-tree heeft een orde $m$ waarbij $m > 2$, en wordt gedefinieerd als volgt:
     \begin{itemize}
-        \item Elke inwendige knoop heeft hoogstens $m$ kinderen.
-        \item Elke inwendige knoop, behalve de wortel, heeft minstens $\lceil m/2 \rceil$ kinderen.
-        \item Elke inwendige knoop met $k + 1$ kinderen bevat $k$ sleutels. 
+        \item Elke inwendige knoop heeft minstens $\lceil m/2 \rceil$ en hoogstens $m$ kinderen. Deze kinderen zijn wijzers naar andere knopen die op het extern geheugen staan.
+        \begin{itemize}
+            \item De wortel is de uitzondering die hieraan niet voldoet.
+            \begin{itemize}
+                \item Is de wortel geen blad, dan bevat het minstens twee kinderen.
+                \item Is de wortel een blad, en dus de enigste knoop in de B-tree, dan bevat het minstens één kind.
+            \end{itemize}
+            \item Elke inwendige knoop behalve de wortel is dus zeker steeds voor de helft opgevuld.
+        \end{itemize}
+        \item Elke inwendige knoop met $k + 1$ kinderen bevat $k$ sleutels ($k <= m$). 
         \item Elk blad bevat hoogstens $m - 1$ en minstens $\lceil m/2 \rceil - 1$  sleutels.
-        \item De wortel bevat tenminste 2 kinderen, tenzij hij een blad is.
-        \item Als de wortel een blad is bevat hij minstens 1 sleutel.
         \item Alle bladeren bevinden zich op hetzelfde niveau.
     \end{itemize}
     \item Elke knoop bevat het volgende:
@@ -44,11 +49,12 @@
 
 \subsection{Eigenschappen}
 \begin{itemize}
-    \item Het minimaal aantal knopen voor een boom met hoogte $h$ is
+    \item Stel $g = \lceil m/2 \rceil$.
+    \item Het minimaal aantal knopen voor een boom met hoogte $h$ is dan
     $$1 + 2 + 2g + \dots + 2g^{h - 1} = 1 + 2\sum_{i=0}^{h - 1}g^i = 1 + 2\bigg(\frac{1-g^h}{1-g}\bigg) $$
     \begin{itemize}
         \item De wortel van een minimale boom heeft slechts 1 sleutel en twee kinderen.
-        \item Elk kind heeft minimum $g = \lceil m/2 \rceil$ kinderen.
+        \item Elk ander kind heeft minimum $g$ kinderen.
     \end{itemize}
     \item De hoogte is bijgevolg $O(\lg n)$.
     \begin{itemize}
@@ -94,30 +100,28 @@
     \item Toevoegen gebeurt altijd aan een blad.
     \item Vanuit de wortel wordt eerst het blad gezocht waarin de sleutel zou moeten zitten.
     \item Drie gevallen:
-    \begin{itemize}
+    \begin{enumerate}
         \item \textbf{De B-tree is ledig.}
         \begin{itemize}
-            \item De wortelknoop moet in het geheugen aangemaakt worden en gedeeltelijk ingevuld worden.
+            \item De wortelknoop wordt in het geheugen aangemaakt met de sleutel.
             \item De knoop wordt dan naar de schijf gekopieërd.
+            \item De verwijzing naar de plaats van de wortel moet ook permanent bijgehouden worden.
         \end{itemize}
-        \item \textbf{De B-tree is niet ledig.}
-        \begin{itemize}
-            \item Het blad waarin de sleutel moet zitten wordt opgezocht. Er zijn dan twee gevallen.
-        \end{itemize}
-        \begin{itemize}
+        \item \textbf{De B-tree is niet ledig.} Het blad waarin de sleutel moet zitten wordt opgezocht. Er zijn dan twee gevallen.
+        \begin{enumerate}
             \item \textbf{Het blad bevat minder dan $m$ sleutels.}
             \begin{itemize}
                 \item De sleutel wordt in de juiste volgorde toegevoegd aan de tabel met sleutels.
             \end{itemize}
-            \item \textbf{Het blad bevat $m$ sleutels.}
-            \begin{itemize}
-                \item Het blad wordt opgeslitst bij de middelste seutel.
-                \item Er wordt een nieuwe knoop op hetzelfde niveau aangemaakt, waarin de gegevens rechts van de middelste sleutel terechtkomen.
-                \item De middelste sleutel gaat naar de ouder.
-                \item Normaal gezien heeft de ouder plaats voor deze knoop, anders wordt er opnieuw geplitst.
-            \end{itemize}
-        \end{itemize}
-    \end{itemize}
+            \item \textbf{Het blad bevat $m$ sleutels.} Er zijn dan twee manieren die gehanteerd kunnen worden:
+            \begin{enumerate}
+                \item De eerste manier splitst het blad op bij de middelste sleutel. Er wordt een nieuwe knoop aangemaakt op hetzelfde niveau, waarin de gegevens van rechts van de middelste sleutel terechtkomen. De middelste sleutel gaat dan naar zijn ouder, waar er eventueel opnieuw gesplitst kan worden.
+                \item Een andere manier stelt het splitsen uit, door een rotatie uit te voeren. Als er een broer is die plaats heeft voor extra sleutels, kan die deze sleutels aannemen. Om de inorder volgorde van de sleutels te behouden wordt er eerst een sleutel aan de ouder gegeven, die een andere sleutel afstaat aan de gekozen broer.
+            \end{enumerate}
+
+
+        \end{enumerate}
+    \end{enumerate}
     \item Performantie:
     \begin{itemize}
         \item In het slechtste geval worden er $h + 1$ knopen gesplitst. 
@@ -149,7 +153,8 @@
         \end{itemize}
         \item \textbf{De sleutel zit in een inwendige knoop.}
         \begin{itemize}
-            \item De sleutel wordt vervangen door zijn voorloper of opvolger.
+            \item De sleutel wordt vervangen door zijn voorloper of opvolger, want die zitten zeker in een blad.
+            \item De oorspronkelijke positie van de voorloper of opvolger wordt dan verwijdert uit het blad.
             \item Als een knoop nu te weinig sleutels overhoudt, gebeurt er een \textbf{rotatie}.
             \begin{itemize}
                 \item Een sleutel van zijn broer gaat naar zijn ouder.
@@ -191,29 +196,63 @@
 \subsubsection{$B^*$-tree}
 \begin{itemize}
     \item In plaats van enkel gegevens over te brengen naar een buur tijdens het splitsen, worden de gegevens verdeeld over \textbf{drie} knopen.
+    \item De wortel heeft geen buur, dus er wordt toegestaan dat de wortel tot $4/3$ gevuld kan worden, want dan kunnen twee knopen voor $2/3$ gevuld worden.
     \item Beter gevulde knopen betekent een minder hoge boom.
 \end{itemize}
 \section{Uitwendige hashing}
 \begin{itemize}
     \item Waneer de volgorde van de sleutels niet belangreijk is.
     \item De woordenboekoperaties vereisen gemiddeld slechts $O(1)$.
-    \item Er wordt een binaire trie (hoofdstuk 10) gebruikt.
+    \item Er wordt een imaginaire binaire trie (hoofdstuk 10, figuur \ref{fig:binary_trie_hashing}) gebruikt.
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.3\textwidth]{binary_trie_hashing}
+        \caption{Er zijn vijf schijfpagina's $A, B, C, D$ en $E$. Tijdens het hashen heeft elke pagina een hashwaarde gekregen, waarin sleutels met dezelfde hashwaarde ook in terechtkomen. De binaire trie laat toe om snel in een pagina te geraken door opeenvolgende bits te vergelijken van de hashwaarden.}
+        \label{fig:binary_trie_hashing}
+    \end{figure}
     \begin{itemize}
         \item Wanneer een sleutel gezocht wordt, worden de sleutels niet vergeleken maar wel de opeenvolgende bits van de sleutel.
         \item Elke deelboom van een trie bevat alle sleutels met een gemeenschappelijk prefix.
         \item Alle sleutels van een deelboom kan in één pagina ondergebracht worden.
         \item Als de pagina vol geraakt, wordt de knoop (en dus de pagina) gesplitst, en beide pagina's krijgen een nieuwe trieknoop als ouder.
-        \item De vorm van een trie is onafhankelijk van de toevoegvolgorde.
-        \item Daarom wordt niet de bits van de sleutels gebruikt, maar de hashwaarde.
+        \item De vorm van een trie is enkel afhankelijk van de bits van de sleutels, dus een goede hashfunctie geeft voldoende garantie dat deze trie evenwichtig zal zijn.
     \end{itemize}
-    \item Dit hoofdstuk bespreekt twee methoden: \textbf{extendible hashing} en \textbf{linear hashing} die beiden het zoeken in de trie elimineren.
+    \item Dit hoofdstuk bespreekt twee methoden: \textbf{extendible hashing} en \textbf{linear hashing} die beiden niet expliciet een trie gebruiken.
 
 \end{itemize}
 
 \subsection{Extendible hashing}
 \begin{itemize}
+    \item Er is een hashtabel opgeslagen in het inwendig geheugen.
     \item Het zoeken in de trie wordt geëlimineerd door de langst mogelijke prefix uit de trie als index te gebruiken in een hashtabel.
     \item Kortere prefixen komen overeen met meerdere tabelelementen die allemaal een verwijzing naar dezelfde pagina moet bevatten.
+    \begin{itemize}
+        \item De trie uit figuur \ref{fig:binary_trie_hashing} kan dus omgevormd worden in tabelvorm:
+        \begin{table}[h]
+            \centering
+            \begin{tabular}{ | c | c |}
+                \hline
+                0000 & A \\
+                0001 & A\\
+                0010 & A\\
+                0011 & A\\
+                0100 & A\\
+                0101 & A\\
+                0110 & A\\
+                0111 & A\\
+                1000 & B\\
+                1001 & E\\
+                1010 & D\\
+                1011 & D\\
+                1100 & C\\
+                1101 & C\\
+                1110 & C\\
+                1111 & C\\
+                \hline
+            \end{tabular}
+            \caption{De tabelvorm van de boom uit figuur \ref{fig:binary_trie_hashing}. De eerste 8 elementen wijzen allemaal naar dezelfde pagina: $A$.}
+        \end{table}
+    \end{itemize}
     \item Implementatie:
     \begin{itemize}
         \item Er is een hashtabel die wijzers naar schijfpagina's bevat, waarbij elke schijfpagina maximaal $m$ sleutels met bijbehorende gegevens bevat.
@@ -252,46 +291,6 @@
     \end{itemize}
     \item Als er $n$ uniform verdeelde sleutels opgeslagen zijn, dan is de verwachtingswaarde van het aantal pagina's $n/(m\ln 2) \equiv 1.44n/m$.
     
-\end{itemize}
-
-\subsubsection{Voorbeeld}
-\begin{itemize}
-    \item Veronderstel een hashfunctie $h(k)$.
-    \item Een pagina heeft slechts plaats om één hashwaarde op te slaan.
-    \item De eerste $i$ bits van elke hashwaarde wordt gebruikt als index in de hashtabel. 
-    \item De waarde van $i$ is het kleinste getal zodanig dat elk item in de hashtabel uniek is.
-    \item De volgende hashwaarden worden gebruikt:
-    \begin{itemize}
-        \item $h(k_1) = 100100$
-        \item $h(k_2) = 010110$
-        \item $h(k_3) = 110110$
-        \item $h(k_4) = 011110$
-    \end{itemize}
-    \item \textbf{$k_1$ en $k_2$ worden toegevoegd.}
-    \begin{figure}[ht]
-        \centering
-        \includegraphics[width=0.5\textwidth]{extendible_hashing_ex1}
-        \caption{}
-        \label{fig:extendible_hashing_ex1}
-    \end{figure}
-    \begin{itemize}
-        \item Deze hashwaarden kunnen onderscheiden worden door het eerste bit, dus $d = 1$.
-        \item De hashtabel bevat nu twee elementen (figuur \ref{fig:extendible_hashing_ex1}), met twee wijzers: één naar pagina $A$ en één naar pagina $B$. 
-        \item De lokale diepte $k$ van beide elementen is gelijk aan $d$, $k = d = 1$.
-    \end{itemize}
-    \item \textbf{$k_3$ wordt toegevoegd.}
-    \begin{figure}[ht]
-        \centering
-        \includegraphics[width=0.5\textwidth]{extendible_hashing_ex2}
-        \caption{}
-        \label{fig:extendible_hashing_ex2}
-    \end{figure}
-    \begin{itemize}
-        \item Er zijn niet genoeg bits om $k_3$ te onderscheiden van $k_1$.
-        \item Er wordt vergeleken op bit $k + 1$.
-        \item Er wordt een nieuwe pagina $C$ aangemaakt waarin de sleutel $k_3$ opgeslagen wordt.
-        \item Aangezien $k$ gelijk was aan $d$, verdubbelt de grootte van de hashtabel.              
-    \end{itemize}
 \end{itemize}
 
 \subsection{Linear hashing}

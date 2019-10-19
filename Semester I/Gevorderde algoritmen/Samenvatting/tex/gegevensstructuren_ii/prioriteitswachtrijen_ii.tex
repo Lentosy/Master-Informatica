@@ -1,57 +1,67 @@
 \chapter{Samenvoegbare heaps}
 \begin{itemize}
-    \item Een samenvoegbare heap is een heap die geoptimaliseerd zijn om de 'join' operatie uit te voeren.
-    \item De join operatie voegt twee heaps samen, zodat de \textbf{heapvoorwaarde} nog steeds geldig is. 
-    \item Een lijst van bekende heaps.
-    \begin{itemize}
-		\item Leftist heaps.
-		\begin{itemize}
-			\item Deze heaps proberen zo onevenwichtig mogelijk te zijn.
-			\item De linkerkant is diep en de rechterkant ondiep.
-			\item De operaties zijn efficiënt omdat al het werk in de rechterkant gebeurt.
-		\end{itemize}
-		\item Skew heaps.
-		\begin{itemize}
-			\item Gelijkaardig aan een leftist heap, maar er is een vormbeperking.
-			\item In het slechtste geval kunnen individuele operaties $O(n)$ zijn.
-		\end{itemize}
-		\item Fibonacci heaps.
-        \item Relaxed heaps
-    \end{itemize}
-    
+	\item Een samenvoegbare heap is een heap waarbij de samenvoegoperatie, het samenvoegen van twee heaps, efficiënt is zodanig dat de \textbf{heapvoorwaarde} nog steeds geldig is.
+	\item De belangrijke samenvoegbare heaps zijn: \textbf{Binomial queues} en \textbf{Pairing heaps}.
 \end{itemize}
 
 
 
 
 
-De belangrijke samenvoegbare heaps zijn: \textbf{Binomial queues} en \textbf{Pairing heaps}.
+
 
 \section{Binomiale queues}
-
+\subsection{Structuur}
 		\begin{itemize}
 			\item Bestaat uit bos van binomiaalbomen.
-			\item Binomiaalboom $B_n$ bestaat uit twee binomiaalbomen $B_{n-1}$. $B_0$ bestaat uit één knoop.
-			\item De tweede binomiaalboom is de meest linkse deelboom van de wortel van de eerste.
-			\item Een binomiaalboom $B_n$ bestaat uit een wortel met als kinderen $B_{n-1}, ..., B_1, B_0$ (zie figuur \ref{fig:binomialtree_orders})
-			\item Op diepte $d$ zijn er $\binom{n}{d}$ knopen.
-			\item Voorbeeld: Een prioriteitswachtrij met 13 elementen wordt voorgesteld als $\langle B_3, B_2, B_0 \rangle$.
+			\item Een binomiaalboom $B_h$ wordt recursief in functie van zijn hoogte $h$ gedefinieerd.:
+			\begin{itemize}
+				\item $B_0$ bestaat uit één knoop.
+				\item $B_{h}$ bestaat uit twee $B_{h - 1}$ bomen.
+			\end{itemize}
+			\item De complete boom heeft $2^h$ knopen, en op diepte $d$ zijn er $\binom{h}{d}$ knopen.
+			\item Figuur \ref{fig:binomialtree_orders} toont een aantal binomiaalbomen.
+			\item Een prioriteitswachtrij met 13 elementen wordt voorgesteld als $\langle B_3, B_2, B_0 \rangle$ want $2^3 + 2^2 + 2^0 = 8 + 4 + 1 = 13$.
+			\begin{itemize}
+				\item Er kan ook een binaire representatie gekozen worden: $13 = (1101)_2$. De bits die op 1 staan duiden een aanwezige binomiaalboom.
+			\end{itemize}
 		\end{itemize}
 		\begin{figure}[ht]
 			\centering
-			\includegraphics[width=0.75\textwidth]{binomialtree_orders}
+			\includegraphics[width=0.5\textwidth]{binomialtree_orders}
 			\caption{Verschillende ordes van binomiaalbomen.}
 			\label{fig:binomialtree_orders}
 		\end{figure}
 
-		De \underline{operaties} op een binomiaalqueue:
+\subsection{Operaties}
 		\begin{itemize}
 			\item \textbf{Minimum vinden}: Overloop de wortel van elke binomiaalboom. Het minimum kan ook gewoon bijgehouden worden.
-			\item \textbf{Samenvoegen}: Tel de bomen met dezelfde hoogte bij elkaar op, $B_h + B_h = B_{h + 1}$. Maak de wortel met de grootste sleutel het kind van deze met de kleinste. 
+			\item \textbf{Samenvoegen}: Tel de bomen met dezelfde hoogte bij elkaar op, $B_h + B_h = B_{h + 1}$. Maak de wortel met de grootste sleutel het kind van deze met de kleinste. Bij het optellen moet er wel rekening gehouden worden met eventuele overdrachten.
+			\begin{itemize}
+				\item \textbf{Voorbeeld}:
+				\item Er is een prioriteitswachtrij met 23 elementen = $\langle B_4, B_2, B_1, B_0\rangle$
+				\item Er is een prioriteitswachtrij met 13 elementen = $\langle B_3, B_2, B_0\rangle$
+				\item Optellen geeft:
+				\begin{table}[ht]
+					\centering
+					\begin{tabular}{c c c c c c}
+							   & {\tiny$B_4$} & {\tiny$B_3$}      & {\tiny$B_2$} & {\tiny$B_1$} &    \\
+							   \hdashline
+						      & $B_4$ &       & $B_2$ & $B_1$ & $B_0$  \\
+							  &       & $B_3$ & $B_2$ &       & $B_0$ \\
+							  \hline
+						$B_5$ &		  &		  & $B_2$ &       &		 			
+					\end{tabular}
+					\caption{De binomiaalbomen boven de gestreepte lijn duiden de overdrachten aan.}
+				\end{table}
+			\end{itemize}
+			
+			
+			Figuur \ref{fig:binomialtree_fig} toont de samenvoegoperatie voor twee $B_2$ bomen.
 			\begin{figure}[ht]
 				\centering
 				\includegraphics[width=0.3\textwidth]{binomialtree_merge}
-				\caption{Hier worden twee binomiaalbomen van orde 3 samengevoegd. De boom met de waarde 7 voor de wortel wordt het linkerkind van de boom met waarde 3 voor de wortel. Het wordt een boom van orde 4.}
+				\caption{Hier worden twee binomiaalbomen $B_2$ samengevoegd. De boom met de waarde 7 voor de wortel wordt het linkerkind van de boom met waarde 3 voor de wortel. Het wordt een boom van orde $B_3$.}
 				\label{fig:binomialtree_fig}
 			\end{figure}
 			\item \textbf{Toevoegen}: Maak een triviale binomiaalqueue met één knoop en voeg deze samen met de andere binomiaalqueue.

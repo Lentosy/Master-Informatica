@@ -167,7 +167,7 @@
     \begin{itemize}
         \item Is er een optimale deelstructuur?
         \begin{itemize}
-            \item De deelproblemen zijn paren prefixen van de twee strings. 
+            \item De deelproblemen zijn paren prefixen van de twee strings. De oplossing bij elk deelprobleem is de lengte van de langst gemeenschappelijke deelsequentie van deze twee prefixen.
             \item Het prefix van $X$ met lengte $i$ is $X_i$.
             \item Het prefix van $Y$ met lengte $j$ is $Y_j$.
             \item De ledige prefix is $X_0$ en $Y_0$.
@@ -183,7 +183,7 @@
         \end{itemize}
         \item Zijn de deelproblemen overlappend?
         \begin{itemize}
-            \item Om de LGD van $X$ en $Y$ te vinden is het nodig om de LGD van $X$ en $Y_{m - 1}$ als van $X_{n - 1}$ en $Y$ te vinden.
+            \item Om de LGD van $X$ en $Y$ te vinden is het nodig om zowel de LGD van $X$ en $Y_{m - 1}$ als van $X_{n - 1}$ en $Y$ te vinden.
         \end{itemize}
     \end{itemize}
     \item De lengte $c[i, j]$ van de LGD van $X_i$ en $Y_j$ wordt door een recursieve vergelijking bepaald:

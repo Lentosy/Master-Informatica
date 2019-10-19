@@ -1,6 +1,7 @@
 #ifndef __PRQUADTREE_H__
 #define __PRQUADTREE_H__
 #include <cassert>
+#include <algorithm>
 #include <iostream>
 #include <fstream>
 #include <vector>
@@ -21,11 +22,13 @@ class PRKnoop;
 typedef unique_ptr<PRKnoop> Knoopptr;
 class PRQuadtree;
 
-class PRQuadtree: public Knoopptr{
+
+
+class PRQuadtree: public Knoopptr {
 public:
     using Knoopptr::unique_ptr;
     PRQuadtree(int a):maxcoordinaat{a}{};
-    PRQuadtree(Knoopptr&& a):Knoopptr(move(a)){};
+    PRQuadtree( Knoopptr&& a):Knoopptr(move(a)){};
     PRQuadtree& operator=(Knoopptr&& a){
         Knoopptr::operator=(move(a));
         return *this;
@@ -33,10 +36,10 @@ public:
     void preEnPostOrder(std::function<void(PRKnoop*)>& bezoekPre,std::function<void(PRKnoop*)>& bezoekPost) const;
     
     //te implementeren
+    void schrijf(std::ostream& os) const;
     void voegToe(int x, int y);
+    int geefDiepte() const;
     Knoopptr* zoek(int x, int y);
-    int geefDiepte();
-    //void splits(PRBlad*& blad);
 //de PRquadtree kan alleen punten bevatten met
 //-maxcoordinaat <= x < maxcoordinaat
 //-maxcoordinaat <= y < maxcoordinaat
@@ -56,13 +59,16 @@ class PRBlad:public PRKnoop{
 public:
     PRBlad(int x,int y):x{x},y{y}{};
     virtual bool isBlad(){ return true;}
-    int x,y;//coördinaten punt
+    int x,y;//co"ordinaten punt
     virtual int geefDiepte(){
         return 1;
     };
 };
 class PRNietblad:public PRKnoop{
 public:
+    virtual int geefDiepte() { 
+        return 1 + std::max({kind[0]->geefDiepte(), kind[1]->geefDiepte(), kind[2]->geefDiepte(), kind[3]->geefDiepte()});  
+    }
     virtual bool isBlad(){ return false;}
     int geefAantalKinderen(){
          int aantal=0;
@@ -90,8 +96,8 @@ void PRQuadtree::preEnPostOrder(std::function<void(PRKnoop*)>& bezoekPre,std::fu
         if (*this)
             DEstack.emplace(this->get(),pre);
         while (!DEstack.empty()){
-            //auto [nuknoop,nustaat]=DEstack.top(); // c++17 feature, vervangt de pair.first en pair.second
-            std::pair<PRKnoop*, staat> huidig = DEstack.top();
+            // auto [nuknoop,nustaat]=DEstack.top(); C++17 feature, bindt automatisch pair.first en pair.second naar variabele
+            std::pair<PRKnoop*, staat>& huidig = DEstack.top();
             PRKnoop* nuknoop = huidig.first;
             staat nustaat = huidig.second;
             if (nustaat==pre){
