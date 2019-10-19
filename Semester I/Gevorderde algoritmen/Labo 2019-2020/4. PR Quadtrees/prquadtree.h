@@ -66,8 +66,16 @@ public:
 };
 class PRNietblad:public PRKnoop{
 public:
-    virtual int geefDiepte() { 
-        return 1 + std::max({kind[0]->geefDiepte(), kind[1]->geefDiepte(), kind[2]->geefDiepte(), kind[3]->geefDiepte()});  
+    virtual int geefDiepte() {
+        std::vector<int> dieptes;
+        for(int i = 0; i < 4; i++){
+            Knoopptr* kind = &this->kind[i];
+            if(*kind){
+                dieptes.push_back((*kind)->geefDiepte());
+            }
+        } 
+        
+        return 1 + *std::max_element(dieptes.begin(), dieptes.end());
     }
     virtual bool isBlad(){ return false;}
     int geefAantalKinderen(){

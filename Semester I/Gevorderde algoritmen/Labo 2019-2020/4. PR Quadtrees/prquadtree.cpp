@@ -10,7 +10,7 @@ void PRQuadtree::schrijf(std::ostream& os) const {
 
     std::queue<PRKnoop*> BEstack;
     BEstack.emplace(this->get());
-    
+
     while(!BEstack.empty()){
         // Een knoop is ofwel een blad, ofwel een nietblad
         PRKnoop* huidig = BEstack.front();
@@ -28,14 +28,18 @@ void PRQuadtree::schrijf(std::ostream& os) const {
                     BEstack.emplace(kind->get());
                 }
             }
-
         }
         BEstack.pop();
     }
 }
 
 int PRQuadtree::geefDiepte() const {
-    return 0;
+    if(*this){
+        return this->get()->geefDiepte();
+    } else {
+        return 0;
+    }
+    
 }
 
 Knoopptr* PRQuadtree::zoek(int x, int y) {
