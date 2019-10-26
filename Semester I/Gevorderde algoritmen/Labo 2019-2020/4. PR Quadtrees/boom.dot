@@ -1,0 +1,19 @@
+digraph G {
+knoop1[label=""]
+knoop1 -> knoop2
+knoop2[shape=point]
+knoop1 -> knoop3
+knoop3[shape=square, label="-1,-1"]
+knoop1 -> knoop4
+knoop4[label=""]
+knoop1 -> knoop5
+knoop5[shape=point]
+knoop4 -> knoop6
+knoop6[shape=square, label="5,4"]
+knoop4 -> knoop7
+knoop7[shape=point]
+knoop4 -> knoop8
+knoop8[shape=square, label="7,6"]
+knoop4 -> knoop9
+knoop9[shape=point]
+}

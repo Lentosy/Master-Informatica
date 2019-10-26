@@ -35,7 +35,9 @@ public:
     };
     void preEnPostOrder(std::function<void(PRKnoop*)>& bezoekPre,std::function<void(PRKnoop*)>& bezoekPost) const;
     
+
     //te implementeren
+    std::ostringstream dotCode() const;
     void schrijf(std::ostream& os) const;
     void voegToe(int x, int y);
     int geefDiepte() const;
@@ -59,17 +61,18 @@ class PRBlad:public PRKnoop{
 public:
     PRBlad(int x,int y):x{x},y{y}{};
     virtual bool isBlad(){ return true;}
-    int x,y;//co"ordinaten punt
     virtual int geefDiepte(){
         return 1;
     };
+    int x,y;
+    
 };
 class PRNietblad:public PRKnoop{
 public:
     virtual int geefDiepte() {
         std::vector<int> dieptes;
         for(int i = 0; i < 4; i++){
-            Knoopptr* kind = &this->kind[i];
+            Knoopptr* kind = &(this->kind[i]);
             if(*kind){
                 dieptes.push_back((*kind)->geefDiepte());
             }
