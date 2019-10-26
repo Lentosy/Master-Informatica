@@ -105,7 +105,7 @@
         \item Een deelboom met zwarte hoogte $z$ heeft tenminste $2^z - 1$ inwendige knopen. Dit is de deelboom waarvan elke knoop zwart is.
         \item De hoogte $h$ van een rood-zwarte boom met $n$ knopen is steeds $O(\lg n)$, want:
         \begin{itemize}
-            \item Er zijn nooit twee opeenvolgende rode knopen op elke weg vanuit een knoop naar een virtuele knoop $\rightarrow z \geq h/2$.
+            \item Er zijn nooit twee opeenvolgende rode knopen op elke weg vanuit een knoop naar een virtuele knoop, wat ervoor zorgt dat de zwarte hoogte minstens de helft van de hoogte is $\rightarrow z \geq h/2$.
             \item Substitutie in de eerste eigenschap geeft:
             \begin{align*}
                 n &\geq 2^z - 1 \geq 2^{h/2} - 1 \\
