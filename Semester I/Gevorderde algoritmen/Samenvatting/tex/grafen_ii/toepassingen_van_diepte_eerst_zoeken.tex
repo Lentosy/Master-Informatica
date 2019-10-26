@@ -5,6 +5,12 @@
 		\item Het aantal knopen is $n$.
 		\item Het aantal verbindingen is $m$.
 	\end{itemize}
+	\item In dit hoofdstuk worden \textbf{drie} toepassingen van diepte-eerst zoeken besproken:
+	\begin{itemize}
+		\item Een componentengraaf opstellen.
+		\item Bruggen of scharnierpunten vinden.
+		\item Een methode die niet expliciet diepte-eerst zoeken gebruikt, maar toch er op lijkt om een eulercircuit te vinden in een graaf.
+	\end{itemize}
 \end{itemize}
 \section{Enkelvoudige samenhang van grafen}
 \subsection{Samenhangende componenten van een ongerichte graaf}
@@ -35,7 +41,7 @@
 		\item een knoop heeft voor elk sterk samenhangend component,
 		\item en een verbinding van knoop $a$ naar knoop $b$ indien er in de originele graaf een verbinding van één van de knopen van $a$ naar één van de knopen van $b$ is. 
 	\end{itemize}
-	\item De componentgraaf bevat geen lussen. Mocht dit wel zo zijn, zouden de knopen die de lus veroorzaken zich in hetzelfde sterk samenhangende component bevinden.
+	\item De componentengraaf bevat geen lussen. Mocht dit wel zo zijn, zouden de knopen die de lus veroorzaken zich in hetzelfde sterk samenhangende component bevinden.
 	\item De sterk samenhangende componenten \textbf{in een gerichte graaf} kunnen bekomen worden met behulp van diepte-eerst zoeken (Kosaraju's Algorithm):
 	\begin{enumerate}
 		\item Stel de omgekeerde graaf op, door de richting van elke verbinding om te keren.

@@ -237,13 +237,22 @@
 
 \subsubsection{Verwijderen}
 \begin{itemize}
-    \item Verwijder eerst de knoop zoals bij een gewone zoekboom.
-    \item Als de te verwijderen knoop rood is, is er geen gevolg voor de zwarte hoogte en is de operatie klaar.
-    \item Als de te verwijderen knoop zwart is, zijn er twee mogelijkheden:
+    \item Verwijderen in een normale zoekboom verloopt als volgt:
+    \begin{itemize}
+        \item Zoek de opvolger of voorloper van de knoop.
+        \item Verwissel de sleutels.
+        \item Verwijder dan de knoop waar de oorspronkelijke opvolger of voorloper zich bevondt.
+    \end{itemize}
+    \item Deze laatste stap kan nu twee vormen aannemen:
     \begin{enumerate}
-        \item \textbf{De knoop heeft minstens één rood kind.} Dit rood kind kan de zwarte kleur overnemen, zodat de zwarte hoogten intact blijven.
-        \item \textbf{De knoop heeft twee zwarte kinderen (virtueel of echt)}. De zwarte kleur wordt aan één van de kinderen gegeven, zodat die \textbf{dubbelzwart} wordt.
+        \item Als de te verwijderen knoop rood is, is er geen gevolg voor de zwarte hoogte en is de operatie klaar.
+        \item Als de te verwijderen knoop zwart is, zijn er twee mogelijkheden:
+        \begin{enumerate}
+            \item \textbf{De knoop heeft één rood kind.} Dit rood kind kan de zwarte kleur overnemen, zodat de zwarte hoogten intact blijven.
+            \item \textbf{De knoop heeft twee zwarte kinderen (virtueel of echt)}. De zwarte kleur wordt aan één van de kinderen gegeven, zodat die \textbf{dubbelzwart} wordt.
+        \end{enumerate}
     \end{enumerate}
+
     \item In het eerste geval is de operatie klaar. In het tweede geval moet de boom, die nu een dubbelzwarte knoop bevat, herstelt worden.
     \item Als de dubbelzwarte knoop $c$ de wortel is, kan deze extra zwarte kleur verdwijnen. 
     \item Als $c$ geen wortel is, en ouder $p$ heeft, dan zijn er acht mogelijkheden die in groepen van twee uiteenvallen naargelang $c$ een linker- of rechterkind van $p$ is.
