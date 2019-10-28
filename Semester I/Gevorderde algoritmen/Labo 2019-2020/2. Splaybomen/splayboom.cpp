@@ -84,9 +84,10 @@ Knoop<Sleutel, Data>* SplayboomBottomUp<Sleutel, Data>::zoek(const Sleutel& sleu
 
 
 /* VANAF HIER BEGINNEN DE DEFINITIES VOOR EEN TOP DOWN SPLAYBOOM */
+template <class Sleutel, class Data>
+void SplayboomTopDown<Sleutel, Data>::zig(Boom<Sleutel, Data>& L, Boom<Sleutel, Data>*& Linvoer, Boom<Sleutel, Data>& R, Boom<Sleutel, Data>*& Rinvoer, bool kindZitLinks) {
 
 
-// TODO, maar geen zin
 
 template <class Sleutel, class Data>
 Knoop<Sleutel, Data>* SplayboomTopDown<Sleutel, Data>::zoek(const Sleutel& sleutel) {
@@ -101,9 +102,10 @@ Knoop<Sleutel, Data>* SplayboomTopDown<Sleutel, Data>::zoek(const Sleutel& sleut
 	bool huidigeKnoopIsLinkerkind = sleutel < (*M)->sleutel;
 	// 1. C is de laatste knoop op de zoekweg
 	
-	//this->zig(*L, L, *R, R, huidigeKnoopIsLinkerkind)
+	this->zig(*L, L, *R, R, huidigeKnoopIsLinkerkind);
 	
 
+	return nullptr;
 	
 
 }

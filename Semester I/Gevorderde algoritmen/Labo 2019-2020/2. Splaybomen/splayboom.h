@@ -29,7 +29,8 @@ class SplayboomBottomUp: public Boom<Sleutel, Data> {
 template <class Sleutel, class Data>
 class SplayboomTopDown: public Boom<Sleutel, Data> {
 	public:
-		void voegtoe(const Sleutel& sleutel, const Data& data, bool dubbelsToestaan=false);
+		using Boom<Sleutel,Data>::voegtoe;
+		//void voegtoe(const Sleutel& sleutel, const Data& data, bool dubbelsToestaan=false);
 		Knoop<Sleutel, Data>* zoek(const Sleutel& sleutel); 
 
 	private:

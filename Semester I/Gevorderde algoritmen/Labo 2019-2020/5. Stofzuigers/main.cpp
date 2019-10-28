@@ -1,4 +1,4 @@
-#include "stofzuigergraaf.h"
+#include "rssgraaf.h"
 #include <regex>
 #include <iostream>
 
@@ -10,15 +10,36 @@ int main(void) {
     std::string line;
 
     RSSGraaf graaf;
+    // Eerste keer inlezen om de verschillende gezinsnummers te ontdekken
+    std::map<int, int> gezinNummerOpKnoopNummer;
     while(std::getline(input, line)){
         std::regex_match(line, matches, regex);
         int van = std::stoi(matches[1]);
         int naar = std::stoi(matches[2]);
-        int knoopnrVan = graaf.voegKnoopToe(van);
-        int knoopnrNaar = graaf.voegKnoopToe(naar);
-
-        graaf.voegVerbindingToe(knoopnrVan, knoopnrNaar);
+        gezinNummerOpKnoopNummer[van] = -1;
+        gezinNummerOpKnoopNummer[naar] = -1;
     } 
+
+    // Elk gezinsnummer afbeelden op een knoopnummer in de graaf
+    std::map<int, int>::iterator iterator = gezinNummerOpKnoopNummer.begin();
+    while(iterator != gezinNummerOpKnoopNummer.end()){
+        iterator->second = graaf.voegKnoopToe(iterator->first);
+        iterator++;
+    }
+
+    // Tweede maal overlopen om de verbindingen toe te voegen
+    input.close();
+    input.open("rss.txt");
+    while(std::getline(input, line)){
+        std::regex_match(line, matches, regex);
+        int van = std::stoi(matches[1]);
+        int naar = std::stoi(matches[2]);
+        int knoopnrVan = gezinNummerOpKnoopNummer[van];
+        int knoopnrNaar = gezinNummerOpKnoopNummer[naar];
+        graaf.voegVerbindingToe(knoopnrVan, knoopnrNaar);    
+    } 
+
+    graaf.teken("dot/graaf.dot");
     
     std::vector<int>& optimalePad = graaf.geefOptimalePad();
     for(int i = 0; i < optimalePad.size(); i++){

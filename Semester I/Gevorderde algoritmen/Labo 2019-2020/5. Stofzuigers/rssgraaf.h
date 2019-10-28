@@ -1,6 +1,9 @@
 #include "graaf.h"
+#include "componentengraaf.h"
 #include <stack>
+#include <vector>
 #include <algorithm>
+
 
 class RSSGraaf : public GraafMetKnoopdata<GERICHT, int> {
 public:
@@ -9,7 +12,7 @@ public:
     // Geeft de langste lijst van gezinnen waaran een stofzuiger verkocht moet worden
     std::vector<int> geefOptimalePad() {
         // 1. Maak componentgraaf op.
-        GraafMetKnoopdata<GERICHT, int>& componentenGraaf = this->geefComponentenGraaf();
+        ComponentenGraaf<int> componentenGraaf(this);
         
         // 2. Er wordt een map bijgehouden die een knoopnummer afbeeldt op een lijst van zijn inkomende verbindingen.
         std::map<int, std::vector<int>> knoopEnInkomendeVerbindingen;
@@ -57,12 +60,17 @@ public:
 private:
     // Een ongerichte graaf met per knoop het gezin dat gekozen moet worden
     GraafMetKnoopdata<GERICHT, int>& geefComponentenGraaf() {
-        GraafMetKnoopdata<GERICHT, int> componentenGraaf;
-        return componentenGraaf;
+
+
+
+        GraafMetKnoopdata<GERICHT, int>* componentenGraaf = new GraafMetKnoopdata<GERICHT, int>();
+        componentenGraaf->voegKnoopToe(4);
+        
         // keer graaf om    
         // zoek DEZ in omgekeerde graaf en nummer post-order
         // Zoek DEZ in originele, startend vanaf knoop met hoogste post-order nummer
 
         //resultaat is diepte-eerst bos, waarvan elke boom een component is (en zo kan de lijst van gezinnen opgesteld worden)
+        return *componentenGraaf;
     }
 };

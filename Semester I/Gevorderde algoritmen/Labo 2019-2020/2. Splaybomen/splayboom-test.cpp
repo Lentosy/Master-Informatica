@@ -196,11 +196,20 @@ void maakOptimaleBinaireZoekboom(const char * bestandsnaam){
 
 }
 
+void testSplayTopDown() {
+    SplayboomTopDown<int, int> boom;
+    boom.voegtoe(1, 1);
+    boom.voegtoe(7, 4);
+    boom.zoek(7);
+    
+}
 
 /*
 * Geef parameter 'test' mee om testen uit te voeren
 */
 int main(int argc, char * argv[]){
+    testSplayTopDown();
+    /*
     if(argc == 2 && strcmp(argv[1], "test") == 0){
         testSplay1Tot100EnZoek1BottomUp();   
         testSplay50BottomUp(); 
@@ -208,5 +217,6 @@ int main(int argc, char * argv[]){
     }
 
     maakOptimaleBinaireZoekboom("AChristmasCarol.txt");
+    */
     return 0;
 }
