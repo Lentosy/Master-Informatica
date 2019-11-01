@@ -41,7 +41,9 @@ int main(void) {
 
     graaf.teken("dot/graaf.dot");
     
-    std::vector<int>& optimalePad = graaf.geefOptimalePad();
+    std::vector<int> optimalePad;
+    graaf.geefOptimalePad(optimalePad);
+    
     for(int i = 0; i < optimalePad.size(); i++){
         std::cout << optimalePad[i] << "\n";
     }
