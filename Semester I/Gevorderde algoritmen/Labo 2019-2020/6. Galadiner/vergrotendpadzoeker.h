@@ -24,21 +24,21 @@ class Vergrotendpadzoeker {
 public:
     Vergrotendpadzoeker(const Stroomnetwerk<T>& stroomnetwerk):
                     stroomnetwerk(stroomnetwerk), producent(stroomnetwerk.van), verbruiker(stroomnetwerk.naar),
-                    l(stroomnetwerk.aantalKnopen()), m(stroomnetwerk.aantalKnopen(),false){};
+                    ouder(stroomnetwerk.aantalKnopen()), ontdekt(stroomnetwerk.aantalKnopen(),false){};
     Pad<T> geefVergrotendPad();
 protected:
     virtual void zoekVergrotendPad(int huidigeKnoop, int x, Pad<T>& pad);
     const Stroomnetwerk<T>& stroomnetwerk;
-    std::vector<int> l;
-    std::vector<bool> m;
+    std::vector<int> ouder;
+    std::vector<bool> ontdekt;
     int producent, verbruiker;
 };
 
 
 template <class T>
 Pad<T> Vergrotendpadzoeker<T>::geefVergrotendPad(){
-    for (int i = 0; i < m.size(); i++){
-        m[i] = false;
+    for (int i = 0; i < ontdekt.size(); i++){
+        ontdekt[i] = false;
     }
     
     Pad<T> pad;
@@ -63,25 +63,25 @@ Pad<T> Vergrotendpadzoeker<T>::geefVergrotendPad(){
 
 template <class T>
 void Vergrotendpadzoeker<T>::zoekVergrotendPad(int huidigeKnoop, int x, Pad<T>& pad){
-    m[huidigeKnoop] = true;
+    ontdekt[huidigeKnoop] = true;
     const typename GraafMetTakdata<GERICHT,T>::Burenlijst& buren = stroomnetwerk[huidigeKnoop];
     int padLengte = x + 1;
     for (typename GraafMetTakdata<GERICHT,T>::Burenlijst::const_iterator it = buren.begin(); it != buren.end() ; it++){
         int buurKnoop = it->first;
         if (*stroomnetwerk.geefTakdata(huidigeKnoop, buurKnoop) > 0){
             if (it->first == verbruiker && padLengte + 1 > pad.size()){
-                l[verbruiker] = huidigeKnoop;
+                ouder[verbruiker] = huidigeKnoop;
                 pad.resize(padLengte + 1);
                 int ychf = verbruiker;
                 int i = padLengte;
                 while (ychf != producent){
                     pad[i--] = ychf;
-                    ychf = l[ychf];
+                    ychf = ouder[ychf];
                 }
                 pad[0] = ychf;
             }
-            else if(buurKnoop != verbruiker && !m[buurKnoop]){
-                l[buurKnoop] = huidigeKnoop;
+            else if(buurKnoop != verbruiker && !ontdekt[buurKnoop]){
+                ouder[buurKnoop] = huidigeKnoop;
                 zoekVergrotendPad(buurKnoop, padLengte, pad);
             }
         }
@@ -108,45 +108,50 @@ protected:
 
 template <class T>
 void Korstepadzoeker<T>::zoekVergrotendPad(int huidigeKnoop, int x, Pad<T>& pad) {
-    std::cout << "DIJKBOY\n";
-    // basically dijkstra
-    std::vector<int> afstanden(this->stroomnetwerk.aantalKnopen(), INT_MAX);
-    std::vector<int> ouder(this->stroomnetwerk.aantalKnopen(), -1);
-    afstanden[huidigeKnoop] = 0;
-    std::set<int> knopenVerzameling;
-
-    for(int i = 0; i < this->stroomnetwerk.aantalKnopen(); i++){
-        knopenVerzameling.emplace(i);
-    }
-
-    while(!knopenVerzameling.empty()) {
-
-        int kortste = *std::min_element(knopenVerzameling.begin(), knopenVerzameling.end());
-        knopenVerzameling.erase(kortste);
-
-        Burenlijst buren = this->stroomnetwerk[kortste];
-        Burenlijst::const_iterator burenIterator = buren.begin();
-        while(burenIterator !=  buren.end()) {
-            int buur = burenIterator->first;
-            int lengte = afstanden[kortste] + 1;
-            if(lengte < afstanden[buur]) {
-                afstanden[buur] = lengte;
-                ouder[buur] = kortste;
+    // Breedte eerst zoeken
+    ontdekt[huidigeKnoop] = true;
+    Burenlijst buren = this->stroomnetwerk[huidigeKnoop];
+    Burenlijst::const_iterator burenIterator = buren.begin();
+    while(burenIterator != buren.end() && burenIterator->first != this->verbruiker) {
+        int buurKnoop = burenIterator->first;
+        if (*stroomnetwerk.geefTakdata(huidigeKnoop, buurKnoop) > 0){
+            if(!ontdekt[buurKnoop]) {
+                ouder[buurKnoop] = huidigeKnoop;
+                zoekVergrotendPad(buurKnoop, x, pad);
             }
-            burenIterator++;
         }
+        burenIterator++;
     }
 
-    int knoop = verbruiker;
-    if(ouder[knoop] || knoop == producent) {
-        while(knoop) {
-            pad.push_back(knoop);
-            knoop = ouder[knoop];
-        }
+    int padKnoop = verbruiker;
+    while(ouder[padKnoop] != producent) {
+        pad.push_back(padKnoop);
+        padKnoop = ouder[padKnoop];
     }
 
-    for(int i = 0; i < pad.size(); i++){
-        std::cout << pad[i] << "\n";
-    }
+    pad.push_back(producent);
+    std::reverse(pad.begin(), pad.end());
+}
+
+
+
+
+
+/**********************************************************************
+   Class: Grootstecapaciteitszoeker
+   
+   beschrijving: Deze geeft een vergrotend pad met maximale capaciteit. 
+***************************************************************************/
+template <class T>
+class Grootstecapaciteitszoeker : public Vergrotendpadzoeker<T>{
+public:
+    using Vergrotendpadzoeker::Vergrotendpadzoeker;
+protected:
+    void zoekVergrotendPad(int huidigeKnoop, int x, Pad<T>& pad);
+};
+
+
+template <class T>
+void Grootstecapaciteitszoeker<T>::zoekVergrotendPad(int huidigeKnoop, int x, Pad<T>& pad) {
 
 }

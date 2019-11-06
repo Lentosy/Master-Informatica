@@ -18,12 +18,12 @@ int main(){
     gr.voegVerbindingToe(6,3,2 );
     gr.voegVerbindingToe(6,4,8 );
     
-    gr.teken("dot/gr.dot");
 
     Pad<int> pad;
     Stroomnetwerk<int> sn(gr,1,4);
 
-    sn.teken("dot/gr.dot");
-    std::cout << sn.geefStroom().geefCapaciteit();
-    assert(sn.geefStroom().geefCapaciteit() == 14);
+    int capaciteit = sn.geefStroom().geefCapaciteit();
+    std::cout << "De capaciteit is " << capaciteit << "\n";
+    assert(capaciteit == 14);
+
 }

@@ -66,25 +66,24 @@ Stroomnetwerk<T>::Stroomnetwerk(const Stroomnetwerk<T>& gr):
 template <class T>
 Stroomnetwerk<T>::Stroomnetwerk(Stroomnetwerk<T>&& gr):Stroomnetwerk(0,0,0){
     swap(this->burenlijsten,gr.burenlijsten);
-    swap(this->vrijgekomenVerbindingsnummers,gr.vrijgekomenVerbindingsnummers);
-    std::swap(this->hoogsteVerbindingsnummer,gr.hoogsteVerbindingsnummer);
-    swap(this->takdatavector,gr.takdatavector);
-    std::swap(this->van,gr.van);
-    std::swap(this->naar,gr.naar);
+    swap(this->vrijgekomenVerbindingsnummers, gr.vrijgekomenVerbindingsnummers);
+    std::swap(this->hoogsteVerbindingsnummer, gr.hoogsteVerbindingsnummer);
+    swap(this->takdatavector, gr.takdatavector);
+    std::swap(this->van, gr.van);
+    std::swap(this->naar, gr.naar);
 }
 
 template <class T>
 Stroomnetwerk<T> Stroomnetwerk<T>::geefStroom(){
-    Stroomnetwerk<T> oplossing(this->aantalKnopen(),van,naar);
+    Stroomnetwerk<T> oplossing(this->aantalKnopen(), van, naar);
     Stroomnetwerk<T> restnetwerk(*this);
     Korstepadzoeker<T> vg(restnetwerk);
-    Pad<T> vergrotendpad=vg.geefVergrotendPad();
+    Pad<T> vergrotendpad = vg.geefVergrotendPad();
     while(vergrotendpad.size() !=0 ){
         restnetwerk -= vergrotendpad;
         oplossing += vergrotendpad;
-        vergrotendpad=vg.geefVergrotendPad();
+        vergrotendpad = vg.geefVergrotendPad();
     }
-    //restnetwerk.teken("restnet.dot");
     return oplossing;
 }
 
@@ -119,10 +118,13 @@ Stroomnetwerk<T>& Stroomnetwerk<T>::operator-=(const Pad<T>& pad) {
 
 template <class T>
 T Stroomnetwerk<T>::geefCapaciteit(){
-    T som=0;
-    for (typename GraafMetTakdata<GERICHT,T>::Burenlijst::const_iterator it=this->burenlijsten[van].begin();
-                it!=this->burenlijsten[van].end();it++)
-        som+=this->takdatavector[it->second];
+    T som = 0;
+    typename GraafMetTakdata<GERICHT, T>::Burenlijst::const_iterator burenIterator = this->burenlijsten[van].begin();
+    while(burenIterator != this->burenlijsten[van].end()) {
+        som += this->takdatavector[it->second];
+        burenIterator++;
+
+    }
     return som;
 }
 
