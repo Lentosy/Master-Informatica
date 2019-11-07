@@ -2,6 +2,7 @@
 #include "pad.h"
 #include <vector>
 #include <set>
+#include <queue>
 #include <algorithm>
 template<class T>
 class Stroomnetwerk;
@@ -13,22 +14,22 @@ typedef std::map<int, int> Burenlijst;
 /**********************************************************************
    Class:Vergrotendpadzoeker
    
-   beschrijving: Methodeklasse die, gegeven een stroomnetwerk,
+   beschrijving: Methodeklasse die, gegeven een Stroomnetwerk,
                  een vergrotend pad teruggeeft.
                  Vermits ze hoort bij Ford-Fulkerson zal een object van deze klasse
-                 elke keer een ander pad geven als het stroomnetwerk opgegeven
+                 elke keer een ander pad geven als het restnetwerk opgegeven
                  in de constructor verandert.
 ***************************************************************************/
 template <class T>
 class Vergrotendpadzoeker {
 public:
-    Vergrotendpadzoeker(const Stroomnetwerk<T>& stroomnetwerk):
-                    stroomnetwerk(stroomnetwerk), producent(stroomnetwerk.van), verbruiker(stroomnetwerk.naar),
-                    ouder(stroomnetwerk.aantalKnopen()), ontdekt(stroomnetwerk.aantalKnopen(),false){};
+    Vergrotendpadzoeker(const Stroomnetwerk<T>& restnetwerk):
+                    restnetwerk(restnetwerk), producent(restnetwerk.van), verbruiker(restnetwerk.naar),
+                    ouder(restnetwerk.aantalKnopen()), ontdekt(restnetwerk.aantalKnopen(),false){};
     Pad<T> geefVergrotendPad();
 protected:
     virtual void zoekVergrotendPad(int huidigeKnoop, int x, Pad<T>& pad);
-    const Stroomnetwerk<T>& stroomnetwerk;
+    const Stroomnetwerk<T>& restnetwerk;
     std::vector<int> ouder;
     std::vector<bool> ontdekt;
     int producent, verbruiker;
@@ -49,13 +50,19 @@ Pad<T> Vergrotendpadzoeker<T>::geefVergrotendPad(){
     // Bepaal het minimum van de capaciteiten
     
     if (pad.size() > 1){
-        T kleinsteCapaciteit = *stroomnetwerk.geefTakdata(pad[0], pad[1]);
+        T kleinsteCapaciteit = *restnetwerk.geefTakdata(pad[0], pad[1]);
         for (int i = 2; i < pad.size(); i++) {
-            T huidigeCapaciteit = *stroomnetwerk.geefTakdata(pad[i-1],pad[i]);
+            T huidigeCapaciteit = *restnetwerk.geefTakdata(pad[i-1],pad[i]);
             if (huidigeCapaciteit < kleinsteCapaciteit) 
                 kleinsteCapaciteit = huidigeCapaciteit;
         }
         pad.zetCapaciteit(kleinsteCapaciteit);
+    }
+
+
+    // EIGEN GLUE CODE, IF CAPACITEIT VAN EEN PAD 0 IS, IS ER TOCH GEEN PAD
+    if(pad.geefCapaciteit() == 0) {
+        pad.clear();
     }
     
     return pad;
@@ -64,11 +71,11 @@ Pad<T> Vergrotendpadzoeker<T>::geefVergrotendPad(){
 template <class T>
 void Vergrotendpadzoeker<T>::zoekVergrotendPad(int huidigeKnoop, int x, Pad<T>& pad){
     ontdekt[huidigeKnoop] = true;
-    const typename GraafMetTakdata<GERICHT,T>::Burenlijst& buren = stroomnetwerk[huidigeKnoop];
+    const typename GraafMetTakdata<GERICHT,T>::Burenlijst& buren = restnetwerk[huidigeKnoop];
     int padLengte = x + 1;
     for (typename GraafMetTakdata<GERICHT,T>::Burenlijst::const_iterator it = buren.begin(); it != buren.end() ; it++){
         int buurKnoop = it->first;
-        if (*stroomnetwerk.geefTakdata(huidigeKnoop, buurKnoop) > 0){
+        if (*restnetwerk.geefTakdata(huidigeKnoop, buurKnoop) > 0){
             if (it->first == verbruiker && padLengte + 1 > pad.size()){
                 ouder[verbruiker] = huidigeKnoop;
                 pad.resize(padLengte + 1);
@@ -97,7 +104,7 @@ void Vergrotendpadzoeker<T>::zoekVergrotendPad(int huidigeKnoop, int x, Pad<T>& 
    beschrijving: Deze geeft een vergrotend pad terug dat zo kort mogelijk is.
 ***************************************************************************/
 template <class T>
-class Korstepadzoeker : public Vergrotendpadzoeker<T>{
+class Kortstepadzoeker : public Vergrotendpadzoeker<T>{
 public:
     using Vergrotendpadzoeker::Vergrotendpadzoeker;
 protected:
@@ -107,30 +114,42 @@ protected:
 
 
 template <class T>
-void Korstepadzoeker<T>::zoekVergrotendPad(int huidigeKnoop, int x, Pad<T>& pad) {
+void Kortstepadzoeker<T>::zoekVergrotendPad(int huidigeKnoop, int x, Pad<T>& pad) {
     // Breedte eerst zoeken
+    // BUG: er worden ook paden aangemaakt waarbij de capaciteit toch nul is. Wordt opgelost door de capaciteit te checken, en het pad te verwijderen als de capaciteit nul is
+    std::queue<int> BEqueue; 
+    BEqueue.push(huidigeKnoop);
     ontdekt[huidigeKnoop] = true;
-    Burenlijst buren = this->stroomnetwerk[huidigeKnoop];
-    Burenlijst::const_iterator burenIterator = buren.begin();
-    while(burenIterator != buren.end() && burenIterator->first != this->verbruiker) {
-        int buurKnoop = burenIterator->first;
-        if (*stroomnetwerk.geefTakdata(huidigeKnoop, buurKnoop) > 0){
-            if(!ontdekt[buurKnoop]) {
-                ouder[buurKnoop] = huidigeKnoop;
-                zoekVergrotendPad(buurKnoop, x, pad);
-            }
+    
+    while(!BEqueue.empty() && !ontdekt[this->verbruiker]) {
+        int knoop = BEqueue.front();
+        BEqueue.pop();
+        const Burenlijst& buren = this->restnetwerk[knoop];
+        Burenlijst::const_iterator burenIterator = buren.begin();
+
+        while(burenIterator != buren.end()) {
+            int buur = burenIterator->first; 
+            if(!this->ontdekt[buur] && *this->restnetwerk.geefTakdata(knoop, buur) > 0) {
+                BEqueue.push(buur);
+                this->ouder[buur] = knoop;
+                this->ontdekt[buur] = true;
+            }           
+            burenIterator++; 
         }
-        burenIterator++;
     }
 
-    int padKnoop = verbruiker;
-    while(ouder[padKnoop] != producent) {
-        pad.push_back(padKnoop);
+    std::stack<int> padKnopen;
+    int padKnoop = this->verbruiker;
+    while(padKnoop != this->producent) {
+        padKnopen.push(padKnoop);
         padKnoop = ouder[padKnoop];
     }
-
-    pad.push_back(producent);
-    std::reverse(pad.begin(), pad.end());
+    // producent is nu nog niet toegevoegd aan padKnopen
+    pad.push_back(this->producent);
+    while(!padKnopen.empty()) {
+        pad.push_back(padKnopen.top());
+        padKnopen.pop();    
+    }
 }
 
 
@@ -153,5 +172,40 @@ protected:
 
 template <class T>
 void Grootstecapaciteitszoeker<T>::zoekVergrotendPad(int huidigeKnoop, int x, Pad<T>& pad) {
+    std::vector<int> hoogste_cap(this->restnetwerk.aantalKnopen(), INT_MIN); // kost om tot bepaalde knoop te geraken
+    hoogste_cap[huidigeKnoop] = 0;
+
+/*Tip: als je voor een gegeven knoop c, M(c) de maximale capaciteit noemt van een pad van de producentknoop naar c dan kan je M zoeken voor alle mogelijke knopen (en dus ook voor de verbruiker) met een methode die zeer goed lijkt op het algoritme van Dijkstra.*/
+    std::queue<int> BEqueue;
+    BEqueue.push(huidigeKnoop);
+    while(!BEqueue.empty()){
+        int knoop = BEqueue.front();
+        BEqueue.pop();
+        const Burenlijst& buren = this->restnetwerk[knoop];
+        Burenlijst::const_iterator burenIterator = buren.begin();
+        while(burenIterator != buren.end()){
+            int buur = burenIterator->first;
+            int minCap = std::min(hoogste_cap[knoop] , *this->restnetwerk.geefTakdata(knoop, buur));
+            if(hoogste_cap[buur] < minCap){ //enkel (her)pushen indien iets veranderd was aan zijn huidige beste afstand
+                ouder[buur] = knoop;
+                hoogste_cap[buur] = minCap;
+                BEqueue.push(buur);
+            }
+            burenIterator++;
+        }
+    }
+
+    std::stack<int> padKnopen;
+    int padKnoop = this->verbruiker;
+    while(padKnoop != this->producent) {
+        padKnopen.push(padKnoop);
+        padKnoop = ouder[padKnoop];
+    }
+    // producent is nu nog niet toegevoegd aan padKnopen
+    pad.push_back(this->producent);
+    while(!padKnopen.empty()) {
+        pad.push_back(padKnopen.top());
+        padKnopen.pop();    
+    }
 
 }

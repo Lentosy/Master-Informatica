@@ -77,9 +77,9 @@ template <class T>
 Stroomnetwerk<T> Stroomnetwerk<T>::geefStroom(){
     Stroomnetwerk<T> oplossing(this->aantalKnopen(), van, naar);
     Stroomnetwerk<T> restnetwerk(*this);
-    Korstepadzoeker<T> vg(restnetwerk);
+    Grootstecapaciteitszoeker<T> vg(restnetwerk);
     Pad<T> vergrotendpad = vg.geefVergrotendPad();
-    while(vergrotendpad.size() !=0 ){
+    while(vergrotendpad.size() != 0){
         restnetwerk -= vergrotendpad;
         oplossing += vergrotendpad;
         vergrotendpad = vg.geefVergrotendPad();
@@ -121,7 +121,7 @@ T Stroomnetwerk<T>::geefCapaciteit(){
     T som = 0;
     typename GraafMetTakdata<GERICHT, T>::Burenlijst::const_iterator burenIterator = this->burenlijsten[van].begin();
     while(burenIterator != this->burenlijsten[van].end()) {
-        som += this->takdatavector[it->second];
+        som += this->takdatavector[burenIterator->second];
         burenIterator++;
 
     }
