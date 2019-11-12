@@ -52,6 +52,10 @@
 \section{Tries}
 \begin{itemize}
     \item Een digitale zoekstructuur die wel de volgorde van de opgeslagen sleutels behoudt.
+    \item Ze moeten echter voldoen aan de \textbf{prefixvoorwaarde}: een sleutel mag geen prefix zijn van een andere sleutel. 
+    \begin{itemize}
+        \item Dit kan opgelost worden door elke sleutel te laten volgen door een afsluitteken. Dit werkt echter niet bij binaire tries.
+    \end{itemize}
 \end{itemize}
 
 \subsection{Binaire tries}
@@ -137,14 +141,27 @@
     \item Bij het \textbf{decoderen} is er een \textbf{prefixcode}. 
     \begin{itemize}
         \item Dit is een codering waarbij een \textbf{codewoord}, nooit het prefix van een ander codewoord kan zijn.
-        \item Een codering is een mapping die elke letter van het alfabet afbeeldt op een codewoord. Bijvoorbeeld, de letters $A$, $B$, $C$ en $D$ kunnen volgende codewoorden krijgen:
+        \item Een codering is een mapping die elke letter van het alfabet afbeeldt op een codewoord. Bijvoorbeeld, de letters $A$, $C$, $G$ en $T$ van een DNA-string kunnen volgende codewoorden krijgen:
         \begin{align*}
-            A &\rightarrow 10 \\
-            B &\rightarrow 1111 \\
-            C &\rightarrow 1110 \\
-            D &\rightarrow 01 \\
+            A &\rightarrow   0 \\
+            C &\rightarrow  10 \\
+            G &\rightarrow 110 \\
+            T &\rightarrow 111 \\
         \end{align*}
         \item Op die manier weten we dat het einde van een codewoord is bereikt zonder het begin van het volgende codewoord te moeten analyseren.
+        \begin{itemize}
+            \item Stel dat volgende codering binnenkomt:
+            $$\texttt{01101011111110}$$
+            \item Het decoderen komt dan neer op het inlezen van opeenvolgende bits totdat een blad in de trie bereikt is:
+            \begin{table}[ht]
+                \centering
+                \begin{tabular}{c | c c c | c c|  c c c | c c c | c c }
+                0 & 1 & 1 & 0 & 1 & 0 & 1 & 1 & 1 & 1 & 1 & 1 & 1 & 0 \\
+                \hline
+                A & \multicolumn{3}{c|}{G} & \multicolumn{2}{c|}{C} & \multicolumn{3}{c|}{T}  & \multicolumn{3}{c|}{T} & \multicolumn{2}{c}{C}  
+                \end{tabular}
+            \end{table}
+        \end{itemize}
         \item Een typische prefixcode voor natuurlijke getallen schrijft het getal op in een 128-delig stelsel en elk cijfer wordt apart opgeslaan in een aparte byte. Bij het laatste cijfer wordt er 128 opgeteld, zodat de laatste byte een 1-bit heeft op de meest significante plaats.
         \item In geschreven taal wordt er gewacht tot een spatie of leesteken tegengekomen wordt om het onderscheidt tussen verschillende woorden te maken.
     \end{itemize}
@@ -194,7 +211,11 @@
     \begin{itemize}
         \item Stel het getal voor met zo weinig mogelijk bittekens ($k$) en laat dit voorafgaan door $k - 1$ nulbits.
         \item Een getal $n$ wordt voorgesteld door $2\lfloor \log_2 n\rfloor + 1$ bittekens.
-        \item Anders gezegd: zet $n$ om in zijn binaire representatie. Deze representatie heeft $k$ bits. Laat deze representatie voorafgaan door $k - 1$ nulbits.
+    \end{itemize}
+    \item Voorbeeld $n = 14$
+    \begin{itemize}
+        \item Het getal voorstellen met $k$ bittekens: $1110 \rightarrow k = 4$.
+        \item Deze voorstelling vooraf laten gaan door $k - 1 = 3$ nulbits: $0001110$.
     \end{itemize}
 \end{itemize}
 
@@ -204,6 +225,12 @@
     \begin{itemize}
         \item Gebruik de laatste $k-1$ bittekens van het getal en laat dit voorafgaan door de Elias' gammacode voor $k$.
         \item Een getal $n$ wordt voorgesteld door $\lfloor \log_2 n\rfloor  + 2\lfloor \log_2(\log_2 n + 1)\rfloor + 1$ bittekens.
+    \end{itemize}
+    \item Voorbeeld $n = 14$
+    \begin{itemize}
+        \item Het getal voorstellen met $k$ bittekens: $1110 \rightarrow k = 4$.
+        \item De gammacode van $k = 4$ is $00100$.
+        \item Stel de gammacode samen met de laatste $k-1$ bittekens van $n$: $00100110$.
     \end{itemize}
 \end{itemize}
 
@@ -216,6 +243,12 @@
     \begin{itemize}
         \item Overloop de Fibonaccireeks van klein naar groot en gebruik een éénbit voor elk getal dat in de berekende som voorkomt, en een nulbit voor alle andere getallen. Voeg daarna op het einde nog een éénbit toe.
         \item Een getal $n$ wordt voorgesteld door $k + 1$ bittekens.
+    \end{itemize}
+    \item Voorbeeld $n = 72$
+    \begin{itemize}
+        \item De som van fibonaccigetallen is $72 = 1 + 3 + 13 + 55$.
+        \item De reeks van Fibonacci overlopen en een éénbit gebruiken voor elk getal dat in de berekende som voorkomt levert volgende bitstring op: $101001001$.
+        \item Dit moet nog gevolgd worden door een $1$, zodat dit een prefixcode wordt: $1010010011$.
     \end{itemize}
 \end{itemize}
 
@@ -265,7 +298,7 @@
         \item Geen enkele knoop heeft een groter gewicht dan een knoop op een kleinere diepte.
         \item Geen enkele knoop heeft een groter gewicht dan een knoop links (of rechts) van hem op dezelfde diepte, want dan kunnen de twee knopen omgewisseld worden.
     \end{itemize}
-    \item Constructie van de coderingsboom: (dunno actaully)
+    \item Constructie van de coderingsboom: 
     \begin{itemize}
         \item Op elk moment is er een bos van deelbomen die aan elkaar gehangen moeten worden.
         \item In het begin bestaat het bos uit enkel bladeren.

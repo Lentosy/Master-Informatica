@@ -34,6 +34,7 @@
 \begin{itemize}
     \item Een \textbf{formele taal} over een alfabet is een verzameling eindige strings over dat alfabet.
     \item Een formele taal wordt vrij vaag gedefinieerd (maar zien we niet in de cursus).
+    \item Een formele taal kan op twee manieren gedefinieerd worden: via \textbf{generatieve grammatica's} of via \textbf{reguliere expressies}.
 \end{itemize}
 
 \subsection{Generatieve grammatica's}
@@ -58,7 +59,7 @@
              \nonterminal{CD} &::= c\nonterminal{CD}c\;|\;\epsilon
         \end{align*}
         \begin{itemize}
-            \item De kleine letters zijn elementen van $\Sigma$ en $\epsilon$ stelt de lege string voor.
+            \item Hierbij is $\Sigma = \{ a, b, c, d \}$ en $\epsilon$ de lege string.
             \item Deze grammatica definieert als formele taal de verzameling van alle strings ofwel bestaande uit een rij 'a's gevolgd door een even lange rij 'b's ofwel bestaande uit een rij 'c's gevolgd door een even lange rij 'd's.    
             \item De afleiding van "cccddd":
             $$\nonterminal{S} \rightarrow \nonterminal{CD} \rightarrow c\nonterminal{CD}d \rightarrow cc\nonterminal{CD}dd \rightarrow ccc\nonterminal{CD}ddd \rightarrow cccddd$$
@@ -69,7 +70,7 @@
 \subsection{Reguliere uitdrukkingen}
 \begin{itemize}
     \item Een \textbf{reguliere uitdrukking} is ook een methode om een taal te beschrijven.
-    \item Een reguliere uitdrukking, of regexp, is een string over het alfabet $\Sigma = \{\sigma_0, \sigma_1, \cdots, \sigma_{d-1}\}$ aangevuld met de symbolen $\varnothing, \epsilon, *, (, )$ en $\bot$, gedefinieerd door
+    \item Een reguliere uitdrukking, of \textit{regexp}, is een string over het alfabet $\Sigma = \{\sigma_0, \sigma_1, \cdots, \sigma_{d-1}\}$ aangevuld met de symbolen $\varnothing, \epsilon, *, (, )$ en $\bot$, gedefinieerd door
     \begin{align*}
         \nonterminal{Regexp} &::= \nonterminal{basis}\;|\;\nonterminal{samengesteld} \\
         \nonterminal{basis} &::= \sigma_0|\cdots|\sigma_{d-1}|\varnothing|\epsilon \\
@@ -84,43 +85,45 @@
     \begin{enumerate}
         \item $\varnothing$ is een regexp, met als taal de lege verzameling.
         \item De lege string $\epsilon$ is een regexp met als taal Taal($\epsilon$) = \{$\epsilon$\}.
-        \item  Voor elke $a \in \Sigma$ is 'a' een regexp, met als taal Taal($'a'$) = \{$'a'$\}.
+        \item  Voor elke $a \in \Sigma$ is \quotes{a} een regexp, met als taal Taal(\quotes{a}) = \{\quotes{a}\}.
     \end{enumerate}
     \item Regexps kunnen gecombineerd worden via drie operaties:
-    \begin{table}[h]
+
+    \begin{table}[ht]
         \centering
         \begin{tabular}{c c c}
             \hline
             Operatie & Regexp & Operatie op taal/talen \\
             \hline
             Concatenatie & (RS) & Taal($R$) $\cdot$ Taal($S$) \\
-            Of & (R|S) & Taal($R$) $\cup$ Taal($S$) \\
+            Of & $(R|S)$ & Taal($R$) $\cup$ Taal($S$) \\
             Kleenesluiting & (R)* & Taal($R$)* \\
             \hline
         \end{tabular}
+
     \end{table}
     \item Vaak worden verkorte notaties gebruikt:
     \begin{itemize}
-        \item \textbf{Minstens eenmal herhalen}
-        $$r+ \leftrightarrow rr*$$
+        \item \textbf{Minstens eenmaal herhalen}
+        $$rr* \rightarrow r+$$
         \item \textbf{Optionele uitdrukking}
-        $$r? \leftrightarrow r|\epsilon$$
+        $$r|\epsilon \rightarrow r?$$
         
         \item \textbf{Unies van symbolen}
-        $$[abc] \leftrightarrow a|b|c$$
-        $$[a-z] \leftrightarrow a|b|\dots|z$$
+        $$a|b|c \rightarrow [abc] $$
+        $$a|b|\dots|z \rightarrow [a-z] $$
 
         
     \end{itemize}
 
-    \item Regexps kunnen verbonden worden met graafproblemen.
+    \item Regexps kunnen gelinkt worden met graafproblemen.
     \item \textbf{Stelling:} Zij $G$ een gerichte multigraaf met verzameling takken $\Sigma$. Als $a$ en $b$ twee knopen van $G$ zijn dan is de verzameling $P_G(a, b)$ van paden beginnend in $a$ en eindigend in $b$ een reguliere taal over $\Sigma$.
     \item \textbf{Bewijs:}
     \begin{itemize}
         Via inductie op het aantal verbindingen $m$ van $G$.
         \item Als $m = 0$ dan
         $$P_G(a, b) = \begin{cases}
-            \{\}, \hbox{ als } a \neq b\\
+            \varnothing, \hbox{ als } a \neq b\\
             \{\epsilon\}, \hbox{ als } a = b 
         \end{cases}$$
         \item Breidt nu de graaf $G$ uit naar $G'$ door één verbinding toe te voegen.
@@ -167,13 +170,14 @@
 
     \item Volgende eigenschappen gelden:
     \begin{itemize}
-        \item $q(i) < i$
-        \item $q(1) = 0$
         \item $q(0) = -$ (niet gedefinieerd)
+        \item $q(1) = 0$
+        \item $q(i) < i$
+        \item $q(i + 1) \leq q(i) + 1$
     \end{itemize}
     \item De waarde van $q(i + 1)$ kan bepaald worden als de waarden van de vorige posities gekend zijn.
     $$q(i + 1) = \begin{cases}
-        q(i) & \hbox{ als } P[q(i)] = P[i]  \\
+        q(i) + 1 & \hbox{ als } P[q(i)] = P[i]  \\
         q(q(i)) + 1 & \hbox{ als } P[q(q(i))] = P[i] \\
         q(q(q(i))) + 1 & \hbox{ als } P[q(q(q(i)))] = P[i] \\
         \cdots \\

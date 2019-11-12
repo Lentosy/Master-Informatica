@@ -77,9 +77,9 @@ template <class T>
 Stroomnetwerk<T> Stroomnetwerk<T>::geefStroom(){
     Stroomnetwerk<T> oplossing(this->aantalKnopen(), van, naar);
     Stroomnetwerk<T> restnetwerk(*this);
-    Grootstecapaciteitszoeker<T> vg(restnetwerk);
+    VergrotendpadzoekerT> vg(restnetwerk);
     Pad<T> vergrotendpad = vg.geefVergrotendPad();
-    while(vergrotendpad.size() != 0){
+    while(vergrotendpad.size() != 0) {
         restnetwerk -= vergrotendpad;
         oplossing += vergrotendpad;
         vergrotendpad = vg.geefVergrotendPad();

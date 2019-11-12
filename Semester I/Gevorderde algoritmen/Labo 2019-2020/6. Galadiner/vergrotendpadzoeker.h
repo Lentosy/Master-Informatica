@@ -153,9 +153,6 @@ void Kortstepadzoeker<T>::zoekVergrotendPad(int huidigeKnoop, int x, Pad<T>& pad
 }
 
 
-
-
-
 /**********************************************************************
    Class: Grootstecapaciteitszoeker
    
