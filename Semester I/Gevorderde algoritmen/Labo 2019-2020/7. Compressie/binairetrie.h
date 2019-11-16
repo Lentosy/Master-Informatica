@@ -62,26 +62,22 @@ public:
 };
 
 BinaireTrie::BinaireTrie(const Bincode& bincode){
-    // 257 = aantal codewoorden VOORLOPIG TODO FIX BUG POSSIBLE ERROR NUCLEAR 
-    for(int i = 0; i < 257; i++) {
+    for(int i = 0; i < bincode.aantalCodewoorden; i++) {
         this->voegToe(bincode[i], i);
     }
 }
 
 void BinaireTrie::voegToe(const Varbitpatroon& vb, int karakter) {
     // aangezien de code een huffmancodering is, is geen enkel codewoord het prefix van een andere codewoord
-    std::cout << "Voegtoe: " << karakter << "[" << vb << "]\n";
     BinaireTrie* huidig = this;
-    for(int i = 0; i < vb.geeflengte(); i++){
-        if(!*huidig){
+    for(int i = 0; i < vb.geeflengte(); i++){ // eventueel inwendige knopen blijven aanmaken totdat het hele bitpatroon overlopen is
+        if(!*huidig){ 
             *huidig = std::make_unique<TrieNietblad>();
         }
-        
         huidig = &(static_cast<TrieNietblad*>(huidig->get()))->geefKind(vb.geefbit(i));
         
     }    
-    *huidig = std::make_unique<TrieBlad>(karakter);
-    std::cout << karakter << " in blad\n";
+    *huidig = std::make_unique<TrieBlad>(karakter); // dit is zeker een nullpointer door de huffmancodering, zodat er zonder problemen een blad aangemaakt kan worden
 }
 
 #endif

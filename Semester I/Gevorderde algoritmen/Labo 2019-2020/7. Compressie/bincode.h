@@ -17,16 +17,22 @@ using std::ifstream;
 
 class Bincode{
 public:
-//constructor leest code in uit bestand
-    Bincode(const string& bestandsnaam);
-//geeft i-de codewoord terug
-    const Varbitpatroon& operator[](int i) const;
+
     Bincode(){};
+    //constructor leest code in uit bestand
+    Bincode(const string& bestandsnaam);
+
+    //geeft i-de codewoord terug
+    const Varbitpatroon& operator[](int i) const;
+    
     void lees(const string& bestandsnaam);
     void schrijf(const string& bestandsnaam);
+
+    const static int aantalCodewoorden = 257;
 //private:
-    Varbitpatroon code[257];
+    Varbitpatroon code[aantalCodewoorden];
 };
+
 Bincode::Bincode(const string& bestandsnaam){
     lees(bestandsnaam);
 }
@@ -36,13 +42,13 @@ const Varbitpatroon& Bincode::operator[](int i) const{
 
 void Bincode::lees(const string& bestandsnaam){
     ifstream in(bestandsnaam);
-    for (int i = 0; i < 257; i++)
+    for (int i = 0; i < this->aantalCodewoorden; i++)
         in >> code[i];
     in.close();
 }
 void Bincode::schrijf(const string& bestandsnaam){
     ofstream uit(bestandsnaam);
-    for (int i = 0; i < 257; i++)
+    for (int i = 0; i < this->aantalCodewoorden; i++)
         uit << code[i] << '\n';
     uit.close();
 }
