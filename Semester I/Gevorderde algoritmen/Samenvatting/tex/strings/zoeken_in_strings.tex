@@ -147,17 +147,22 @@
 
 \section{Variabele tekst}
 
-
 \subsection{Een eenvoudige methode}
 \begin{itemize}
-    \item Vanaf positie $j$ in $T$ wordt $P$ vergeleken door de overeenkomstige karakters van beide te vergelijken.
-    \item $P[i]$ vergelijken met $T[j + 1]$ voor $0 < i \leq p$.
-    \item Stoppen zodra er een verschil is of het einde van $P$ bereikt is.
-    \item Dan verder doen voor $j + 1$.
-    \item $P[0]$ zal vaak verschillen van $T[j]$, zodat de test op veel beginposities $j$ reeds na één karaktervergelijking stopt.
-    \item De gemiddelde uitvoeringstijd is $O(t)$.
-    \item In het slechtste geval is dit $O(tp)$.
+    \item We zitten op een bepaalde positie $j$ in $T$.
+    \item Vanaf $j$ wordt $T[j + i]$ met $P[i]$ vergeleken voor $0 < i \leq p$.
+    \begin{enumerate}
+        \item Het eerste geval komt voor wanneer $T[j + i] \neq P[i]$, voor $i \leq p$, en het patroon dus niet gevonden is op positie $j$ in $T$.
+        \item Het tweede geval komt dan voor wanneer het patroon wel gevonden is op positie $j$ in $T$.
+    \end{enumerate}
+    \item Voor willekeurige strings zal $T[j]$ vaak verschillen van $P[0]$.
+    \begin{itemize}
+        \item Op veel posities $j$ zal de karaktervergelijking na één positie dan stoppen.
+    \end{itemize}
+    \item De \textbf{gemiddelde uitvoeringstijd} is $O(t)$.
+    \item Het \textbf{slechtste geval} is $O(tp)$.
 \end{itemize}
+
 
 
 \subsection{Zoeken met de prefixfunctie}
@@ -165,8 +170,10 @@
 \begin{itemize}
     \item Gegeven een string $P$ en index $i$ met $i \leq p$.
     \item Een string $Q$ kan voor $i$ op $P$ gelegd woorden als $i \geq q$ en als $Q$ overeenkomt met de even lange deelstring van $P$ endigend voor $i$.
-    \item De index $i$ wijst naar de plaats \textit{voorbij} de deelstring, niet naar de laatste letter van de deelstring.
-    \item De prefixfunctie $q()$ van een string $P$ bepaalt voor elke stringpositie $i$, $1 \leq i \leq p$, de lengte van de langste prefix van $P$ met lengte kleiner dan $i$ dat we voor $i$ kunnen leggen.
+    \begin{itemize}
+        \item De index $i$ wijst naar de plaats \textit{voorbij} de deelstring, niet naar de laatste letter van de deelstring.
+    \end{itemize}
+    \item De prefixfunctie $q(i)$ van een string $P$ bepaalt voor elke stringpositie $i$, $1 \leq i \leq p$, de lengte van de langste prefix van $P$ met lengte kleiner dan $i$ dat we voor $i$ kunnen leggen.
 
     \item Volgende eigenschappen gelden:
     \begin{itemize}
@@ -181,12 +188,31 @@
         q(q(i)) + 1 & \hbox{ als } P[q(q(i))] = P[i] \\
         q(q(q(i))) + 1 & \hbox{ als } P[q(q(q(i)))] = P[i] \\
         \cdots \\
-        0 & \hbox { anders }
+        0 & \hbox { als q(q(q(....))) = 0 }
     \end{cases}$$
 
     \begin{itemize}
         \item Stel de string \texttt{ANOANAANOANO}
         \item Dan zijn de waarden van de prefixfunctie als volgt:
+        \begin{itemize}
+            \item Voor $i = 2$ geldt $q(i) = 0$:
+            \begin{itemize}
+                \item $P[q(1)] = P[1]\;?\;\rightarrow P[0] = P[1]\;?\;\rightarrow A \neq N$
+                \item $q(2) = 0$
+            \end{itemize} 
+            \item Voor $i = 4$ geldt $q(i) = 1$:
+            \begin{itemize}
+                \item $P[q(3)] = P[3]\;?\;\rightarrow P[0] = P[3]\;?\;\rightarrow A = A$
+                \item $q(4) = q(3) + 1 = 0 + 1 = 1$
+            \end{itemize}
+            \item Voor $i = 12$ geldt $q(i) = 3$:
+            \begin{itemize}
+                \item $P[q(11)] = P[11]\;?\;\rightarrow P[5] = P[11]\;?\;\rightarrow A \neq O$
+                \item $P(q(5)) = P[11]\;?\;\rightarrow P[2] = P[11]\;?\;\rightarrow O = O$
+                \item $q(12) = q(5) + 1 = 2 + 1 = 3$
+            \end{itemize}
+        \end{itemize}
+
         \begin{table}[ht]
             \centering
             \begin{tabular}{l | c c c c c c c c c c c c c}
@@ -220,14 +246,60 @@
     \item Stel dat $P$ op een bepaalde beginpositie vergeleken wordt met $T$, en dat er geen overeenkomst meer is tussen $P[i]$ en $T[j]$.
     \begin{itemize}
         \item Als $i = 0$, dan wordt $P$ één positie naar rechts geschoven en begint het vergelijken met $T$ weer bij $P[0]$.
-        \item Als $i > 0$, dan is er een prefix van $P$ met lengte $i$ gevonden, dat we voor $j$ op $T$ kunne leggen.
+        \item Als $i > 0$, dan is er een prefix van $P$ met lengte $i$ gevonden, dat we voor $j$ op $T$ kunnen leggen.
         \begin{itemize}
             \item Verschuif $P$ met een stap $s$ kleiner dan $i$.
             \item Er is nu een overlapping tussen het begin van $P$ en het prefix van $P$ dat we in $T$ gevonden hebben.
             \item De overlapping heeft lengte $i - s$.
             \item De overlappende delen moeten wel overeenkomen.
             \item De kleinste waarde van $s$ waarbij dit mogelijk is, is $s = i - q(i)$.
+            \item Verschuif $P$ met $s$ en vergelijk verder vanaf $T[j]$ en $P[q(i)]$.
         \end{itemize}
+    \end{itemize}
+        \item Voorbeeld:
+        \begin{itemize}
+            \item Stel $P = \texttt{ANOANAANOANO}$.
+            \item Stel $T = \texttt{ANOAOAANOANO}$.
+            \item De waarden $q(i)$ van $P$ zijn reeds bekend, en de waarden $s$ kunnen eenvoudig berekend worden door $i - q(i)$ (Tabel \ref{table:kmp1}).
+            
+            \begin{table}[ht]
+                \centering
+                \begin{tabular}{l | c c c c c c c c c c c c c}
+                    P   & A & N & O & A & N & A & A & N & O & A  & N  & O  & - \\
+                        \hline
+                    i    & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12  \\
+                    q(i) & - & 0 & 0 & 0 & 1 & 2 & 1 & 1 & 2 & 3  & 4  & 5 & 3   \\
+                    s    & - & 1 & 2 & 3 & 3 & 3 & 5 & 6 & 6 & 6 & 6 & 6 & 9
+                \end{tabular}
+                \caption{Het patroon $P$ en bijhorende prefixfunctie $q(i)$ en $s$-waarden.}
+                \label{table:kmp1}
+            \end{table}
+
+            \item Stel nu dat we in $T$ zoeken:
+            \begin{itemize}
+                \item Het eerste verkeerde karakter komt voor bij $i = 4$. 
+                \item Er is dus een correct prefix van lengte $4$ gevonden.
+                \item We kunnen $P$ met $s = i - q(i) = 4 - q(4) = 4 - 1 = 3$ stappen verschuiven. ($P_2$ in tabel \ref{table:kmp2})
+                \item We merken nu wel op dat $P[1] = N$ ook niet gelijk is aan $T[4] = O$, zodat de verschuiving eigenlijk nutteloos is.
+                \item Er is een \textbf{bijkomende voorwaarde}: de verschuiving $s$ is enkel zinvol als \\ $P[i - s] \neq P[i]$.
+            \end{itemize}
+                        
+            \begin{table}[ht]
+                \centering
+                \begin{tabular}{l | c c c c c c c c c c c c c}
+                    i  & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12  \\
+                    \hline
+                    T    & A & N & O & A & O & A & A & N & O & A & N  & O  & - \\
+                    P    & A & N & O & A & N & A & A & N & O & A & N  & O  & - \\
+                    $P_2$    &   &   &   & A & N & O & A & N & A & A & N  & O  & A  $\cdots$\\
+                \end{tabular}
+                \caption{Zoeken in $T$ met $P$, enkel rekening houdend met de eenvoudige berekening van $s$-waarden.}
+                \label{table:kmp2}
+            \end{table}
+           \item De kleinste $s$-waarde vinden komt neer door het berekenen van een functie $q'()$, op basis van $q()$, zodat $i - q'()$ de kleinste $s$-waarde oplevert.
+            
+           $$q'(i) = q(q(i)) \qquad \hbox{ als } q(i) > 0 \hbox{ EN } q(i + 1) == q(i) + 1$$
+           \todo{VOORBEELD}
     \end{itemize}
 \end{itemize}
 
