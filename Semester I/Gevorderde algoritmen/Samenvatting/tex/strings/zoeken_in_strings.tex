@@ -165,7 +165,7 @@
 
 
 
-\subsection{Zoeken met de prefixfunctie}
+\subsection{Knuth-Morris-Pratt}
 \subsubsection{De prefixfunctie}
 \begin{itemize}
     \item Gegeven een string $P$ en index $i$ met $i \leq p$.
@@ -293,7 +293,7 @@
                     P    & A & N & O & A & N & A & A & N & O & A & N  & O  & - \\
                     $P_2$    &   &   &   & A & N & O & A & N & A & A & N  & O  & A  $\cdots$\\
                 \end{tabular}
-                \caption{Zoeken in $T$ met $P$, enkel rekening houdend met de eenvoudige berekening van $s$-waarden.}
+                \caption{Zoeken in $T$ met $P$, enkel rekening houdend met de eenvoudige berekening van $s$-waarden. De verschuiving heeft geen resultaat, omdat er nog steeds een fout is op $i = 4$.}
                 \label{table:kmp2}
             \end{table}
            \item De kleinste $s$-waarde vinden komt neer door het berekenen van een functie $q'()$, op basis van $q()$, zodat $i - q'()$ de kleinste $s$-waarde oplevert.
@@ -303,6 +303,136 @@
     \end{itemize}
 \end{itemize}
 
+
+\subsection{Boyer-Moore}
+\begin{itemize}
+    \item Dit algoritme is een \textbf{variant} van het Knuth-Morris-Prattalgoritme.
+    \alert Het patroon wordt van achter naar voor overlopen bij het vergelijken met de tekst.
+    \item Er worden \textbf{twee heuristieken} gebruikt die grotere verschuivingen mogelijk maakt. Het maximum van de twee heuristieken wordt dan gebruikt als verschuiving:
+    \begin{enumerate}
+        \item \textbf{De heuristiek van het verkeerde karakter}.
+        \item \textbf{De heuristiek van het juiste suffix}.
+    \end{enumerate}
+\end{itemize}
+
+\subsubsection{De heuristiek van het verkeerde karakter}
+\begin{itemize}
+    \item Het patroon $P$ wordt van achter naar voor vergeleken.
+    \item Het tekstkarakter waar een fout voorkomt noemen we $f$ (het verkeerde karakter in de tekst $T$).
+    \item Als $T$ ook dit karakter bevat, op een andere positie, kan $P$ naar rechts verschoven worden.
+    \begin{table}[ht]
+        \centering
+        \begin{tabular}{l | c c c c c c c c c c c c c}
+            i    & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & \\
+            \hline
+            T    & A & N & O & A & O & A & A & N & O & A & N  & O  & \\
+            P    & A & N & O & A & N & A & A & N & O & A & N  & O  & \\
+        \end{tabular}
+        \caption{Hier is $f = O$ op positie $i = 4$.}
+        \label{table:bm1}
+    \end{table}
+    \item Om de verschuiving te bepalen wordt \textbf{de meest rechtse positie} in $P$ van elk karakter in het alfabet bijgehouden.
+    \begin{itemize}
+        \item Dit wordt geïmplementeerd als een tabel, MRP genaamd, geïndexeerd op de karakters van het alfabet.
+        \item Tabel \ref{table:bm2} toont de MRP-tabel voor $P = \texttt{ANOANAANOANO}$.
+        \begin{table}[ht]
+            \centering
+            \begin{tabular}{l | cccccccc}
+                MRP & A & B & C & $\cdots$ & N & $\cdots$ & O &  $\cdots$ \\
+                \hline
+                &     9 & -1 & -1 & $\cdots$ & 10 & $\cdots$ & 8 & $\cdots$  
+            \end{tabular}
+            \caption{De MRP-tabel voor $P = \texttt{ANOANAANOANO}$. De waarden voor $A$ en $N$ zijn vanzelfsprekend. De waarde van $O$ is niet 11, omdat dat sowieso het eerste karakter is dat vergeleken wordt, en telt niet mee. Een karakter dat niet in het patroon voorkomt krijgt de waarde -1.}
+            \label{table:bm2}
+        \end{table}
+
+        \item Het volstaat nu om de waarde $j = MRP[f]$ op te zoeken, waarbij $f$ het foute karakter in $P$ op positie $i$ is, en $P$ te verschuiven over $i - j$ posities. 
+        \begin{itemize}
+            \alert In het geval dat $i - j < 0$, dan bedraagt de verschuiving $1$ positie.
+        \end{itemize}
+    \end{itemize}
+    \item Er zijn \textbf{drie varianten} van deze heuristiek:
+    \begin{enumerate}
+        \item \textbf{Uitgebreide heuristiek van het verkeerde karakter}.
+        \begin{itemize}
+            \item De MRP-tabel wordt uitgebreidt, zodat $MRP[f]$ de positie $j$ teruggeeft, \textbf{links} van foutpositie $i$ in het patroon.
+            \item Hiervoor is een tweedimensionale tabel nodig en is in het algemeen een vrij slechte uitbreiding.
+
+        \end{itemize}
+        \item \textbf{Variant van Horspool}.
+        \begin{itemize}
+            \item De MRP-tabel wordt licht gewijzigd, zodat $MRP[f]$ de positie $j$ teruggeeft, \textbf{links} van positie $p - 1$.
+            \item Het patroon $P$ moet bij een fout dan $p - 1 - j$ posities opgeschoven worden.
+        \end{itemize}
+        \item \textbf{Variant van Sunday}.
+        \begin{itemize}
+            \item ???
+        \end{itemize}
+    \end{enumerate}
+    
+\end{itemize}
+
+\subsubsection{De heuristiek van het juiste suffix}
+\begin{itemize}
+    \item Hier wordt enkel de versie van de \textbf{originele Boyer-Moore} methode besproken, dus niet de varianten van Horspool of Sunday.
+    \item In vele gevallen kan $f$ aan de rechterkant van foutpositie $i$ voorkomen, zodat $i - j < 0$, en er dus maar een verschuiving van 1 positie mogelijk is.
+    \item Op positie $i$ in $P$ vinden we een verkeerd karakter $f$ in $T$.
+    \item Er is dus een \textbf{suffix} van $P$ in $T$, met lengte $p - i - 1$.
+    \item We willen weten of dit suffix $s$ nog ergens in $P$ voorkomt.
+    \begin{itemize}
+        \item Als er meerdere plaatsen zijn waar $s$ in $P$ voorkomt, wordt de meeste rechtse genomen.
+        \item Suffixen kunnen overlappen.
+    \end{itemize}
+    \item We willen dus de meeste rechtste positie $j$ in $P$, waarbij $j \leq i$ waar een deelstring $s' = s$ begint.
+    \item Analoog aan de prefixfunctie, is er nu een suffixfunctie $s(j)$:
+    \begin{itemize}
+        \item Voor elke index $j$ in $P$ wordt de lengte van het grootste suffix van $P$ bijgehouden, dat op index $j$ begint.
+        \item De suffixwaarden is het omgekeerde van de prefixtabel voor het omgekeerde patroon $P$.
+        \item De grootste waarde voor $j$ waarvoor $s(j) = p - i - 1$ is de waarde voor $k$.
+        \item Een verschuiving $v[i]$ voor foutpositie $i$ is dan $i + 1 - k$. Als $k$ niet gedefinieerd is dan is $v[i] = p - s[0]$.
+    \end{itemize}
+    \item Voorbeeld:
+    \begin{itemize}
+        \item Het patroon $P = \texttt{ABBABAB}$.
+        \item Tabel \ref{table:bm3} toont alle verschillende waarden:
+        \begin{table}[ht]
+            \centering
+            \begin{tabular}{l | c c c c c c c}
+                $i$         & 0 & 1 & 2 & 3 & 4 & 5 & 6 \\
+                $p - i - 1$ & 6 & 5 & 4 & 3 & 2 & 1 & 0 \\
+                \hline
+                $P[i]$      & A & B & B & A & B & A & B \\
+                \hline
+                $s[i]$      & 2 & 1 & 3 & 2 & 1 & 0 & 0 \\
+                $k$         & / & / & / & 2 & 3 & 4 & 6 \\
+                $i + 1 - k$ & / & / & / & 2 & 2 & 2 & 1 \\
+                $v[i]$      & 5 & 5 & 5 & 2 & 2 & 2 & 1
+            \end{tabular}
+            \caption{}
+            \label{table:bm3}
+        \end{table}
+    \end{itemize}
+    \item Er zijn \textbf{drie speciale gevallen} die zich kunnen voordoen:
+    \begin{enumerate}
+        \item \textbf{Het patroon $P$ werd gevonden}.
+        \begin{itemize}
+            \item Er is geen foutief patroonpositie ($i = -1$) en het juiste suffix is nu $P$ zelf.
+            \item Toch mogen er geen  $p$ posities opgeschoven worden, want een nieuwe $P$ in $T$ kan de vorige gedeeltelijk overlappen.
+            \item De overlapping is het langst mogelijke suffix van $P$, korter dan $p$.
+            \item De verschuiving is dus $v[-1] = p - s[0]$ (virtueel tabelelement, kan geïmplementeerd worden als constante).
+        \end{itemize}
+        \item \textbf{Er is geen juist suffix}.
+        \begin{itemize}
+            \item Als $i = p - 1$, dan is er geen juist suffix.
+            \item Er is geen waarde voor de verschuiving, dus de waarde van de eerste heuristiek moet gebruikt worden.
+        \end{itemize}
+        \item \textbf{Het juiste suffix komt niet meer in $P$ voor}.
+        \begin{itemize}
+            \item Er is geen index $j$ gevonden waarvoor $s(j) = p - i - 1$.
+            \item De verschuiving is opnieuw $v[i] = p - s[0]$ voor $0 < i < p$.
+        \end{itemize}
+    \end{enumerate}
+\end{itemize}
 
 \subsection{Onzekere algoritmen}
 \begin{itemize}
@@ -554,7 +684,7 @@
         \end{align*}
     \end{itemize}
     \item Bij de berekening van $R_{j + 1}$ moeten we weten of $T[j + 1]$ gelijk is aan $P[i]$, voor elke mogelijke waarde van $i$.
-    \item Er wordt een tweedimensionaletabel $S$ opgesteld met $d$ (lengte van alfabet) bitpatronen. Een bit $i$ van woord $S[s]$ is waar als het karakter $s$ op plaats $i$ in $P$ voorkomt.
+    \item Er wordt een tweedimensionale tabel $S$ opgesteld met $d$ (lengte van alfabet) bitpatronen. Een bit $i$ van woord $S[s]$ is waar als het karakter $s$ op plaats $i$ in $P$ voorkomt.
 
     \item Om alle bits $R_{j + 1}$ gelijktijdig te berekenen wordt de schuifoperatie naar rechts gebruikt (bit $i$ wordt bit $i + 1$, en er wordt vooraan een éénbit ingeschoven), gevolgd door een bit-per-bit EN-operatie met $S[T[j + 1]]$
     

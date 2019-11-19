@@ -9,9 +9,9 @@
         \item \textbf{Tries}: de structuur van een trie is niet afhankelijk van de toevoegvolgorde.
         \item \textbf{Ternaire zoekbomen}: een alternatieve voorstelling van een meerwegstrie, die minder geheugen gebruikt en toch efficiënt blijft.
     \end{itemize}
-    \alert Veronderstel dat geen enkele sleutel een prefix is van een ander.
+    \alert Veronderstel dat geen enkele sleutel een prefix is van een ander. Dit wordt de \textbf{prefixvoorwaarde} genoemd.
 
-    De sleutels \texttt{test} en \texttt{testen} zullen dus nooit samen voorkomen in de boom aangezien \texttt{test} een prefix is van \texttt{testen}. Dit is noodzakelijk: stel dat een langere sleutel reeds in de boom zit. Als de kortere sleutel gezocht wordt, of willen toevoegen, zullen er uiteindelijk geen sleutelelementen overblijven om ze te onderscheiden.
+    De sleutels \texttt{test} en \texttt{testen} zullen dus nooit samen voorkomen in de boom aangezien \texttt{test} een prefix is van \texttt{testen}. Dit is noodzakelijk: stel dat een langere sleutel reeds in de boom zit. Als de kortere sleutel gezocht wordt, of toegevoegd moet worden, zullen er uiteindelijk geen sleutelelementen overblijven om ze te onderscheiden.
 
     Dit kan opgelost worden door een speciaal karakter toe te voegen die in geen enkele sleutel zal voorkomen. Zo kunnen de sleutels \texttt{test\$} en \texttt{testen\$} wel samen voorkomen.
 \end{itemize}
@@ -81,7 +81,7 @@
 
         \begin{itemize}
             \item Als we bijvoorbeeld \texttt{10011} zoeken maar de boom bevat enkel de sleutel \texttt{10010}, zullen we in het blad met de sleutel \texttt{10010} uitkomen aangezien de eerste 4 elementen hetzelfde zijn. De sleutels zijn echter niet gelijk.
-            \item Indien de sleutels niet hetzelfde zijn, kunnen twee mogelijkheden voorkomen:
+            \item Indien de sleutels niet hetzelfde zijn, kunnen twee mogelijkheden voorkomen bij \textbf{toevoegen}:
             \begin{enumerate}
                 \item \textbf{Het volgende bit verschilt.} Het blad wordt vervangen door een knoop met twee kinderen die de twee sleutels bevat.
                 \item \textbf{Een reeks van opeenvolgende bits is gelijk.} Het blad wordt vervangen door een reeks van inwendige knopen, zoveel als er gemeenschappelijke bits zijn. Bij het eerste verschillende bit krijgen we terug het eerste geval.
