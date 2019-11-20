@@ -442,12 +442,18 @@
     \begin{enumerate}
         \item Zulke algoritmen zijn vaak sneller.
         \begin{itemize}
-            \item Een voorbeeld is een \textbf{Bloomfilter}.
+            \item Een voorbeeld is een \textbf{Bloomfilter} (figuur \ref{fig:bloomfilter}).
+            \begin{figure}[ht]
+                \centering
+                \includegraphics[width=\textwidth]{bloomfilter}
+                \caption{Een bloomfilter, die de verzameling $\{x, y, z\}$ beschrijft. De logische OF met al deze elementen is al reeds uitgevoerd. De controle of $w$ ook in deze verzameling zit zegt dat deze er niet in zit, want een bit van de hashwaarde van $w$ in de bloomfilter is 0.}
+                \label{fig:bloomfilter}
+            \end{figure}
             \item We willen een verzameling van objecten in gehashte vorm bijhouden.
             \item Een Bloomfilter houdt de logische bitsgewijze OF bij van de hashwaarden van alle elementen.
             \item Om te weten of een object in de verzameling zit wordt deze eerst gehasht. Daarna wordt de logische EN operatie gebruikt op de bloomfilter met deze waarde.
             \item Als het resultaat verschilt van de hashwaarde dan zit het object er zeker niet in.
-            \item Anders weten we het niet.
+            \item Anders weten we het niet, en moet de verzameling doorzocht worden.
         \end{itemize}
         \item Men tracht de kans dat er een fout voorkomt zo klein mogelijk te maken.
     \end{enumerate}
@@ -457,14 +463,17 @@
 \subsection{Het Karp-Rabinalgoritme}
 \begin{itemize}
     \item Herleidt het vergelijken van strings tot het vergelijken van getallen.
-    \item Aan elke mogelijke string die even lang is als $P$ wordt een uniek getal toegekend.
-    \item In plaats van $P$ en de even lange deeltekst op een bepaalde positie te vergelijken, worden de overeenkomstige getallen vergeleken.
-    \item Gelijke strings betekent gelijke getallen en omgekeerd is dit ook waar.
+    \item Aan elke mogelijke string die even lang is als $P$ wordt een getal toegekend.
     \item Er zijn $d^p$ verschillende strings met lengte $p$, zodat de getallen groot kunnen worden.
-    \item Daarom worden de getallen beperkt tot deze die in één processorwoord (met lengte $w$ bits) voorgesteld kunnen worden.
+    \begin{itemize}
+        \item Daarom worden de getallen beperkt tot deze die in één processorwoord (met lengte $w$ bits) voorgesteld kunnen worden, via een modulobewerking.
+    \end{itemize}
+    
     \item Meerdere strings zullen met hetzelfde getal moeten overeenkomen ($\equiv$ hashing).
     \item Gelijke strings betekent nog altijd gelijke getallen, maar een gelijk getal betekent niet meer dezelfde string.
-    \item Af en toe vergissen is dus mogelijk.
+    \begin{itemize}
+        \item Bij een gelijk getal moet het patroon nog steeds vergeleken worden met de tekst op die positie.
+    \end{itemize}
     \item Hoe worden de getallen gedefinieerd?
     \begin{itemize}
         \item Ze moeten in $O(1)$ berekend kunnen worden voor elk van de $O(t)$ deelstrings in de tekst.
@@ -488,7 +497,7 @@
     
         Dit geldt ook voor verschil en het product.
     
-        \item Omdat elk tussenresultaat nu binnen een processorwoord past, is $H_r(P)$ berekenen slechts $\Theta(P)$.
+        \item Omdat elk tussenresultaat nu binnen een processorwoord past, is $H_r(P)$ berekenen slechts $\Theta(p)$.
     \end{itemize}
     \item De voorstelling van $T$:
     \begin{itemize}
@@ -499,7 +508,7 @@
 
         $$H(T_{j + 1}) = (H(T_j) - T[j]d^{p-1})d + T[j + p]$$
 
-        (term met de hoogste macht aftrekken en die met de kleinste opstellen)
+        (De waarde $T[j]d^{p-1}$ aftrekken en die van $T[j + p]$ optellen en er ook voor zorgen dat de macht die bij $T[j +1], T[j + 2], ... T[j + p -1]$  hoort met 1 verhoogt wordt door te vermenigvuldigen met $d$)
 
         \begin{itemize}
             \item Stel een string T = \texttt{ABCDE}, $d = 5$ en $p$ = 3 (wat $P$ is maakt niet uit voor dit voorbeeld). De waarden van de stringelementen zijn $A = 1, B = 2, C = 3, D = 4, E = 5$.
@@ -530,8 +539,7 @@
             
         \end{itemize}
 
-        \item De fingerprint is dan
-        $$H_r(T_{j + 1}) = ((H(T_j) - T[j]d^{p-1})d + T[j + p])\;\mathrm{mod}$$
+        \item Analoog aan $H_r(P)$ worden de waarden $H(T)$ ook modulo $r$ genomen, zodat $$H_r(T_{j + 1}) = H(T_{j + 1})\;\mathrm{mod}\;r$$
 
         \item Het berekenen van $H_r(P)$, $H(T_0)$ en $d^{p-1}\;\mathrm{mod}\;r$ vereist $\Theta(p)$ operaties.
         \item Het berekenen van alle andere fingerprints $H_r(T_j) (0 < j \leq t - p)$ vergt $\Theta(t)$ operaties.
