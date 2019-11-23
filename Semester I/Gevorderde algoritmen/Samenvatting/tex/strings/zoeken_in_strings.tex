@@ -27,6 +27,17 @@
     \item We willen een bepaalde string (het patroon P) in een langere string (de tekst T) lokaliseren.
     \item We nemen aan dat we alle plaatsen zoeken waar dat patroon voorkoomt.
     \item We veronderstellen ook dat P en T in het inwendig geheugen opgeslaan zitten.
+
+    \item In de voorbeelden worden volgende concrete informatie gebruikt:
+    \begin{itemize}
+        \item $\Sigma = \{A, C, G, T\}$
+        \item $d = 4$
+        \item $P = GCAGAGAG$
+        \item $p = 8$
+        \item $T = GCATCGCAGAGAGTATACAGTACG$
+        \item $t = 24$
+    \end{itemize}
+
 \end{itemize}
 
 
@@ -584,210 +595,116 @@
 
 \subsection{Zoeken met automaten}
 \begin{itemize}
-    \item Automaten beschrijven algemene informatieverwerkende eenheden met een eindig geheugen.
-    \item Het geheugen wordt voorgesteld door \textbf{staten}.
+    \item Een \textbf{automaat} is een informatieverwerkend eenheid.
+\end{itemize}
+\subsubsection{Deterministische automaten}    
+\begin{itemize}
+     \item Een deterministische automaat (DA) bestaat uit: 
     \begin{itemize}
-        \item Er zijn evenveel staten als er mogelijkheden zijn.
-        \item Een geheugenmodule van 32 kilobyte heeft $256^{32000}$ mogelijke staten.
+        \item Een eindige verzameling invoersymbolen $\Sigma$.
+        \item Een eindige verzameling staten $S$.
+        \item Een begintoestand $s_0 \in S$.
+        \item Een eindige verzameling eindstaten $F \subset S$.
+        \item Een overgangsfunctie $p(t, a)$ die de nieuwe toestand geeft wanneer de DA in toestand $t$ invoersymbool $a$ ontvangt.
     \end{itemize}
-    \item Een automaat modelleert ook de tijd als een 
-
-    \item \textbf{Deterministische automaten.}
-    \begin{figure}[ht]
-        \centering
-        \includegraphics[width=0.7\textwidth]{deterministic_automata}
-        \caption{Een deterministische automaat die de woorden \texttt{CNOPS}, \texttt{KOP} en \texttt{OP} herkent. $S_0$ is de startstaat, $S_5$ en $S_8$ zijn eindstaten.}
-        \label{fig:deterministic_automata}
-    \end{figure}
+    \item Een DA kan voorgesteld worden een gelabelde multigraaf $G$.
     \begin{itemize}
-        \item Een deterministische automaat (DA) bestaat uit:
-        \begin{itemize}
-            \item Een (eindige) verzameling invoersymbolen $\Sigma$.
-            \item Een (eindige) verzameling toestanden $S$.
-            \item Een begintoestand $s_0 \in S$.
-            \item Een verzameling eindtoestanden $F \subset S$.
-            \item Een overgangsfunctie $p(t, a)$ die een nieuwe toestand geeft wanneer de automaat in staat $t$ symbool $a$ ontvangt.
-        \end{itemize}
-        \item Een DA wordt voorgesteld door een gerichte geëtiketteerde multigraaf $G$, de \textbf{overgangsgraaf}.
-        \begin{itemize}
-            \item De knopen zijn de verschillende staten.
-            \item De verbindingen zijn de overgangen met als etiket het overeenkomstig invoersymbool.
-        \end{itemize}
-        \item Een DA start altijd in zijn begintoestand, en maakt de gepaste toestandsovergangen bij elk ingevoerd symbool.
-        \item Als een DA zich in een eindtoestand bevindt, dan wordt de string \textbf{herkend} door de DA. De verzameling strings die herkend wordt door een DA is de taal van die automaat.
+        \item De knopen zijn de toestanden.
+        \item De verbindingen zijn de overgangen.
     \end{itemize}
-
-    \item \textbf{Niet-deterministische automaten.}
+    \item Als de DA zich in een eindstaat bevindt na het invoeren van een string, dan wordt deze string herkent door de DA.
+    \item Een taal die door een DA herkent wordt is regulier.
     \begin{itemize}
-        \item Heeft geen staten, maar wel \textbf{statenbits}.
-        \item De 'staat' van een NA wordt aangeduid door de verzameling statenbits die aan staan.
-        \item De beginstaat wordt aangeduidt met een speciale statenbit, de beginbit, die aanstaat in het begin terwijl alle andere uit staan.
-        \item De eindstaten worden aangeduid door de eindbits.
-        \item De overgang van een staat naar de volgende werkt bit per bit.
-        \item Een statenbit die aan staat reageert op een invoersymbool door een signaal naar nul of meer statenbits te sturen.
-        \item Een statenbit die één of meer signalen binnekrijgt zet zichzelf aan, anders uit.
-        \item Als $i$ een statenbit is en $a$ een letter uit het alfabet, dan is $s(i, a)$ de verzameling statenbits die rechtstreeks een signaal van $i$ krijgen als de inkomenden letter $a$ is.
-        \item Er zijn ook $\epsilon-$overgangen. Een $\epsilon-$overgang van statenbit $i$ naar statenbit $j$ zorgt ervoor dat $i$ direct een signaal uitstuurt naar $j$, zonder vertraging.
+        \item Dit is de verzameling van labels $P_G(\{s_0\}, F)$
     \end{itemize}
-
-    \begin{figure}[ht]
-        \centering
-        \includegraphics[width=\textwidth]{nondeterministic_automata}
-        \caption{Een niet-deterministische automaat en bijhorende statentabel voor de reguliere expressie $(a|b)*a(a|b)$.}
-        \label{fig:nondeterministic_automata}
-    \end{figure}
+\end{itemize}
+\subsubsection{Niet-deterministische automaten}    
+\begin{itemize}
+     \item Een niet-deterministische automaat (NA) bestaat uit:
+     \begin{itemize}
+         \item Een eindige verzameling invoersymbolen $\Sigma$.
+         \item Een eindig aantal statenbits. De verzameling van statenbits die de waarde 1 hebben is de staat van de NA.
+         \item Een beginbit $b_0$ en een verzameling eindbits.
+         \item De overgangsfunctie $s(i, a)$ is de verzameling statenbits die een signaal krijgen van statenbit $i$ als de inkomende letter $a$ is. Een statenbit dat een signaal binnenkrijgt krijgt de waarde 1.
+         \item Nul of meerdere $\epsilon$-overgangen. Een $\epsilon$-overgang van statenbit $i$ naar statenbit $j$ zorgt ervoor dat wanneer $i$ een signaal binnenkrijgt, dit signaal direct doorstuurt naar $j$.
+     \end{itemize}
+     \item Een NA herkent een string als op het einde van die string er één of meer eindbits aan staan.
 \end{itemize}
 
 \subsubsection{De deelverzamelingconstructie}
-\begin{itemize}
-    \item Een NA is een alternatieve voorstelling van een DA, maar laat geen efficiënte implementatie toe:
-    \begin{itemize}
-        \item Bij elke binnenkomende letter moeten alle statenbits die aanstaan overlopen worden, en de daarbijhorende bits die een signaal krijgen aanduiden.
-        \item Bij een DA moet voor elke binnenkomende letter enkel de nieuwe staat opgezocht worden in de tabel.
-    \end{itemize}
-    \item Een NA is wel eenvoudiger om op te stellen. Een reguliere uitdrukking kan eenvoudig omgezet worden tot een NA.
-    \item \textbf{Een NA omzetten naar een DA} wordt de \textbf{deelverzamelingconstructie} genoemd.
-    \begin{figure}[ht]
-        \centering
-        \includegraphics[width=0.7\textwidth]{deterministic_automata_2.PNG}
-        \caption{De deterministische automaat geconstrueerd uit die van figuur \ref{fig:nondeterministic_automata}.}
-        \label{fig:deterministic_automata_2.PNG}
-    \end{figure}
-    \begin{itemize}
-        \item Als een NA $k$ statenbits heeft, zijn er $2^k$ mogelijke deelverzamelingen.
-        \item Die allemaal nagaan is niet efficiënt aangezien de meeste deelverzamelingen al niet bereikbaar zijn vanuit de begintoestand. Op figuur \ref{fig:nondeterministic_automata} is te zien dat enkel de deelverzamelingen \{1\}, \{1, 2\} en \{3\} (3 van de 8 deelverzamelingen) op elk moment beschikbaar kunnen zijn. 
-        \item Er is dus een implicite multigraaf met $2^k$ knopen die doorlopen kan worden met breedte-eerst of diepte-eerst zoeken.
-        \item Knopen die niet bereikbaar zijn zijn overbodig voor de DA.
-        \item Buren in deze impliciete multigraaf kunnen niet opgezocht worden in een burenlijst. Er zijn hulpoperaties nodig:
-        \begin{itemize}
-            \item De \textbf{$\epsilon-$sluiting(T)} geeft de deelverzameling van statenbits bereikbaar via $\epsilon-$overgangen vanuit een verzameling statenbits $T$ (gewoon via diepte eerst zoeken zoals pseudocode 11.1 in cursus).
-            \item De overgangsfunctie $p(t, a)$ kan uitgebreidt worden voor een verzameling van statenbits tot $p(T, a)$: de deelverzameling van alle statenbits rechtstreeks bereikbaar vanuit een toestand $t$ uit $T$ voor het invoersymbool $a$.
-        \end{itemize}
-        \item Voor een DA hebben we verzameling van toestanden $D$ en overgangstabel $M$ nodig.
-        \item De begintoestand van de DA is $\epsilon-$sluiting($b_0$).
-        \item dunno man
-    \end{itemize}
-    
-\end{itemize}
+\todo{todo}
 
 \subsection{De Shift-AND-methode}
 \begin{itemize}
-    \item Bitgeoriënteerde methode, die efficiënt werkt voor \textbf{kleine patronen}.
-    \item Voor elke positie $j$ in de tekst $T$ bijhouden welke prefixen van het patroon $P$ overeenkomen met de tekst, eindigend op positie $j$.
-    \item Maakt gebruik van een tabel $R$ met $p$ logische waarden. Het $i-$de element komt overeen met prefix van lengte $i$.
+    \item Bitgeoriënteerde methode, die zeer efficiënt werkt voor \textbf{kleine patronen}.
+    \item Hou voor elke positie $j$ in $T$ bij welke prefixen van $P$ overeenkomen met de tekst, eindigend op $j$.
+    \item Er is een tabel $S$ met $d$ woorden (tabel \ref{table:shiftandS}). Een bit $i$ van woord $S[s]$ is waar als karakter $s$ op plaats $i$ in $P$ voorkomt.
+    \begin{table}[ht]
+        \centering
+        \begin{tabular}{l | c c c c c c c c}
+            & G & C & A & G & A & G & A & G \\
+            \hline
+            S['G'] & \textbf{1} & 0 & 0 & \textbf{1} & 0 & \textbf{1} & 0 & \textbf{1} \\
+            S['C'] & 0 & \textbf{1} & 0 & 0 & 0 & 0 & 0 & 0 \\
+            S['T'] & 0 & 0 & 0 & 0 & 0 & 0 & 0 & 0 \\
+            S['A'] & 0 & 0 & \textbf{1} & 0 & \textbf{1} & 0 & \textbf{1} & 0 \\
+        \end{tabular}
+        \caption{De tabel $S$ bevat een bitpatroon voor elk karakter $s$ in het alfabet. Karakters die niet in het patroon voorkomen krijgen een bitpatroon bestaande uit $p$ nulbits.} 
+        \label{table:shiftandS}
+    \end{table}
+    \item Een tabel $R_j$ van $p$ logische waarden geeft voor het $i$-de element het prefix van lengte $i$, die hoort bij tekstpositie $j$.
+    %\item In totaal zijn er $t$ van deze $R_j$ tabellen (tabel \ref{table:shiftandR}).
+
+    \begin{table}[ht]
+        \centering
+        \scalebox{0.6}{
+        
+        \begin{tabular}{|c c | c c c c c c c c c c c c c c c c c c c c c c c c |}
+            \hline
+            & & $R_0$&$R_1$&$R_2$&$R_3$&$R_4$&$R_5$&$R_6$&$R_7$&$R_8$&$R_9$&$R_{10}$&$R_{11}$&$R_{12}$&$R_{13}$&$R_{14}$&$R_{15}$&$R_{16}$&$R_{17}$&$R_{18}$&$R_{19}$&$R_{20}$&$R_{21}$&$R_{22}$&$R_{23}$\\
+            & & G&C&A&T&C&G&C&A&G&A&G&A&G&T&A&T&A&C&A&G&T&A&C&G\\
+            \hline
+            $R[0]$ & G & \textbf{1} & 0&0&0&0&\textbf{1}&0&0&\textbf{1}&0&\textbf{1}&0&\textbf{1}&0&0&0&0&0&0&\textbf{1}&0&0&0&\textbf{1}  \\
+            $R[1]$ & C & 0 & \textbf{1}&0&0&0&0&\textbf{1}&0&0&0&0&0&0&0&0&0&0&0&0&0&0&0&0&0  \\
+            $R[2]$ & A & 0 & 0&\textbf{1}&0&0&0&0&\textbf{1}&0&0&0&0&0&0&0&0&0&0&0&0&0&0&0&0  \\
+            $R[3]$ & G & 0 & 0&0&0&0&0&0&0&\textbf{1}&0&0&0&0&0&0&0&0&0&0&0&0&0&0&0  \\
+            $R[4]$ & A & 0 & 0&0&0&0&0&0&0&0&\textbf{1}&0&0&0&0&0&0&0&0&0&0&0&0&0&0  \\
+            $R[5]$ & G & 0 & 0&0&0&0&0&0&0&0&0&\textbf{1}&0&0&0&0&0&0&0&0&0&0&0&0&0  \\
+            $R[6]$ & A & 0 & 0&0&0&0&0&0&0&0&0&0&\textbf{1}&0&0&0&0&0&0&0&0&0&0&0&0  \\
+            $R[7]$ & G & 0 & 0&0&0&0&0&0&0&0&0&0&0&\textbf{1}&0&0&0&0&0&0&0&0&0&0&0  \\
+            \hline
+        \end{tabular}
+        %\caption{De opeenvolgende tabellen $R_j$. Er moet slechts één tabel in het geheugen bijgehouden worden, en dat is die op het huidige karakterpositie $j$.}
+        %\label{table:shiftandR}
+        }
+    \end{table}
+
     \begin{itemize}
-        \item $R_j$ stelt de waarde van tabel $R$ na verwerking van $T[j]$.
-        \item $R_j[i - 1]$ is waar als de eerste $i$ karakters van $P$ overeenkomen met de $i$ testkarakters eindigend in $j$.
-        \item De tabel $R_{j+1}$ kan afgeleidt worden uit $R_j$, aangezien sommige prefixen verlengd kunnen worden:
-        \begin{align*}
-            R_{j + 1}[0] & = \begin{cases}
-                1, \hbox{ als } P[0] = T[j + 1] \\
-                0, \hbox{ als } P[0] \neq T[j + 1] \\
-            \end{cases}\\
-            R_{j + 1}[i] & = \begin{cases}
-                1, \hbox{ als } R_{j - 1} = 1 \hbox{ en } P[i] = T[j + 1] \\
-                0, \hbox{ anders }
-            \end{cases} 
-            \qquad \hbox{ voor } 1 \leq i \leq p
-        \end{align*}
+        \item De startabel $R_0$ wordt opgebouwd als $R_0[0] = 1$ en $R_0[1\;\cdots\;p - 1] = 0$.
+        \item Opeenvolgende tabellen $R_{j + 1}$ kunnen via efficiënte bitoperaties bekomen worden:
+        $$R_{j + 1} = \hbox{Schuif}(R_j) \hbox{ EN } S[T[j + 1]]$$
+        \item De schuif-operatie verschuift een bitpatroon naar rechts, en voegt links een éénbit toe.
     \end{itemize}
-    \item Bij de berekening van $R_{j + 1}$ moeten we weten of $T[j + 1]$ gelijk is aan $P[i]$, voor elke mogelijke waarde van $i$.
-    \item Er wordt een tweedimensionale tabel $S$ opgesteld met $d$ (lengte van alfabet) bitpatronen. Een bit $i$ van woord $S[s]$ is waar als het karakter $s$ op plaats $i$ in $P$ voorkomt.
 
-    \item Om alle bits $R_{j + 1}$ gelijktijdig te berekenen wordt de schuifoperatie naar rechts gebruikt (bit $i$ wordt bit $i + 1$, en er wordt vooraan een éénbit ingeschoven), gevolgd door een bit-per-bit EN-operatie met $S[T[j + 1]]$
-    
-    $$R_{j + 1} = \hbox{Schuif}(R_j) \hbox{ EN } S[T[j + 1]]$$
+    \item Het patroon wordt gevonden in de tekst op positie $j - p$ als $R_j[p - 1] = 1$.
 
-    \item \textbf{Voorbeeld:}
+    \item Er zijn ook \textbf{benaderingen mogelijk}. Deze benaderingen maken gebruik van dezelfde tabel $R_j = R^0_j$, en een nieuwe tabel $R^1_j$, waarvan de definitie afhankelijk is van het soort benadering. 
     \begin{itemize}
-        \item Stel $\Sigma = \{A, C, G, T\}$ en $d = 4$.
-        \item Stel $P = $ \texttt{GCAGAGAG}.
-        \item Stel $T = $ \texttt{GCATCGCAGAGAGTATACAGTACG}.
-        \item De tabel $S$ kan uit $P$ berekent worden:
-        \begin{table}[ht]
-            \centering
-            \begin{tabular}{|c | c c c c |}
-                \hline
-                & $S[A]$ & $ S[C]$ & $ S[G]$ & $S[T]$ \\
-                \hline
-                G & 0 & 0 & 1 & 0 \\
-                C & 0 & 1 & 0 & 0 \\
-                A & 1 & 0 & 0 & 0 \\
-                G & 0 & 0 & 1 & 0 \\
-                A & 1 & 0 & 0 & 0 \\
-                G & 0 & 0 & 1 & 0 \\
-                A & 1 & 0 & 0 & 0 \\
-                G & 0 & 0 & 1 & 0 \\
-                \hline
-            \end{tabular}
-        \end{table}
-        \item De tabellen $R_j$ worden dan:
-
-        \begin{table}[ht]
-            \centering
-            \scalebox{0.6}{
-            
-            \begin{tabular}{|c c | c c c c c c c c c c c c c c c c c c c c c c c c |}
-                \hline
-                & & $R_0$&$R_1$&$R_2$&$R_3$&$R_4$&$R_5$&$R_6$&$R_7$&$R_8$&$R_9$&$R_{10}$&$R_{11}$&$R_{12}$&$R_{13}$&$R_{14}$&$R_{15}$&$R_{16}$&$R_{17}$&$R_{18}$&$R_{19}$&$R_{20}$&$R_{21}$&$R_{22}$&$R_{23}$\\
-                & & G&C&A&T&C&G&C&A&G&A&G&A&G&T&A&T&A&C&A&G&T&A&C&G\\
-                \hline
-                $R[0]$ & G & \textbf{1} & 0&0&0&0&\textbf{1}&0&0&\textbf{1}&0&\textbf{1}&0&\textbf{1}&0&0&0&0&0&0&\textbf{1}&0&0&0&\textbf{1}  \\
-                $R[1]$ & C & 0 & \textbf{1}&0&0&0&0&\textbf{1}&0&0&0&0&0&0&0&0&0&0&0&0&0&0&0&0&0  \\
-                $R[2]$ & A & 0 & 0&\textbf{1}&0&0&0&0&\textbf{1}&0&0&0&0&0&0&0&0&0&0&0&0&0&0&0&0  \\
-                $R[3]$ & G & 0 & 0&0&0&0&0&0&0&\textbf{1}&0&0&0&0&0&0&0&0&0&0&0&0&0&0&0  \\
-                $R[4]$ & A & 0 & 0&0&0&0&0&0&0&0&\textbf{1}&0&0&0&0&0&0&0&0&0&0&0&0&0&0  \\
-                $R[5]$ & G & 0 & 0&0&0&0&0&0&0&0&0&\textbf{1}&0&0&0&0&0&0&0&0&0&0&0&0&0  \\
-                $R[6]$ & A & 0 & 0&0&0&0&0&0&0&0&0&0&\textbf{1}&0&0&0&0&0&0&0&0&0&0&0&0  \\
-                $R[7]$ & G & 0 & 0&0&0&0&0&0&0&0&0&0&0&\textbf{1}&0&0&0&0&0&0&0&0&0&0&0  \\
-                
-                \hline
-            \end{tabular}
-            }
-        \end{table}
+        \item \textbf{Karakters inlassen} 
         \begin{itemize}
-            \item Start vanuit $R_0 = \begin{bmatrix}1&0&0&0&0&0&0&0\end{bmatrix}$ (want $R_0[0] = P[0]$).
-            \begin{align*}
-                R_{1} & = \hbox{Schuif}(R_0) \hbox{ EN } S[T[1]] \\
-            & = \begin{bmatrix}1& 1& 0& 0& 0& 0& 0& 0\end{bmatrix} \hbox{ EN } \begin{bmatrix}0&1&0&0&0&0&0&0\end{bmatrix} \\
-                      & = \begin{bmatrix}0&1&0&0&0&0&0&0\end{bmatrix} \\
-                R_{2} & = \hbox{Schuif}(R_1) \hbox{ EN } S[T[2]] \\
-                      & = \begin{bmatrix}1&0&1&0&0&0&0&0\end{bmatrix} \hbox{ EN } \begin{bmatrix}0&0&1&0&1&0&1&0\end{bmatrix} \\
-                      & = \begin{bmatrix}0&0&1&0&0&0&0&0\end{bmatrix}\\
-                R_{3} & = \hbox{Schuif}(R_2) \hbox{ EN } S[T[3]] \\
-                      & = \begin{bmatrix}1&0&0&1&0&0&0&0\end{bmatrix} \hbox{ EN } \begin{bmatrix}0&0&0&0&0&0&0&0\end{bmatrix} \\
-                      & = \begin{bmatrix}0&0&0&0&0&0&0&0\end{bmatrix} \\
-                R_{4} & = \hbox{Schuif}(R_3) \hbox{ EN } S[T[4]] \\
-                      & = \begin{bmatrix}1&0&0&0&0&0&0&0\end{bmatrix} \hbox{ EN } \begin{bmatrix}0&1&0&0&0&0&0&0\end{bmatrix} \\
-                      & = \begin{bmatrix}0&0&0&0&0&0&0&0\end{bmatrix} \\
-                R_{5} & = \hbox{Schuif}(R_4) \hbox{ EN } S[T[5]] \\
-                      & = \begin{bmatrix}1&0&0&0&0&0&0&0\end{bmatrix} \hbox{ EN } \begin{bmatrix}1&0&0&0&0&0&0&0\end{bmatrix} \\
-                      & = \begin{bmatrix}1&0&0&0&0&0&0&0\end{bmatrix} \\
-                      \cdots \\
-                R_{8} & = \hbox{Schuif}(R_7) \hbox{ EN } S[T[8]] \\
-                      & = \begin{bmatrix}1&0&0&1&0&0&0&0\end{bmatrix} \hbox{ EN } \begin{bmatrix}1&0&0&1&0&1&0&1\end{bmatrix} \\
-                      & = \begin{bmatrix}1&0&0&1&0&0&0&0\end{bmatrix}\\
-                      \cdots \\
-                R_{12} & = \hbox{Schuif}(R_{11}) \hbox{ EN } S[T[12]] \\
-                      & = \begin{bmatrix}1&0&0&0&0&0&0&1\end{bmatrix} \hbox{ EN } \begin{bmatrix}1&0&0&1&0&1&0&1\end{bmatrix} \\
-                      & = \begin{bmatrix}1&0&0&1&0&0&0&\textbf{1}\end{bmatrix}
-            \end{align*}
-
+            \item De tabel $R^1_j$ duidt alle prefixen aan eindigend op positie $j$ met hoogstens één inlassing.
+            $$R^1_{j + 1} = R^0_j \hbox{ OF }(\hbox{Schuif}(R_j) \hbox{ EN } S[T[j + 1]]) $$.
         \end{itemize}
-
-        \item Bij $R_{12}$ is $R_{12}[7] = 1$, zodat $P$ gevonden is en begint in $T$ op positie $T[12 - 7] = T[5]$.
-    \end{itemize}
-    \item De totale performantie is $\textbf{\Theta(t + p)}$
-\end{itemize}
-
-
-\section{De Shift-AND methode: benaderende overeenkomst}
-\begin{itemize}
-    \item De Shift-AND methode kan aangepast worden om fouten in het gevonden patroon toe te laten.
-    \item Veronderstel dat er één karakter op een willekeurige plaats in $P$ mag vervangen worden.
-    \begin{itemize}
-        \item We zoeken dus alle deelstrings in $T$ niet langer dan $m + 1$ die $P$ als deelsequentie bevatten.
-        \item Er is een nieuwe tabel $R_j^1$ die alle prefixen aanduidt in de tekst eindigend bij positie $j$, met hoogstens één vervanging.
-        \item $R_j^1[i]$ is waar als de eerste $i$ karakters van $P$ overeenkomen met de $i$ van de $i + 1$ karakters die in de tekst eindigen bij positie $j$.
+        \item \textbf{Karakters verwijderen} 
+        \begin{itemize}
+            \item De tabel $R^1_j$ duidt alle prefixen aan eindigend op positie $j$  met hoogstens één verwijdering.
+            $$R^1_{j + 1} = \hbox{Schuif}(R^0_{j+1}) \hbox{ OF }(\hbox{Schuif}(R_j) \hbox{ EN } S[T[j + 1]]) $$
+        \end{itemize}
+        \item \textbf{Karakters vervangen}
+        \begin{itemize}
+            \item De tabel $R^1_j$ duidt alle prefixen aan eindigend op positie $j$ waarbij $i - 1$ van de eerste $i$ karakters van $P$ overeenkomen met $i - 1$ karakters van de $i$ karakters die in de tekst eindigen bij positie $j$.
+            $$R^1_{j + 1} = \hbox{Schuif}(R^0_{j}) \hbox{ OF }(\hbox{Schuif}(R_j) \hbox{ EN } S[T[j + 1]]) $$
+        \end{itemize}
     \end{itemize}
 \end{itemize}
+
