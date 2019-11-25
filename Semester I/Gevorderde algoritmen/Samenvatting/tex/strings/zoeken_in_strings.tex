@@ -2,6 +2,13 @@
     \langle \textbf{#1} \rangle
 }
 
+\newcommand{\m}[1]{
+    {\color{OliveGreen} \bf #1}
+}
+
+\newcommand{\nm}[1]{
+    {\color{Maroon} \bf #1}
+}
 \chapter{Zoeken in strings}
 \label{ch:zoeken_in_strings}
 \begin{itemize}
@@ -128,7 +135,7 @@
     \end{itemize}
 
     \item Regexps kunnen gelinkt worden met graafproblemen.
-    \item \textbf{Stelling:} Zij $G$ een gerichte multigraaf met verzameling takken $\Sigma$. Als $a$ en $b$ twee knopen van $G$ zijn dan is de verzameling $P_G(a, b)$ van paden beginnend in $a$ en eindigend in $b$ een reguliere taal over $\Sigma$.
+    \item \textbf{Stelling 1} Zij $G$ een gerichte multigraaf met verzameling takken $\Sigma$. Als $a$ en $b$ twee knopen van $G$ zijn dan is de verzameling $P_G(a, b)$ van paden beginnend in $a$ en eindigend in $b$ een reguliere taal over $\Sigma$.
     \item \textbf{Bewijs:}
     \begin{itemize}
         Via inductie op het aantal verbindingen $m$ van $G$.
@@ -174,6 +181,37 @@
     \item Het \textbf{slechtste geval} is $O(tp)$.
 \end{itemize}
 
+\begin{table}[ht]
+    \centering
+    \scalebox{0.7}{
+    \begin{tabular}{|c |c c c c c c c c c c c c c c c c c c c c c c c c |}
+        \hline
+        j & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 &11&12 &13 &14 &15 &16 &17 &18 &19 &20 &21 &22 &23\\
+       
+        T & G & C & A & T & C & G & C & A & G & A & G & A & G & T & A & T & A & C & A & G & T & A & C & G\\
+          \hline
+          & \m{G} & \m{C} & \m{A} & \nm{G} & A & G & A & G &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &  \\
+          &   & \nm{G} & C & A & G & A & G & A & G &   &   &   &   &   &   &   &   &   &   &   &   &   &   &  \\
+          &   &   & \nm{G} & C & A & G & A & G & A & G &   &   &   &   &   &   &   &   &   &   &   &   &   &  \\
+          &   &   &   & \nm{G} & C & A & G & A & G & A & G &   &   &   &   &   &   &   &   &   &   &   &   &  \\
+          &   &   &   &   & \nm{G} & C & A & G & A & G & A & G &   &   &   &   &   &   &   &   &   &   &   &  \\
+          &   &   &   &   &   & \m{G} & \m{C} & \m{A} & \m{G} & \m{A} & \m{G} & \m{A} & \m{G} &   &   &   &   &   &   &   &   &   &   &  \\
+          &   &   &   &   &   &   & \nm{G} & C & A & G & A & G & A & G &   &   &   &   &   &   &   &   &  &    \\
+          &   &   &   &   &   &   &   & \nm{G} & C & A & G & A & G & A & G &   &   &   &   &   &   &   &   &    \\
+          &   &   &   &   &   &   &   &   & \m{G} & \nm{C} & A & G & A & G & A & G &   &   &   &   & &   &   &     \\
+          &   &   &   &   &   &   &   &   &   & \nm{G} & C & A & G & A & G & A & G &   &   &   &   &   &  &    \\
+          &   &   &   &   &   &   &   &   &   &   & \m{G} & \nm{C} & A & G & A & G & A & G &   &   &  &  &   &    \\
+          &   &   &   &   &   &   &   &   &   &   &   & \nm{G} & C & A & G & A & G & A & G &   &   &   &  &   \\
+          &   &   &   &   &   &   &   &   &   &   &   &    &\m{G} &\nm{C} & A & G & A & G & A & G &   &   &  &   \\
+          &   &   &   &   &   &   &   &   &   &   &   &   &  &\nm{G} & C & A & G & A & G & A & G &   &   &    \\
+          &   &   &   &   &   &   &   &   &   &   &   &   &  &   &\nm{G} & C & A & G & A & G & A & G &   &  \\
+          &   &   &   &   &   &   &   &   &   &   &   &   &  &  &    &\nm{G} & C & A & G & A & G & A & G &  \\
+          &   &   &   &   &   &   &   &   &   &   &   &   &  &  &  &  &\nm{G} & C & A & G & A & G & A & G  \\
+          \hline   
+    \end{tabular}
+    }
+\end{table}
+
 
 
 \subsection{Knuth-Morris-Pratt}
@@ -203,8 +241,7 @@
     \end{cases}$$
 
     \begin{itemize}
-        \item Stel de string \texttt{ANOANAANOANO}
-        \item Dan zijn de waarden van de prefixfunctie als volgt:
+        \item De waarden van de prefixfunctie voor $P = $ \texttt{ANOANAANOANO} zijn als volgt:
         \begin{itemize}
             \item Voor $i = 2$ geldt $q(i) = 0$:
             \begin{itemize}
@@ -266,52 +303,50 @@
             \item De kleinste waarde van $s$ waarbij dit mogelijk is, is $s = i - q(i)$.
             \item Verschuif $P$ met $s$ en vergelijk verder vanaf $T[j]$ en $P[q(i)]$.
         \end{itemize}
-    \end{itemize}
-        \item Voorbeeld:
-        \begin{itemize}
-            \item Stel $P = \texttt{ANOANAANOANO}$.
-            \item Stel $T = \texttt{ANOAOAANOANO}$.
-            \item De waarden $q(i)$ van $P$ zijn reeds bekend, en de waarden $s$ kunnen eenvoudig berekend worden door $i - q(i)$ (Tabel \ref{table:kmp1}).
-            
-            \begin{table}[ht]
-                \centering
-                \begin{tabular}{l | c c c c c c c c c c c c c}
-                    P   & A & N & O & A & N & A & A & N & O & A  & N  & O  & - \\
-                        \hline
-                    i    & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12  \\
-                    q(i) & - & 0 & 0 & 0 & 1 & 2 & 1 & 1 & 2 & 3  & 4  & 5 & 3   \\
-                    s    & - & 1 & 2 & 3 & 3 & 3 & 5 & 6 & 6 & 6 & 6 & 6 & 9
-                \end{tabular}
-                \caption{Het patroon $P$ en bijhorende prefixfunctie $q(i)$ en $s$-waarden.}
-                \label{table:kmp1}
-            \end{table}
-
-            \item Stel nu dat we in $T$ zoeken:
-            \begin{itemize}
-                \item Het eerste verkeerde karakter komt voor bij $i = 4$. 
-                \item Er is dus een correct prefix van lengte $4$ gevonden.
-                \item We kunnen $P$ met $s = i - q(i) = 4 - q(4) = 4 - 1 = 3$ stappen verschuiven. ($P_2$ in tabel \ref{table:kmp2})
-                \item We merken nu wel op dat $P[1] = N$ ook niet gelijk is aan $T[4] = O$, zodat de verschuiving eigenlijk nutteloos is.
-                \item Er is een \textbf{bijkomende voorwaarde}: de verschuiving $s$ is enkel zinvol als \\ $P[i - s] \neq P[i]$.
-            \end{itemize}
-                        
-            \begin{table}[ht]
-                \centering
-                \begin{tabular}{l | c c c c c c c c c c c c c}
-                    i  & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & 12  \\
+        \begin{table}[ht]
+            \centering
+            \begin{tabular}{l | c c c c c c c c c}
+                P   & G & C & A & G & A & G & A & G & - \\
                     \hline
-                    T    & A & N & O & A & O & A & A & N & O & A & N  & O  & - \\
-                    P    & A & N & O & A & N & A & A & N & O & A & N  & O  & - \\
-                    $P_2$    &   &   &   & A & N & O & A & N & A & A & N  & O  & A  $\cdots$\\
-                \end{tabular}
-                \caption{Zoeken in $T$ met $P$, enkel rekening houdend met de eenvoudige berekening van $s$-waarden. De verschuiving heeft geen resultaat, omdat er nog steeds een fout is op $i = 4$.}
-                \label{table:kmp2}
-            \end{table}
-           \item De kleinste $s$-waarde vinden komt neer door het berekenen van een functie $q'()$, op basis van $q()$, zodat $i - q'()$ de kleinste $s$-waarde oplevert.
-            
-           $$q'(i) = q(q(i)) \qquad \hbox{ als } q(i) > 0 \hbox{ EN } q(i + 1) == q(i) + 1$$
-           \todo{VOORBEELD}
+                i   & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 \\
+                q(i) & -1 & 0 & 0 & 0 & 1 & 0 & 1 & 0 & 1 \\
+                s   & 1 & 1 & 2 & 3 & 3 & 5 & 5 & 7 & 7
+            \end{tabular}
+            \caption{Het patroon $P = \texttt{GCAGAGAG}$, de bijhorende prefixfunctie $q(i)$ en de $s$-waarden.}
+            \label{table:kmp1}
+        \end{table}
+
+        \begin{table}[ht]
+            \centering   
+            \scalebox{0.6}{
+            \begin{tabular}{|c c |c c c c c c c c c c c c c c c c c c c c c c c c |}
+                \hline
+                \multicolumn{2}{|r|}{j} & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 &11&12 &13 &14 &15 &16 &17 &18 &19 &20 &21 &22 &23\\
+               
+                \multicolumn{2}{|r|}{T}  & G & C & A & T & C & G & C & A & G & A & G & A & G & T & A & T & A & C & A & G & T & A & C & G\\
+                  \hline
+                  $i - q(i)$ & sprong   &  &   &  &  &  &  &  &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &&  \\
+                  3 - 0      & 3        &\m{G}&\m{C}&\m{A}&\nm{G}&A&G&A&G&&&&&&&&&&&&&&&&  \\
+                  0 - (-1)   & 1        &&&&\nm{G}&C&A&G&A&G&A&G&&&&&&&&&&&&&  \\
+                  0 - (-1)   & 1        &&&&&\nm{G}&C&A&G&A&G&A&G&&&&&&&&&&&&  \\
+                  8 - 1   & 7           &&&&&&\m{G}&\m{C}&\m{A}&\m{G}&\m{A}&\m{G}&\m{A}&\m{G}&&&&&&&&&&&  \\
+                  1 - 0   & 1           &&&&&&&&&&&&&\m{G}&\nm{C}&A&G&A&G&A&G&&&&  \\
+                  0 - (-1)   & 1        &&&&&&&&&&&&&&\nm{G}&C&A&G&A&G&A&G&&&  \\
+                  0 - (-1)   & 1        &&&&&&&&&&&&&&&\nm{G}&C&A&G&A&G&A&G&&  \\
+                  0 - (-1)   & 1        &&&&&&&&&&&&&&&&\nm{G}&C&A&G&A&G&A&G&  \\
+                  0 - (-1)   & 1        &&&&&&&&&&&&&&&&&\nm{G}&C&A&G&A&G&A&G  \\
+                  \hline   
+            \end{tabular}
+            }
+            \caption{Een eerste versie van het Knuth-Morris-Prattalgoritme.}
+            \label{table:kmpex1}
+        \end{table}
+
     \end{itemize}
+    \item In tabel \ref{table:kmpex1} kan opgemerkt worden dat bij de eerste sprong, waarbij de fout op $T[3] = T$ veroorzaakt door het verkeerde karakter $G$, er opnieuw een $G$ vergeleken wordt. 
+    \item Er is een \textbf{bijkomende voorwaarde}: de verschuiving $s$ is enkel zinvol als $P[i - s] \neq P[i]$.
+    \item Op basis van $q()$ wordt een nieuwe functie $q'()$ gedefinieerd, die een zinvolle verschuiving $s = i - q'()$ geeft , zodanig dat $P[i - s] \neq P[i]$.
+    \todo{definitie $q'()$ + voorbeeld}
 \end{itemize}
 
 
@@ -328,40 +363,49 @@
 
 \subsubsection{De heuristiek van het verkeerde karakter}
 \begin{itemize}
-    \item Het patroon $P$ wordt van achter naar voor vergeleken.
-    \item Het tekstkarakter waar een fout voorkomt noemen we $f$ (het verkeerde karakter in de tekst $T$).
+    \item Het tekstkarakter waar een fout voorkomt wordt $f$ genoemd (het verkeerde karakter in de tekst $T$).
     \item Als $T$ ook dit karakter bevat, op een andere positie, kan $P$ naar rechts verschoven worden.
-    \begin{table}[ht]
-        \centering
-        \begin{tabular}{l | c c c c c c c c c c c c c}
-            i    & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 & 11 & \\
-            \hline
-            T    & A & N & O & A & O & A & A & N & O & A & N  & O  & \\
-            P    & A & N & O & A & N & A & A & N & O & A & N  & O  & \\
-        \end{tabular}
-        \caption{Hier is $f = O$ op positie $i = 4$.}
-        \label{table:bm1}
-    \end{table}
-    \item Om de verschuiving te bepalen wordt \textbf{de meest rechtse positie} in $P$ van elk karakter in het alfabet bijgehouden.
+    \item Om de verschuiving te bepalen wordt \textbf{de meest rechtse positie} $i$, links van $p - 1$ in $P$ van elk karakter in het alfabet bijgehouden.
     \begin{itemize}
         \item Dit wordt geïmplementeerd als een tabel, MRP genaamd, geïndexeerd op de karakters van het alfabet.
-        \item Tabel \ref{table:bm2} toont de MRP-tabel voor $P = \texttt{ANOANAANOANO}$.
+        \item Tabel \ref{table:bm2} toont de MRP-tabel voor $P = \texttt{GCAGAGAG}$ en $\Sigma = \{A, C, G, T\}$.
         \begin{table}[ht]
             \centering
-            \begin{tabular}{l | cccccccc}
-                MRP & A & B & C & $\cdots$ & N & $\cdots$ & O &  $\cdots$ \\
+            \begin{tabular}{l | cccc}
+                $f$ & A & C & G & T \\
                 \hline
-                &     9 & -1 & -1 & $\cdots$ & 10 & $\cdots$ & 8 & $\cdots$  
+                $MRP[f]$    & 6 & 1 & 5 & -1
             \end{tabular}
-            \caption{De MRP-tabel voor $P = \texttt{ANOANAANOANO}$. De waarden voor $A$ en $N$ zijn vanzelfsprekend. De waarde van $O$ is niet 11, omdat dat sowieso het eerste karakter is dat vergeleken wordt, en telt niet mee. Een karakter dat niet in het patroon voorkomt krijgt de waarde -1.}
+            \caption{De MRP-tabel voor $P = \texttt{GCAGAGAG}$. De waarden voor $A$ en $C$ zijn vanzelfsprekend. De waarde van $G$ is niet 7, omdat dat sowieso het eerste karakter is dat vergeleken wordt, en telt niet mee. Een karakter dat niet in het patroon voorkomt krijgt de waarde -1.}
             \label{table:bm2}
         \end{table}
 
-        \item Het volstaat nu om de waarde $j = MRP[f]$ op te zoeken, waarbij $f$ het foute karakter in $P$ op positie $i$ is, en $P$ te verschuiven over $i - j$ posities. 
+        \item Het volstaat nu om de waarde $k = MRP[f]$ op te zoeken, waarbij $f$ het foute karakter in $T$ is, op positie $i$ in $P$, en $P$ te verschuiven over $i - k$ posities. 
         \begin{itemize}
-            \alert In het geval dat $i - j < 0$, dan bedraagt de verschuiving $1$ positie.
+            \alert In het geval dat $i - k < 0$, dan bedraagt de verschuiving $1$ positie.
         \end{itemize}
     \end{itemize}
+    \begin{table}[ht]
+        \centering   
+        \scalebox{0.6}{
+        \begin{tabular}{|c c c |c c c c c c c c c c c c c c c c c c c c c c c c |}
+            \hline
+            \multicolumn{3}{|r|}{j} & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 &11&12 &13 &14 &15 &16 &17 &18 &19 &20 &21 &22 &23\\
+           
+            \multicolumn{3}{|r|}{T}  & G & C & A & T & C & G & C & A & G & A & G & A & G & T & A & T & A & C & A & G & T & A & C & G\\
+              \hline
+             f& $i - k$ & sprong   &  &   &  &  &  &  &  &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &&  \\
+             A& 7 - 6   & 1        &G&C&A&G&A&G&A&\nm{G}&&&&&&&&&&&&&&&&  \\
+             C& 5 - 1   & 4        &&G&C&A&G&A&\nm{G}&\m{A}&\m{G}&&&&&&&&&&&&&&&  \\
+             / & /      & 1        &&&&&&\m{G}&\m{C}&\m{A}&\m{G}&\m{A}&\m{G}&\m{A}&\m{G}&&&&&&&&&&&  \\
+             T & 7 - (-1)  & 8     &&&&&&&G&C&A&G&A&G&A&\nm{G}&&&&&&&&&&  \\
+             A&  7 - 6     & 1           &&&&&&&&&&&&&&&G&C&A&G&A&G&A&\nm{G}&&  \\
+             C & 7 - 1     & 6         &&&&&&&&&&&&&&&&G&C&A&G&A&G&A&\nm{G}&   \\
+              \hline   
+        \end{tabular}
+        }
+        \caption{Het Boyer-Moore algoritme, enkel gebruik makend van de oorspronkelijke heuristiek van het verkeerde karakter.}
+    \end{table}
     \item Er zijn \textbf{drie varianten} van deze heuristiek:
     \begin{enumerate}
         \item \textbf{Uitgebreide heuristiek van het verkeerde karakter}.
@@ -372,8 +416,37 @@
         \end{itemize}
         \item \textbf{Variant van Horspool}.
         \begin{itemize}
-            \item De MRP-tabel wordt licht gewijzigd, zodat $MRP[f]$ de positie $j$ teruggeeft, \textbf{links} van positie $p - 1$.
-            \item Het patroon $P$ moet bij een fout dan $p - 1 - j$ posities opgeschoven worden.
+            \item Dezelfde MRP-tabel als in de oorspronkelijke versie wordt gebruikt.
+            \item Bij en fout op tekstpositie $m$ (positie waarbij $P[0]$ overeenkomt met $T$) en patroonpositie $i$, wordt $P$ zodanig opgeschoven zodanig dat $T[m + p - 1] = P[p - 1]$.
+            \item Zoek de positie van de meest rechtste positie van het karakter van $T[m + p - 1]$: $k = MRP[T[m + p - 1]]$.
+            \item De verschuiving van $P$ bedraagt bij een fout dan altijd $p - 1 - k$.
+            \begin{itemize}
+                \good Verschuiving is onafhankelijk van patroonpositie $i$.
+            \end{itemize}
+            \item Als deze variant gebruikt wordt, wordt de tweede heuristiek niet gebruikt, wat in het slechtste geval dus $O(pt)$ oplevert.
+            \begin{table}[ht]
+                \centering   
+                \scalebox{0.6}{
+                    
+                \begin{tabular}{|c c c c |c c c c c c c c c c c c c c c c c c c c c c c c |}
+                    \hline
+                    \multicolumn{4}{|r|}{j} & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 &11&12 &13 &14 &15 &16 &17 &18 &19 &20 &21 &22 &23\\
+                   
+                    \multicolumn{4}{|r|}{T}  & G & C & A & T & C & G & C & A & G & A & G & A & G & T & A & T & A & C & A & G & T & A & C & G\\
+                      \hline
+                     $t$ & $T[m + p - 1]$& $p - 1 - k$ & sprong   &  &   &  &  &  &  &  &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &&  \\
+                     0& A&  $8 - 1 - 6$  & $1$         &G&C&A&G&A&G&A&\nm{G}&&&&&&&&&&&&&&&&  \\
+                     1& G&  $8 - 1 - 5$  &  $2$        &&G&C&A&G&A&\nm{G}&\m{A}&\m{G}&&&&&&&&&&&&&&&  \\
+                     3& G&  $8 - 1 - 5$  &  $2$        &&&&G&C&A&\nm{G}&\m{A}&\m{G}&\m{A}&\m{G}&&&&&&&&&&&&&  \\
+                     5& G&  /            & 1           &&&&&&\m{G}&\m{C}&\m{A}&\m{G}&\m{A}&\m{G}&\m{A}&\m{G}&&&&&&&&&&&  \\
+                     6& T&  $8 - 1 - (-1)$  & $8$         &&&&&&&G&C&A&G&A&G&A&\nm{G}&&&&&&&&&&  \\
+                     14& A&  $8 - 1 - 6$  & $1$         &&&&&&&&&&&&&&&G&C&A&G&A&G&A&\nm{G}&&  \\
+                     15& C&  $8 - 1 - 1$  & $6$         &&&&&&&&&&&&&&&&G&C&A&G&A&G&A&\nm{G}&  \\
+                      \hline   
+                \end{tabular}
+                }
+                \caption{Het Boyer-Moore algoritme: Horspool variant.}
+            \end{table}
         \end{itemize}
         \item \textbf{Variant van Sunday}.
         \begin{itemize}
@@ -632,7 +705,96 @@
 \end{itemize}
 
 \subsubsection{De deelverzamelingconstructie}
-\todo{todo}
+\begin{itemize}
+    \item Een NA is een alternatieve voorstelling van een DA.
+    \item Elke NA kan omgezet worden in een DA.
+    \begin{itemize}
+        \item Een DA is eenvoudiger om te implementeren: de nieuwe toestand wordt opgezocht in een tweedimensionale tabel.
+    \end{itemize}
+    \item Elke staat van de NA komt overeen met een verzameling statenbits die aanstaan.
+    \item Als er $k$ statenbits zijn, dan zijn er $2^k$ mogelijke deelverzamelingen.
+    \begin{itemize}
+        \good Slechts een klein aantal van deze deelverzamelingen worden effectief bereikt.
+    \end{itemize}
+    \item Er is een impliciet gegeven multigraaf met $2^k$ knopen.
+    \item Om een DA te construeren zijn er twee hulpoperaties nodig:
+    \begin{enumerate}
+        \item \textbf{$\epsilon$-sluiting($T$)}: De deelverzameling van statenbits bereikbaar via $\epsilon$-overgangen vanuit een verzameling statenbits $T$.
+        \item \textbf{$p(T, a)$}: De deelverzameling van statenbits rechtstreeks bereikbaar vanuit een toestand $t$ uit $T$ voor het invoersymbool $a$.
+    \end{enumerate}
+    \item Om een DA te construeren moet er een verzameling van toestanden $S$ met begin- en eindtoestanden en een overgangstabel $M$ opgesteld worden.
+    \begin{itemize}
+        \item De begintoestand is $\epsilon$-sluiting($b_0$).
+        \item Elke andere staat wordt bekomen door $\epsilon$-sluiting$(p(T, a))$ voor elke andere staat $T$ en invoersymbool $a$.
+        \item Een eindtoestand van de DA bevat minstens één eindtoestand van de NA.
+        Vervolgens wordt voor elke toestand $T$ de overgang voor elk invoersymbool $a$ bepaald.
+    \end{itemize}
+    \item Figuur \ref{fig:deelverzameling1} toont de DA geconstrueerd uit de NA van figuur \ref{fig:thompson3}.
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.75\textwidth]{deelverzameling1}
+        \caption{Deterministische automaat geconstrueerd uit de NA van figuur \ref{fig:thompson3}.}
+        \label{fig:deelverzameling1}
+    \end{figure}
+\end{itemize}
+
+\subsubsection{Automaten voor regexps}
+\begin{itemize}
+    \item Een reguliere taal kan herkend worden door een DA of NA.
+    \item Een NA kan opgebouwd worden vanuit een regexp door de \textbf{constructie van Thompson}.
+    \begin{itemize}
+        \item Er worden NA's gedefinieerd voor basiselementen van een regexp: elk element uit $\Sigma$ en $\epsilon$ (figuur \ref{fig:thompson1}).
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.7\textwidth]{thompson1}
+            \caption{Constructie van Thompson: basiselementen.}
+            \label{fig:thompson1}
+        \end{figure}
+        \item Deze NA's kunnen samengesteld worden voor elk van de drie basisoperatoren: unie, concatenatie en Kleenesluiting (figuur \ref{fig:thompson2}).
+        \begin{figure}[ht]
+            \centering
+            \includegraphics[width=0.7\textwidth]{thompson2}
+            \caption{Constructie van Thompson: unie, concatenatie en Kleenesluiting.}
+            \label{fig:thompson2}
+        \end{figure}
+    \end{itemize}
+    \item Een NA die op deze manier geconstrueerd is, zal alle strings genereerd door de regexp herkennen en geen andere.
+    \item Figuur \ref{fig:thompson3} toont de NA bekomen met deze constructie voor de regexp $(a|b)*a(a|b)$.
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=\textwidth]{thompson3}
+        \caption{Constructie van Thompson: NA voor $(a|b)*a(a|b)$.}
+        \label{fig:thompson3}
+    \end{figure}
+    \item Een NA uit de constructie van Thompson heeft drie eigenschappen:
+    \begin{itemize}
+        \item Er is slechts één beginbit en één eindbit.
+        \item Het aantal bits is niet groter dan tweemaal het aantal elementen in de regexp.
+        \item Vanuit elke bit vertrekken er hoogstens twee overgangen: ofwel één overgang voor een symbool uit $\Sigma$, ofwel hoogstens twee $\epsilon$-overgangen.
+    \end{itemize}
+    \item \textbf{Stelling 2} Een taal kan herkend worden door een eindige deterministische automaat als en slechts als ze regulier is.
+    \item \textbf{Bewijs:}
+    \begin{itemize}
+        \item Een taal die herkend wordt door een automaat is zeker regulier.
+        \begin{itemize}
+            \item Een taal bestaande uit labels van de paden vertrekkend uit een beginstaat en eindigd in een eindstaat is steeds regulier.
+        \end{itemize}
+        \item Als een taal regulier is, kan ze beschreven worden door een regexp en voor deze regexp kan eerst een NA opgebouwd worden, en vervolgens tot een DA omgevormd worden via de deelverzamelingconstructie.
+    \end{itemize}
+    \item \textbf{Gevolg:}
+    \begin{itemize}
+        \item Niet alle contextvrije talen zijn regulier.
+        \begin{itemize}
+            \item Stel de strings beginnend met een aantal 'a's gevolgd door evenveel 'b's
+            \item Als er een 'b' tegengekomen wordt, moet er ergens bijgehouden worden hoeveel 'a's er al zijn geweest.
+            \item Dit aantal is niet begrensd en kan niet vooraf in een eindig geheugen geplaatst worden.
+        \end{itemize}
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Minimalisatie van een automaat}
+
+
 
 \subsection{De Shift-AND-methode}
 \begin{itemize}
