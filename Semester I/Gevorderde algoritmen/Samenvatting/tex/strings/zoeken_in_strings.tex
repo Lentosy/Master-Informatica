@@ -3,15 +3,15 @@
 }
 
 \newcommand{\m}[1]{
-    {\color{OliveGreen}\hspace{0.1cm}\bf#1}
+    {\color{OliveGreen}\bf#1}
 }
 
 \newcommand{\um}[1]{
-    {\color{YellowOrange}\hspace{0.1cm}\bf#1}
+    {\color{YellowOrange}\bf#1}
 }
 
 \newcommand{\nm}[1]{
-    {\color{Maroon}\hspace{0.1cm}\bf#1}
+    {\color{Maroon}\bf#1}
 }
 \chapter{Zoeken in strings}
 \label{ch:zoeken_in_strings}
@@ -195,23 +195,23 @@
        
         T & G & C & A & T & C & G & C & A & G & A & G & C & A & G & A & G & T & A & C & A & G & C & A & C & G\\
           \hline
-          & \m{G} & \m{C} & \m{A} & \nm{G} & A & G & C & A & G &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &  \\
-          &   & \nm{G} & C & A & G & A & G & C & A & G &   &   &   &   &   &   &   &   &   &   &   &   &   &   &  \\
-          &   &   & \nm{G} & C & A & G & A & G & C& A & G &   &   &   &   &   &   &   &   &   &   &   &   &   &  \\
-          &   &   &   & \nm{G} & C & A & G & A & G & C& A & G &   &   &   &   &   &   &   &   &   &   &   &   &  \\
-          &   &   &   &   & \nm{G} & C & A & G & A & G & C& A & G &   &   &   &   &   &   &   &   &   &   &   &  \\
-          &   &   &   &   &   & \m{G} & \m{C} & \m{A} & \m{G} & \m{A} & \m{G} & \m{C}& \m{A} & \m{G} &   &   &   &   &   &   &   &   &   &   &  \\
-          &   &   &   &   &   &   & \nm{G} & C & A & G & A & G & C& A & G &   &   &   &   &   &   &   &   &  &    \\
-          &   &   &   &   &   &   &   & \nm{G} & C & A & G & A & G& C & A & G &   &   &   &   &   &   &   &   &    \\
-          &   &   &   &   &   &   &   &   & \m{G} & \nm{C} & A & G & A & G& C & A & G &   &   &   &   & &   &   &     \\
-          &   &   &   &   &   &   &   &   &   & \nm{G} & C & A & G & A & G& C & A & G &   &   &   &   &   &  &    \\
-          &   &   &   &   &   &   &   &   &   &   & \m{G} & \m{C} & \m{A} & \m{G} & \m{A} & \m{G}& \nm{C} & A & G &   &   &  &  &   &    \\
-          &   &   &   &   &   &   &   &   &   &   &   & \nm{G} & C & A & G & A & G & C& A & G &   &   &   &  &   \\
-          &   &   &   &   &   &   &   &   &   &   &   &    &\nm{G} &C & A & G & A & G& C & A & G &   &   &  &   \\
-          &   &   &   &   &   &   &   &   &   &   &   &   &  &\m{G} & \nm{C} & A & G & A & G& C & A & G &   &   &    \\
-          &   &   &   &   &   &   &   &   &   &   &   &   &  &   &\nm{G} & C & A & G & A & G & C& A & G &   &  \\
-          &   &   &   &   &   &   &   &   &   &   &   &   &  &  &    &\m{G} & \nm{C} & A & G & A & G & C& A & G &  \\
-          &   &   &   &   &   &   &   &   &   &   &   &   &  &  &  &  &\nm{G} & C & A & G & A & G & C& A & G  \\
+          &\m{G}&\m{C}&\m{A}&\nm{G}& A & G & C & A & G &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &  \\
+          &   &\nm{G}& C & A & G & A & G & C & A & G &   &   &   &   &   &   &   &   &   &   &   &   &   &   &  \\
+          &   &   &\nm{G}& C & A & G & A & G & C& A & G &   &   &   &   &   &   &   &   &   &   &   &   &   &  \\
+          &   &   &   &\nm{G}& C & A & G & A & G & C& A & G &   &   &   &   &   &   &   &   &   &   &   &   &  \\
+          &   &   &   &   &\nm{G}& C & A & G & A & G & C& A & G &   &   &   &   &   &   &   &   &   &   &   &  \\
+          &   &   &   &   &   &\m{G}&\m{C}&\m{A}&\m{G}&\m{A}&\m{G}&\m{C}&\m{A}&\m{G}&   &   &   &   &   &   &   &   &   &   &  \\
+          &   &   &   &   &   &   &\nm{G}& C & A & G & A & G & C& A & G &   &   &   &   &   &   &   &   &  &    \\
+          &   &   &   &   &   &   &   &\nm{G}& C & A & G & A & G& C & A & G &   &   &   &   &   &   &   &   &    \\
+          &   &   &   &   &   &   &   &   &\m{G}&\nm{C}& A & G & A & G& C & A & G &   &   &   &   & &   &   &     \\
+          &   &   &   &   &   &   &   &   &   &\nm{G}& C & A & G & A & G& C & A & G &   &   &   &   &   &  &    \\
+          &   &   &   &   &   &   &   &   &   &   &\m{G}&\m{C}&\m{A}&\m{G}&\m{A}&\m{G}&\nm{C}& A & G &   &   &  &  &   &    \\
+          &   &   &   &   &   &   &   &   &   &   &   &\nm{G}& C & A & G & A & G & C& A & G &   &   &   &  &   \\
+          &   &   &   &   &   &   &   &   &   &   &   &    &\nm{G}&C & A & G & A & G& C & A & G &   &   &  &   \\
+          &   &   &   &   &   &   &   &   &   &   &   &   &  &\m{G}&\nm{C}& A & G & A & G& C & A & G &   &   &    \\
+          &   &   &   &   &   &   &   &   &   &   &   &   &  &   &\nm{G}& C & A & G & A & G & C& A & G &   &  \\
+          &   &   &   &   &   &   &   &   &   &   &   &   &  &  &    &\m{G}&\nm{C}& A & G & A & G & C& A & G &  \\
+          &   &   &   &   &   &   &   &   &   &   &   &   &  &  &  &  &\nm{G}& C & A & G & A & G & C& A & G  \\
           \hline   
     \end{tabular}
     }
@@ -686,8 +686,8 @@
                   $H(T_{j})$ & \multicolumn{25}{c|}{$\cdots$}   \\
                   \hline   
                   $P$ & G&C&A&G&A&G&C&A&G&\multicolumn{16}{c|}{} \\
-                  $T[5\cdots 13]$ & \m{G}&\m{C}&\m{A}&\m{G}&\m{A}&\m{G}&\m{C}&\m{A}&\m{G}&\multicolumn{16}{c|}{} \\
-                  $T[9\cdots 17]$ & \nm{A}&G&C&A&G&A&G&T&A&\multicolumn{16}{c|}{} \\
+                  $T[5\cdots 13]$ &\m{G}&\m{C}&\m{A}&\m{G}&\m{A}&\m{G}&\m{C}&\m{A}&\m{G}&\multicolumn{16}{c|}{} \\
+                  $T[9\cdots 17]$ &\nm{A}&G&C&A&G&A&G&T&A&\multicolumn{16}{c|}{} \\
                   \hline   
             \end{tabular}
             }
