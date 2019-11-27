@@ -6,6 +6,10 @@
     {\color{OliveGreen}\hspace{0.1cm}\bf#1}
 }
 
+\newcommand{\um}[1]{
+    {\color{YellowOrange}\hspace{0.1cm}\bf#1}
+}
+
 \newcommand{\nm}[1]{
     {\color{Maroon}\hspace{0.1cm}\bf#1}
 }
@@ -471,7 +475,7 @@
             \item Als deze variant gebruikt wordt, wordt de tweede heuristiek niet gebruikt, wat in het slechtste geval dus $O(pt)$ oplevert.
             \begin{table}[ht]
                 \centering   
-                \scalebox{0.6}{
+                \scalebox{0.5}{
                     
                 \begin{tabular}{|c c c c |c c c c c c c c c c c c c c c c c c c c c c c cc |}
                     \hline
@@ -618,15 +622,40 @@
         
         $$H(P) = \sum_{i=0}^{p-1} P[i]d^{p-i-1} = P[0]d^{p-1} + P[1]d^{p-2} + \dots + P[p-2]d + P[p-1]$$
 
-        \item Om de beperkte waarde te bekomen, wordt de rest bij deling door een getal $r$ genomen. Dit wordt de \textbf{fingerprint} genoemd.
+        \item Om de beperkte waarde te bekomen, wordt de rest bij deling door een getal $r$ (in de voorbeelden is $r = 29$) genomen. Dit wordt de \textbf{fingerprint} genoemd.
         $$H_r(P) = H(P)\;\mathrm{mod}\;r$$
     
         \item Dit is geen efficiënte operatie omdat de individuele getallen van de som in $H(p)$ groot kunnen worden, maar gelukkig
         $$(a + b) \;\mathrm{mod}\;r = (a\;\mathrm{mod}\;r + b\;\mathrm{mod}\;r)\;\mathrm{mod}\;r$$
     
         Dit geldt ook voor verschil en het product.
+        \begin{itemize}
+            \item Op deze manier wordt $H_r(P)$ als volgt gedefinieerd:
+            $$H_r(P) = \sum_{i=0}^{p-1} P[i]d^{p-i-1}\;\mathrm{mod}\;r$$
+            \alert In de voorbeelden wordt deze eigenschap niet gebruikt om het overzichtelijk te houden.
+        \end{itemize}
     
         \item Omdat elk tussenresultaat nu binnen een processorwoord past, is $H_r(P)$ berekenen slechts $\Theta(p)$.
+
+        
+        \item Voor het alfabet $\Sigma = \{A, C, G, T\}$ gelden volgende waarden voor de stringelementen:
+        \begin{table}[ht]
+            \centering
+            \begin{tabular}{c | c}
+                A & 1 \\
+                C & 2 \\
+                G & 3 \\
+                T & 4 
+            \end{tabular}
+        \end{table}
+        \begin{align*}
+            H(P) &= \sum_{i=0}^{8} P[i] \cdot 4^{8-i} \\
+                 &= G\cdot 4^8 + C\cdot 4^7 + A\cdot 4^6 + G\cdot 4^5 + A\cdot 4^4 + G\cdot 4^3 + C\cdot 4^2 + A\cdot 4^1 + G\cdot 4^0\\
+                 &= 3\cdot 4^8 + 2\cdot 4^7 + 1\cdot 4^6 + 3\cdot 4^5 + 1\cdot 4^4 + 3\cdot 4^3 + 2\cdot 4^2 + 1\cdot 4^1 + 3\cdot 4^0\\
+                 &= 237031 \\
+            H_r(P) &= 237031\;\mathrm{mod}\;29\\
+                   &= 14
+        \end{align*}
     \end{itemize}
     \item De voorstelling van $T$:
     \begin{itemize}
@@ -637,38 +666,42 @@
 
         $$H(T_{j + 1}) = (H(T_j) - T[j]d^{p-1})d + T[j + p]$$
 
+        \item Analoog aan $H_r(P)$ worden de waarden $H(T)$ ook modulo $r$ genomen, zodat $$H_r(T_{j + 1}) = H(T_{j + 1})\;\mathrm{mod}\;r$$
+
         (De waarde $T[j]d^{p-1}$ aftrekken en die van $T[j + p]$ optellen en er ook voor zorgen dat de macht die bij $T[j +1], T[j + 2], ... T[j + p -1]$  hoort met 1 verhoogt wordt door te vermenigvuldigen met $d$)
 
-        \begin{itemize}
-            \item Stel een string T = \texttt{ABCDE}, $d = 5$ en $p$ = 3 (wat $P$ is maakt niet uit voor dit voorbeeld). De waarden van de stringelementen zijn $A = 1, B = 2, C = 3, D = 4, E = 5$.
-            \item De opeenvolgende waarden $T_j$ zijn dan:
-            \begin{itemize}
-                \item \begin{align*}
-                    H(T_0) &= \sum_{i=0}^{2} T[i]5^{2-i}\\
-                    & = A\cdot 5^2 + B\cdot 5^1 + C\\
-                    & = 1\cdot 5^2 + 2\cdot 5^1 + 3\\
-                    &= 25 + 10 + 3 = 38
-                \end{align*}
-                \item \begin{align*}
-                    H(T_1) &= (H(T_0) - T[0]5^{2})\cdot 5 + T[3]\\
-                           &= (A\cdot 5^2 + B\cdot 5 + C - A\cdot 5^2)\cdot 5 + D \\
-                           &= B\cdot 5^2 + C \cdot 5 + D  \\
-                           &= 2\cdot 5^2 + 3 \cdot 5 + 4  \\
-                           &=  50 + 15 + 4 = 69
-                \end{align*}
-                \item \begin{align*}
-                    H(T_2) &= (H(T_1) - T[1]5^{2})\cdot 5 + T[4]\\
-                           &= (B\cdot 5^2 + C\cdot 5 + D - B\cdot 5^2)\cdot 5 + E \\
-                           &= C\cdot 5^2 + D \cdot 5 + E  \\
-                           &= 3\cdot 5^2 + 4 \cdot 5 + 5  \\
-                           &=  75 + 20 + 5 = 100
-                \end{align*}
-            \end{itemize}
-            
-            
-        \end{itemize}
+        \begin{table}[ht]
+            \centering   
+            \scalebox{0.4}{
+                
+            \begin{tabular}{|c|c c c c c c c c c c c c c c c c c c c c c c c cc |}
+                    \hline
+                    j & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 &11&12 &13 &14 &15 &16 &17 &18 &19 &20 &21 &22 &23&24\\    
+                    T & G & C & A & T & C & G & C & A & G & A & G&C & A & G & A & G & T & A & C & A & G & C & A & C & G\\
+                  \hline
+                  $H(T_j)$ & 238311 & 166813  & 142967 & 309726 & 190329 &  237031& 161693 & 122487  & 227808  & 124801  & 237062  & 161817  & 122983  & 229790  & 132729  & 268774  & 26523  &  / & /  &/   &/   &/   &/&/ &/ \\
+                  $H_r(T_j)$ & \nm{18} & \nm{5}  & \nm{26}  & \nm{6} & \nm{2} & \um{14} & \nm{18}  & \nm{20}  & \nm{16}  & \um{14}  & \nm{16}  & \nm{26}  & \nm{23}  &\nm{23}   &\nm{25}   & \nm{2}  & \nm{17}  & /  &/   & /  & /  & /  &/& /&/ \\
+                  \hline
+                  $H(T_0)$ & \multicolumn{25}{l|}{$3\cdot 4^8 + 2\cdot 4^7 + 1\cdot 4^6 + 4\cdot 4^5 + 2\cdot 4^4 + 3\cdot 4^3 + 2\cdot 4^2 + 1\cdot 4^1 + 3\cdot 4^0 = 238311$}   \\
+                  $H(T_1)$ & \multicolumn{25}{l|}{$\big(H(T_0) - T[0]\cdot 4^8\big)\cdot 4 + T[9] = (238311 - 3\cdot 4^8)\cdot 4 + 1 = 166813$}   \\
+                  $H(T_2)$ & \multicolumn{25}{l|}{$\big(H(T_1) - T[1]\cdot 4^8\big)\cdot 4 + T[10] = (166813 - 2\cdot 4^8)\cdot 4 + 3 = 142967$}   \\
+                  $H(T_3)$ & \multicolumn{25}{l|}{$\big(H(T_2) - T[2]\cdot 4^8\big)\cdot 4 + T[11] = (142967 - 1\cdot 4^8)\cdot 4 + 2 = 309726$}   \\
+                  $H(T_4)$ & \multicolumn{25}{l|}{$\big(H(T_3) - T[3]\cdot 4^8\big)\cdot 4 + T[12] = (309726 - 4\cdot 4^8)\cdot 4 + 1 = 190329$}   \\
+                  $H(T_5)$ & \multicolumn{25}{l|}{$\big(H(T_4) - T[4]\cdot 4^8\big)\cdot 4 + T[13] = (190329 - 2\cdot 4^8)\cdot 4 + 3 = 237031$}   \\
+                  $H(T_{j})$ & \multicolumn{25}{c|}{$\cdots$}   \\
+                  \hline   
+                  $P$ & G&C&A&G&A&G&C&A&G&\multicolumn{16}{c|}{} \\
+                  $T[5\cdots 13]$ & \m{G}&\m{C}&\m{A}&\m{G}&\m{A}&\m{G}&\m{C}&\m{A}&\m{G}&\multicolumn{16}{c|}{} \\
+                  $T[9\cdots 17]$ & \nm{A}&G&C&A&G&A&G&T&A&\multicolumn{16}{c|}{} \\
+                  \hline   
+            \end{tabular}
+            }
+            \caption{Het Karp-Rabinalgoritme.}
+        \end{table}
 
-        \item Analoog aan $H_r(P)$ worden de waarden $H(T)$ ook modulo $r$ genomen, zodat $$H_r(T_{j + 1}) = H(T_{j + 1})\;\mathrm{mod}\;r$$
+       
+    \end{itemize}
+        
 
         \item Het berekenen van $H_r(P)$, $H(T_0)$ en $d^{p-1}\;\mathrm{mod}\;r$ vereist $\Theta(p)$ operaties.
         \item Het berekenen van alle andere fingerprints $H_r(T_j) (0 < j \leq t - p)$ vergt $\Theta(t)$ operaties.
@@ -706,7 +739,7 @@
             \end{itemize}
         \end{enumerate}
 
-    \end{itemize}
+    
 
 \end{itemize}
 
