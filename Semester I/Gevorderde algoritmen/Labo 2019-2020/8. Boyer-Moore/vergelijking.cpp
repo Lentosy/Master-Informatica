@@ -8,7 +8,9 @@
 #include "SimpleLinear.h"
 #include "KnuthMorrisPratt.h"
 #include "BoyerMoore.h"
-
+#include "BoyerMooreHorspool.h"
+#include "BoyerMooreSunday.h"
+#include "KarpRabin.h"
 
 void print(const ZoekAlgoritme * zoekAlgoritme, const ZoekInformatie& zoekInformatie, std::queue<int>& posities, const std::string& patroon, const std::string& tekst) {
 
@@ -28,14 +30,16 @@ void print(const ZoekAlgoritme * zoekAlgoritme, const ZoekInformatie& zoekInform
 
 int main(void){
     std::string patroon("GCAGAGAG");
-	std::string tekst("GCATCGCAGAGAGTATACAGTACG");
+	std::string tekst("GCATCGCAGAGAGTATACAGGCAGAGAGTACG");
 
     std::vector<ZoekAlgoritme*> zoekMethoden;
     zoekMethoden.push_back(new BruteForce(patroon));
     zoekMethoden.push_back(new SimpleLinear(patroon));
     zoekMethoden.push_back(new KnuthMorrisPratt(patroon));
     zoekMethoden.push_back(new BoyerMoore(patroon));
-
+    zoekMethoden.push_back(new BoyerMooreHorspool(patroon));
+    zoekMethoden.push_back(new BoyerMooreSunday(patroon));
+    zoekMethoden.push_back(new KarpRabin(patroon, 257, 4));
     for(const ZoekAlgoritme * zoekMethode : zoekMethoden) {
         ZoekInformatie zoekInformatie;
         std::queue<int> posities = zoekMethode->zoek(tekst, zoekInformatie);
