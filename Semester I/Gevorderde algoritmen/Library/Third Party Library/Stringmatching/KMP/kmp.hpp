@@ -4,7 +4,7 @@
 
 #include <cassert>
 #include <iomanip>
-// #include <iostream> // DEBUG
+ #include <iostream> // DEBUG
 #include <limits>
 #include <queue>
 #include <sstream>
@@ -71,6 +71,14 @@ KnuthMorrisPratt::KnuthMorrisPratt(const std::string& naald)
         {
             kmp_tabel[i] = kmp_tabel[prefix_tabel[i]];
         }
+    }
+
+    for(int i = 0; i < prefix_tabel.size(); i++){
+        std::cout << prefix_tabel[i] << " | ";
+    }
+    std::cout << "\n";
+        for(int i = 0; i < kmp_tabel.size(); i++){
+        std::cout << kmp_tabel[i] << " | ";
     }
 }
 
