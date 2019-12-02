@@ -33,9 +33,47 @@
         \end{itemize}
     \end{enumerate}
     \item In de trie is er een expliciete inwendige knoop horend bij de niet-lege string $\alpha$, als de trie twee strings $\alpha\beta$ en $\alpha\gamma$ bevat zodat de eerste letter van $\beta$ verschilt van de eerste letter van $\gamma$.
+
+    \item \textbf{Twee eenvoudige toepassingen} van een suffixboom:
+    \begin{enumerate}
+        \item \textbf{Zoeken van een patroon $P$ in een tekst $T$.}
+        \begin{itemize}
+            \item Constureer de suffixboom voor $T$.
+            \item Zoek de knoop die overeenkomt met $P$.
+            \begin{itemize}
+                \item Als deze niet bestaat zit $P$ niet in $T$.
+                \item Als deze wel bestaat, zitten de gezochte beginposities in $T$ bij alle bladeren die opvolger zijn van de gevonden knoop.
+            \end{itemize}
+        \end{itemize}
+
+        \item \textbf{De langste gemeenschappelijke deelstring.}
+        \begin{itemize}
+            \item Er is een verzameling van $k$ verschillende strings $S = \{s_1, s_2, \cdots, s_k\}$ met totale lengte $t$.
+            \item De langste gemeenschappelijke deelstring van van al die strings wordt gezocht.
+            \item Er wordt een \textbf{veralgemeende suffixboom} opgesteld:
+            \begin{itemize}
+                \item Elk blad bevat de beginpositie van het suffix, en ook tot welke strings ze behoort.
+                \item Elk blad moet ook de begin- en eindindex opslagen, per eventuele string.
+            \end{itemize}
+            \item Elke inwendige knoop komt overeen met een prefix van een suffix, en deze deelstring komt voor in elk string die vermeld wordt bij een blad dat opvolger is van die knoop.
+            \item De boom wordt overlopen om de lengte van al de prefixen en het aantal verschillende strings te bepalen waarin ze voorkomen, en dus ook het langste prefix dat in alle strings voorkomt.
+        \end{itemize}
+        
+    \end{enumerate}
 \end{itemize}
 
 \section{Suffixtabellen}
+\begin{itemize}
+    \item Een tabel met de gerangschikte suffixen van een string.
+    \item De elementen van de tabel zijn indices, die de startpositie van het suffix aanduiden van de string.
+    \item Deze tabel wordt bekomen door de suffixboom in inorder te overlopen. 
+    \begin{itemize}
+        \item Andere, meer efficiënte, methoden bestaan, maar worden niet in de cursus besproken.
+    \end{itemize}
+
+    \item Een patroon $P$ opzoeken in de suffixtabel gebeurt met \textbf{binair zoeken}.
+    \item  
+\end{itemize}
 
 \section{Tekstzoekmachines}
 \subsection{Inleiding}
