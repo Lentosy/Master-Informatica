@@ -31,6 +31,8 @@ public:
         std::unique_ptr<Trieknoop>::operator=(move(a));
         return *this;
     };
+
+    friend std::ostream& operator>>(std::ostream& os, const BinaireTrie& trie);
 protected:
     BinaireTrie() : std::unique_ptr<Trieknoop>(){};
     BinaireTrie( std::unique_ptr<Trieknoop>&& a) : std::unique_ptr<Trieknoop>(move(a)){};
@@ -61,6 +63,7 @@ public:
     BinaireTrie links, rechts;
 };
 
+
 BinaireTrie::BinaireTrie(const Bincode& bincode){
     for(int i = 0; i < bincode.aantalCodewoorden; i++) {
         this->voegToe(bincode[i], i);
@@ -74,10 +77,15 @@ void BinaireTrie::voegToe(const Varbitpatroon& vb, int karakter) {
         if(!*huidig){ 
             *huidig = std::make_unique<TrieNietblad>();
         }
-        huidig = &(static_cast<TrieNietblad*>(huidig->get()))->geefKind(vb.geefbit(i));
-        
+        huidig = &(static_cast<TrieNietblad*>(huidig->get()))->geefKind(vb.geefbit(i));     
     }    
     *huidig = std::make_unique<TrieBlad>(karakter); // dit is zeker een nullpointer door de huffmancodering, zodat er zonder problemen een blad aangemaakt kan worden
+}
+
+
+std::ostream& BinaireTrie::operator>>(std::ostream& os, const BinaireTrie& trie {
+    os << "epic";
+    return os;
 }
 
 #endif

@@ -37,3 +37,15 @@ public:
     }
 
 };
+
+
+
+
+
+
+
+
+
+// Bijkomende opgave:   zorg ervoor dat code.dat met minder bytes opgeslagen wordt
+// mogelijkheden
+// 1) doe alsof het een gewoon een bestand is en codeer met huffmantrie

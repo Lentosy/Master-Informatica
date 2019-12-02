@@ -28,13 +28,13 @@ public:
     bool fail(){return ifstream::fail();}
     friend Woordstroom& operator>>(Woordstroom& ws, string& str){
         str.clear();
-        str+=ws.laatstgelezen;
-        char c=ws.get();
+        str += ws.laatstgelezen;
+        char c = ws.get();
         while (!ws.fail() && (bool)isalpha(ws.laatstgelezen)==(bool)isalpha(c)){
-            str+=c;
-            c=ws.get();
+            str += c;
+            c = ws.get();
         };
-        ws.laatstgelezen=c;
+        ws.laatstgelezen = c;
         return ws;
     };
 protected:
