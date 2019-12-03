@@ -268,9 +268,9 @@
 \end{figure}
 \begin{itemize}
     \item Er wordt een prefixcode toegepast waarbij elke letter een apart codewoord krijgt die voor de hele tekst geldt.
-    \item We zullen bitcodes gebruiken, en dan ook een binaire trie.
+    \item We zullen bitcodes gebruiken, en dus ook een binaire trie.
     \item Om de optimale code op te stellen moet nagegaan worden hoe vaak elk codewoord gebruikt zal worden.
-    \item Er is een alfabet $\Sigma = \{s_i | i = 0, ..., d - 1\}$
+    \item Er is een alfabet $\Sigma = \{s_i | i = 0, \cdots, d - 1\}$.
     \item We bekomen de frequenties $f_i$ door elke letter $s_i$ te tellen in de tekst.
     \item We zoeken een trie met $n$ bladeren die de optimale code oplevert.
     \begin{itemize}
@@ -301,8 +301,11 @@
     \item Constructie van de coderingsboom: 
     \begin{itemize}
         \item Op elk moment is er een bos van deelbomen die aan elkaar gehangen moeten worden.
+        \begin{itemize}
+            \item Dit bos wordt geïmplementeerd met een prioriteitswachtrij met als prioriteit het gewicht van de deelbomen.
+        \end{itemize}
         \item In het begin bestaat het bos uit enkel bladeren.
-        \item Er worden twee bomen uit het bos gehaald en worden verenigd onder een nieuwe knoop en wordt terug in het bos gestoken.
+        \item De twee bomen met het lichtste gewicht worden uit het bos gehaald en worden verenigd onder een nieuwe knoop en wordt terug in het bos gestoken.
         \item De diepte $h$ van de boom is onbekend, maar wel weten we dat:
         \begin{itemize}
             \item alle knopen op niveau $h$ zijn zeker bladeren,
@@ -314,7 +317,7 @@
     \end{itemize}
 \end{itemize}
 
-\subsection{Patriciatries}
+\section{Patriciatries}
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\textwidth]{patriciatrie}
@@ -366,6 +369,11 @@
 
 \end{itemize}
 
+\subsection{Binaire patriciatrie}
+\begin{itemize}
+    \item Elke expliciete inwendige knoop heeft twee kinderen.
+    \item \todo{idk man wtf is this shit}
+\end{itemize}
 
 
 \section{Ternaire zoekbomen}
