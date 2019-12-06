@@ -1,12 +1,12 @@
 #include <string>
 #include <iostream>
-#include <bitset>
+
+#include "patriciatrie.h"
 int main(void) {
     
-    std::string s("epic");
-    for(int i = 0; i < s.size(); i++){
-        std::cout << std::bitset<CHAR_BIT>(s[i]) << " ";
-    }
+    std::string ananas("ananas");
+    PatriciaTrie trie;
+    trie.voegToe(ananas);
 
     return 0;
 }

@@ -72,7 +72,52 @@
     \end{itemize}
 
     \item Een patroon $P$ opzoeken in de suffixtabel gebeurt met \textbf{binair zoeken}.
-    \item  
+    
+    \begin{table}
+        \begin{tabular}{|cccc|ccccccccc|}
+            \hline
+            &&&$i$&0&1&2&3&4&5&6&7&8\\
+            &&&$P[i]$&G&C&A&G&A&G&C&A&G\\
+            \hline
+            &&&$SA[i]$&7&2&4&6&1&8&3&5&0\\
+            &&&$P[SA[i]]$&A&A&A&C&C&G&G&G&G\\
+            \hline
+            \textbf{i}&\textbf{opvolger}&\textbf{l}&&&&&&&&&&\\
+            \hdashline
+    
+            0&-&0&&&&&&&&&&\\
+            \hdashline
+            1&8&0&$suff_1$&C&A&G&A&G&C&A&G&\\
+             & & &$suff_8$&G&&&&&&&& \\
+             \hdashline
+    
+            2&4&2&$suff_2$&A&G&A&G&C&A&G&&\\
+            & & &$suff_4$&A&G&C&A&G&&&& \\
+            \hdashline
+    
+            3&5&1&$suff_3$&G&A&G&C&A&G&&&  \\
+             & & &$suff_5$&G&C&A&G&&&&& \\
+             \hdashline
+    
+            4&6&0&$suff_4$&A&G&C&A&G&&&&  \\
+             & & &$suff_6$&C&A&G&&&&&&\\
+             \hdashline
+    
+            5&0&4&$suff_5$&G&C&A&G&&&&& \\
+             & & &$suff_0$&G&C&A&G&A&G&C&A&G \\
+             \hdashline
+            6&1&3&$suff_6$&C&A&G&&&&&& \\
+             & & &$suff_1$&C&A&G&A&G&C&A&G& \\
+             \hdashline
+            
+            7&2&2&$suff_7$&A&G&&&&&&& \\
+             & & &$suff_2$&A&G&A&G&C&A&G&& \\
+             \hdashline
+            8&3&1&$suff_8$&G&&&&&&&& \\
+             & & &$suff_3$&G&A&G&C&A&G&&& \\
+            \hline
+        \end{tabular}
+    \end{table}
 \end{itemize}
 
 \section{Tekstzoekmachines}

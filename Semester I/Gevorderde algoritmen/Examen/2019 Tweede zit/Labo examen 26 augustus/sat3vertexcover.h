@@ -8,12 +8,12 @@ using namespace std;
 struct UitspraakSAT3 {
     string naam;
     vector<string> atomen;
-}
+};
 
 class SAT3 {
 protected:
     vector<UitspraakSAT3> uitspraken;
 public:
     // te implementeren
-    GraafmetKnoopData<string> geefVertexCoverProbleem() const;
-}
+    GraafMetKnoopdata<string> geefVertexCoverProbleem() const;
+};

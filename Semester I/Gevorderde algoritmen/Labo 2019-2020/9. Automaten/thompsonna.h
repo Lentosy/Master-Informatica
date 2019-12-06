@@ -1,20 +1,20 @@
 #ifndef __THOMPSONNA_H
 #define __THOMPSONNA_H
 #include "regexp11.h"
-#include "zoekna.h"
+#include "zoekda.h"
 #include <vector>
 #include <set>
 #include <fstream>
 #include <cassert>
 using std::vector;
 const uchar epsilon=0;
-class ZoekNA;
+class ZoekDA;
 //ThompsonNA: met een beginstatenbit (index 0)
 //en een eindstatenbit (index aantalStatenbits-1)
 //Alleen gebruikt om algoritme ven Thompson te implementeren
 
 class ThompsonNA {
-    friend class ZoekNA;
+    friend class ZoekDA;
 public:
     class Verbinding;
     ThompsonNA(const Regexp& re);
@@ -33,9 +33,9 @@ protected:
 };
 
 class ThompsonNA::Verbinding {
-friend class ThompsonNA;
+    friend class ThompsonNA;
 public:
-    Verbinding(int _bron, int _doel, uchar _a);                             ;
+    Verbinding(int _bron, int _doel, uchar _a);
     int geefBron() const;
     int geefDoel() const;
     int geefKarakter() const;
@@ -86,7 +86,7 @@ void ThompsonNA::schrijf(ostream& os){
     os<<"--------\n";
 }
 
-void ThompsonNA::haalbinnen(const ThompsonNA& TNA,int verschuiving){
+void ThompsonNA::haalbinnen(const ThompsonNA& TNA, int verschuiving){
     for (int i=0; i < TNA.overgang.size(); i++ ){
         const Verbinding& oud = TNA.overgang[i];
         overgang.push_back(Verbinding(oud.bron + verschuiving, oud.doel+verschuiving, oud.a));
@@ -101,13 +101,13 @@ ThompsonNA::ThompsonNA(const Regexp& re){
     switch (re.geefOpcode()){
         case Regexp::letter:
             aantalStatenbits=2;
-            verbind(0,1,re.geefLetter());
+            verbind(0, 1, re.geefLetter());
         break;
         case Regexp::plus:{
             ThompsonNA op1(*re.geefEersteOperand());
             ThompsonNA op2(*re.geefTweedeOperand());
             //beginknoop tweede operand overlapt met eindknoop eerste
-            aantalStatenbits=op1.aantalStatenbits+op2.aantalStatenbits-1;
+            aantalStatenbits = op1.aantalStatenbits + op2.aantalStatenbits - 1;
             haalbinnen(op1, 0);
             haalbinnen(op2, op1.aantalStatenbits-1);
         } break;
@@ -116,7 +116,7 @@ ThompsonNA::ThompsonNA(const Regexp& re){
             ThompsonNA op2(*re.geefTweedeOperand());
             aantalStatenbits=op1.aantalStatenbits+op2.aantalStatenbits+2;
             haalbinnen(op1, 1);
-            haalbinnen(op2, 1+op1.aantalStatenbits);
+            haalbinnen(op2, 1 + op1.aantalStatenbits);
             verbind(0, 1);
             verbind(0, op1.aantalStatenbits+1);
             verbind(op1.aantalStatenbits, aantalStatenbits-1);
@@ -124,12 +124,12 @@ ThompsonNA::ThompsonNA(const Regexp& re){
         } break;
         case Regexp::ster:{
             ThompsonNA op1(*re.geefEersteOperand());
-            aantalStatenbits=op1.aantalStatenbits+2;
+            aantalStatenbits = op1.aantalStatenbits+2;
             haalbinnen(op1, 1);
             verbind(0, 1);
             verbind(0, aantalStatenbits-1);
-            verbind(aantalStatenbits-2, aantalStatenbits-1);
-            verbind(aantalStatenbits-2, 1);
+            verbind(aantalStatenbits - 2, aantalStatenbits-1);
+            verbind(aantalStatenbits - 2, 1);
         }
     }
 };
@@ -148,12 +148,12 @@ void ThompsonNA::teken(const char* bestandsnaam) const {
              uit<<"  "<<v.geefBron()<<" "<<pijl<<" "<<v.geefDoel();
              uit<<"[label=\"";
              if (v.geefKarakter()==epsilon)
-                uit<<"epsilon";
+                uit << "epsilon";
              else
-                uit<<(char)v.geefKarakter();
-             uit<<"\"];\n";
+                uit << (char)v.geefKarakter();
+             uit << "\"];\n";
         };
-        uit<<"}";
+        uit << "}";
         uit.close();
     };
 

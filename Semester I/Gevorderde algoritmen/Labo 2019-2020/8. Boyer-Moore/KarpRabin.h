@@ -53,7 +53,6 @@ std::queue<int> KarpRabin::zoek(const std::string& tekst, ZoekInformatie& zoekIn
     
     for(int i = 1; i < tekst.size() - patroon.size(); i++){
         tekstFingerprint = (((tekstFingerprint + c1 - tekst[i] * c2) %r ) * d + tekst[i + patroon.size()]) % r;
-        std::cout << tekstFingerprint << "\n";
         if(patroonFingerprint == tekstFingerprint && controleerGelijkheid(tekst, i)){
             posities.push(i);
         }   

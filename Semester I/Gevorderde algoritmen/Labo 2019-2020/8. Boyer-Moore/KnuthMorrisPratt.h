@@ -1,8 +1,8 @@
 #pragma once
 #include "ZoekAlgoritme.h"
 #include "PrefixFunctie.h"
-
-
+#include <iostream>
+#include <iomanip>
 /**********************************************************************
 
    Class: KnuthMorrisPratt
@@ -33,6 +33,7 @@ KnuthMorrisPratt::KnuthMorrisPratt(const std::string& patroon) : ZoekAlgoritme(p
         }
     }
 }
+
 std::queue<int> KnuthMorrisPratt::zoek(const std::string& tekst, ZoekInformatie& zoekInformatie) const {
     std::queue<int> posities;
     int prefixLengte = 0;

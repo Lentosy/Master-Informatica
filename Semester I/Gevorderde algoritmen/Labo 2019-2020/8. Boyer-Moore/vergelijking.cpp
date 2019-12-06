@@ -11,12 +11,12 @@
 #include "BoyerMooreHorspool.h"
 #include "BoyerMooreSunday.h"
 #include "KarpRabin.h"
+#include "ShiftAnd.h"
 
 void print(const ZoekAlgoritme * zoekAlgoritme, const ZoekInformatie& zoekInformatie, std::queue<int>& posities, const std::string& patroon, const std::string& tekst) {
 
     std::cout << "Zoekalgoritme: " << zoekAlgoritme->naam() << "\n";
 	std::cout << "\tDe zoekstring " << patroon << " werd " << posities.size() << " keer gevonden in " << tekst << " op volgende posities:\n";
-    
 	while (!posities.empty()) {
 		int positie = posities.front();
 		posities.pop();
@@ -29,8 +29,10 @@ void print(const ZoekAlgoritme * zoekAlgoritme, const ZoekInformatie& zoekInform
 
 
 int main(void){
-    std::string patroon("GCAGAGAG");
-	std::string tekst("GCATCGCAGAGAGTATACAGGCAGAGAGTACG");
+    std::string patroon("GCAGAGCAG");
+
+    
+	std::string tekst("GCATCGCAGAGCAGAGTACAGCACG");
 
     std::vector<ZoekAlgoritme*> zoekMethoden;
     zoekMethoden.push_back(new BruteForce(patroon));
@@ -40,6 +42,7 @@ int main(void){
     zoekMethoden.push_back(new BoyerMooreHorspool(patroon));
     zoekMethoden.push_back(new BoyerMooreSunday(patroon));
     zoekMethoden.push_back(new KarpRabin(patroon, 257, 4));
+    zoekMethoden.push_back(new ShiftAnd(patroon));
     for(const ZoekAlgoritme * zoekMethode : zoekMethoden) {
         ZoekInformatie zoekInformatie;
         std::queue<int> posities = zoekMethode->zoek(tekst, zoekInformatie);

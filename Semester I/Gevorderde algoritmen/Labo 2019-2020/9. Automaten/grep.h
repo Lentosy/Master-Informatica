@@ -11,5 +11,5 @@ class Grep {
 private:
     Regexp regexp;
     std::string bestandsnaam;
-    ZoekNA zoekNA;
+    ZoekDA zoekNA;
 };

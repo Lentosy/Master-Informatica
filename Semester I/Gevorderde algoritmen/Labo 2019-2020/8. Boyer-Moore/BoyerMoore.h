@@ -13,7 +13,6 @@
 
 class BoyerMoore : public ZoekAlgoritme {
 public:
-
     BoyerMoore(const std::string& patroon);
     std::queue<int> zoek(const std::string& tekst, ZoekInformatie& zoekInformatie) const;
 protected:

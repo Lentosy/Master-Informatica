@@ -598,68 +598,6 @@ typedef typename std::iterator_traits<string_type>::value_type char_type;
 
 
 
-/**********************************************************************
-
-   Class: SAIS
-   
-   beschrijving: SAIS wordt de _S_uffix _A_rray d.m.v. _I_nduced _S_orting
-   van de string T van lengte len gegeven in de constructor.
-   
-***************************************************************************/
-class SAIS : public std::vector<int>{
-public:
-    SAIS(const unsigned char* T, int len) : vector<int>(len), LCPtabel(len){
-        saisxx_private::saisxx(T, begin(), len);
-
-        std::vector<int>& SA = *this; // voor eenvoudigere notatie
-
-        // Eerst wordt de LGPtabel geconstrueerd. Deze wordt daarna omgevormd naar de LCPtabel
-        std::vector<int> LGPtabel(SA.size());
-
-        // Geinverteerde suffixtabel bijhouden, om gemakkelijk 'j' op te sporen
-        std::vector<int> invertedSA(SA.size());
-        for(int i = 0; i < invertedSA.size(); i++){
-          invertedSA[SA[i]] = i;
-        }
-
-        for(int i = 0; i < 1; i++) {
-          std::cout << "\n--\n";
-          std::cout << "i = " << i<<"\n";
-          std::cout << "suff["<<i<<"] = "; printSuffix(T, len, i);
-          int j = invertedSA[i];
-          std::cout << "\nj = " << j<<"\n";
-          int opvolger = SA[j + 1];
-          if(j + 1 < len){
-            std::cout << "opvolger = " << opvolger<<"\n";;
-            std::cout << "suff[SA["<<opvolger<<"]] = ";printSuffix(T, len, opvolger);
-          } else {
-            std::cout << "geen opvolger";
-          }
-        }
-        for(int i = 0; i < SA.size(); i++){
-          this->LCPtabel[i] = LGPtabel[SA[i]];
-        }
-
-        std::cout << "\n\n------------\n\n";
-        for(int i = 0; i < SA.size(); i++){
-          //std::cout << i << " : " << SA[i] << " (" << T[SA[i]] << ")" << " [" << LCPtabel[i] << "]\n";
-        }
-    };
-
-
-    int besteVerwijzing(int& verschuiving, int& lengte, int lokatie) {
-
-    }
-
-private:
-  std::vector<int> LCPtabel;
-  void printSuffix(const unsigned char* T, int len, int i){ // voor debugging
-    for(i; i < len; i++){
-      std::cout << T[i];
-    }
-  }
-    
-};
 
 
 
