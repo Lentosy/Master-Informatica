@@ -1,11 +1,13 @@
 #include <string>
 #include <iostream>
 
-#include "patriciatrie.h"
+#include "patriciatrie.cpp"
 int main(void) {
     
     std::string ananas("ananas");
+    std::string anaconda("anaconda");
     PatriciaTrie trie;
+    
     trie.voegToe(ananas);
     trie.teken("patriciatrie.dot");
 
