@@ -125,12 +125,12 @@ void PRQuadtree::voegToe(int x, int y) {
     Knoopptr* plaats = this->zoek(x, y);
     // als er geen blad bestaat, kan het blad gewoon aangemaakt worden
     if(!*plaats){
-        *plaats = (std::unique_ptr<PRKnoop>) std::make_unique<PRBlad>(x, y);
+        *plaats = (Knoopptr) std::make_unique<PRBlad>(x, y);
     } else {
         int bladX = static_cast<PRBlad*>(plaats->get())->x;
         int bladY = static_cast<PRBlad*>(plaats->get())->y;
         plaats->reset();
-        *plaats = (std::unique_ptr<PRKnoop>) std::make_unique<PRNietblad>();
+        *plaats = (Knoopptr) std::make_unique<PRNietblad>();
         this->voegToe(bladX, bladY);
         this->voegToe(x, y);
     }

@@ -1,55 +1,107 @@
 digraph G {knoop1[label="0"]
-knoop1 -> knoop2
-knoop2[shape=point]
-knoop1 -> knoop3
-knoop3[shape=point]
-knoop1 -> knoop4
+knoop1 -> knoop2[label="a"]
+knoop2[label="3"]
+knoop1 -> knoop3[label="b"]
+knoop3[shape=square, label="bert"]
+knoop1 -> knoop4[label="c"]
 knoop4[shape=point]
-knoop1 -> knoop5
+knoop1 -> knoop5[label="d"]
 knoop5[shape=point]
-knoop1 -> knoop6
+knoop1 -> knoop6[label="e"]
 knoop6[shape=point]
-knoop1 -> knoop7
+knoop1 -> knoop7[label="f"]
 knoop7[shape=point]
-knoop1 -> knoop8
+knoop1 -> knoop8[label="g"]
 knoop8[shape=point]
-knoop1 -> knoop9
+knoop1 -> knoop9[label="h"]
 knoop9[shape=point]
-knoop1 -> knoop10
+knoop1 -> knoop10[label="i"]
 knoop10[shape=point]
-knoop1 -> knoop11
+knoop1 -> knoop11[label="j"]
 knoop11[shape=point]
-knoop1 -> knoop12
+knoop1 -> knoop12[label="k"]
 knoop12[shape=point]
-knoop1 -> knoop13
+knoop1 -> knoop13[label="l"]
 knoop13[shape=point]
-knoop1 -> knoop14
+knoop1 -> knoop14[label="m"]
 knoop14[shape=point]
-knoop1 -> knoop15
+knoop1 -> knoop15[label="n"]
 knoop15[shape=point]
-knoop1 -> knoop16
+knoop1 -> knoop16[label="o"]
 knoop16[shape=point]
-knoop1 -> knoop17
+knoop1 -> knoop17[label="p"]
 knoop17[shape=point]
-knoop1 -> knoop18
+knoop1 -> knoop18[label="q"]
 knoop18[shape=point]
-knoop1 -> knoop19
+knoop1 -> knoop19[label="r"]
 knoop19[shape=point]
-knoop1 -> knoop20
+knoop1 -> knoop20[label="s"]
 knoop20[shape=point]
-knoop1 -> knoop21
+knoop1 -> knoop21[label="t"]
 knoop21[shape=point]
-knoop1 -> knoop22
+knoop1 -> knoop22[label="u"]
 knoop22[shape=point]
-knoop1 -> knoop23
+knoop1 -> knoop23[label="v"]
 knoop23[shape=point]
-knoop1 -> knoop24
+knoop1 -> knoop24[label="w"]
 knoop24[shape=point]
-knoop1 -> knoop25
-knoop25[shape=point]
-knoop1 -> knoop26
+knoop1 -> knoop25[label="x"]
+knoop25[shape=square, label="xandro"]
+knoop1 -> knoop26[label="y"]
 knoop26[shape=point]
-knoop1 -> knoop27
+knoop1 -> knoop27[label="z"]
 knoop27[shape=point]
+knoop2 -> knoop28[label="a"]
+knoop28[shape=point]
+knoop2 -> knoop29[label="b"]
+knoop29[shape=square, label="anabool"]
+knoop2 -> knoop30[label="c"]
+knoop30[shape=point]
+knoop2 -> knoop31[label="d"]
+knoop31[shape=point]
+knoop2 -> knoop32[label="e"]
+knoop32[shape=point]
+knoop2 -> knoop33[label="f"]
+knoop33[shape=point]
+knoop2 -> knoop34[label="g"]
+knoop34[shape=point]
+knoop2 -> knoop35[label="h"]
+knoop35[shape=point]
+knoop2 -> knoop36[label="i"]
+knoop36[shape=point]
+knoop2 -> knoop37[label="j"]
+knoop37[shape=point]
+knoop2 -> knoop38[label="k"]
+knoop38[shape=point]
+knoop2 -> knoop39[label="l"]
+knoop39[shape=point]
+knoop2 -> knoop40[label="m"]
+knoop40[shape=point]
+knoop2 -> knoop41[label="n"]
+knoop41[shape=square, label="ananas"]
+knoop2 -> knoop42[label="o"]
+knoop42[shape=point]
+knoop2 -> knoop43[label="p"]
+knoop43[shape=point]
+knoop2 -> knoop44[label="q"]
+knoop44[shape=point]
+knoop2 -> knoop45[label="r"]
+knoop45[shape=point]
+knoop2 -> knoop46[label="s"]
+knoop46[shape=point]
+knoop2 -> knoop47[label="t"]
+knoop47[shape=point]
+knoop2 -> knoop48[label="u"]
+knoop48[shape=point]
+knoop2 -> knoop49[label="v"]
+knoop49[shape=point]
+knoop2 -> knoop50[label="w"]
+knoop50[shape=point]
+knoop2 -> knoop51[label="x"]
+knoop51[shape=point]
+knoop2 -> knoop52[label="y"]
+knoop52[shape=point]
+knoop2 -> knoop53[label="z"]
+knoop53[shape=point]
 
 }
