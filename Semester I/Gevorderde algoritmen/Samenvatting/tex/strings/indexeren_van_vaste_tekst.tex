@@ -64,60 +64,97 @@
 
 \section{Suffixtabellen}
 \begin{itemize}
+    \item We veronderstellen dat het vroeger gebruikte patroon $P$ (\texttt{GCAGAGCAG}) nu de tekst is, om voorbeelden in te korten.
     \item Een tabel met de gerangschikte suffixen van een string.
     \item De elementen van de tabel zijn indices, die de startpositie van het suffix aanduiden van de string.
+    \begin{table}[ht]
+        \centering
+        \begin{tabular}{|c|ccccccccc|}
+            \hline
+            $i$&0&1&2&3&4&5&6&7&8\\
+            $T[i]$&G&C&A&G&A&G&C&A&G\\
+            \hline
+            $SA[i]$&7&2&4&6&1&8&3&5&0\\
+            $T[SA[i]]$&A&A&A&C&C&G&G&G&G\\
+            \hline
+        \end{tabular}
+        \caption{De suffixtabel $SA$ voor \texttt{GCAGAGCAG}.}
+        \label{table:suffixtabel}
+    \end{table}
     \item Deze tabel wordt bekomen door de suffixboom in inorder te overlopen. 
     \begin{itemize}
         \item Andere, meer efficiënte, methoden bestaan, maar worden niet in de cursus besproken.
     \end{itemize}
-
-    \item Een patroon $P$ opzoeken in de suffixtabel gebeurt met \textbf{binair zoeken}.
+    \item Om een suffixtabel te gebruiken is er een hulpstructuur nodig, de \textbf{LGP}-tabel (Langste Gemeenschappelijke Prefix), die dan wordt omgezet in de \textbf{LCP}-tabel die gerangschikt is in de volgorde gegeven door de suffixtabel.
     
-    \begin{table}
-        \begin{tabular}{|cccc|ccccccccc|}
+    \item Tabel \ref{table:LCPconstruction} toont de constructie van de LCP-tabel.
+    \begin{itemize}
+        \item Overloop $i$, $0 \leq i \leq t$.
+        \item Zoek $j$ zodanig dat $SA[j] = i$.
+        \item De opvolger van $suff_i$ is dan $suff_{SA[j + 1]}$.
+        \item Vergelijk $suff_i$  met $suff_{SA[j + 1]}$ vanaf beginpositie $P[i + l]$.
+        \begin{itemize}
+            \item Initieel is $l = 0$.
+            \item Verhoog $l$ totdat $T[i + l] \neq T[SA[j + 1] + l]$.
+            \item Als $l > 0$, dan moet voor $i + 1$ slechts vergeleken worden vanaf $T[i + l - 1]$.
+        \end{itemize}
+    \end{itemize}
+    
+    
+    \begin{table}[ht]
+        \centering
+        \begin{tabular}{|ccc|c|ccccccccc|}
             \hline
             &&&$i$&0&1&2&3&4&5&6&7&8\\
-            &&&$P[i]$&G&C&A&G&A&G&C&A&G\\
+            &&&$T[i]$&G&C&A&G&A&G&C&A&G\\
             \hline
             &&&$SA[i]$&7&2&4&6&1&8&3&5&0\\
-            &&&$P[SA[i]]$&A&A&A&C&C&G&G&G&G\\
+            &&&$T[SA[i]]$&A&A&A&C&C&G&G&G&G\\
             \hline
-            \textbf{i}&\textbf{opvolger}&\textbf{l}&&&&&&&&&&\\
+            \textbf{i}&\textbf{opvolger}&\textbf{LGP[i]}&l&0&1&2&3&4&5&6&7&8\\
             \hdashline
     
-            0&-&0&&&&&&&&&&\\
+            0&-&0&$/$&&&&&&&&&\\
             \hdashline
-            1&8&0&$suff_1$&C&A&G&A&G&C&A&G&\\
-             & & &$suff_8$&G&&&&&&&& \\
+            1&8&0&$suff_1$&\nm{C}&A&G&A&G&C&A&G&\\
+             & & &$suff_8$&\nm{G}&&&&&&&& \\
              \hdashline
     
-            2&4&2&$suff_2$&A&G&A&G&C&A&G&&\\
-            & & &$suff_4$&A&G&C&A&G&&&& \\
+            2&4&2&$suff_2$&\m{A}&\m{G}&\nm{A}&G&C&A&G&&\\
+            & & &$suff_4$&\m{A}&\m{G}&\nm{C}&A&G&&&& \\
             \hdashline
     
-            3&5&1&$suff_3$&G&A&G&C&A&G&&&  \\
-             & & &$suff_5$&G&C&A&G&&&&& \\
+            3&5&1&$suff_3$&\um{G}&\nm{A}&G&C&A&G&&&  \\
+             & & &$suff_5$&\um{G}&\nm{C}&A&G&&&&& \\
              \hdashline
     
-            4&6&0&$suff_4$&A&G&C&A&G&&&&  \\
-             & & &$suff_6$&C&A&G&&&&&&\\
+            4&6&0&$suff_4$&\nm{A}&G&C&A&G&&&&  \\
+             & & &$suff_6$&\nm{C}&A&G&&&&&&\\
              \hdashline
     
-            5&0&4&$suff_5$&G&C&A&G&&&&& \\
-             & & &$suff_0$&G&C&A&G&A&G&C&A&G \\
+            5&0&4&$suff_5$&\m{G}&\m{C}&\m{A}&\m{G}&&&&& \\
+             & & &$suff_0$&\m{G}&\m{C}&\m{A}&\m{G}&A&G&C&A&G \\
              \hdashline
-            6&1&3&$suff_6$&C&A&G&&&&&& \\
-             & & &$suff_1$&C&A&G&A&G&C&A&G& \\
+            6&1&3&$suff_6$&\um{C}&\um{A}&\um{G}&&&&&& \\
+             & & &$suff_1$&\um{C}&\um{A}&\um{G}&A&G&C&A&G& \\
              \hdashline
             
-            7&2&2&$suff_7$&A&G&&&&&&& \\
-             & & &$suff_2$&A&G&A&G&C&A&G&& \\
+            7&2&2&$suff_7$&\um{A}&\um{G}&&&&&&& \\
+             & & &$suff_2$&\um{A}&\um{G}&A&G&C&A&G&& \\
              \hdashline
-            8&3&1&$suff_8$&G&&&&&&&& \\
-             & & &$suff_3$&G&A&G&C&A&G&&& \\
+            8&3&1&$suff_8$&\um{G}&&&&&&&& \\
+             & & &$suff_3$&\um{G}&A&G&C&A&G&&& \\
             \hline
+             & & & $LGP[i]$&0&0&2&1&0&4&3&2&1\\
+             & & & $LCP[i]$&4&0&0&1&2&0&3&1&2\\
+             \hline
         \end{tabular}
+        \caption{De constructie van de LCP-tabel voor \texttt{GCAGAGCAG}. Karakters die rood of groen zijn worden effectief vergeleken. Oranje karakters moeten niet meer vergeleken worden.}
+        \label{table:LCPconstruction}
     \end{table}
+
+
+    \item Een patroon $P$ opzoeken in de suffixtabel gebeurt met \textbf{binair zoeken}.
 \end{itemize}
 
 \section{Tekstzoekmachines}

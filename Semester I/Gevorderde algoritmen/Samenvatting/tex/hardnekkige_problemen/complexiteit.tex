@@ -79,7 +79,7 @@
     \begin{itemize}
         \item Een verzameling logische variabelen $\mathcal{X} = \{x_1, \dots, x_{|\mathcal{X}|}\}$.
         \item Een verzameling logische uitspraken $\mathcal{F} = \{f_1, \dots, f_{|\mathcal{F}|}\}$.
-        \item Elke uitspraak bestaat uit automaire uitspraken (atomen) samengevoegd met OF-operaties:
+        \item Elke uitspraak bestaat uit atomaire uitspraken (atomen) samengevoegd met OF-operaties:
         $$f_1 = x_2 \vee \overline{x_5} \vee x_7 \vee x_8$$
     \end{itemize}
     \item Gevraagd:
@@ -87,7 +87,7 @@
         \item  Hoe moeten de waarden toegekend worden aan de variabelen uit $\mathcal{X}$ zodat elke uitspraak in $\mathcal{F}$ waar is?
     \end{itemize}
     \item Elk NP-compleet probleem is reduceerbaar tot SAT.
-    \item Een uitspraak met meer dan drie atomen kan herleidt worden naar een reeks uitspraken met elk drie atomen:
+    \item Een uitspraak met meer dan drie atomen kan herleidt worden naar een reeks uitspraken met elk drie atomen (3SAT):
     \begin{align*}
         f_1 = &x_2 \vee \overline{x_5} \vee x_n \\
         f_1' = &\overline{x_n} \vee x_7 \vee x_8
@@ -208,7 +208,7 @@
     
 \end{itemize}
 
-
+\newpage
 \subsection{Clique}
 \begin{itemize}
     \item Gegeven:
@@ -223,10 +223,10 @@
     \begin{figure}[ht]
         \centering
         \includegraphics[width=0.5\textwidth]{clique}
-        \caption{Deze graaf bevat 23 1-knoop cliques (de knopen), 49 2-knoop cliques (door de verbindingen), 19 3-knoop cliques (lichtblauwe driehoeken) en 2 4-knoop cliques (donkerblauwe oppervlakken). In deze graaf zijn de twee 4-knoop de grootste groep van knopen.}
+        \caption{Deze graaf bevat 23 1-knoop cliques (de knopen), 49 2-knoop cliques (door de verbindingen), 19 3-knoop cliques (lichtblauwe driehoeken) en 2 4-knoop cliques (donkerblauwe oppervlakken). In deze graaf zijn de twee 4-knoop cliques de grootste groep van knopen.}
         \label{clique}
     \end{figure}
-    \begin{itemize}
+    
         \item Het SAT probleem kan herleidt worden tot clique.
         \begin{itemize}
             \item Voor elk voorkomen van een atoom in een uitspraak wordt twee knopen $(F_i, x_j)$ en $(F_i, \overline{x_j})$ aangemaakt.
@@ -236,11 +236,25 @@
                 \item $(F_i, \overline{x_k})$ met $(F_i, \overline{x_l})$ voor alle $k$ en $l$.
                 \item $(F_i, x_k)$ met $(F_i, \overline{x_l})$ als $k \neq l$.
             \end{itemize}
+            \item Stel volgende uitspraken 
+
+            \begin{align*}
+                U_1 = \overline{x}_1 \vee x_2 \vee x_3 \\
+                U_2 = x_2 \vee \overline{x}_3 \vee x_4
+            \end{align*}
+    
+            Bijhorende graaf:
+            \begin{figure}[ht]
+                \centering
+                \includegraphics[width=0.5\textwidth]{clique_ex}
+                \caption{Reductie van 3SAT naar Clique.}
+                \label{fig:clique_ex}
+            \end{figure}
         \end{itemize}
         \item Een clique kan hoogstens $|\mathcal{F}|$ elementen bevatten.
-    \end{itemize}
+    
 \end{itemize}
-
+\newpage
 \subsection{Independent set}
 \begin{itemize}
     \item Gegeven:
@@ -260,7 +274,7 @@
     \end{figure}
 
 \end{itemize}
-
+\newpage
 \subsection{Hamilton path}
 \begin{itemize}
     \item Gegeven:
@@ -280,7 +294,7 @@
     \end{figure}
 
 \end{itemize}
-
+\newpage
 \subsection{Minimum cover}
 \begin{itemize}
     \item Gegeven:

@@ -2,6 +2,7 @@
 \begin{itemize}
     \item \textbf{Heuristieken} zijn vuistregels bij het zoeken naar een oplossing van een probleem.
     \item Garanderen niet dat er een oplossing gevonden wordt, maar versnelt wel de zoektocht ernaar.
+    \item \textbf{Metaheuristieken} richten zich niet op een specifiek probleem, maar op algemene methoden.
 \end{itemize}
 
 \section{Combinatorische optimisatie}
@@ -29,8 +30,8 @@
         \begin{itemize}
             \item Er zijn een aantal lessen, een aantal docenten, een aantal klaslokalen, een aantal mogelijke tijdsslots en een aantal groepen studenten.
             \item Er moet een lessenrooster opgesteld worden zodanig dat er minimale negatieve elementen zijn (springuren, onevenwichtige verdelingen van de studenten, ...).
-            \item Elke string van $\mathcal{S}$ is even lang en beschrijft e en lessenrooster zonder conflicten door aan elke les een lokaal en een tijdsslot toe te kennen.
-            \item $\mathcal{S}$ heeft twee letters: de eerste duidt de tijdsslot aan en de tweede het lokaal.
+            \item Elke string van $\mathcal{S}$ is even lang en beschrijft een lessenrooster zonder conflicten door aan elke les een lokaal en een tijdsslot toe te kennen.
+            \item $\mathcal{S}$ heeft twee letters voor elke les: de eerste duidt de tijdsslot aan en de tweede het lokaal.
         \end{itemize}
     \end{itemize}
     \item In principe zijn zulke problemen oplosbaar met backtracking.
@@ -43,7 +44,7 @@
 \end{itemize}
 
 
-\section{Vooronderstellingen}
+\section{Constructie van een enkel individu uit \texorpdfstring{$\mathcal{S}$}{S}}
 
 \begin{itemize}
     \item Bij de keuze van methodieken moet er eerst nagegaan worden of het probleem aan een aantal voorwaarden voldoet. Het ontbreken van een bepaalde voorwaarde kan bijvoorbeeld een metaheuristiek uitsluiten. Er zijn \textbf{vier} gebieden waarin onderscheidt tussen de verschillende optimisatietechnieken gemaakt kan worden.
@@ -64,7 +65,7 @@
             $$p(i) = \frac{w_i}{\sum_j w_j}$$
         \end{enumerate}
 
-        \item \textbf{Er zijn drie fundamentele methoden om een nieuw individu $\mathcal{S}$ te kiezen uitgaande van andere individuen.}
+        \item \textbf{Er zijn drie fundamentele methoden om een nieuw individu uit $\mathcal{S}$ te kiezen uitgaande van andere individuen.}
         \begin{enumerate}
             \item Kleine wijzigingen aanbrengen in een reeds bekeken individu $s$ van $\mathcal{S}$.
             \item Kruisen van twee bekeken individuen. 
@@ -86,7 +87,7 @@
     \begin{itemize}
         \item Beginnend van een individu $s_0 \in \mathcal{S}$
         \item Genereer een rij van individuen $s_1, \cdots , s_n \in \mathcal{S}$.
-        \item Hierbij geldt dat voor alle $i = 0, \cdots, n-1, s-i+1 \in \mathcal{N}(s_i)$ en $f(s_{i + 1}) < f(s_i)$. 
+        \item Hierbij geldt dat voor alle $i = 0  \cdots n-1, s_{i+1} \in \mathcal{N}(s_i)$ en $f(s_{i + 1}) < f(s_i)$. 
         \item Dit eindigt met een lokaal minimum, een individu $s_n$ zodat $\forall s \in \mathcal{N}(s_n): f(s) \geq f(s_n)$.
     \end{itemize}
     \item Het vinden van zo een rij heet \textbf{lokale optimisatie}.
