@@ -1,0 +1,55 @@
+digraph G {knoop1[label="0"]
+knoop1 -> knoop2
+knoop2[shape=point]
+knoop1 -> knoop3
+knoop3[shape=point]
+knoop1 -> knoop4
+knoop4[shape=point]
+knoop1 -> knoop5
+knoop5[shape=point]
+knoop1 -> knoop6
+knoop6[shape=point]
+knoop1 -> knoop7
+knoop7[shape=point]
+knoop1 -> knoop8
+knoop8[shape=point]
+knoop1 -> knoop9
+knoop9[shape=point]
+knoop1 -> knoop10
+knoop10[shape=point]
+knoop1 -> knoop11
+knoop11[shape=point]
+knoop1 -> knoop12
+knoop12[shape=point]
+knoop1 -> knoop13
+knoop13[shape=point]
+knoop1 -> knoop14
+knoop14[shape=point]
+knoop1 -> knoop15
+knoop15[shape=point]
+knoop1 -> knoop16
+knoop16[shape=point]
+knoop1 -> knoop17
+knoop17[shape=point]
+knoop1 -> knoop18
+knoop18[shape=point]
+knoop1 -> knoop19
+knoop19[shape=point]
+knoop1 -> knoop20
+knoop20[shape=point]
+knoop1 -> knoop21
+knoop21[shape=point]
+knoop1 -> knoop22
+knoop22[shape=point]
+knoop1 -> knoop23
+knoop23[shape=point]
+knoop1 -> knoop24
+knoop24[shape=point]
+knoop1 -> knoop25
+knoop25[shape=point]
+knoop1 -> knoop26
+knoop26[shape=point]
+knoop1 -> knoop27
+knoop27[shape=point]
+
+}
