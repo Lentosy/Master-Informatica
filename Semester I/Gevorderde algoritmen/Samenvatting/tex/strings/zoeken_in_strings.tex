@@ -523,21 +523,7 @@
         \item Een verschuiving $v[i]$ voor foutpositie $i$ in $P$ is dan $i + 1 - k$. Als $k$ niet gedefinieerd is dan is $v[i] = p - s[0]$.
     \end{itemize}
 
-    \begin{table}[ht]
-        \centering
-        \begin{tabular}{l | c c c c c c c c c}
-            $i$   & 0 & \um{1} & 2 & 3 & \nm{4} & \m{5} & 6 & 7 & \textbf{8} \\
-            $P$   & G & C & A & G & A & G & C & A & G \\
-                \hline
-            $s(i)$ & 4 & \um{3} & 2 & 1 & \nm{2} & \m{1} & 0 & 0 & \textbf{0} \\
-            $p - i - 1$ & 8 & 7 & 6 & 5 & 4 & \um{3} & \nm{2} & \m{1} & \textbf{0} \\
-            $k$    & -  & -  & -  & -  &  - &  \um{1}  & \nm{4}   &  \m{5} & \textbf{8} \\
-            $i + 1 - k$ & - & - & - & - & - & 5 & 3 & 3 & 1 \\
-            $v[i]$ & 5 & 5 & 5 & 5 & 5 & 5 & 3  & 3 & 1
-        \end{tabular}
-        \caption{De waarden voor $k$ worden als volgt berekent: zoek de grootste $i$ zodanig dat $s(i) = p - i - 1$. De gekleurde cijfers in de tabel toont voor elke $k$ de relatie met index $i$ en $s(i) = p - i - 1$.}
-        \label{table:bm3}
-    \end{table}
+
     \item Er zijn \textbf{drie speciale gevallen} die zich kunnen voordoen:
     \begin{enumerate}
         \item \textbf{Het patroon $P$ werd gevonden}.
@@ -555,9 +541,44 @@
         \item \textbf{Het juiste suffix komt niet meer in $P$ voor}.
         \begin{itemize}
             \item Er is geen index $j$ gevonden waarvoor $s(j) = p - i - 1$.
-            \item De verschuiving is opnieuw $v[i] = p - s[0]$ voor $0 < i < p$.
+            \item De verschuiving is opnieuw $v[i] = p - s[0]$.
         \end{itemize}
     \end{enumerate}
+    \begin{table}[ht]
+        \centering
+        \begin{tabular}{l | c c c c c c c c c c}
+            $i$   &-1& 0 & \um{1} & 2 & 3 & \nm{4} & \m{5} & 6 & 7 & \textbf{8} \\
+            $P$   &-& G & C & A & G & A & G & C & A & G \\
+                \hline
+            $s(i)$ &/& 4 & \um{3} & 2 & 1 & \nm{2} & \m{1} & 0 & 0 & \textbf{0} \\
+            $p - i - 1$&/ & 8 & 7 & 6 & 5 & 4 & \um{3} & \nm{2} & \m{1} & \textbf{0} \\
+            $k$    &/& -  & -  & -  & -  &  - &  \um{1}  & \nm{4}   &  \m{5} & \textbf{8} \\
+            $i + 1 - k$ &/& - & - & - & - & - & 5 & 3 & 3 & 1 \\
+            $v[i]$ &5& 5 & 5 & 5 & 5 & 5 & 5 & 3  & 3 & 1
+        \end{tabular}
+        \caption{De waarden voor $k$ worden als volgt berekent: zoek de grootste $i$ zodanig dat $s(i) = p - i - 1$. De gekleurde cijfers in de tabel toont voor elke $k$ de relatie met index $i$ en $s(i) = p - i - 1$.}
+        \label{table:bm3}
+    \end{table}
+    
+    \begin{table}[ht]
+        \centering   
+        \scalebox{0.6}{
+        \begin{tabular}{|c c |c c c c c c c c c c c c c c c c c c c c c c c c c|}
+            \hline
+            \multicolumn{2}{|r|}{j} & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 &11&12 &13 &14 &15 &16 &17 &18 &19 &20 &21 &22 &23&24\\    
+            \multicolumn{2}{|r|}{T}  & G & C & A & T & C & G & C & A & G & A & G&C & A & G & A & G & T & A & C & A & G & C & A & C & G\\
+              \hline
+             i& $v[i]$    &  &   &  &  &  &  &  &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &&&  \\
+             4 & 5        &G&C&A&G&\nm{A}&\m{G}&\m{C}&\m{A}&\m{G}&&&&&&&&&&&&&&&&  \\
+             -1 & 5        &&&&&&\m{G}&\m{C}&\m{A}&\m{G}&\m{A}&\m{G}&\m{C}&\m{A}&\m{G}&&&&&&&&&&&  \\
+             8 & 1        &&&&&&&&&&&G&C&A&G&A&G&C&A&\nm{G}&&&&&&  \\
+             8 & 1        &&&&&&&&&&&&G&C&A&G&A&G&C&A&\nm{G}&&&&&  \\
+             5 & 5        &&&&&&&&&&&&&G&C&A&G&A&\nm{G}&\m{C}&\m{A}&\m{G}&&&&  \\
+            \hline   
+        \end{tabular}
+        }
+        \caption{Het Boyer-Moore algoritme, enkel gebruik makend van de heuristiek van het juiste suffix.}
+    \end{table}
 \end{itemize}
 
 \subsection{Onzekere algoritmen}
