@@ -508,8 +508,8 @@
     \item Hier wordt enkel de versie van de \textbf{originele Boyer-Moore} methode besproken, dus niet de varianten van Horspool of Sunday.
     \item In vele gevallen kan $f$ aan de rechterkant van foutpositie $i$ voorkomen, zodat $i - j < 0$, en er dus maar een verschuiving van 1 positie mogelijk is.
     \item Op positie $i$ in $P$ vinden we een verkeerd karakter $f$ in $T$.
-    \item Er is dus een \textbf{suffix} van $P$ in $T$, met lengte $p - i - 1$.
-    \item We willen weten of dit suffix $s$ nog ergens in $P$ voorkomt.
+    \item Er is dus een \textbf{suffix} s van $P$ in $T$, met lengte $p - i - 1$.
+    \item We willen weten of $s$ nog ergens in $P$ voorkomt.
     \begin{itemize}
         \item Als er meerdere plaatsen zijn waar $s$ in $P$ voorkomt, wordt de meeste rechtse genomen.
         \item Suffixen kunnen overlappen.
@@ -520,7 +520,7 @@
         \item Voor elke index $j$ in $P$ wordt de lengte van het grootste suffix van $P$ bijgehouden, dat op index $j$ begint.
         \item De suffixwaarden is het omgekeerde van de prefixtabel voor het omgekeerde patroon $P$.
         \item De grootste waarde voor $j$ waarvoor $s(j) = p - i - 1$ is de waarde voor $k$.
-        \item Een verschuiving $v[i]$ voor foutpositie $i$ in $P$ is dan $i + 1 - k$. Als $k$ niet gedefinieerd is dan is $v[i] = p - s[0]$.
+        \item Een verschuiving $v[i]$ voor foutpositie $i$ in $P$ is dan $i + 1 - k$. Als $k$ niet gedefinieerd is dan is $v[i] = p - s[0]$ (geval 3 bij de speciale gevallen).
     \end{itemize}
 
 
@@ -536,12 +536,12 @@
         \item \textbf{Er is geen juist suffix}.
         \begin{itemize}
             \item Als $i = p - 1$, dan is er geen juist suffix.
-            \item Er is geen waarde voor de verschuiving, dus de waarde van de eerste heuristiek moet gebruikt worden.
+            \item De verschuiving $v[p - 1]$ is altijd 1.
         \end{itemize}
         \item \textbf{Het juiste suffix komt niet meer in $P$ voor}.
         \begin{itemize}
             \item Er is geen index $j$ gevonden waarvoor $s(j) = p - i - 1$.
-            \item De verschuiving is opnieuw $v[i] = p - s[0]$.
+            \item De verschuiving is $v[i] = p - s[0]$.
         \end{itemize}
     \end{enumerate}
     \begin{table}[ht]
@@ -552,8 +552,8 @@
                 \hline
             $s(i)$ &/& 4 & \um{3} & 2 & 1 & \nm{2} & \m{1} & 0 & 0 & \textbf{0} \\
             $p - i - 1$&/ & 8 & 7 & 6 & 5 & 4 & \um{3} & \nm{2} & \m{1} & \textbf{0} \\
-            $k$    &/& -  & -  & -  & -  &  - &  \um{1}  & \nm{4}   &  \m{5} & \textbf{8} \\
-            $i + 1 - k$ &/& - & - & - & - & - & 5 & 3 & 3 & 1 \\
+            $k$    &/& -  & -  & -  & -  &  0 &  \um{1}  & \nm{4}   &  \m{5} & \textbf{8} \\
+            $i + 1 - k$ &/& - & - & - & - & 5 & 5 & 3 & 3 & 1 \\
             $v[i]$ &5& 5 & 5 & 5 & 5 & 5 & 5 & 3  & 3 & 1
         \end{tabular}
         \caption{De waarden voor $k$ worden als volgt berekent: zoek de grootste $i$ zodanig dat $s(i) = p - i - 1$. De gekleurde cijfers in de tabel toont voor elke $k$ de relatie met index $i$ en $s(i) = p - i - 1$.}

@@ -7,8 +7,8 @@ public:
     KarpRabin(const std::string& patroon, int r, int d);
     std::queue<int> zoek(const std::string& tekst, ZoekInformatie& zoekInformatie) const;
 private:
-    int r;
-    int d;
+    int hashGrootte;
+    int alfabetGrootte;
     int patroonFingerprint;
     int geefFingerprint(const std::string& s) const;
     bool controleerGelijkheid(const std::string& tekst, int i) const;
@@ -26,13 +26,13 @@ int KarpRabin::geefFingerprint(const std::string& s) const {
     int waarde = 0;
     for(int i = 0; i < patroon.size(); i++) {
                     //  (P[i] * d^{p - i - 1}) mod r
-        waarde += (((int)s[i]) * (int)std::pow(d, patroon.size() - i - 1)) % r;
+        waarde += (((int)s[i]) * (int)std::pow(alfabetGrootte, patroon.size() - i - 1)) % hashGrootte;
     }
-    waarde %= r;
+    waarde %= hashGrootte;
     return waarde;
 }
 
-KarpRabin::KarpRabin(const std::string& patroon, int r, int d) : ZoekAlgoritme(patroon), r{r}, d{d} {
+KarpRabin::KarpRabin(const std::string& patroon, int r, int d) : ZoekAlgoritme(patroon), hashGrootte{r}, alfabetGrootte{d} {
     patroonFingerprint = geefFingerprint(patroon);
 }
 
@@ -45,14 +45,14 @@ std::queue<int> KarpRabin::zoek(const std::string& tekst, ZoekInformatie& zoekIn
         posities.push(0);
     }
 
-    int c1 = r*(d - 1);
+    int c1 = hashGrootte * (alfabetGrootte - 1);
     int c2 = 1;
     for(int i = 0; i < patroon.size() - 1; i++){
-        c2 = (c2 * d) % r;
+        c2 = (c2 * alfabetGrootte) % hashGrootte;
     }
     
     for(int i = 1; i < tekst.size() - patroon.size(); i++){
-        tekstFingerprint = (((tekstFingerprint + c1 - tekst[i] * c2) %r ) * d + tekst[i + patroon.size()]) % r;
+        tekstFingerprint = (((tekstFingerprint + c1 - tekst[i] * c2) % hashGrootte ) * alfabetGrootte + tekst[i + patroon.size()]) % hashGrootte;
         if(patroonFingerprint == tekstFingerprint && controleerGelijkheid(tekst, i)){
             posities.push(i);
         }   
