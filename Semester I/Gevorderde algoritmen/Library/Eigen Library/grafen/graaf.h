@@ -69,11 +69,11 @@ std::ostream &operator<<(std::ostream &os, const GraafExceptie& exc){
     return os << exc.what();
 }
 
-
+typedef std::map<int, int>  Burenlijst; // beeldt knoopnummer (van buur) af op verbindingsnummer
 template<RichtType RT>
 class Graaf{
 public:
-typedef std::map<int, int>  Burenlijst;      // beeldt knoopnummer (van buur) af op verbindingsnummer
+      
 
     // Construeert een graaf met gegeven RichtType en aantal knopen (default 0), zonder verbindingen.
     Graaf(int n=0);
