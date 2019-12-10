@@ -1,21 +1,19 @@
 \chapter{Kortste afstanden II}
 \begin{itemize}
-	\item Traditioneel kortste afstanden tussen twee knopen: algoritme van Dijkstra.
+	\item Het traditioneel algoritme om de kortste afstand tussen twee knopen te bepalen is het algoritme van Dijkstra.
 	\item Probleem:
 	\begin{itemize}
 		\item Dijkstra gebruikt het feit dat indien een pad naar A $\rightarrow$ C bestaat met kost $K_{A, C}$, er geen korter pad A $\rightarrow$ B $\rightarrow$ C kan zijn met kost $K_{A, B} + K_{A, C}$, daarom is het algoritme performant, maar er mogen dus geen negatieve verbindingen zijn. Indien $K_{A, B}$ negatief zou zijn dan klopt Dijkstra niet want dan 
 
 		\begin{align*}
-			K_{A, B} + K{A, C} > K_{A, C}
+			K_{A, B} + K_{A, C} > K_{A, C}
 		\end{align*}
 	\end{itemize}
-	\item Volgende algoritmen hebben enkel betrekking tot \textbf{gerichte grafen}.
+	\item Volgende algoritmen hebben enkel betrekking tot \textbf{gerichte grafen} met mogelijks \textbf{negatieve gewichten}.
 
 \end{itemize}
 \section{Kortste afstanden vanuit één knoop}
 \subsection{Algoritme van Bellman-Ford}
-Dit algoritme werkt voor verbindingen met negatieve gewichten, iets wat het algoritme van Dijkstra niet kon. Het algoritme is dan natuurlijk ook trager.
-
 \begin{itemize}
 	\item  Werkt voor negatieve verbindingen.
 	\item  Geen globale kennis nodig van heel het netwerk, zoals bij Dijkstra, maar slechts enkel de buren van een bepaalde knoop. Daarom gebruiken routers Bellman-Ford (distance vector protocol).

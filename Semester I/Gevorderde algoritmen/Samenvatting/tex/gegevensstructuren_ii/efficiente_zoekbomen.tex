@@ -1,7 +1,7 @@
 \chapter{Efficiënte zoekbomen}
 \section{Inleiding}
 \begin{itemize}
-    \item Uitvoeringstijd van operaties (zoeken, toevoegen, verwijderen) op een binaire zoekboom met hoogte $h$ is $O(h)$.
+    \item Uitvoeringstijd van operaties (zoeken, toevoegen, verwijderen) op een binaire zoekboom met hoogte $h$ is $O(h)$ ($h = \lg n$).
     \item De hoogte $h$ is afhankelijk van de toevoegvolgorde van de $n$ elementen:
     \begin{itemize}
         \item In het slechtste geval bekomt men een gelinkte lijst, zodat $h = O(n)$.
@@ -10,7 +10,7 @@
             \alert Geen realistische veronderstelling.
         \end{itemize}
     \end{itemize}
-    \item \underline{Drie manieren} om de efficiëntie van zoekbomen te verbeteren:
+    \item \textbf{Drie manieren} om de efficiëntie van zoekbomen te verbeteren:
     \begin{enumerate}
         \item \textbf{Elke operatie steeds efficiënt maken.} (Hoogte klein houden)
         \begin{enumerate}
@@ -96,8 +96,8 @@
         \item Een binaire zoekboom.
         \item Elke knoop is rood of zwart gekleurd.
         \item Elke virtuele knoop is zwart. Een virtuele knoop is een knoop die geen waarde heeft, maar wel een kleur. Deze vervangen de nullwijzers.
-        \item Een rode knoop heeft steeds twee zwarte kinderen
-        \item Elke mogelijke weg vanuit een knoop naar elke virtuele knoop bevat evenveel zwarte knopen. Dit aantal zwarte knoepn wordt de \textit{zwarte hoogte} genoemd
+        \item Een rode knoop heeft steeds twee zwarte kinderen.
+        \item Elke mogelijke weg vanuit een knoop naar elke virtuele knoop bevat evenveel zwarte knopen. Dit aantal zwarte knopen wordt de \textit{zwarte hoogte} genoemd.
         \item De wortel is zwart.
     \end{itemize}
     \item \textbf{Eigenschappen:}
@@ -580,10 +580,15 @@
 \end{itemize}
 
 \section{Skip lists}
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\textwidth]{skip_list}
+    \caption{Een skip list.}
+    \label{fig:skip_list}
+\end{figure}
 \begin{itemize}
     \item Een meerwegszoekboom geïmplementeerd met gelinkte lijsten.
     \item Alle bladeren zitten op dezelfde diepte.
     \item Elke lijstknoop heeft plaats voor één sleutel en één kindwijzer.
     \item Een knoop met $k$ kinderen bevat $k-1$ sleutels, zodat er één sleutelplaats over blijft.
-    \item (zoekt gewoon eens een foto op)
 \end{itemize}
