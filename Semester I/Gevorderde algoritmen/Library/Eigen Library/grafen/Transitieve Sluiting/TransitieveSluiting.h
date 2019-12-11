@@ -17,7 +17,6 @@ private:
 Graaf<GERICHT> TransitieveSluiting::bepaalTransitieveSluiting() const {
 
     std::vector<std::vector<bool>> T(graaf->aantalKnopen(), std::vector<bool>(graaf->aantalKnopen(), false));
-    std::cout << "k";
     // Initialisatie T0
     for(int i = 0; i < graaf->aantalKnopen(); i++){
         T[i][i] = true; // i = j

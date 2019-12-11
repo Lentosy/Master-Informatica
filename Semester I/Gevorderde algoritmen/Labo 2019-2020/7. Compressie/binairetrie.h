@@ -83,7 +83,7 @@ void BinaireTrie::voegToe(const Varbitpatroon& vb, int karakter) {
 }
 
 
-std::ostream& BinaireTrie::operator>>(std::ostream& os, const BinaireTrie& trie {
+std::ostream& operator>>(std::ostream& os, const BinaireTrie& trie) {
     os << "epic";
     return os;
 }

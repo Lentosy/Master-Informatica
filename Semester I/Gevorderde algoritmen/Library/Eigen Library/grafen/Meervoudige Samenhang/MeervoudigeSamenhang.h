@@ -1,5 +1,5 @@
-#include "stroomnet.h"
-#include "graaf.h"
+#include "../stroomnet.h"
+#include "../graaf.h"
 
 #include <iostream>
 class MeervoudigeSamenhang {
