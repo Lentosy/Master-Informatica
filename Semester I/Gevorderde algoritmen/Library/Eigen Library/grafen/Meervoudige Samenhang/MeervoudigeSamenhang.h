@@ -42,7 +42,6 @@ MeervoudigeSamenhang::MeervoudigeSamenhang(const Graaf<ONGERICHT>* graaf) : stro
 }
 
 int MeervoudigeSamenhang::bepaalGraad() {
-    
     int min = stroomnet.geefStroom().geefCapaciteit();
     for(int i = 0; i < stroomnet.aantalKnopen() - 1; i++){ // moeten slechts stroomnetwerken van opeenvolgende knopenparen oplossen -> P 82 laatste paragraaf 
         Stroomnetwerk<int> volgendStroomnet(stroomnet, i, i + 1);
@@ -50,6 +49,5 @@ int MeervoudigeSamenhang::bepaalGraad() {
         if(waarde < min)
             min = waarde;
     }
-
     return min; 
 }

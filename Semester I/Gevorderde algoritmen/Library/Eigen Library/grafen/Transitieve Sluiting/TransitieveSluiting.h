@@ -1,4 +1,4 @@
-#include "graaf.h"
+#include "../graaf.h"
 #include <iostream>
 #include <vector>
 
