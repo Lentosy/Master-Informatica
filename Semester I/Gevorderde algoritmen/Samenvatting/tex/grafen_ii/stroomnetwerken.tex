@@ -33,7 +33,7 @@
         \item de stroom $s(i, j)$ die er door loopt, waarbij $0 \leq s(i, j) \leq c(i, j)$.
         
     \end{itemize}
-    \item De totale nettostroom $f$ van alle knopen $K$ uit producent $p$ in de graaf is dan 
+    \item Als de verzameling van knopen $K$ is, dan is de totale nettostroom $f$ uit de producent $p$
     $$f = \sum_{j \in K} (s(p, j) - s(j, p))$$ 
     \begin{itemize}
         \item $s(p, j)$ is de uitgaande stroom vanuit de producent $p$ naar knoop $j$.
@@ -69,9 +69,11 @@
         \item Een \textbf{snede} $(P, V)$ van een samenhangende graaf is een verzameling verbindingen die de knopenverzameling in twee niet-ledige stukken $P$ en $V$ verdeelt.
         \begin{itemize}
             \item \item Een verbinding $(i, j)$ zit in $(P, V)$ als $i \in P$ en $j \in V$ of $i \in V$ en $j \in P$. 
-            \item Bij stroomnetwerken zijn nuttige sneden waarbij de producent $p$ tot $P$ behoort en de verbuiker $v$ tot $V$.
+            \item Veronderstelling: de producent $p$ behoort tot $P$ en de verbuiker $v$ behoort tot $V$.
             \item De capaciteit $c(P, V)$ van de snede wordt gedefinieerd als de som van alle capaciteiten $c(i, j)$, met $i$ in $P$ en $j$ in $V$.
+            $$c(P, V) = \sum_{i \in P}\sum_{j \in V} (c(i, j))$$
             \item De nettostroom $f(P, V)$ van de snede is de som van alle voorwaartse stromen $s(i, j)$, min de som van alle achterwaartse stromen $s(j, i)$, met $i$ in $P$ en $j$ in $V$.
+            $$f(P, V) = \sum_{i \in P}\sum_{j \in V} (s(i, j) - s(j, i))$$
         \end{itemize}
 
         \item De conservatieve eigenschap van een stroomnetwerk heeft als gevolg dat de netwerkstroom $f$ gelijk is aan de nettostroom $f(P, V)$ van elke mogelijke snede.
@@ -95,7 +97,15 @@
                 \item Er is geen vergrotende weg meer te vinden in het restnetwerk.
                 \item De netwerkstroom $f$ is gelijk aan de capaciteit van \textit{een snede} in de oorspronkelijke graaf.
             \end{enumerate}
-            \item ??
+            \item Bewijs:
+            \begin{enumerate}
+                \item Eigenschap twee volgt uit eigenschap één: als er nog een vergrotende weg te vinden is in het restnetwerk kan de netwerkstroom $f$ zeker groter gemaakt worden.
+                \item Eigenschap drie volgt uit eigenschap twee: beschouw snede $(P, V)$ waarbij $P$ de knopen bevat in het restnetwerk bereikbaar van $p$. Er is geen vergrotende weg dus $v$ behoort niet tot $P$. Er moet $f(P, V) = c(P, V)$ want als
+                $$\sum_{i \in P}\sum_{j \in V} c_r(i, j) = \sum_{i \in P}\sum_{j \in V} (c(i, j) - s(i, j) + s(j, i)) = 0$$
+                dan 
+                $$c(P, V) = \sum_{i \in P}\sum_{j \in V} (c(i, j)) = \sum_{i \in P}\sum_{j \in V} (s(i, j) - s(j, i)) = f(P, V)$$
+                \item Eigenschap één volgt uit eigenschap drie: de netwerkstroom is gelijk aan de nettostroom doorheen elke snede, en de nettostroom van de snede hierboven is maximaal $(f(P, V) = c(P, V))$.
+            \end{enumerate}
         \end{itemize}
     \end{itemize}
 
@@ -177,7 +187,7 @@ Het maximalestroomprobleem kan uitgbreid worden om verwante problemen op te loss
     \item \textbf{Een ongericht stroomnetwerk}
     \begin{itemize}
         \item Een normaal stroomnetwerk verwacht een gerichte graaf.
-        \item Elke ongerichte verbinding kan vervangen worden door een paar gerichte verbindinge, één in elke richting, en beide verbindinge krijgen de originele capaciteit.
+        \item Elke ongerichte verbinding kan vervangen worden door een paar gerichte verbindingen, één in elke richting, en beide verbindingen krijgen de originele capaciteit.
     \end{itemize}
     \item \textbf{Ondergrenzen toekennen aan verbindingen}
     \begin{itemize}
@@ -208,7 +218,7 @@ Het maximalestroomprobleem kan uitgbreid worden om verwante problemen op te loss
     \item Voor $k < 4$ kunnen knoopsamenhang en lijnsamenhang efficiënt via diepte-eerst zoeken onderzocht worden.
     \item Voor grotere $k$ moeten stroomnetwerken gebruikt worden.
     \item Als een maximale netwerkstroom gevonden is, dan is ook de minimale snede gevonden (max-flow min-cut stelling).
-    %\item Als alle capaciteiten 1 zijn, dan is de capaciteit $C(P, V)$ van een snede $(P, V)$ gelijk aan het aantal verbindingen van knopen in $P$ naar knopen in $V$.
+    \item Als alle capaciteiten 1 zijn, dan is de capaciteit $c(P, V)$ van een snede $(P, V)$ gelijk aan het aantal verbindingen van knopen in $P$ naar knopen in $V$.
     \item De fundamentele eigenschap van samenhang in een graaf wordt gegeven door de \textbf{stelling van Menger}.
     \begin{itemize}
         \item Vier versies: zowel voor gerichte als ongerichte grafen en zowel voor meervoudige knoopsamenhang als meervoudige lijnsamenhang.
@@ -217,9 +227,35 @@ Het maximalestroomprobleem kan uitgbreid worden om verwante problemen op te loss
         \begin{quote}
             Het minimum aantal verbindingen dat moet verwijderd worden om een knoop $v$ van een gerichte graaf onbereikbaar te maken vanuit een andere knoop $p$ is gelijk aan het maximaal aantal lijnonafhankelijke wegen van $p$ naar $v$. Hierbij is $v$ geen buur van $p$.
         \end{quote}
+
+        \item Deze stelling volgt uit de eigenschappen van een stroomnetwerk met eenheidscapaciteiten.
         \begin{itemize}
-            \item Deze stelling volgt uit de eigenschappen van een stroomnetwerk met eenheidscapaciteiten.
+            \item De maximale stroom loopt over een maximaal aantal lijnonafhankelijke wegen van $p$ naar $v$.
+            \item Een minimale verzameling verbindingen $M$ die $v$ onbereikbaar maakt vanuit $p$ vormt een minimale snede $(P ,V)$. 
         \end{itemize}
-        \item 
+    \end{itemize}
+    \item Om verband te leggen tussen vergrotende weg en onafhankelijke wegen zonder gemeenschappelijke knopen worden alle knopen ontdubbelt.
+    \begin{itemize}
+        \item Er komt een verbinding met eenheidscapaciteit tussen elke knoop en zijn dubbelganger.
+        \item Inkomende verbindingen blijven bij de originele knoop.
+        \item Uitgaande verbindingen vertrekken van de dubbelganger.
+        \item Om de knopen te vinden die $v$ onbereikbaar maken vanuit $p$ wanneer men ze wegneemt worden enkel eenheidscapaciteiten toegekend aan de verbindingen tussen knopen en dubbelgangers. Al de andere capciteiten worden onbeperkt onbeperkt groot gemaakt.
+    \end{itemize}
+    \item Een ongerichte graaf kan ook in een stroomnetwerk omgevormd worden:
+    \begin{itemize}
+        \item Elke ongerichte verbinding worden twee tegengestelde verbindingen elk met eenheidscapaciteit. 
+    \end{itemize}
+    \item De \textbf{stelling van Whitney} breidt de stelling van Menger uit op elk paar knopen van een graaf:
+    \begin{quote}
+        Een graaf (al dan niet gericht) is $k-$voudig samenhangend ($k-$voudig lijnsamenhangend) als er tenminste $k$ knopen (verbindingen) moeten verwijderd worden om hem te doen uiteenvallen.
+    \end{quote}
+    \item De graad $k$ van samenhang of lijnsamenhang kan gevonden worden door het maximalestroomprobleem op te lossen voor elk knopenpaar en het minimum ervan te nemen.
+    \begin{itemize}
+        \item Stel dat er $n$ knopen zijn.
+        \item Het minimum kan gevonden worden door $\Theta(n)$ stroomnetwerken op te lossen.
+        \item De minimale snede $(P, V)$ zal altijd de verbindingen geven die $v$ onbereikbaar maakt uit $p$.
+        \item Een willekeurige knoop $x$ uit $P$ en $y$ uit $V$ zou dezelfde snede $(P, V)$ opleveren.
+        \item Als alle knopen in cyclische volgorde gezet worden $x_1, x_2, \cdots, x_n$, dan kan de producent  $p = x_i$ en $v = x_{i + 1} $ gekozen worden.
+        \item Dit wordt voor alle opeenvolgende knopen gedaan, en het minimum van de oplossingen wordt bijgehouden en is de gezochte graad.
     \end{itemize}
 \end{itemize}

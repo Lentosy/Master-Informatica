@@ -5,91 +5,81 @@
     \item De hoogte $h$ is afhankelijk van de toevoegvolgorde van de $n$ elementen:
     \begin{itemize}
         \item In het slechtste geval bekomt men een gelinkte lijst, zodat $h = O(n)$.
-        \item Als elke toevoegvolgorde even waarschijnlijk is, dan is de verwachtingswaarde voor de hoogte $h = O(\lg n)$.
-        \begin{itemize}
-            \alert Geen realistische veronderstelling.
-        \end{itemize}
+        %\item Als elke toevoegvolgorde even waarschijnlijk is, dan is de verwachtingswaarde voor de hoogte $h = O(\lg n)$.
+        %\begin{itemize}
+        %    \alert Geen realistische veronderstelling.
+        %\end{itemize}
     \end{itemize}
     \item \textbf{Drie manieren} om de efficiëntie van zoekbomen te verbeteren:
     \begin{enumerate}
-        \item \textbf{Elke operatie steeds efficiënt maken.} (Hoogte klein houden)
-        \begin{enumerate}
-            \item AVL-bomen. %(figuur \ref{fig:AVL-tree}).
+        \item \textbf{Elke operatie steeds efficiënt maken.}
+        \begin{itemize}
+            %\item AVL-bomen. %(figuur \ref{fig:AVL-tree}).
             %\begin{figure}[ht]
             %    \centering
             %    \includegraphics[width=0.5\textwidth]{AVL-tree}
             %    \caption{Een AVL-boom. De groene cijfers stellen de hoogteverschillen voor van de twee deelbomen voor elke knoop.}
             %    \label{fig:AVL-tree}
             %\end{figure}
-            \begin{itemize}
-                \item Hoogteverschil van de tweede deelbomen van elke knoop wordt gedefinieerd als:
-                $$\Delta h <= 1$$
-                \item $\Delta h$ wordt opgeslagen in de knoop zelf.
-
-            \end{itemize}
-            \item 2-3-bomen (figuur \ref{fig:2-3-tree}).
-            \begin{figure}[ht]
-                \centering
-                \includegraphics[width=0.5\textwidth]{2-3-tree}
-                \caption{Een 2-3-boom.}
-                \label{fig:2-3-tree}
-            \end{figure}
-            \begin{itemize}
-                \item Elke knoop heeft 2 of 3 kinderen en dus 1 of 2 sleutels.
-                \item Elk blad heeft dezelfde diepte.
-                \item Bij toevoegen of verwijderen wordt het ideale evenwicht behouden door het aantal kinderen van de knopen te manipuleren.
-            \end{itemize}
-            \item 2-3-4-bomen.
-            \begin{itemize}
-                \item Analoog aan een 2-3-boom, maar elke knoop heeft 2, 3 of 4 kinderen.
-                \alert Per knoop moet er plaats voorzien zijn voor 3 sleutels, wat onnodig veel geheugen vraagt.
-            \end{itemize}
+            %\begin{itemize}
+            %    \item Hoogteverschil van de tweede deelbomen van elke knoop wordt gedefinieerd als:
+            %    $$\Delta h <= 1$$
+            %    \item $\Delta h$ wordt opgeslagen in de knoop zelf.
+            %\end{itemize}
+            %\item 2-3-bomen (figuur \ref{fig:2-3-tree}).
+            %\begin{figure}[ht]
+            %    \centering
+            %    \includegraphics[width=0.5\textwidth]{2-3-tree}
+            %    \caption{Een 2-3-boom.}
+            %    \label{fig:2-3-tree}
+            %\end{figure}
+            %\begin{itemize}
+            %    \item Elke knoop heeft 2 of 3 kinderen en dus 1 of 2 sleutels.
+            %    \item Elk blad heeft dezelfde diepte.
+            %    \item Bij toevoegen of verwijderen wordt het ideale evenwicht behouden door het aantal kinderen van de knopen te manipuleren.
+            %\end{itemize}
+            %\item 2-3-4-bomen.
+            %\begin{itemize}
+            %    \item Analoog aan een 2-3-boom, maar elke knoop heeft 2, 3 of 4 kinderen.
+            %    \alert Per knoop moet er plaats voorzien zijn voor 3 sleutels, wat onnodig veel geheugen vraagt.
+            %\end{itemize}
             \item Rood-zwarte bomen (sectie \ref{sec:rood-zwarte bomen}).
-        \end{enumerate}
+        \end{itemize}
 
         \item \textbf{Elke reeks operaties steeds efficiënt maken.}
-        \begin{enumerate}
+        \begin{itemize}
             \item Splaybomen (sectie \ref{sec:splaybomen}).
-            \begin{itemize}
-                \item De vorm van de boom wordt meermaals aangepast.
-                \item Elke reeks opeenvolgende operaties is gegarandeerd efficiënt.
-                \item Een individuele operatie kan wel traag uitvallen.
-                \item \textit{Geamortiseerd} is de performantie per operatie goed.
-            \end{itemize}
-        \end{enumerate}
+        \end{itemize}
 
         \item \textbf{De gemiddelde efficiëntie onafhankelijk maken van de operatievolgorde.}
-        \begin{enumerate}
+        \begin{itemize}
             \item Gerandomiseerde zoekbomen (sectie \ref{sec:gerandomiseerde-zoekbomen}).
-            \begin{itemize}
-                \item Gebruik van een random generator.
-                \item De boom is random, onafhankelijk van de toevoeg- en verwijdervolgorde.
-                \item Verwachtingswaarde van de hoogte $h$ wordt dan $O(\lg n)$.
-            \end{itemize}
-        \end{enumerate}
+
+        \end{itemize}
     \end{enumerate}
 \end{itemize}
 
 \section{Rood-zwarte bomen}
-\begin{figure}[ht]
-    \centering
-    \includegraphics[width=0.5\textwidth]{2-3-4-RB-tree}
-    \caption{Een 2-3-4-boom en equivalent rood-zwarte boom (wit stelt hier rood voor).}
-    \label{fig:red-black-tree}
-\end{figure}
-\begin{itemize}
-    \item Simuleert een 2-3-4-boom (fig \ref{fig:red-black-tree}).
-    \begin{itemize}
-        \item Een knoop in een 2-3-4 boom worden 1, 2 of 3 knopen in een rood-zwarte boom.
-        \item Een 2-knoop wordt een zwarte knoop.
-        \item Een 3-knoop wordt een zwarte knoop met een rood kind.
-        \item Een 4-knoop wordt een zwarte knoop met twee rode kinderen.
-    \end{itemize}
-    \item Een rood-zwarte boom is gemakkelijker te definieren als er afgestapt wordt van het 2-3-4-boom concept.
-\end{itemize}
+\label{sec:rood-zwarte bomen}
+%\begin{figure}[ht]
+%    \centering
+%    \includegraphics[width=0.5\textwidth]{2-3-4-RB-tree}
+%    \caption{Een 2-3-4-boom en equivalent rood-zwarte boom (wit stelt hier rood voor).}
+%    \label{fig:red-black-tree}
+%\end{figure}
+%\begin{itemize}
+%    \item Simuleert een 2-3-4-boom (fig \ref{fig:red-black-tree}).
+%    \begin{itemize}
+%        \item Een knoop in een 2-3-4 boom worden 1, 2 of 3 knopen in een rood-zwarte boom.
+%        \item Een 2-knoop wordt een zwarte knoop.
+%        \item Een 3-knoop wordt een zwarte knoop met een rood kind.
+%        \item Een 4-knoop wordt een zwarte knoop met twee rode kinderen.
+%    \end{itemize}
+%    \item Een rood-zwarte boom is gemakkelijker te definieren als er afgestapt wordt van het 2-3-4-boom concept.
+%\end{itemize}
 \subsection{Definitie en eigenschappen}
 
-\label{sec:rood-zwarte bomen}
+
 \begin{itemize}
     \item \textbf{Definitie:}
     \begin{itemize}
@@ -102,14 +92,16 @@
     \end{itemize}
     \item \textbf{Eigenschappen:}
     \begin{itemize}
-        \item Een deelboom met zwarte hoogte $z$ heeft tenminste $2^z - 1$ inwendige knopen. Dit is de deelboom waarvan elke knoop zwart is.
+        \item Een deelboom met zwarte hoogte $z$ heeft tenminste $2^z - 1, (n \geq 2^z - 1)$ inwendige knopen. Dit is de deelboom waarvan elke knoop zwart is.
         \item De hoogte $h$ van een rood-zwarte boom met $n$ knopen is steeds $O(\lg n)$, want:
         \begin{itemize}
             \item Er zijn nooit twee opeenvolgende rode knopen op elke weg vanuit een knoop naar een virtuele knoop, wat ervoor zorgt dat de zwarte hoogte minstens de helft van de hoogte is $\rightarrow z \geq h/2$.
             \item Substitutie in de eerste eigenschap geeft:
             \begin{align*}
-                n &\geq 2^z - 1 \geq 2^{h/2} - 1 \\
-                \rightarrow h & \leq 2\lg(n + 1)
+                n & \geq 2^{h/2} - 1 \\
+                \rightarrow & n + 1  \geq 2^{h/2} \\
+                \rightarrow & \lg(n + 1) \geq \frac{h}{2}\lg(2) \\
+                \rightarrow & h  \leq 2\lg(n + 1)
             \end{align*}
         \end{itemize}
     \end{itemize}
@@ -126,21 +118,19 @@
 \begin{itemize}
     \item Element toevoegen of verwijderen, zonder rekening te houden met de kleur, is ook $O(\lg n)$.
     \alert Geen garantie dat deze gewijzigde boom nog rood-zwart zal zijn.
-    \item Twee manieren om toe te voegen:
+    \item Twee alternatieve manieren om toe te voegen:
     \begin{enumerate}
         \item \textbf{Bottom-up:} 
         \begin{itemize}
             \item Voeg knoop toe zonder rekening te houden met de kleur.
             \item Herstel de rood-zwarte boom, te beginnen bij de nieuwe knoop, en desnoods tot bij de wortel.
             \alert Er zijn ouderwijzers of een stapel nodig om naar boven in de boom te gaan.
-            \alert Multithreading is niet mogelijk. Alle threads die een bottom-up rood-zwarte boom gebruiken moeten gelocked worden bij een toevoeg-of verwijderoperatie.
         \end{itemize}
         \item \textbf{Top-down:} 
         \begin{itemize}
             \item Pas de boom aan langs de dalende zoekweg.
             \alert Als de ouder van de toe te voegen knoop reeds zwart is, dan moet er niets aan de boom aangepast worden (want elke nieuwe knoop is altijd rood). Top-down houdt hier geen rekening mee en heeft toch reeds de boom aangepast tegen dat de knoop toegevoegd wordt.
             \good Geen ouderwijzers of stapel nodig.
-            \good Multithreading wel mogelijk. Bij het afdalen naar elke knoop zijn enkel nog de deelbomen van die knoop nodig om de boom te herstellen.
         \end{itemize}
     \end{enumerate}
 \end{itemize}
@@ -149,24 +139,12 @@
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\textwidth]{rotations}
-    \caption{Rotaties}
+    \caption{Rotaties.}
     \label{fig:rotations}
 \end{figure}
 \begin{itemize}
-    \item Een rotatie wijzigt de vorm van de boom, maar behouden de inorder volgorde van de sleutels.
+    \item Een rotatie (figuur \ref{fig:rotations}) wijzigt de vorm van de boom, maar behoudt de inorder volgorde van de sleutels.
     \item Er moeten enkel pointers aangepast worden, en is dus $O(1)$.
-    \item \textbf{Rechtste rotatie} van een ouder $p$ en zijn linkerkind $l$:
-    \begin{itemize}
-        \item Het rechterkind van $l$ wordt het linkerkind van $p$.
-        \item De ouder van $p$ wordt de ouder van $l$.
-        \item $p$ wordt het rechterkind van $l$. 
-    \end{itemize}
-    \item \textbf{Linkse rotatie} van een ouder $p$ en zijn rechterkind $r$:
-    \begin{itemize}
-        \item Het linkerkind van $r$ wordt het rechterkind van $p$.
-        \item De ouder van $r$ wordt de ouder van $p$.
-        \item $p$ wordt het linkerkind van $l$. 
-    \end{itemize}
 \end{itemize}
 
 \subsection{Bottom-up rood-zwarte bomen}
@@ -179,8 +157,7 @@
         \item \textbf{Rood:} dit mag enkel als de ouder zwart is.
         \item Kies voor rood omdat zwarte hoogte moeilijker te herstellen valt.
     \end{itemize}
-    \item Als de ouder zwart is, dan is toevoegen gelukt.
-    \item Als de ouder rood is wordt deze storing verwijderd door rotaties en kleurwijzigingen door te voeren.
+    \item Enkel een probleem als de ouder rood is: deze storing wordt verwijderd door rotaties en kleurwijzigingen door te voeren.
     \item Vaststellingen:
     \begin{itemize}
         \item De ouder $p$ van de nieuwe knoop $c$ is rood.
@@ -193,41 +170,28 @@
         \begin{figure}[ht]
             \centering
             \includegraphics[width=0.5\textwidth]{rbt_bottomup_case1}
-            \caption{Rode broer.}
+            \caption{$b$ is rood; de ligging van $c$ is onbelangrijk.}
             \label{fig:rbt_bottomup_case1}
         \end{figure}
         \begin{itemize}
-            \item Maak $p$ en $b$ zwart.
-            \item Maak $g$ rood.
-            \item Als $g$ een zwarte ouder heeft, is het probleem opgelost.
-            \item Als $g$ een rode ouder heeft, zijn er opnieuw twee opeenvolgende rode knopen.
             \item Het probleem wordt opgeschoven in de richting van de wortel.
         \end{itemize}
-        \item \textbf{De broer $p$ van $p$ is zwart.}
+        \item \textbf{De broer $b$ van $p$ is zwart.}
         \begin{enumerate}
             \item \textbf{Knoop $c$ is een linkerkind van $p$.}
             \begin{figure}[ht]
                 \centering
                 \includegraphics[width=0.5\textwidth]{rbt_bottomup_case2}
-                \caption{Rode broer.}
+                \caption{$b$ is zwart en $c$ ligt aan de buitenkant.}
                 \label{fig:rbt_bottomup_case2}
             \end{figure}
-            \begin{itemize}
-                \item Roteer $p$ en $g$ naar rechts. 
-                \item Maak $p$ zwart.
-                \item Maak $g$ rood.
-            \end{itemize}
             \item \textbf{Knoop $c$ is een rechterkind van $p$.}
             \begin{figure}[ht]
                 \centering
                 \includegraphics[width=0.5\textwidth]{rbt_bottomup_case3}
-                \caption{Rode broer.}
+                \caption{$b$ is zwart en $c$ ligt aan de binnenkant.}
                 \label{fig:rbt_bottomup_case3}
             \end{figure}
-            \begin{itemize}
-                \item Roteer $p$ en $c$ naar links.
-                \item We krijgen nu het vorige geval.
-            \end{itemize}
         \end{enumerate}
     \end{enumerate}
     \item Hoogstens 2 rotaties om de boom te herstellen, voorafgegaan door eventueel $O(\lg n)$ opschuivingen.
@@ -237,19 +201,23 @@
 
 \subsubsection{Verwijderen}
 \begin{itemize}
-    \item Verwijderen in een normale zoekboom verloopt als volgt:
-    \begin{itemize}
-        \item Zoek de opvolger of voorloper van de knoop.
-        \item Verwissel de sleutels.
-        \item Verwijder dan de knoop waar de oorspronkelijke opvolger of voorloper zich bevondt.
-    \end{itemize}
+    \item Verwijderen in een normale zoekboom kent drie gevallen:
+    \begin{enumerate}
+        \item De te verwijderen knoop heeft geen kinderen.
+        \item De te verwijderen knoop heeft één kind.
+        \item De te verwijderen knoop heeft twee kinderen. 
+        \begin{itemize}
+            \item Dit geval wordt omgevormd naar één van de twee vorige gevallen door de voorloper of opvolger te zoeken (die ofwel geen kinderen of één kind hebben) en de sleutels om te wisselen. De te verwijderen knoop wordt dan de fysische locatie van de voorloper of opvolger. 
+        \end{itemize}
+    \end{enumerate}
+
     \item Deze laatste stap kan nu twee vormen aannemen:
     \begin{enumerate}
         \item Als de te verwijderen knoop rood is, is er geen gevolg voor de zwarte hoogte en is de operatie klaar.
         \item Als de te verwijderen knoop zwart is, zijn er twee mogelijkheden:
         \begin{enumerate}
             \item \textbf{De knoop heeft één rood kind.} Dit rood kind kan de zwarte kleur overnemen, zodat de zwarte hoogten intact blijven.
-            \item \textbf{De knoop heeft twee zwarte kinderen (virtueel of echt)}. De zwarte kleur wordt aan één van de kinderen gegeven, zodat die \textbf{dubbelzwart} wordt.
+            \item \textbf{De knoop heeft twee virtuele zwarte kinderen.} De zwarte kleur wordt aan één van de kinderen gegeven, zodat die \textbf{dubbelzwart} wordt.
         \end{enumerate}
     \end{enumerate}
 
@@ -264,40 +232,29 @@
             \begin{figure}[ht]
                 \centering
                 \includegraphics[width=0.5\textwidth]{rbt_bottomup_case4}
-                \caption{}
+                \caption{Zwarte broer, zwarte neven.}
                 \label{fig:rbt_bottomup_case4}
             \end{figure}
             \begin{itemize}
-                \item Knoop $b$ kan rood worden.
-                \item De extra zwarte kleur van $c$ kan aan $p$ gegeven worden.
-                \begin{itemize}
-                    \item Als $p$ rood was, dan is de operatie gelukt.
-                    \item Als $p$ reeds zwart was, dan verschuift het probleem zich naar boven.
-                \end{itemize}
+
+                \item Als $p$ rood was, dan is de operatie gelukt.
+                \item Als $p$ reeds zwart was, dan verschuift het probleem zich naar boven.
             \end{itemize}
             \item \textbf{Broer $b$ heeft een rood rechterkind}. De kleur van het linkerkind $l$ van $b$ is willekeurig.
             \begin{figure}[ht]
                 \centering
                 \includegraphics[width=0.5\textwidth]{rbt_bottomup_case5}
-                \caption{}
+                \caption{Rode neef langs buiten.}
                 \label{fig:rbt_bottomup_case5}
             \end{figure}
-            \begin{itemize}
-                \item Roteer $p$ en $b$ naar links.
-                \item Knoop $p$ krijgt de extra zwarte kleur van $c$.
-                \item Het rechterkind $r$ van $b$ wordt zwart.
-                \item Knoop $b$ krijgt de oorspronkelijke kleur van $p$.
-            \end{itemize}
             \item \textbf{Broer $b$ heeft een zwarte rechterkind en een rood linkerkind}.
             \begin{figure}[ht]
                 \centering
                 \includegraphics[width=0.5\textwidth]{rbt_bottomup_case6}
-                \caption{}
+                \caption{Rode neef langs buiten.}
                 \label{fig:rbt_bottomup_case6}
             \end{figure}
             \begin{itemize}
-                \item Roteer $b$ en $l$ naar rechts.
-                \item Maak $b$ rood en $l$ zwart.
                 \item Dit is nu het vorige geval.
             \end{itemize}
         \end{enumerate}
@@ -305,12 +262,10 @@
         \begin{figure}[ht]
             \centering
             \includegraphics[width=0.5\textwidth]{rbt_bottomup_case7}
-            \caption{}
+            \caption{Rode broer.}
             \label{fig:rbt_bottomup_case7}
         \end{figure}
         \begin{itemize}
-            \item Roteer $p$ en $b$ naar links.
-            \item Maak $b$ zwart en $p$ rood.
             \item Dit is nu het eerste geval.
         \end{itemize}
     \end{enumerate}
@@ -370,16 +325,16 @@
 \end{itemize}
 
 
-\subsection{Vereenvoudigde rood-zwarte bomen}
-\begin{itemize}
-    \item De implementatie is omslachtig door de talrijke speciale gevallen.
-    \item Eenvoudigere varianten bestaan:
-    \begin{itemize}
-        \item Een \textbf{AA-boom} geeft aan dat enkel een rechterkind rood moet zijn.
-        \item Een \textbf{Binary B-tree} beperkt het aantal gevallen maar behouden toch de asymptotische efficiëntie.
-        \item Een \textbf{left-leaning red-black-tree} stelt de eis dat een zwarte knoop enkel een rood rechterkind mag hebben als het reeds een rood linkerkind heeft.
-    \end{itemize}
-\end{itemize}
+%\subsection{Vereenvoudigde rood-zwarte bomen}
+%\begin{itemize}
+%    \item De implementatie is omslachtig door de talrijke speciale gevallen.
+%    \item Eenvoudigere varianten bestaan:
+%    \begin{itemize}
+%        \item Een \textbf{AA-boom} geeft aan dat enkel een rechterkind rood moet zijn.
+%        \item Een \textbf{Binary B-tree} beperkt het aantal gevallen maar behouden toch de asymptotische efficiëntie.
+%        \item Een \textbf{left-leaning red-black-tree} stelt de eis dat een zwarte knoop enkel een rood rechterkind mag hebben als het reeds een rood linkerkind heeft.
+%    \end{itemize}
+%\end{itemize}
 \section{Splaybomen}
 \label{sec:splaybomen}
 \begin{itemize}
@@ -409,7 +364,7 @@
     \begin{enumerate}
         \item \textbf{De ouder $p$ van $c$ is wortel}. 
         \begin{itemize}
-            \item Roteer beide knopen zodat $c$ de wortel wordt.
+            \item Standaard rotatie.
         \end{itemize}
         \item \textbf{Knoop $c$ heeft nog een grootouder}.
         \begin{itemize}
@@ -489,8 +444,8 @@
     \item De \textbf{woordenboekoperaties verlopen nu als volgt:}
     \begin{itemize}
         \item \textbf{Zoeken.} De knoop met de gezochte sleutel wordt tot wortel gemaakt. Als de sleutel niet gevonden wordt dan is zijn opvolger of voorloper de wortel.
-        \item \textbf{Toevoegen.} 
-        \item \textbf{Verwijderen.}
+        \item \textbf{Toevoegen.} Analoog aan de alternatieve versie bottom-up.
+        \item \textbf{Verwijderen.} Analoog aan de alternatieve versie bottom-up.
     \end{itemize}
 \end{itemize}
 
@@ -519,7 +474,7 @@
     \end{equation*}
     \item Als de potentiaalfunctie zo gekozen wordt zodat het eindpotentiaal $\Phi_m$ zeker niet kleiner is dan de beginpotentiaal $\Phi_0$, dan vormt de totale geamortiseerde tijd een \textbf{bovengrens} van de werkelijke tijd want de boom zal zeker niet slechter zijn.
     \item De eenvoudigste potentiaalfunctie geeft voor elke knoop $i$ een gewicht $s_i$ die gelijk is aan het aantal knopen in de deelboom waarvan hij wortel is. De potentiaal van de boom is dan de som van de logaritmen van deze gewichten:
-    $$\Phi = \sum_{i=1}^\Phi \lg s_i$$
+    $$\Phi = \sum_{i=1}^n \lg s_i$$
     \item We noemen $\lg s_i$ de rang $r_i$ van knoop $i$.
     \item Performantie-analyse van bottom-up splayboom:
     \begin{itemize}
@@ -550,13 +505,13 @@
             \item \textbf{Zoeken.} $O(1 + 3\lg n)$ want $s_w = n$.
             \item \textbf{Toevoegen.} $O(1 + 4\lg n)$.
 
-            Op de zoekweg worden de rang van knopen $p_1,p_2, ... p_k$ op de zoekweg gewijzigt. Stel $s_{p_{i}}$ het gewicht van knoop $p_i$ voor het toevoegen en $s'_{p_{i}}$ het gewicht van knoop $p_i$ na het toevoegen. De potentiaaltoename is dan
+            Op de zoekweg worden de rang van knopen $p_1,p_2, ... p_k$ op de zoekweg gewijzigt. Stel $s_{p_{i}}$ het gewicht van knoop $p_i$ voor het toevoegen en $s'_{p_{i}}$ het gewicht van knoop $p_i$ na het toevoegen. Gebruik makend van de regel $\lg(s'_{p_{i}}) - \lg(s_{p_{i}}) = \lg\frac{s'_{p_{i}}}{s_{p_{i}}}$ wordt de potentiaaltoename gedefinieerd als
             $$\lg\bigg(\frac{s'_{p_{1}}}{s_{p_{1}}}\bigg) + \lg\bigg(\frac{s'_{p_{2}}}{s_{p_{2}}}\bigg) + \cdots + \lg\bigg(\frac{s'_{p_{k}}}{s_{p_{k}}}\bigg) = \lg\bigg(\frac{s'_{p_{1}}}{s_{p_{1}}}\frac{s'_{p_{2}}}{s_{p_{2}}}\cdots\frac{s'_{p_{k}}}{s_{p_{k}}}\bigg)$$
             Deze is nooit groter dan $$\lg\bigg(\frac{s'_{p_{1}}}{s_{p_{k}}}\bigg) \leq \lg(n + 1)$$
             \item \textbf{Verwijderen.} Het effect van verwijderen is nooit positief.
         \end{itemize}
         \item De geamortiseerde tijd voor een reeks van $m$ woordenboekoperaties is de som van de geamortiseerde tijden voor de individuele operaties.
-        \item Stel $n_i$ het aantal knopen bij de $i-$de operatie wordt die tijd $O(m + 4\sum_{i=1}^m\lg n_i) = O(m + 4m\lg n) = O(m\lg n)$.
+        \item Stel $n_i$ het aantal knopen bij de $i-$de operatie dan wordt die tijd $O(m + 4\sum_{i=1}^m\lg n_i) = O(m + 4m\lg n) = O(m\lg n)$.
     \end{itemize}
 \end{itemize}
 

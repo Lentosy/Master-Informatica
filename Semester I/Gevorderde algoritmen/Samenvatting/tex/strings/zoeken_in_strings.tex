@@ -161,7 +161,23 @@
             \end{enumerate}
         \end{itemize}
     \end{itemize}
-    \item 
+    \item Het \textbf{substitutieprincipe} stelt dat elke letter in een regexp vervangen kan worden door een regexp over hetzelfde ofwel een ander alfabet.
+    \item Een contextvrije grammatica kan uit een reguliere uitdrukking afgeleidt worden (tabel \ref{table:regtocontext}).
+        \begin{table}[ht]
+            \centering
+            \begin{tabular}{c l}
+                Regexp & Grammatica \\
+                $\varnothing$ & $\nonterminal{S} ::= \nonterminal{S}$ \\
+                $\epsilon$ & $\nonterminal{S} ::= \epsilon$\\
+                $a$ & $\nonterminal{S} ::= a$ \\
+                $R|S$ & $\nonterminal{T} ::= \nonterminal{R}|\nonterminal{S}$ \\
+                $RS$ & $\nonterminal{T} ::= \nonterminal{R}\nonterminal{S}$\\
+                $R*$ & $\nonterminal{T} ::= \nonterminal{R}\nonterminal{T}|\epsilon$
+            \end{tabular}
+            \caption{Reguliere expressies omvormen tot contextvrije grammatica.}
+            \label{table:regtocontext}
+        \end{table}
+    \item \textbf{Alle reguliere talen zijn contextvrij.}
 \end{itemize}
 
 
@@ -350,8 +366,8 @@
 
     $$q'(i) = \begin{cases}
         0 & \hbox{ als } q(i) = 0  \\
-        q(i) & \hbox{ als } q[i] \neq 0 \hbox{ en } P[q(i) + 1] \neq P[i + 1] \\
-        q'(q(i)) & \hbox{ als } q[i] \neq 0 \hbox{ en } P[q(i) + 1] = P[i + 1] \\
+        q(i) & \hbox{ als } q(i) \neq 0 \hbox{ en } P[q(i) + 1] \neq P[i + 1] \\
+        q'(q(i)) & \hbox{ als } q(i) \neq 0 \hbox{ en } P[q(i) + 1] = P[i + 1] \\
     \end{cases}$$
     %
     \begin{table}[ht]
@@ -514,7 +530,7 @@
         \item Als er meerdere plaatsen zijn waar $s$ in $P$ voorkomt, wordt de meeste rechtse genomen.
         \item Suffixen kunnen overlappen.
     \end{itemize}
-    \item We willen dus de meeste rechtste positie $j$ in $P$, waarbij $j \leq i$ waar een deelstring $s' = s$ begint.
+    \item We willen dus de meeste rechtste positie $j$ in $P$, waarbij $j \leq i$ en waar een deelstring $s' = s$ begint.
     \item Analoog aan de prefixfunctie, is er nu een suffixfunctie $s(j)$:
     \begin{itemize}
         \item Voor elke index $j$ in $P$ wordt de lengte van het grootste suffix van $P$ bijgehouden, dat op index $j$ begint.
@@ -566,7 +582,7 @@
         \begin{tabular}{|c c |c c c c c c c c c c c c c c c c c c c c c c c c c|}
             \hline
             \multicolumn{2}{|r|}{j} & 0 & 1 & 2 & 3 & 4 & 5 & 6 & 7 & 8 & 9 & 10 &11&12 &13 &14 &15 &16 &17 &18 &19 &20 &21 &22 &23&24\\    
-            \multicolumn{2}{|r|}{T}  & G & C & A & T & C & G & C & A & G & A & G&C & A & G & A & G & T & A & C & A & G & C & A & C & G\\
+            \multicolumn{2}{|r|}{T} & G & C & A & T & C & G & C & A & G & A & G&C & A & G & A & G & T & A & C & A & G & C & A & C & G\\
               \hline
              i& $v[i]$    &  &   &  &  &  &  &  &   &   &   &   &   &   &   &   &   &   &   &   &   &   &   &&&  \\
              4 & 5        &G&C&A&G&\nm{A}&\m{G}&\m{C}&\m{A}&\m{G}&&&&&&&&&&&&&&&&  \\
@@ -727,7 +743,7 @@
             \item \textbf{Vaste $r$}
             \begin{itemize}
                 \item Kies $r$ als een zo groot mogelijk priemgetal zodat $rd \leq 2^w$.
-                \item Priemgetallen zorgt ervoor dat gelijkaardige deelstrings dezelfde fingerprinters zouden opleveren.
+                \item Priemgetallen zorgt ervoor dat gelijkaardige deelstrings niet dezelfde fingerprinters zouden opleveren.
                 \item Een groot priemgetal zorgt voor een groot aantal mogelijke fingerprints.
                 \item Er is nu wel een nieuw verband tussen $H_r(T_{j + 1})$ en $H_r(T_j)$:
                 $$H_r(T_{j + 1}) = \bigg(\big((H_r(T_j) + r(d - 1) - T[j](d^{p-1}\;\mathrm{mod}\;r)) \;\mathrm{mod}\;r\big)d + T[j + 1] \bigg)\;\mathrm{mod}\;r$$

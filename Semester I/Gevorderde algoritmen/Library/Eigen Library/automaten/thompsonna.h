@@ -1,7 +1,6 @@
 #ifndef __THOMPSONNA_H
 #define __THOMPSONNA_H
 #include "regexp11.h"
-#include "zoekda.h"
 #include <vector>
 #include <set>
 #include <fstream>
@@ -9,12 +8,12 @@
 using std::vector;
 const uchar epsilon=0;
 class ZoekDA;
+
 //ThompsonNA: met een beginstatenbit (index 0)
 //en een eindstatenbit (index aantalStatenbits-1)
 //Alleen gebruikt om algoritme ven Thompson te implementeren
-
 class ThompsonNA {
-    friend class ZoekDA;
+    friend class DA;
 public:
     class Verbinding;
     ThompsonNA(const Regexp& re);
@@ -79,7 +78,7 @@ void ThompsonNA::schrijf(ostream& os){
         os<<overgang[i].bron << ' '
           <<overgang[i].doel << ' ';
         if (overgang[i].a == epsilon)
-            os << "epsilon" << '\n';
+            os << "ε" << '\n';
         else
             os<<overgang[i].a<<'\n';
     }
@@ -148,7 +147,7 @@ void ThompsonNA::teken(const char* bestandsnaam) const {
              uit<<"  "<<v.geefBron()<<" "<<pijl<<" "<<v.geefDoel();
              uit<<"[label=\"";
              if (v.geefKarakter()==epsilon)
-                uit << "epsilon";
+                uit << "ε";
              else
                 uit << (char)v.geefKarakter();
              uit << "\"];\n";

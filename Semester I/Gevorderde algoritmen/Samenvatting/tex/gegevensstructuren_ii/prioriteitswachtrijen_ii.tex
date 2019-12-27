@@ -93,7 +93,7 @@
 		\begin{itemize}
 			\item \textbf{Samenvoegen}: Verlijk het wortelelement van beide heaps. De wortel met het grootste element wordt het linkerkind van deze met het kleinste element.
 			\item \textbf{Toevoegen}: Maak een nieuwe pairingheap met één element, en voeg deze samen met de oorspronkelijke heap.
-			\item \textbf{Prioriteit wijzigen}: De te wijzigen knoop wordt losgekoppeld, krijgt de prioriteitwijziging, en wordt dan weer samengevoegd met de oorspronkelijke heap.
+			\item \textbf{Prioriteit verminderen}: De te wijzigen knoop wordt losgekoppeld, krijgt de prioriteitwijziging, en wordt dan weer samengevoegd met de oorspronkelijke heap.
 			\item \textbf{Minimum verwijderen}: De wortel verwijderen levert een collectie van $c$ heaps op. Voeg deze heaps van links naar rechts samen in $O(n)$ of voeg eerst in paren toe, en dan van rechts naar links toevoegen in geamortiseerd $O(\lg n)$.
 			\item \textbf{Willekeurige knoop verwijderen}: De te verwijderen knoop wordt losgekoppeld, zodat er twee deelheaps onstaan. Deze twee deelheaps worden samengevoegd.
 		\end{itemize}
