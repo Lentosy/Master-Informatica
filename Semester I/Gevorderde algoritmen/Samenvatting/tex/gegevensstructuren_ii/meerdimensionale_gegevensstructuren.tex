@@ -27,6 +27,11 @@
     \item Voor elk rastergebied (een hyperrechthoek) wordt een gelinkte lijst bijgehouden met de punten die erin liggen.
     \item De punten vinden die in een hyperrechthoek liggen komt neer op het vinden van de rastergebieden die overlappen, en welke van de punten in hun gelinkte lijsten binnen die rechthoek vallen.
     \item Het aantal rastergebieden is best een constante fractie van $n$, zodat het gemiddeld aantal punten in elk rastergebied een kleine constante wordt.
+    \item Een raster kan op twee manieren aangemaakt worden:
+    \begin{enumerate}
+        \item \textbf{Een vast raster}. Als de gegevens statisch zijn kan een raster gemaakt worden zodanig dat het gemiddeld aantal punten in elk rastergebied een kleine constante wordt.
+        \item \textbf{Een dynamisch raster}. Via een boomstructuur worden grenzen bijgehouden.
+    \end{enumerate}
 \end{itemize}
 \section{Quadtrees}
 \begin{itemize}
@@ -62,6 +67,7 @@
         \begin{itemize}
             \item Een punt verwijderen zorgt ervoor dat een deelboom geen ouder meer heeft.
             \item Om dit op te lossen worden alle punten in die deelboom opnieuw toegevoegd aan de boom.
+            \item De tweede constructie van toevoegen kan hiervoor gebruikt worden: de punten zijn reeds gekend.
         \end{itemize}
 
     \end{itemize}

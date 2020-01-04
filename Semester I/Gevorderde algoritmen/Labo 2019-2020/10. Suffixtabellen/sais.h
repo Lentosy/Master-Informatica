@@ -38,8 +38,6 @@ public:
                     l++;
 
                 LGPtabel[i] = l;
-                std::cout << i << ", " << j << ", " << opvolger << ", " << l << "\n";
-
                 if(l > 0) //staart(suff_i) = suff_(i + 1), dus prefix van lengte l - 1 gemeenschappelijk
                     l-= 1; // staartprincipe: volgende suffix heeft minimum lengte l - 1
             
@@ -47,13 +45,20 @@ public:
         }
 
 
-        std::cout << "\n" << std::setw(10) << std::left << "LGP[i]" << std::setw(3) << "|";
+        
         for(int i = 0; i < SA.size(); i++){
-            std::cout << std::setw(3) << LGPtabel[i];
+            
         
             this->LCPtabel[i] = LGPtabel[SA[i]];
+            std::cout << i << ": " <<  SA[i] << ", " <<  LGPtabel[SA[i]] << ", " <<  this->LCPtabel[i] << "\n";
+        }
+
+        std::cout << "\n" << std::setw(10) << std::left << "LGP[i]" << std::setw(3) << "|";
+        for(int i = 0; i < this->size(); i++) {
+            std::cout << std::setw(3) << LGPtabel[i];
         }
     };
+
 
 
     void besteVerwijzing(int& verschuiving, int& lengte, int lokatie) {

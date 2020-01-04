@@ -51,9 +51,10 @@
 \begin{itemize}
     \item Stel $g = \lceil m/2 \rceil$.
     \item Het minimaal aantal knopen voor een boom met hoogte $h$ is dan
-    $$1 + 2 + 2g + \dots + 2g^{h - 1} = 1 + 2\sum_{i=0}^{h - 1}g^i = 1 + 2\bigg(\frac{1-g^h}{1-g}\bigg) $$
+    $$1 + 2 + 2g + \dots + 2g^{h - 1} = 1 + 2\sum_{i=0}^{h - 1}g^i = 1 + 2\bigg(\frac{g^h - 1}{g - 1}\bigg) $$
     \begin{itemize}
-        \item De wortel van een minimale boom heeft slechts 1 sleutel en twee kinderen.
+        \item Als de wortel een blad is, is dat de enigste knoop.
+        \item Als de wortel geen blad is, heeft het minimum twee kinderen.
         \item Elk ander kind heeft minimum $g$ kinderen.
     \end{itemize}
     \item De hoogte is bijgevolg $O(\lg n)$.
@@ -257,11 +258,11 @@
     \begin{itemize}
         \item Er is een hashtabel die wijzers naar schijfpagina's bevat, waarbij elke schijfpagina maximaal $m$ sleutels met bijbehorende gegevens bevat.
         \item De hashwaarden zijn gehele getallen, waarvan het bereik bepaald wordt door de breedte $w$ van een processorwoord.
-        \item De laatste $d$ bits van die getallen dienen als indices in de hashtabel, zodat de tabel $2^d$ elementen bevat.
+        \item Het prefix met lengte $d$ van die getallen dienen als indices in de hashtabel, zodat de tabel $2^d$ elementen bevat.
         \item De \textbf{globale diepte} is $d$ en is de lengte van het langste prefix in de trie.
         \item Alle sleutels waarvan de hashwaarde met dezelfde $d$ bits eindigt komen bij hetzelfde tabelelement terecht.
         \item Een pagina kan sleutels met hashwaarden bevatten waarvan de laatste $d$ bits verschillend zijn.
-        \item Het aantal bits $k$ is de \textbf{lokale diepte} van een pagina en is het aantal waarmee al de hashwaarden eindigen.
+        \item Het aantal bits $k$ is de \textbf{lokale diepte} van een pagina en is de lengte van het aantal bits waarmee alle prefixen overeenkomen.
     \end{itemize}
     \item De \textbf{woordenboekoperaties:}
     \begin{itemize}
@@ -286,7 +287,9 @@
         \end{itemize}
         \item \textbf{Verwijderen.}
         \begin{itemize}
-            \item Zien we niet.
+            \item Als een pagina en haar ooit afgesplitste buur samen minder dan $m$ sleutels bevatten kan men ze samenvoegen.
+            \item Er verdwijnt een pagina en het hashtabelelement moet naar de andere pagina wijzen waarvan $k$ met één verminder wordt.
+            \item Als de hashtabel minstens twee verwijzingen naar elke pagina bevat (elke $k$ is kleiner dan $d$) kan de tabel gehalveerd worden.
         \end{itemize}
     \end{itemize}
     \item Als er $n$ uniform verdeelde sleutels opgeslagen zijn, dan is de verwachtingswaarde van het aantal pagina's $n/(m\ln 2) \equiv 1.44n/m$.
@@ -327,7 +330,7 @@
         \begin{itemize}
             \item Lokaliseer de pagina.
             \item Verwijder het gegeven uit de tabel van die pagina.
-            
+            \item Onderbezette pagina's verwijden in omgekeerde volgorde als waarin ze gecreëerd werden.
         \end{itemize}
     \end{itemize}                                                                                                                                                           
 \end{itemize}

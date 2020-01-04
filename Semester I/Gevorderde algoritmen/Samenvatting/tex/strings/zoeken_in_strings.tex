@@ -718,7 +718,7 @@
                   $H(T_3)$ & \multicolumn{25}{l|}{$\big(H(T_2) - T[2]\cdot 4^8\big)\cdot 4 + T[11] = (142967 - 1\cdot 4^8)\cdot 4 + 2 = 309726$}   \\
                   $H(T_4)$ & \multicolumn{25}{l|}{$\big(H(T_3) - T[3]\cdot 4^8\big)\cdot 4 + T[12] = (309726 - 4\cdot 4^8)\cdot 4 + 1 = 190329$}   \\
                   $H(T_5)$ & \multicolumn{25}{l|}{$\big(H(T_4) - T[4]\cdot 4^8\big)\cdot 4 + T[13] = (190329 - 2\cdot 4^8)\cdot 4 + 3 = 237031$}   \\
-                  $H(T_{j})$ & \multicolumn{25}{c|}{$\cdots$}   \\
+                  $H(T_{j})$ & \multicolumn{25}{l|}{$\cdots$}   \\
                   \hline   
                   $P$ & G&C&A&G&A&G&C&A&G&\multicolumn{16}{c|}{} \\
                   $T[5\cdots 13]$ &\m{G}&\m{C}&\m{A}&\m{G}&\m{A}&\m{G}&\m{C}&\m{A}&\m{G}&\multicolumn{16}{c|}{} \\
@@ -760,7 +760,7 @@
                 \item Het aantal priemgetallen kleiner of gelijk aan $k$ is $\frac{k}{\ln k}$.
                 \item Door $k$ groot te kiezen zal slechts een klein deel van die priemgetallen een fout veroorzaken.
                 \item De kans dat $r$ één van die priemen is wordt klein.
-                \item Voor $k = t^2$ is de kans op één enkele foute $O(1/t)$.
+                \item Voor $k = t^2$ is de kans op één enkele fout $O(1/t)$.
                 \item Om fouten helemaal te vermijden zijn er twee mogelijkheden:
                 \begin{itemize}
                     \item Overgaan naar een andere methode als de fout gesignaleerd wordt.
@@ -828,12 +828,12 @@
     \item Om een DA te construeren zijn er twee hulpoperaties nodig:
     \begin{enumerate}
         \item \textbf{$\epsilon$-sluiting($T$)}: De deelverzameling van statenbits bereikbaar via $\epsilon$-overgangen vanuit een verzameling statenbits $T$.
-        \item \textbf{$p(T, a)$}: De deelverzameling van statenbits rechtstreeks bereikbaar vanuit een toestand $t$ uit $T$ voor het invoersymbool $a$.
+        \item \textbf{$s(T, a)$}: De deelverzameling van statenbits rechtstreeks bereikbaar vanuit een toestand $t$ uit $T$ voor het invoersymbool $a$.
     \end{enumerate}
     \item Om een DA te construeren moet er een verzameling van toestanden $S$ met begin- en eindtoestanden en een overgangstabel $M$ opgesteld worden.
     \begin{itemize}
         \item De begintoestand is $\epsilon$-sluiting($b_0$).
-        \item Elke andere staat wordt bekomen door $\epsilon$-sluiting$(p(T, a))$ voor elke andere staat $T$ en invoersymbool $a$.
+        \item Elke andere staat wordt bekomen door $\epsilon$-sluiting$(s(T, a))$ voor elke andere staat $T$ en invoersymbool $a$.
         \item Een eindtoestand van de DA bevat minstens één eindtoestand van de NA.
         Vervolgens wordt voor elke toestand $T$ de overgang voor elk invoersymbool $a$ bepaald.
     \end{itemize}
@@ -897,10 +897,38 @@
             \item Als er een 'b' tegengekomen wordt, moet er ergens bijgehouden worden hoeveel 'a's er al zijn geweest.
             \item Dit aantal is niet begrensd en kan niet vooraf in een eindig geheugen geplaatst worden.
         \end{itemize}
-    \end{itemize}
+    \end{itemize}  
+    \item Een NA voor regexp $r$ bestaat uit $O(|r|)$ bits met $|r|$ de lengte van $r$ (het aantal operatoren en alfabetsymbolen).
+    \item Zoeken van strings met behulp van NA's:
+    \begin{enumerate}
+        \item Vorm eerst de NA om tot een DA via de deelverzamelingconstructie. De string herkennen is dan $O(|s|)$ en het geheugengebruik $O(2^{|r|})$.
+        \item De NA kan gesimuleerd worden. Alle bits na het inlezen van een symbool moeten bepaald worden (analoog aan deelverzamelingconstructie). Een string herkennen vereist $|s|$ overgangen en is $O(|s| \times |r|)$. Het geheugengebruik is $O(|r|)$.
+        \item Hybridische methode: reeds bepaalde overgangen worden bijgehouden zodat ze later opnieuw kunnen gebruikt worden. De DA wordt niet helemaal geconstrueerd, zodat er minder geheugen nodig is maar een string herkennen is toch $O(|s|)$.
+    \end{enumerate}
 \end{itemize}
 
 \subsubsection{Minimalisatie van een automaat}
+\begin{itemize}
+    \item De constructie van Thompson gebruikt veel statenbits.
+    \item Dit heeft een groot gevolg voor de bijhorende DA.
+    \item Een DA kan wel geminimaliseerd worden: dit is de DA die dezelfde taal herkent, maar met een minimaal aantal staten.
+    \item Figuur \ref{fig:minimalisatie} toont de geminimaliseerde DA van figuur \ref{fig:deelverzameling1}.
+    \begin{figure}[ht]
+        \centering
+        \includegraphics[width=0.75\textwidth]{deterministic_automata_2}
+        \caption{Minimalisatie van de deterministische automaat van figuur \ref{fig:deelverzameling1}.}
+        \label{fig:minimalisatie}
+    \end{figure}
+    \item Basisprincipe: groeperen van \textbf{equivalente toestanden} in partities. 
+    \begin{itemize}
+        \item In de eerste iteratie zijn er twee groepen: die met alle eindtoestanden en al de overige toestanden.
+        \item In elke iteratie wordt nagegaan of de toestanden van eenzelfde groep nog steeds equivalent zijn door op zoek te gaan naar niet-equivalente paren.
+        \item Als een staat $t$ voor invoersymbool $a$ overgaat naar staat $v$, en staat $u$ voor invoersymbool $a$ overgaat naar staat $w$, dan zijn $t$ en $u$ equivalent als $w$ en $v$ equivalent zijn (in dezelfde groep zitten). 
+        \item Bij een niet-equivalent paart wordt de groep opgesplitst.
+        \item Dit blijft iteratief gebeuren totdat geen enkele groep meer opgesplitst kan worden.
+        \item In elke partitie wordt dan een vertegenwoordiger gekozen die de toestanden van de nieuwe DA zullen opmaken.
+    \end{itemize}
+\end{itemize}
 
 
 
@@ -965,17 +993,17 @@
         \item \textbf{Karakters inlassen} 
         \begin{itemize}
             \item De tabel $R^1_j$ duidt alle prefixen aan eindigend op positie $j$ met hoogstens één inlassing.
-            $$R^1_{j + 1} = R^0_j \hbox{ OF }(\hbox{Schuif}(R_j) \hbox{ EN } S[T[j + 1]]) $$
+            $$R^1_{j + 1} = R^0_j \hbox{ OF }(\hbox{Schuif}(R^1_j) \hbox{ EN } S[T[j + 1]]) $$
         \end{itemize}
         \item \textbf{Karakters verwijderen} 
         \begin{itemize}
             \item De tabel $R^1_j$ duidt alle prefixen aan eindigend op positie $j$  met hoogstens één verwijdering.
-            $$R^1_{j + 1} = \hbox{Schuif}(R^0_{j+1}) \hbox{ OF }(\hbox{Schuif}(R_j) \hbox{ EN } S[T[j + 1]]) $$
+            $$R^1_{j + 1} = \hbox{Schuif}(R^0_{j+1}) \hbox{ OF }(\hbox{Schuif}(R^1_j) \hbox{ EN } S[T[j + 1]]) $$
         \end{itemize}
         \item \textbf{Karakters vervangen}
         \begin{itemize}
             \item De tabel $R^1_j$ duidt alle prefixen aan eindigend op positie $j$ waarbij $i - 1$ van de eerste $i$ karakters van $P$ overeenkomen met $i - 1$ karakters van de $i$ karakters die in de tekst eindigen bij positie $j$.
-            $$R^1_{j + 1} = \hbox{Schuif}(R^0_{j}) \hbox{ OF }(\hbox{Schuif}(R_j) \hbox{ EN } S[T[j + 1]]) $$
+            $$R^1_{j + 1} = \hbox{Schuif}(R^0_{j}) \hbox{ OF }(\hbox{Schuif}(R^1_j) \hbox{ EN } S[T[j + 1]]) $$
         \end{itemize}
     \end{itemize}
 \end{itemize}

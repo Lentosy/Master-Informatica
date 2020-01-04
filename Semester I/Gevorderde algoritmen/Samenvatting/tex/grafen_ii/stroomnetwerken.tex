@@ -68,7 +68,7 @@
     \begin{itemize}
         \item Een \textbf{snede} $(P, V)$ van een samenhangende graaf is een verzameling verbindingen die de knopenverzameling in twee niet-ledige stukken $P$ en $V$ verdeelt.
         \begin{itemize}
-            \item \item Een verbinding $(i, j)$ zit in $(P, V)$ als $i \in P$ en $j \in V$ of $i \in V$ en $j \in P$. 
+            \item Een verbinding $(i, j)$ zit in $(P, V)$ als $i \in P$ en $j \in V$ of $i \in V$ en $j \in P$. 
             \item Veronderstelling: de producent $p$ behoort tot $P$ en de verbuiker $v$ behoort tot $V$.
             \item De capaciteit $c(P, V)$ van de snede wordt gedefinieerd als de som van alle capaciteiten $c(i, j)$, met $i$ in $P$ en $j$ in $V$.
             $$c(P, V) = \sum_{i \in P}\sum_{j \in V} (c(i, j))$$
@@ -100,7 +100,7 @@
             \item Bewijs:
             \begin{enumerate}
                 \item Eigenschap twee volgt uit eigenschap één: als er nog een vergrotende weg te vinden is in het restnetwerk kan de netwerkstroom $f$ zeker groter gemaakt worden.
-                \item Eigenschap drie volgt uit eigenschap twee: beschouw snede $(P, V)$ waarbij $P$ de knopen bevat in het restnetwerk bereikbaar van $p$. Er is geen vergrotende weg dus $v$ behoort niet tot $P$. Er moet $f(P, V) = c(P, V)$ want als
+                \item Eigenschap drie volgt uit eigenschap twee: beschouw een snede $(P, V)$ waarbij $P$ de knopen bevat in het restnetwerk bereikbaar van $p$. Er is geen vergrotende weg dus $v$ behoort niet tot $P$. Er moet $f(P, V) = c(P, V)$ want als
                 $$\sum_{i \in P}\sum_{j \in V} c_r(i, j) = \sum_{i \in P}\sum_{j \in V} (c(i, j) - s(i, j) + s(j, i)) = 0$$
                 dan 
                 $$c(P, V) = \sum_{i \in P}\sum_{j \in V} (c(i, j)) = \sum_{i \in P}\sum_{j \in V} (s(i, j) - s(j, i)) = f(P, V)$$

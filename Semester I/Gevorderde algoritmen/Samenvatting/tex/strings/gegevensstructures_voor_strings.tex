@@ -19,7 +19,7 @@
 \section{Digitale zoekbomen}
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.5\textwidth]{digital_search_tree}
+    \includegraphics[width=0.25\textwidth]{digital_search_tree}
     \caption{Een digitale zoekboom voor zes sleutels: $A = 00001, S = 10011, E = 00101, R = 10010, C = 00011, H = 10100$, die ook in deze volgorde toegevoegd worden.}
     \label{fig:digital_search_tree}
 \end{figure}
@@ -62,8 +62,8 @@
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\textwidth]{binary_trie}
-    \caption{Een voorbeeld van een binaire trie met opgeslagen sleutels $A$, $B$, $C$, $D$, $E$, $F$, $G$ en $H$. Elk van deze sleutels heeft een (willekeurig gekozen) bitrepresentatie die de individuele elementen van de sleutels voorstelt. De zoekweg van de sleutel $E$ wordt aangegeven door rode verbindingen.}
+    \includegraphics[width=0.5\textwidth]{binary_trie}
+    \caption{Een voorbeeld van een binaire trie met opgeslagen sleutels $A$, $B$, $C$, $D$, $E$, $F$, $G$ en $H$. Elk van deze sleutels heeft een (willekeurig gekozen) bitrepresentatie die de individuele elementen van de sleutels voorstelt.}
     \label{fig:binary_trie}
 \end{figure}
 
@@ -285,13 +285,13 @@
         \item De wortel heeft gewicht $n$ (de som van alle frequenties), dus we zoeken een trie waarvoor $n$ minimaal wordt.
     \end{itemize}
     \item Stel een knoop $k$ met gewicht $w_k$ op diepte $d_k$. en een knoop $l$ met gewicht $w_l$ op diepte $w_l$, zodanig dat $k$ niet onder $l$ hangt en $l$ niet onder $k$.
-    \item Er kan een nieuwe trie gemaakt worden $k$, inclusief de bijbehorende deelboom, van plaats te verwisselen met $l$.
+    \item Er kan een nieuwe trie gemaakt worden door $k$ van plaats te verwisselen met $l$, inclusief de bijbehorende deelbomen. 
     \begin{itemize}
         \item Er waren $d_k$ knopen boven $k$ in de trie, die verliezen gewicht $w_k$ maar krijgen gewicht $w_l$.
         \item Er waren $d_l$ knopen boven $l$ in de trie, die verliezen gewicht $w_l$ maar krijgen gewicht $w_k$.
     \end{itemize}
     \item De totale gewichtsverandering van de totale trie is 
-    $$(d_k - d_l)(w_l - w_k)$$
+    $$d_l(w_k - w_l) + d_k(w_l - w_k) = (d_k - d_l)(w_l - w_k)$$
     \item Als $l$ een groter gewicht en kleinere diepte dan $k$ heeft, is er een betere trie bekomen.
     \item De optimale trie heeft volgende eigenschappen:
     \begin{itemize}

@@ -1,6 +1,7 @@
 \newcommand{\suffix}[1]{$\text{suff}_{#1}$}
 
 \chapter{Indexeren van vaste tekst}
+
 \begin{itemize}
     \item Sommige zoekoperaties gebeuren op een vaste tekst $T$ waarin frequent gezocht wordt naar een veranderlijk patroon $P$.
     \item Voorbereidend werk op de tekst om efficiënter te doorzoeken.
@@ -11,6 +12,7 @@
         \item Als een patroon in de tekst voorkomt, moet het een prefix zijn van één van de suffixen.
         \item Een suffix dat begint op lokatie $i$ wordt aangeduidt met \suffix{i}.
     \end{itemize}
+    \item We veronderstellen dat het vroeger gebruikte patroon $P$ (\texttt{GCAGAGCAG}) nu de tekst $T$ is om voorbeelden in te korten.
 \end{itemize}
 
 
@@ -64,7 +66,7 @@
 
 \section{Suffixtabellen}
 \begin{itemize}
-    \item We veronderstellen dat het vroeger gebruikte patroon $P$ (\texttt{GCAGAGCAG}) nu de tekst is, om voorbeelden in te korten.
+
     \item Een tabel met de gerangschikte suffixen van een string.
     \item De elementen van de tabel zijn indices, die de startpositie van het suffix aanduiden van de string.
     \begin{table}[ht]
@@ -146,7 +148,7 @@
              & & &$suff_3$&\um{G}&A&G&C&A&G&&& \\
             \hline
              & & & $LGP[i]$&0&0&2&1&0&4&3&2&1\\
-             & & & $LCP[i]$&4&0&0&1&2&0&3&1&2\\
+             & & & $LCP[i]$&2&2&0&3&0&1&1&4&0\\
              \hline
         \end{tabular}
         \caption{De constructie van de LCP-tabel voor \texttt{GCAGAGCAG}. Karakters die rood of groen zijn worden effectief vergeleken. Oranje karakters moeten niet meer vergeleken worden.}
@@ -155,6 +157,108 @@
 
 
     \item Een patroon $P$ opzoeken in de suffixtabel gebeurt met \textbf{binair zoeken}.
+    \begin{itemize}
+        \item \textbf{Zonder de LCP-tabel te gebruiken.} ($O(p\lg t)$)
+        \begin{itemize}
+            \item Er is een linkerindex $l$, rechterindex $r$ en middelindex $c = \lfloor \frac{l + r}{2}\rfloor$.
+            \item $p_l$ is de lengte van het langste gemeenschappelijk prefix van $P$ en \suffix{SA[l]}.
+            \item $p_r$ is de lengte van het langste gemeenschappelijk prefix van $P$ en \suffix{SA[r]}.
+            \item $p_{min} = \min \{p_l, p_r\}$.
+            \item $P$ heeft een prefix met lengte $p_{min}$ gemeen met alle suffixen tussen $l$ en $r$.
+            \item De volgende stringvergelijkingen tussen $P$ en \suffix{SA[c]} kan beginnen bij karakter $P[p_{min}]$.
+            \item Bij een fout in het patroon wordt $c = l$ als het karakter van het patroon op die foutpositie groter is dan het karakter van het suffix, of $c = r$ in het andere geval.
+            \item Tabel \ref{table:binarysearchsuffix1} toont de uitwerking voor $P = \texttt{AGA}$ en $T = \texttt{GCAGAGCAG}$.
+            \begin{table}[ht]
+                \centering
+                \begin{tabular}{|ccc|c|ccccccccc|}
+                    \hline
+                    &&&$i$&0&1&2&3&4&5&6&7&8\\
+                    &&&$T[i]$&G&C&A&G&A&G&C&A&G\\
+                    \hline
+                    &&&$SA[i]$&7&2&4&6&1&8&3&5&0\\
+                    &&&$T[SA[i]]$&A&A&A&C&C&G&G&G&G\\
+                    \hline
+                    $l=0$&$r=8$&$c=4$ & &&&&&&&&&\\
+                    \hdashline
+                     & $p_l$     & 2  & \suffix{SA[0]} = \suffix{7} &\m{A}&\m{G}&&&&&&& \\
+                     & $p_r$     & 0  & \suffix{SA[8]} = \suffix{0} &\nm{G}&C&A&G&A&G&C&A&G\\
+                     & $p_{min}$ & 0  & \suffix{SA[4]} = \suffix{1} &\nm{C}&A&G&A&G&C&A&G&\\
+                    \hline
+                    $l=0$&$r=4$&$c=2$ & &&&&&&&&&\\
+                    \hdashline
+                     & $p_l$     & 2  & \suffix{SA[0]} = \suffix{7} &\m{A}&\m{G}&&&&&&& \\
+                     & $p_r$     & 0  & \suffix{SA[4]} = \suffix{1} &\nm{C}&A&G&A&G&C&A&G&\\
+                     & $p_{min}$ & 0  & \suffix{SA[2]} = \suffix{4} &\m{A}&\m{G}&\nm{C}&A&G&&&&\\
+                    \hline
+                    $l=0$&$r=2$&$c=1$ & &&&&&&&&&\\
+                    \hdashline
+                     & $p_l$     & 2  & \suffix{SA[0]} = \suffix{7} &\m{A}&\m{G}&&&&&&& \\
+                     & $p_r$     & 2  & \suffix{SA[2]} = \suffix{4} &\m{A}&\m{G}&\nm{C}&A&G&&&&\\
+                     & $p_{min}$ & 2  & \suffix{SA[1]} = \suffix{2} &\um{A}&\um{G}&\m{A}&G&C&A&G&&\\
+                    \hline
+                \end{tabular}
+                \caption{Elk suffix wordt vergeleken met $P = \texttt{AGA}$. Het patroon wordt uiteindelijk gevonden op positie $i = 2$.}
+                \label{table:binarysearchsuffix1}
+            \end{table}
+        \end{itemize}
+
+        \item \textbf{Door de LCP-tabel te gebruiken.} ($O(p + \lg t)$)
+        \begin{itemize}
+            \item De waarden $l$, $r$ , $c$, $p_l$, $p_r$ en $p_{min}$ worden opnieuw gebruikt.
+            \item $p_{max} = \max\{p_l, p_r\} + 1$.
+            \item $p_{l,c}$ is de lengte van het langste gemeenschappelijk prefix van \suffix{SA[l]} en \suffix{SA[c]}.
+            \item $p_{c,r}$ is de lengte van het langste gemeenschappelijk prefix van \suffix{SA[c]} en \suffix{SA[r]}.
+            \item Deze waarden kunnen op voorhand bepaald worden:
+            $$
+                p_{a,b} = \min_{a \leq i < b} \hbox{LCP}[i]
+            $$
+            \begin{itemize}
+                \item Als $b - a = 1$, dan is $p_{a, b} = LCP[a]$.
+                \item Als $b - a > 1$ en $m = \lfloor \frac{b + a}{2}\rfloor$, dan is $p_{a, b} = \min\{p_{a, m}, p_{m, b} \}$
+            \end{itemize}
+
+            \item Als $p_l > p_r$, dan zijn er drie mogelijkheden:
+            \begin{enumerate}
+                \item $p_{l,c} > p_l$: de eerste $p_l$ karakters van $P$ en \suffix{SA[c]} zijn gelijk. $P$ ligt rechts van $c$: maak $l = c$.
+                \item $p_{l,c} < p_l$: het karakter $T[SA[c] + p_{l, c}]$ is groter dan het overeenkomstig karakter van $T[SA[l]]$. $P$ ligt links van $c$: maak $r = c$ en $p_r = p_{l,c}$.
+                \item $p_{l,c} = p_l$:
+            \end{enumerate}
+            \item $p_r > p_l$ is analoog aan $p_l > p_r$.
+            \item Tabel \ref{table:binarysearchsuffix2} toont de uitwerking voor $P = \texttt{AGA}$ en $T = \texttt{GCAGAGCAG}$.
+            \begin{table}[ht]
+                \centering
+                \begin{tabular}{|ccc|c|ccccccccc|}
+                    \hline
+                    &&&$i$&0&1&2&3&4&5&6&7&8\\
+                    &&&$T[i]$&G&C&A&G&A&G&C&A&G\\
+                    \hline
+                    &&&$SA[i]$&7&2&4&6&1&8&3&5&0\\
+                    &&&$T[SA[i]]$&A&A&A&C&C&G&G&G&G\\
+                    \hline
+                    $l=0$&$r=8$&$c=4$ & &&&&&&&&&\\
+                    \hdashline
+                     & $p_l$     & 2  & \suffix{SA[0]} = \suffix{7} &\m{A}&\m{G}&&&&&&& \\
+                     & $p_r$     & 0  & \suffix{SA[8]} = \suffix{0} &\nm{G}&C&A&G&A&G&C&A&G\\
+                     & $p_{min}$ & 0  & \suffix{SA[4]} = \suffix{1} &\nm{C}&A&G&A&G&C&A&G&\\
+                    \hline
+                    $l=0$&$r=4$&$c=2$ & &&&&&&&&&\\
+                    \hdashline
+                     & $p_l$     & 2  & \suffix{SA[0]} = \suffix{7} &\m{A}&\m{G}&&&&&&& \\
+                     & $p_r$     & 0  & \suffix{SA[4]} = \suffix{1} &\nm{C}&A&G&A&G&C&A&G&\\
+                     & $p_{min}$ & 0  & \suffix{SA[2]} = \suffix{4} &\m{A}&\m{G}&\nm{C}&A&G&&&&\\
+                    \hline
+                    $l=0$&$r=2$&$c=1$ & &&&&&&&&&\\
+                    \hdashline
+                     & $p_l$     & 2  & \suffix{SA[0]} = \suffix{7} &\m{A}&\m{G}&&&&&&& \\
+                     & $p_r$     & 2  & \suffix{SA[2]} = \suffix{4} &\m{A}&\m{G}&\nm{C}&A&G&&&&\\
+                     & $p_{min}$ & 2  & \suffix{SA[1]} = \suffix{2} &\um{A}&\um{G}&\m{A}&G&C&A&G&&\\
+                    \hline
+                \end{tabular}
+                \caption{Elk suffix wordt vergeleken met $P = \texttt{AGA}$. Het patroon wordt uiteindelijk gevonden op positie $i = 2$.}
+                \label{table:binarysearchsuffix2}
+            \end{table}
+        \end{itemize}
+    \end{itemize}
 \end{itemize}
 
 \section{Tekstzoekmachines}

@@ -3,7 +3,7 @@
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.5\textwidth]{optimal-binary-tree}
-    \caption{Een optimale binaire zoekboom met bijhorende kansentabel.}
+    \caption{Een optimale binaire zoekboom met bijhorende kansentabel en een verwachte zoektijd van 2,75.}
     \label{}
 \end{figure}
 
@@ -27,7 +27,7 @@
         \item Elk blad staat voor een afwezig gegeven die in een deelboom op die plaats had moeten zitten.
         \item Het blad $b_0$ staat voor alle sleutels kleiner dan $s_1$.
         \item Het blad $b_n$ staat voor alle sleutels groter dan $s_n$.
-        \item Het blad $b_i$ staat voor alle sleutels gorter dan $s_i$ en kleiner dan $s_{i +1}$, met $1 \leq i < n$
+        \item Het blad $b_i$ staat voor alle sleutels groter dan $s_i$ en kleiner dan $s_{i +1}$, met $1 \leq i < n$
     \end{itemize}
     \item De waarschijnlijkheid om de $i$-de sleutel $s_i$ te zoeken is $p_i$. 
     \item De waarschijnlijkheid om alle afwezige sleutels, voorgesteld door een blad $b_i$, te zoeken is $q_i$.
@@ -38,7 +38,7 @@
     \item Deze verwachtingswaarde moet geminimaliseerd worden.
     \begin{itemize}
         \item Boom met minimale hoogte is niet voldoende.
-        \item Alle mogelijke zoekbomen onderzoeken is ook geen optie, hun aantal is 
+        \item Alle mogelijke zoekbomen onderzoeken is ook geen optie, hun aantal is \footnote{Voor $n$ heel groot is $\binom{2n}{n} \sim \frac{2^{2n}}{\sqrt{\pi n}}$ (formule van Stirling).}
         \begin{align*}
             \frac{1}{n + 1}\binom{2n}{n} & \sim \frac{1}{n + 1} \cdot \frac{2^{2n}}{\sqrt{\pi n}} \\
                                          & \sim \frac{1}{n + 1} \cdot \frac{4^{n}}{\sqrt{\pi n}} \\
@@ -126,7 +126,7 @@
             \item Initialiseer de waarden $z(i, i-1)$ en $g(i, i-1)$ op $q[i - 1]$.
             \item Bepaal achtereenvolgens elementen op elke evenwijdige diagonaal, in de richting van de tabelhoek linksboven.
             \begin{itemize}
-                \item Voor $z(i, j)$ zijn de waarden $z(i, i-1), z(i, i), \dots, z(i, j-1)$ van de linkse deelboom nodig en de waarden $z(i + 1, j), \dots, z(j, j), z(j + 1, j)$ van de rechtse deelbom nodig.
+                \item Voor $z(i, j)$ zijn de waarden $z(i, i-1), z(i, i), \dots, z(i, j-1)$ van de linkse deelboom nodig en de waarden $z(i + 1, j), \dots, z(j, j), z(j + 1, j)$ van de rechtse deelboom nodig.
                 \item Deze waarden staan op diagonalen onder deze van $z(i, j)$.
             \end{itemize}
         \end{enumerate}
@@ -200,5 +200,20 @@
         \item De tabel $c$ wordt rij per rij, kolom per kolom ingevuld.
         \item De vereiste plaats en totale performantie is beiden $\Theta(nm)$.
     \end{itemize}
+
+
+    \begin{table}[ht]
+        \centering
+        \begin{tabular}{c| c c c c c c c c c}
+             & &a&l&o&y&s&i&u&s\\
+             \hline
+             & &0&0&0&0&0&0&0&0\\
+            l&0&0&1&1&1&1&1&1&1\\
+            o&0&0&1&2&2&2&2&2&2\\
+            u&0&0&1&2&2&2&2&3&3\\
+            i&0&0&1&2&2&2&3&3&3\\
+            s&0&0&1&2&2&3&3&3&\textbf{4} 
+        \end{tabular}
+    \end{table}
 
 \end{itemize}
